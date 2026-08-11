@@ -23,8 +23,8 @@ This is a **task** (provisioning to unblock decisions) — the agent drives it a
 - Git identity set repo-locally (`jasonwill111` / `jasonwill111@users.noreply.github.com`) since no global identity was present.
 
 **Cloudflare (free tier)**
-- D1 database `halalneo` created (id `26ff0adb-cd54-4b81-9664-5c7cdfcf7055`), bound as `DB`.
-- R2 bucket `halalneo-assets` created, bound as `halalneo_assets`.
+- D1 database `halalneo-db` created (id `458def90-808e-4d30-b76b-1a911638e61b`), bound as `DB`. (Initially created as `halalneo`; renamed to match the account's `*-db` convention and deleted the old empty one.)
+- R2 bucket `halalneo-media` created, bound as `halalneo_assets`. (Initially created as `halalneo-assets`; renamed to match the account's `*-media` convention and deleted the old empty one.)
 - Bindings wired into `wrangler.jsonc`; `wrangler types` regenerated into `worker-configuration.d.ts`.
 - `compatibility_flags` set to `nodejs_compat` (paraglide uses Node `AsyncLocalStorage` via `async_hooks`).
 

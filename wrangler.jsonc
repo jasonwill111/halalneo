@@ -13,14 +13,14 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "halalneo",
-			"database_id": "26ff0adb-cd54-4b81-9664-5c7cdfcf7055"
+			"database_name": "halalneo-db",
+			"database_id": "458def90-808e-4d30-b76b-1a911638e61b"
 		}
 	],
 	"r2_buckets": [
 		{
 			"binding": "halalneo_assets",
-			"bucket_name": "halalneo-assets"
+			"bucket_name": "halalneo-media"
 		}
 	]
 }
