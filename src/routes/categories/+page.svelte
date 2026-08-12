@@ -7,7 +7,7 @@
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 </script>
 
-<svelte:head><title>Categories â€?HalalNeo</title></svelte:head>
+<svelte:head><title>Categories â€”HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">

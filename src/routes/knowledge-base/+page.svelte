@@ -9,7 +9,7 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 </script>
 
-<svelte:head><title>Knowledge Base â€?HalalNeo</title></svelte:head>
+<svelte:head><title>Knowledge Base â€”HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="space-y-4">
@@ -22,7 +22,7 @@
 				Halal trade intelligence, explained
 			</h1>
 			<p class="text-muted-foreground">
-				{adminData.kbArticles.length} articles across {adminData.kbSections.length} areas of halal trade â€?from
+				{adminData.kbArticles.length} articles across {adminData.kbSections.length} areas of halal trade â€”from
 				certification and sourcing to logistics, labeling and market entry.
 			</p>
 		</div>

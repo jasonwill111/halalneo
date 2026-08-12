@@ -19,6 +19,10 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
+	// During prerendering (`building` is true) the platform bindings are
+	// unavailable — accessing `event.platform.env.DB` throws — so skip auth
+	// entirely; prerendered routes never read D1.
+	if (building) return resolve(event);
 	// Without a D1 binding (e.g. plain `vite dev`) auth is skipped so the
 	// prototype runs on example data; production always provides the binding.
 	const db = event.platform?.env?.DB;
