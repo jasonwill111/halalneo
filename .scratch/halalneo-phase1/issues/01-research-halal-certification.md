@@ -1,4 +1,5 @@
 # Halal certification landscape
+
 Type: research
 Status: resolved
 Blocked by: none

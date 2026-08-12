@@ -1,4 +1,5 @@
 # Halal logistics & supply chain
+
 Type: research
 Status: resolved
 Blocked by: none

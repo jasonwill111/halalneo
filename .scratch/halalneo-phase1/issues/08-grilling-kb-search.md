@@ -1,4 +1,5 @@
 # Knowledge base search approach
+
 Type: grilling
 Status: open
 Blocked by: 07

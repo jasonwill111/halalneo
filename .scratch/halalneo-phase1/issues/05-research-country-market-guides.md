@@ -1,4 +1,5 @@
 # Country & market guides
+
 Type: research
 Status: resolved
 Blocked by: none

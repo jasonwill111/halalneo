@@ -1,6 +1,6 @@
 # Global Halal Certification Landscape
 
-*Research ticket: 01 - halal certification. Status: draft. Date: 2026-08-10.*
+_Research ticket: 01 - halal certification. Status: draft. Date: 2026-08-10._
 
 ## Executive Summary
 
@@ -16,7 +16,7 @@ The Department of Islamic Development Malaysia (JAKIM), a federal agency under t
 
 ### 1.2 MUI / LPPOM MUI / BPJPH - Indonesia
 
-Indonesia has a **three-actor model**: the **Halal Product Assurance Organizing Agency (BPJPH)** - the government authority under the Ministry of Religious Affairs (est. 2017) - issues halal certificates and manages recognition of foreign HCBs (called *LHLN*); the Indonesian Council of Ulama (**MUI**) is the supreme religious authority that issues the **fatwa** that validates halal status; and **LPPOM MUI** (now the halal inspection body / LPH) conducts technical inspections (PMC; AHF). Certification is **mandatory**: all food products since **October 2024**, cosmetics and pharmaceuticals by **October 2026** (ShariaCheck). Under Government Regulation **42/2024**, halal certificates can become **permanent** if ingredients and processes remain unchanged. Indonesia is the world's largest Muslim-majority market (~270M consumers); non-compliance risks product withdrawal and fines.
+Indonesia has a **three-actor model**: the **Halal Product Assurance Organizing Agency (BPJPH)** - the government authority under the Ministry of Religious Affairs (est. 2017) - issues halal certificates and manages recognition of foreign HCBs (called _LHLN_); the Indonesian Council of Ulama (**MUI**) is the supreme religious authority that issues the **fatwa** that validates halal status; and **LPPOM MUI** (now the halal inspection body / LPH) conducts technical inspections (PMC; AHF). Certification is **mandatory**: all food products since **October 2024**, cosmetics and pharmaceuticals by **October 2026** (ShariaCheck). Under Government Regulation **42/2024**, halal certificates can become **permanent** if ingredients and processes remain unchanged. Indonesia is the world's largest Muslim-majority market (~270M consumers); non-compliance risks product withdrawal and fines.
 
 ### 1.3 GAC & SFDA - Saudi Arabia / GCC
 
@@ -46,16 +46,16 @@ The **Korea Muslim Federation (KMF)** is South Korea's halal certification body 
 
 ## 2. Main Halal Standards / Regimes
 
-| Standard | Region | Role |
-|---|---|---|
-| **OIC/SMIIC 1:2019** | OIC member states | General Requirements for Halal Food (2nd ed., 31 Jul 2019). Umbrella regime intended to harmonise halal certification across the OIC. |
-| **GSO 2055-1:2015** | GCC / Gulf | General requirements for halal food at any stage of the food chain (prep, packaging, labelling, transport, storage, display, service). |
-| **GSO 2055-2:2021** | GCC | General requirements for halal **certification bodies** (basis for GAC accreditation). |
-| **GSO 2055-3:2021** | GCC | General requirements for halal **accreditation bodies** certifying HCBs. |
-| **MS 1500:2019** | Malaysia | Halal Food - Production, Preparation, Handling and Storage - General Guidelines (JSM; enforced by JAKIM). Companion standards: MS 1480:2007 (HACCP), MS 1514:2009 (GMP/hygiene), MS 2565:2014 (halal packaging), MS 2627:2017 (porcine DNA detection), MS 2673:2021 (HAS requirements). |
-| **HAS 23000** | Indonesia | LPPOM MUI Halal Assurance System standard (HAS 23:10:3:2012), now operated under BPJPH regulations and Law No. 33/2014. |
-| **MUIS-HC-S001 / S002, SS 590** | Singapore | General guidelines + Halal Quality Management System (HalMQ) requirements. |
-| Others | - | **THS 24000** (Thailand), **PBD 24:2007** (Brunei - strictest, no stunning), **PNS/Halal 1** (Philippines), **ST RK 3065-2016** (Kazakhstan), **NIS 740** (Nigeria), **NM 08.0.800** (Morocco), **BDS CAB Halal 1:2015** (Bangladesh), **PS 3733** (Pakistan). |
+| Standard                        | Region            | Role                                                                                                                                                                                                                                                                                    |
+| ------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OIC/SMIIC 1:2019**            | OIC member states | General Requirements for Halal Food (2nd ed., 31 Jul 2019). Umbrella regime intended to harmonise halal certification across the OIC.                                                                                                                                                   |
+| **GSO 2055-1:2015**             | GCC / Gulf        | General requirements for halal food at any stage of the food chain (prep, packaging, labelling, transport, storage, display, service).                                                                                                                                                  |
+| **GSO 2055-2:2021**             | GCC               | General requirements for halal **certification bodies** (basis for GAC accreditation).                                                                                                                                                                                                  |
+| **GSO 2055-3:2021**             | GCC               | General requirements for halal **accreditation bodies** certifying HCBs.                                                                                                                                                                                                                |
+| **MS 1500:2019**                | Malaysia          | Halal Food - Production, Preparation, Handling and Storage - General Guidelines (JSM; enforced by JAKIM). Companion standards: MS 1480:2007 (HACCP), MS 1514:2009 (GMP/hygiene), MS 2565:2014 (halal packaging), MS 2627:2017 (porcine DNA detection), MS 2673:2021 (HAS requirements). |
+| **HAS 23000**                   | Indonesia         | LPPOM MUI Halal Assurance System standard (HAS 23:10:3:2012), now operated under BPJPH regulations and Law No. 33/2014.                                                                                                                                                                 |
+| **MUIS-HC-S001 / S002, SS 590** | Singapore         | General guidelines + Halal Quality Management System (HalMQ) requirements.                                                                                                                                                                                                              |
+| Others                          | -                 | **THS 24000** (Thailand), **PBD 24:2007** (Brunei - strictest, no stunning), **PNS/Halal 1** (Philippines), **ST RK 3065-2016** (Kazakhstan), **NIS 740** (Nigeria), **NM 08.0.800** (Morocco), **BDS CAB Halal 1:2015** (Bangladesh), **PS 3733** (Pakistan).                          |
 
 ### How the regimes differ
 

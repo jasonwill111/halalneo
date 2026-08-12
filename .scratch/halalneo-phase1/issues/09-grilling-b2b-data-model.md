@@ -1,4 +1,5 @@
 # B2B data model
+
 Type: grilling
 Status: open
 Blocked by: 06

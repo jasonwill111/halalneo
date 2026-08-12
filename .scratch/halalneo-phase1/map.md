@@ -38,7 +38,7 @@ _Settled during charting (in `CONTEXT.md`): Merchant classification (`businessTy
 - R2 usage details (merchant logos, SKU images, article images) — ticket when image handling is wired.
 - SEO strategy (sitemap, meta, structured data) — ticket after content model settles.
 - How buyers contact sellers (inquiry flow) — likely out of scope for Phase-1, confirm later.
-- Halal certification *workflow* (merchants apply for certification through the platform) vs. certification as informational field — the latter is in scope; the former is Phase-2.
+- Halal certification _workflow_ (merchants apply for certification through the platform) vs. certification as informational field — the latter is in scope; the former is Phase-2.
 
 ## Out of scope
 

@@ -26,6 +26,8 @@
 		"@eslint/js": "^10.0.1",
 		"@inlang/paraglide-js": "^2.23.2",
 		"@inlang/paraglide-sveltekit": "^0.16.1",
+		"@internationalized/date": "^3.12.3",
+		"@lucide/svelte": "^1.31.0",
 		"@playwright/test": "^1.60.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.8",
 		"@sveltejs/kit": "^2.63.0",
@@ -37,6 +39,7 @@
 		"@vitest/browser-playwright": "^4.1.8",
 		"auth": "^1.6.23",
 		"better-auth": "^1.6.23",
+		"bits-ui": "^2.18.1",
 		"drizzle-kit": "^0.31.10",
 		"drizzle-orm": "^0.45.2",
 		"eslint": "^10.4.1",
@@ -49,6 +52,8 @@
 		"prettier-plugin-tailwindcss": "^0.8.0",
 		"svelte": "^5.56.1",
 		"svelte-check": "^4.6.0",
+		"svelte-sonner": "^1.1.1",
+		"tailwind-variants": "^3.3.1",
 		"tailwindcss": "^4.3.0",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.60.1",
@@ -56,5 +61,11 @@
 		"vitest": "^4.1.8",
 		"vitest-browser-svelte": "^2.1.1",
 		"wrangler": "^4.97.0"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"marked": "^18.0.9",
+		"mode-watcher": "^1.1.0",
+		"tailwind-merge": "^3.6.0"
 	}
 }

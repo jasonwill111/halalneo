@@ -1,4 +1,5 @@
 # Buyer-facing Category / Merchant / SKU pages
+
 Type: prototype
 Status: open
 Blocked by: 09

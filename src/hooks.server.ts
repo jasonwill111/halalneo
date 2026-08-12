@@ -19,10 +19,12 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
-	if (!event.platform?.env?.DB)
-		throw new Error('D1 binding "DB" not found - are you running with wrangler?');
+	// Without a D1 binding (e.g. plain `vite dev`) auth is skipped so the
+	// prototype runs on example data; production always provides the binding.
+	const db = event.platform?.env?.DB;
+	if (!db) return resolve(event);
 
-	event.locals.auth = createAuth(event.platform.env.DB);
+	event.locals.auth = createAuth(db);
 
 	const { auth } = event.locals;
 	const session = await auth.api.getSession({ headers: event.request.headers });

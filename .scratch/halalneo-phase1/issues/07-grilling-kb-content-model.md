@@ -1,4 +1,5 @@
 # Knowledge base content model
+
 Type: grilling
 Status: open
 Blocked by: none

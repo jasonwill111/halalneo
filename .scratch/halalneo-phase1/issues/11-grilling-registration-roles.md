@@ -1,4 +1,5 @@
 # Registration, roles & auth
+
 Type: grilling
 Status: open
 Blocked by: 06

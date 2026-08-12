@@ -1,4 +1,5 @@
 # B2B trade & sourcing process
+
 Type: research
 Status: resolved
 Blocked by: none

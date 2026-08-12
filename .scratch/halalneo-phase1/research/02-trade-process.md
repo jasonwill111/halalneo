@@ -41,7 +41,7 @@ Halal trade adds a compliance layer that must be **documented, traceable, and re
 The **Halal Certificate of Conformity** is the foundation document. Beyond the annual facility "scope certificate," most importing countries require a **shipment-specific batch or transaction certificate** that links the facility's certification to the specific lot numbers on the ship (Halal Certification LLC). Key requirements:
 
 - Issued by a **certification body recognized by the destination country**, not a local mosque. Examples: UAE requires HCBs accredited by **EIAC under GSO 2055-2**; Malaysia requires JAKIM recognition under **MS 1500**; Indonesia's BPJPH recognizes foreign certifiers (via mutual recognition) but the certificate is issued/registered through its system (Halal Certification LLC; DHL).
-- **Valid for the specific batch/shipment** and valid *after* the estimated arrival date.
+- **Valid for the specific batch/shipment** and valid _after_ the estimated arrival date.
 - For meat and poultry, a **Halal Slaughter Certificate** detailing slaughterhouse, slaughter date, slaughterman name, stunning method (if used), plus the official health/veterinary export certificate (e.g., USDA-FSIS Form 9060-5 in the U.S.).
 - Backed by **ingredient and raw-material declarations**, including animal-derived inputs, alcohol/enzyme declarations, and cross-contamination controls (dedicated or sanitized lines, Halal Assurance System) (Islamic Economy Academy; DHL).
 
@@ -75,24 +75,24 @@ Alongside halal docs, importers must assemble health certificates, phytosanitary
 
 ### Any mode of transport (7 rules)
 
-| Rule | Meaning | Risk/cost profile |
-|------|---------|-------------------|
-| **EXW** (Ex Works) | Seller makes goods available at their premises | **Minimum seller obligation** — buyer collects, handles export formalities, all carriage and risk |
-| **FCA** (Free Carrier) | Seller delivers goods to a named place for the carrier; revised in 2020 to allow an **on-board bill of lading** when goods are sold FCA for sea carriage | Risk transfers at delivery to carrier; export clearance is the seller's duty |
-| **CPT** (Carriage Paid To) | Seller pays carriage to destination; risk transfers earlier, at first carrier | Seller pays main carriage, buyer bears transit risk |
-| **CIP** (Carriage & Insurance Paid To) | Seller pays carriage + **higher-level insurance (Institute Cargo Clauses A)** | Same as CPT plus mandatory enhanced insurance cover |
-| **DAP** (Delivered at Place) | Seller delivers at destination place; **seller does not unload** | Risk transfers at destination; import duties not included |
-| **DPU** (Delivered at Place Unloaded) | Like DAP but **seller unloads**; renamed from DAT in 2020 | Same as DAP plus unloading obligation |
-| **DDP** (Delivered Duty Paid) | Seller delivers at destination **duty paid**, handling import formalities | **Maximum seller obligation** — seller bears all costs/risk, including import duty |
+| Rule                                   | Meaning                                                                                                                                                  | Risk/cost profile                                                                                 |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **EXW** (Ex Works)                     | Seller makes goods available at their premises                                                                                                           | **Minimum seller obligation** — buyer collects, handles export formalities, all carriage and risk |
+| **FCA** (Free Carrier)                 | Seller delivers goods to a named place for the carrier; revised in 2020 to allow an **on-board bill of lading** when goods are sold FCA for sea carriage | Risk transfers at delivery to carrier; export clearance is the seller's duty                      |
+| **CPT** (Carriage Paid To)             | Seller pays carriage to destination; risk transfers earlier, at first carrier                                                                            | Seller pays main carriage, buyer bears transit risk                                               |
+| **CIP** (Carriage & Insurance Paid To) | Seller pays carriage + **higher-level insurance (Institute Cargo Clauses A)**                                                                            | Same as CPT plus mandatory enhanced insurance cover                                               |
+| **DAP** (Delivered at Place)           | Seller delivers at destination place; **seller does not unload**                                                                                         | Risk transfers at destination; import duties not included                                         |
+| **DPU** (Delivered at Place Unloaded)  | Like DAP but **seller unloads**; renamed from DAT in 2020                                                                                                | Same as DAP plus unloading obligation                                                             |
+| **DDP** (Delivered Duty Paid)          | Seller delivers at destination **duty paid**, handling import formalities                                                                                | **Maximum seller obligation** — seller bears all costs/risk, including import duty                |
 
 ### Sea & inland waterway only (4 rules)
 
-| Rule | Meaning | Risk/cost profile |
-|------|---------|-------------------|
-| **FAS** (Free Alongside Ship) | Seller delivers alongside the vessel at the loading port | Risk transfers when goods are placed alongside ship |
-| **FOB** (Free On Board) | Seller delivers on board the vessel at the named loading port | Risk transfers once goods are on board; widely used for commodity and container trade |
-| **CFR** (Cost and Freight) | Seller pays cost and freight to destination port; **risk transfers on loading** | Seller pays freight but bears no transit risk |
-| **CIF** (Cost, Insurance & Freight) | Like CFR plus **minimum insurance (Institute Cargo Clauses C)**; default in commodity trade | Seller pays freight + insurance; risk transfers on loading |
+| Rule                                | Meaning                                                                                     | Risk/cost profile                                                                     |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **FAS** (Free Alongside Ship)       | Seller delivers alongside the vessel at the loading port                                    | Risk transfers when goods are placed alongside ship                                   |
+| **FOB** (Free On Board)             | Seller delivers on board the vessel at the named loading port                               | Risk transfers once goods are on board; widely used for commodity and container trade |
+| **CFR** (Cost and Freight)          | Seller pays cost and freight to destination port; **risk transfers on loading**             | Seller pays freight but bears no transit risk                                         |
+| **CIF** (Cost, Insurance & Freight) | Like CFR plus **minimum insurance (Institute Cargo Clauses C)**; default in commodity trade | Seller pays freight + insurance; risk transfers on loading                            |
 
 ### Practical guidance
 
@@ -132,13 +132,13 @@ The U.S. ITA defines five primary payment methods, ordered by risk from the expo
 
 ### Risk comparison (from exporter's perspective)
 
-| Method | Exporter risk | Importer risk | Halal-trade notes |
-|--------|--------------|---------------|-------------------|
-| T/T advance | Very low | High | No documentary linkage to halal cert |
-| **L/C** | Low (bank-guaranteed on docs) | Low | **Codifies halal certificate/document requirements**; strict compliance needed |
-| D/P / CAD | Medium | Medium | Bank-facilitated, no guarantee; docs (incl. halal cert) held until payment |
-| Escrow | Low–Medium | Low–Medium | Release conditions must include halal doc checks |
-| Open account | High | Very low | For established, trusted relationships |
+| Method       | Exporter risk                 | Importer risk | Halal-trade notes                                                              |
+| ------------ | ----------------------------- | ------------- | ------------------------------------------------------------------------------ |
+| T/T advance  | Very low                      | High          | No documentary linkage to halal cert                                           |
+| **L/C**      | Low (bank-guaranteed on docs) | Low           | **Codifies halal certificate/document requirements**; strict compliance needed |
+| D/P / CAD    | Medium                        | Medium        | Bank-facilitated, no guarantee; docs (incl. halal cert) held until payment     |
+| Escrow       | Low–Medium                    | Low–Medium    | Release conditions must include halal doc checks                               |
+| Open account | High                          | Very low      | For established, trusted relationships                                         |
 
 ---
 
