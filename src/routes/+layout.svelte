@@ -77,6 +77,21 @@
 	function isActive(pathname: string, href: string): boolean {
 		return pathname === href;
 	}
+
+	let lastScrollY = 0;
+	let headerHidden = $state(false);
+
+	function onScroll() {
+		const scrollY = window.scrollY;
+		if (scrollY < 10) {
+			headerHidden = false;
+		} else if (scrollY > lastScrollY + 5) {
+			headerHidden = true;
+		} else if (scrollY < lastScrollY - 5) {
+			headerHidden = false;
+		}
+		lastScrollY = scrollY;
+	}
 </script>
 
 <ModeWatcher />
@@ -102,11 +117,15 @@
 	{/if}
 </svelte:head>
 
+<svelte:window onscroll={onScroll} />
+
 <div class="flex min-h-dvh flex-col bg-background text-foreground">
 	{#if isAdminRoute}
 		{@render children()}
 	{:else}
-		<header class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+		<header
+			class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 transition-transform duration-300 max-md:transition-transform max-md:duration-300 {headerHidden ? 'max-md:-translate-y-full' : 'max-md:translate-y-0'}"
+		>
 			<div
 				class="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:h-16 sm:px-6"
 			>
