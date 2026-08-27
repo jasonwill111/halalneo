@@ -160,7 +160,7 @@
 									variant="ghost"
 									size="icon"
 									aria-label="Open menu"
-									class="lg:hidden"
+									class="hidden md:inline-flex lg:hidden"
 								>
 									<MenuIcon class="size-4" />
 								</Button>
