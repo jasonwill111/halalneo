@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import { Card, CardContent, CardTitle } from '$lib/components/ui/card';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import BookText from '@lucide/svelte/icons/book-text';
 
 	const sorted = $derived(adminData.glossary.toSorted((a, b) => a.term.localeCompare(b.term)));
@@ -8,8 +8,6 @@
 	const grouped = $derived(Object.groupBy(sorted, (t) => t.term[0].toUpperCase()));
 	const letters = $derived(Object.keys(grouped).toSorted());
 </script>
-
-<svelte:head><title>Glossary — HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
@@ -37,7 +35,7 @@
 	<div class="space-y-8">
 		{#each letters as letter}
 			<div class="space-y-3">
-				<h2 id="term-{letter}" class="text-lg font-semibold scroll-mt-24">{letter}</h2>
+				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
 				<div class="grid gap-3 sm:grid-cols-2">
 					{#each grouped[letter] as term}
 						<Card>

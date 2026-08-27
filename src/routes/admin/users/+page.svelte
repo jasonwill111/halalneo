@@ -1,11 +1,24 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { listAccounts, createAccount, updateAccount, deleteAccount, getCurrentAccount } from '$lib/stores/auth.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Field, FieldLabel, FieldDescription } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import {
+		listAccounts,
+		createAccount,
+		updateAccount,
+		deleteAccount,
+		getCurrentAccount
+	} from '#lib/stores/auth.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -13,10 +26,15 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
-	import { Empty } from '$lib/components/ui/empty';
-	import type { DemoAccount } from '$lib/stores/auth.svelte';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import type { DemoAccount } from '#lib/stores/auth.svelte.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -130,7 +148,9 @@
 
 	<div class="flex items-center gap-2">
 		<div class="relative max-w-sm flex-1">
-			<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+			<Search
+				class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+			></Search>
 			<Input bind:value={search} placeholder="Search buyers…" class="pl-9" />
 		</div>
 		<Button variant="outline" size="icon" aria-label="Refresh" onclick={refreshAccounts}>
@@ -142,7 +162,9 @@
 		<Empty>
 			<div class="space-y-1">
 				<p class="font-medium">No buyers found</p>
-				<p class="text-sm text-muted-foreground">Try a different search term, or create a new buyer account.</p>
+				<p class="text-sm text-muted-foreground">
+					Try a different search term, or create a new buyer account.
+				</p>
 			</div>
 		</Empty>
 	{:else}
@@ -177,7 +199,13 @@
 							</TableCell>
 							<TableCell class="text-right">
 								<div class="flex items-center justify-end gap-1">
-									<Button variant="ghost" size="icon" aria-label="Edit" onclick={() => openEdit(account)} disabled={account.email === currentAccount?.email}>
+									<Button
+										variant="ghost"
+										size="icon"
+										aria-label="Edit"
+										onclick={() => openEdit(account)}
+										disabled={account.email === currentAccount?.email}
+									>
 										<Pencil class="size-4" />
 									</Button>
 									<Button
@@ -217,7 +245,12 @@
 			</Field>
 			<Field>
 				<FieldLabel>Email</FieldLabel>
-				<Input bind:value={form.email} type="email" placeholder="aisha@company.com" disabled={!!editing} />
+				<Input
+					bind:value={form.email}
+					type="email"
+					placeholder="aisha@company.com"
+					disabled={!!editing}
+				/>
 			</Field>
 			<Field>
 				<FieldLabel>Company (optional)</FieldLabel>

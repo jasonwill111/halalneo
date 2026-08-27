@@ -1,9 +1,16 @@
 <script lang="ts">
-	import { adminSettings, updateSettings } from '$lib/stores/admin-data.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Field, FieldLabel, FieldDescription } from '$lib/components/ui/field';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
+	import { adminSettings, updateSettings } from '#lib/stores/admin-data.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
+	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '#lib/components/ui/card/index.js';
 
 	let form = $state({ ...adminSettings });
 	let saved = $state(false);
@@ -45,7 +52,10 @@
 				</Field>
 				<Field>
 					<FieldLabel>Tagline</FieldLabel>
-					<Input bind:value={form.tagline} placeholder="Halal trade intelligence for buyers and suppliers" />
+					<Input
+						bind:value={form.tagline}
+						placeholder="Halal trade intelligence for buyers and suppliers"
+					/>
 				</Field>
 			</CardContent>
 		</Card>
@@ -58,7 +68,11 @@
 			<CardContent class="space-y-4">
 				<Field>
 					<FieldLabel>Support email</FieldLabel>
-					<Input bind:value={form.supportEmail} type="email" placeholder="support@halalneo.example" />
+					<Input
+						bind:value={form.supportEmail}
+						type="email"
+						placeholder="support@halalneo.example"
+					/>
 				</Field>
 				<Field>
 					<FieldLabel>Contact email</FieldLabel>
@@ -73,20 +87,32 @@
 				<CardDescription>Feature toggles applied across the site.</CardDescription>
 			</CardHeader>
 			<CardContent class="space-y-4">
-				<label class="flex items-start gap-3">
-					<input type="checkbox" bind:checked={form.enableDemoNotice} class="mt-1 size-4 rounded-sm border-border" />
-					<div>
-						<p class="text-sm font-medium">Demo notice</p>
-						<p class="text-sm text-muted-foreground">Show the "for demonstration only" disclaimer in the footer.</p>
-					</div>
-				</label>
-				<label class="flex items-start gap-3">
-					<input type="checkbox" bind:checked={form.enableMaintenanceMode} class="mt-1 size-4 rounded-sm border-border" />
-					<div>
-						<p class="text-sm font-medium">Maintenance mode</p>
-						<p class="text-sm text-muted-foreground">Placeholder flag — not yet enforced in the demo.</p>
-					</div>
-				</label>
+			<Label class="flex items-start gap-3">
+				<Input
+					type="checkbox"
+					bind:checked={form.enableDemoNotice}
+					class="mt-1 size-4 rounded-sm border-border"
+				/>
+				<div>
+					<p class="text-sm font-medium">Demo notice</p>
+					<p class="text-sm text-muted-foreground">
+						Show the "for demonstration only" disclaimer in the footer.
+					</p>
+				</div>
+			</Label>
+			<Label class="flex items-start gap-3">
+				<Input
+					type="checkbox"
+					bind:checked={form.enableMaintenanceMode}
+					class="mt-1 size-4 rounded-sm border-border"
+				/>
+				<div>
+					<p class="text-sm font-medium">Maintenance mode</p>
+					<p class="text-sm text-muted-foreground">
+						Placeholder flag — not yet enforced in the demo.
+					</p>
+				</div>
+			</Label>
 			</CardContent>
 		</Card>
 	</div>

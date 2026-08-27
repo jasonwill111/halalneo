@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import { Card, CardContent, CardTitle } from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
 	import Newspaper from '@lucide/svelte/icons/newspaper';
 
 	const published = $derived(
@@ -10,8 +10,6 @@
 			.toSorted((a, b) => b.date.localeCompare(a.date))
 	);
 </script>
-
-<svelte:head><title>Blog — HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
@@ -26,7 +24,9 @@
 	</div>
 
 	{#if published.length === 0}
-		<div class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
+		<div
+			class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground"
+		>
 			No published posts yet.
 		</div>
 	{:else}

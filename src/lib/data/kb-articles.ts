@@ -1,14 +1,14 @@
-import type { KbArticle } from "./types";
+import type { KbArticle } from './types';
 
 export const kbArticles: KbArticle[] = [
 	// ── Halal Certification ────────────────────────────────────────────────
 	{
-		section: "halal-certification",
-		slug: "halal-certification-landscape",
-		title: "The Global Halal Certification Landscape",
+		section: 'halal-certification',
+		slug: 'halal-certification-landscape',
+		title: 'The Global Halal Certification Landscape',
 		summary:
-			"Halal certification is a country-by-country patchwork, not a single global scheme. Around 300 halal certification bodies exist worldwide; ~120 are officially registered and active.",
-		tags: ["certification", "JAKIM", "BPJPH", "MUIS", "overview"],
+			'Halal certification is a country-by-country patchwork, not a single global scheme. Around 300 halal certification bodies exist worldwide; ~120 are officially registered and active.',
+		tags: ['certification', 'JAKIM', 'BPJPH', 'MUIS', 'overview'],
 		body: `
 Halal certification is a **country-by-country patchwork**, not a single global scheme. Around **300 halal certification bodies (HCBs) exist worldwide**, of which roughly **120 are officially registered** as active with formal accreditation or mutual-recognition agreements with governments.
 
@@ -40,12 +40,12 @@ For a B2B trade platform, the practical implications are:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "certification-process-costs-timelines",
-		title: "Certification Process, Costs & Timelines",
+		section: 'halal-certification',
+		slug: 'certification-process-costs-timelines',
+		title: 'Certification Process, Costs & Timelines',
 		summary:
-			"Typical halal certification runs 4–7 weeks end-to-end and costs roughly US$250–7,000 per year depending on facilities, product lines and target markets.",
-		tags: ["certification", "process", "costs", "timeline"],
+			'Typical halal certification runs 4–7 weeks end-to-end and costs roughly US$250–7,000 per year depending on facilities, product lines and target markets.',
+		tags: ['certification', 'process', 'costs', 'timeline'],
 		body: `
 ## The process
 
@@ -79,12 +79,12 @@ Key cost drivers: number of facilities (each audited separately), ingredient com
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "standards-and-regimes",
-		title: "Main Halal Standards & How They Differ",
+		section: 'halal-certification',
+		slug: 'standards-and-regimes',
+		title: 'Main Halal Standards & How They Differ',
 		summary:
-			"OIC/SMIIC, GSO 2055, MS 1500, HAS 23000 and MUIS standards differ on stunning, mechanical slaughter, seafood and impurity rules — recognition, not the standard, drives market access.",
-		tags: ["standards", "SMIIC", "GSO", "MS1500", "HAS23000"],
+			'OIC/SMIIC, GSO 2055, MS 1500, HAS 23000 and MUIS standards differ on stunning, mechanical slaughter, seafood and impurity rules — recognition, not the standard, drives market access.',
+		tags: ['standards', 'SMIIC', 'GSO', 'MS1500', 'HAS23000'],
 		body: `
 ## The main standards
 
@@ -112,12 +112,12 @@ Because there is no single halal standard, HCBs adopt **single or multiple stand
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "buyers-checklist",
+		section: 'halal-certification',
+		slug: 'buyers-checklist',
 		title: "What B2B Buyers Check on a Supplier's Certificate",
 		summary:
-			"Seven things buyers verify: scope, body recognition in the target market, expiry, audit history, accreditation, verifiable certificate details, and jurisdiction alignment.",
-		tags: ["buyers", "due diligence", "checklist", "certification"],
+			'Seven things buyers verify: scope, body recognition in the target market, expiry, audit history, accreditation, verifiable certificate details, and jurisdiction alignment.',
+		tags: ['buyers', 'due diligence', 'checklist', 'certification'],
 		body: `
 Synthesis from recognition frameworks and platform guidance:
 
@@ -133,12 +133,12 @@ Synthesis from recognition frameworks and platform guidance:
 
 	// ── Trade & Sourcing ───────────────────────────────────────────────────
 	{
-		section: "trade-sourcing",
-		slug: "ten-stage-sourcing-journey",
-		title: "The Ten-Stage B2B Sourcing Journey",
+		section: 'trade-sourcing',
+		slug: 'ten-stage-sourcing-journey',
+		title: 'The Ten-Stage B2B Sourcing Journey',
 		summary:
-			"From inquiry to customs clearance, halal compliance runs as a parallel documentation layer alongside the commercial and logistics layers at every step.",
-		tags: ["sourcing", "process", "RFQ", "inquiry"],
+			'From inquiry to customs clearance, halal compliance runs as a parallel documentation layer alongside the commercial and logistics layers at every step.',
+		tags: ['sourcing', 'process', 'RFQ', 'inquiry'],
 		body: `
 A B2B halal trade transaction follows a broadly standard international trade lifecycle — inquiry → quotation → negotiation → sample/approval → contract → payment → production → inspection → shipment → customs clearance — but with a **halal integrity layer running alongside** the commercial and logistics layers at every step.
 
@@ -161,12 +161,12 @@ Halal compliance is enforced primarily through **documentation**: a shipment-spe
 		`
 	},
 	{
-		section: "trade-sourcing",
-		slug: "incoterms-2020",
-		title: "Incoterms 2020 Basics for Halal Trade",
+		section: 'trade-sourcing',
+		slug: 'incoterms-2020',
+		title: 'Incoterms 2020 Basics for Halal Trade',
 		summary:
-			"The 11 ICC rules define who pays for, manages, and bears risk of carriage, insurance, customs clearance and delivery — but not payment terms or title transfer.",
-		tags: ["incoterms", "trade", "logistics", "contract"],
+			'The 11 ICC rules define who pays for, manages, and bears risk of carriage, insurance, customs clearance and delivery — but not payment terms or title transfer.',
+		tags: ['incoterms', 'trade', 'logistics', 'contract'],
 		body: `
 **Incoterms 2020** are 11 ICC rules that define the tasks, costs and risks of delivery between seller and buyer. They are incorporated into the contract of sale and do **not** cover contract price, payment, title transfer, or which documents the buyer needs for customs.
 
@@ -201,12 +201,12 @@ For halal trade, the Incoterm choice interacts with logistics obligations: under
 		`
 	},
 	{
-		section: "trade-sourcing",
-		slug: "payment-methods",
-		title: "Payment Methods in Cross-Border Halal Trade",
+		section: 'trade-sourcing',
+		slug: 'payment-methods',
+		title: 'Payment Methods in Cross-Border Halal Trade',
 		summary:
-			"From T/T advances to letters of credit, documentary collections, escrow and open account — each sits on a risk spectrum for halal importers and exporters.",
-		tags: ["payment", "L/C", "T/T", "risk", "finance"],
+			'From T/T advances to letters of credit, documentary collections, escrow and open account — each sits on a risk spectrum for halal importers and exporters.',
+		tags: ['payment', 'L/C', 'T/T', 'risk', 'finance'],
 		body: `
 The U.S. ITA defines five primary payment methods, ordered by risk from the exporter's perspective.
 
@@ -244,12 +244,12 @@ Goods ship before payment is due (30/60/90 days). Best cash flow for the importe
 
 	// ── Logistics ──────────────────────────────────────────────────────────
 	{
-		section: "logistics",
-		slug: "what-is-halal-logistics",
-		title: "What Halal Logistics Means in Practice",
+		section: 'logistics',
+		slug: 'what-is-halal-logistics',
+		title: 'What Halal Logistics Means in Practice',
 		summary:
 			"Halal logistics is the discipline of keeping a product's halal status intact through every movement, storage and handling step — 'from farm to fork'.",
-		tags: ["logistics", "segregation", "supply chain", "overview"],
+		tags: ['logistics', 'segregation', 'supply chain', 'overview'],
 		body: `
 Halal logistics is the process of managing procurement, movement, storage and handling of goods in compliance with Shariah law. Its objective is to secure the **halal integrity** of products for the end consumer: "the command and control of goods flows in a value system in such a way that the halal integrity is secured throughout the supply chain."
 
@@ -272,12 +272,12 @@ Halal logistics goes beyond food safety: it adds religious-integrity controls on
 		`
 	},
 	{
-		section: "logistics",
-		slug: "logistics-standards",
-		title: "Halal Logistics Standards & Certification",
+		section: 'logistics',
+		slug: 'logistics-standards',
+		title: 'Halal Logistics Standards & Certification',
 		summary:
-			"MS 2400 (Malaysia), HAS 23000-5 (Indonesia) and OIC/SMIIC 17 are converging on auditable management-system standards rather than mere product labelling.",
-		tags: ["logistics", "standards", "MS2400", "SMIIC17", "certification"],
+			'MS 2400 (Malaysia), HAS 23000-5 (Indonesia) and OIC/SMIIC 17 are converging on auditable management-system standards rather than mere product labelling.',
+		tags: ['logistics', 'standards', 'MS2400', 'SMIIC17', 'certification'],
 		body: `
 The regulatory landscape for halal logistics is converging on **auditable management-system standards** rather than mere product labelling.
 
@@ -312,12 +312,12 @@ Certified in practice by JAKIM-audited logistics providers in Malaysia and BPJPH
 
 	// ── Packaging & Labeling ───────────────────────────────────────────────
 	{
-		section: "packaging-labeling",
-		slug: "label-requirements",
-		title: "Mandatory Label Elements for Food Products",
+		section: 'packaging-labeling',
+		slug: 'label-requirements',
+		title: 'Mandatory Label Elements for Food Products',
 		summary:
-			"The global baseline is Codex CXS 1-1985. Ingredients, allergens and lot codes are the three most commonly flagged elements in import audits.",
-		tags: ["labeling", "codex", "ingredients", "allergens"],
+			'The global baseline is Codex CXS 1-1985. Ingredients, allergens and lot codes are the three most commonly flagged elements in import audits.',
+		tags: ['labeling', 'codex', 'ingredients', 'allergens'],
 		body: `
 The global baseline is **Codex CXS 1-1985, _General Standard for the Labelling of Prepackaged Foods_**, which most national food laws implement.
 
@@ -343,12 +343,12 @@ For halal trade specifically, the **importing country's rules** (GCC/SFDA, Malay
 		`
 	},
 	{
-		section: "packaging-labeling",
-		slug: "halal-claims-and-logos",
-		title: "Halal Claims vs. Regulated Logos",
+		section: 'packaging-labeling',
+		slug: 'halal-claims-and-logos',
+		title: 'Halal Claims vs. Regulated Logos',
 		summary:
 			"The term 'halal' is a claim that must be substantiated; an official halal logo is a regulated mark owned by a certifying body and licensed per-product.",
-		tags: ["labeling", "logos", "claims", "certification"],
+		tags: ['labeling', 'logos', 'claims', 'certification'],
 		body: `
 ## Halal claims vs. halal logos
 
@@ -380,12 +380,12 @@ Missing/inconsistent ingredient declarations, translation errors (esp. Arabic fo
 
 	// ── Country / Market Guides ────────────────────────────────────────────
 	{
-		section: "country-market-guides",
-		slug: "indonesia",
-		title: "Indonesia — The Prize, Hardest to Enter",
+		section: 'country-market-guides',
+		slug: 'indonesia',
+		title: 'Indonesia — The Prize, Hardest to Enter',
 		summary:
 			"World's largest halal market (~US$626B) and largest OIC halal food importer. Mandatory certification expands to most imported food & beverage from 17 Oct 2026.",
-		tags: ["indonesia", "BPJPH", "MRA", "import"],
+		tags: ['indonesia', 'BPJPH', 'MRA', 'import'],
 		body: `
 ## Market size / outlook
 
@@ -418,12 +418,12 @@ Importers/distributors will not buy without a valid, BPJPH-recognized halal cert
 		`
 	},
 	{
-		section: "country-market-guides",
-		slug: "gcc-saudi-uae",
-		title: "GCC (Saudi Arabia & UAE) — High-Value, Regulated",
+		section: 'country-market-guides',
+		slug: 'gcc-saudi-uae',
+		title: 'GCC (Saudi Arabia & UAE) — High-Value, Regulated',
 		summary:
-			"Halal certification is legally mandatory for specific imported categories and enforced at the border via SFDA halal shipment certificates and MOIAT-registered bodies.",
-		tags: ["saudi-arabia", "uae", "gcc", "SFDA", "MOIAT"],
+			'Halal certification is legally mandatory for specific imported categories and enforced at the border via SFDA halal shipment certificates and MOIAT-registered bodies.',
+		tags: ['saudi-arabia', 'uae', 'gcc', 'SFDA', 'MOIAT'],
 		body: `
 ## The GCC opportunity
 
@@ -450,12 +450,12 @@ In every Muslim-majority market, a valid halal certificate from a recognized bod
 
 	// ── Buyer Due Diligence ────────────────────────────────────────────────
 	{
-		section: "due-diligence",
-		slug: "verifying-supplier-certification",
+		section: 'due-diligence',
+		slug: 'verifying-supplier-certification',
 		title: "How to Verify a Supplier's Certification Claims",
 		summary:
 			"A practical checklist for confirming halal certification against public databases, recognition lists and shipment documents — not the supplier's own PDF.",
-		tags: ["due diligence", "verification", "checklist", "supplier"],
+		tags: ['due diligence', 'verification', 'checklist', 'supplier'],
 		body: `
 A halal certificate is only as good as its verifiability. Here is how to check a supplier's claims against primary sources.
 
@@ -502,12 +502,12 @@ The halal certificate, commercial invoice, packing list and bill of lading must 
 		`
 	},
 	{
-		section: "due-diligence",
-		slug: "red-flags",
-		title: "Red Flags When Evaluating Suppliers",
+		section: 'due-diligence',
+		slug: 'red-flags',
+		title: 'Red Flags When Evaluating Suppliers',
 		summary:
 			"Signs that a supplier's halal certification or trade claim may not survive customs — and what to ask for instead.",
-		tags: ["due diligence", "red flags", "risk", "supplier"],
+		tags: ['due diligence', 'red flags', 'risk', 'supplier'],
 		body: `
 ## Documentation red flags
 
@@ -543,12 +543,12 @@ The halal certificate, commercial invoice, packing list and bill of lading must 
 
 	// ── Imported from Obsidian: Halal 认证百科 (English translation) ──────
 	{
-		section: "halal-certification",
-		slug: "jakim-malaysia",
-		title: "Malaysia (JAKIM) — The Gold Standard",
+		section: 'halal-certification',
+		slug: 'jakim-malaysia',
+		title: 'Malaysia (JAKIM) — The Gold Standard',
 		summary:
 			"JAKIM is the world's most-recognised halal certification authority. Certificate validity now varies by category (1–5 years), and Chinese exporters apply through JAKIM-recognised foreign bodies.",
-		tags: ["malaysia", "JAKIM", "HDC", "recognition", "2026"],
+		tags: ['malaysia', 'JAKIM', 'HDC', 'recognition', '2026'],
 		body: `
 ## Official sources
 
@@ -614,12 +614,12 @@ Application → document review → on-site inspection → training & assessment
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "saber-saudi-arabia",
-		title: "Saudi Arabia (SABER / SASO) — Regulated Conformity",
+		section: 'halal-certification',
+		slug: 'saber-saudi-arabia',
+		title: 'Saudi Arabia (SABER / SASO) — Regulated Conformity',
 		summary:
 			"SABER is SASO's online product-compliance platform. PC certificates cost 500 SAR and SC (shipment) certificates 350 SAR. Chinese exporters must operate through a Saudi importer.",
-		tags: ["saudi-arabia", "SABER", "SASO", "PC", "SC", "2026"],
+		tags: ['saudi-arabia', 'SABER', 'SASO', 'PC', 'SC', '2026'],
 		body: `
 ## Official sources
 
@@ -696,12 +696,12 @@ Query method: log in to SABER and enter the 12-digit Saudi HS code.
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "bpjph-indonesia",
-		title: "Indonesia (BPJPH) — Mandatory Certification",
+		section: 'halal-certification',
+		slug: 'bpjph-indonesia',
+		title: 'Indonesia (BPJPH) — Mandatory Certification',
 		summary:
-			"BPJPH certification is mandatory in Indonesia: F&B since 17 Oct 2024, and cosmetics, medicines and chemicals from 17 Oct 2026. Certificates are valid 4 years.",
-		tags: ["indonesia", "BPJPH", "mandatory", "2026", "deadline"],
+			'BPJPH certification is mandatory in Indonesia: F&B since 17 Oct 2024, and cosmetics, medicines and chemicals from 17 Oct 2026. Certificates are valid 4 years.',
+		tags: ['indonesia', 'BPJPH', 'mandatory', '2026', 'deadline'],
 		body: `
 ## Official sources
 
@@ -795,12 +795,12 @@ BPJPH announced **1.35 million free halal certification quotas** for SMEs in 202
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "moiat-uae",
-		title: "UAE (MoIAT) — National Halal Mark",
+		section: 'halal-certification',
+		slug: 'moiat-uae',
+		title: 'UAE (MoIAT) — National Halal Mark',
 		summary:
-			"MoIAT (ex-ESMA, merged 2020) issues the UAE National Halal Mark and runs the ECAS conformity scheme — and has an open-data API for certificate verification.",
-		tags: ["uae", "MoIAT", "ESMA", "ECAS", "Halal National Mark"],
+			'MoIAT (ex-ESMA, merged 2020) issues the UAE National Halal Mark and runs the ECAS conformity scheme — and has an open-data API for certificate verification.',
+		tags: ['uae', 'MoIAT', 'ESMA', 'ECAS', 'Halal National Mark'],
 		body: `
 ## Official sources
 
@@ -868,12 +868,12 @@ GET https://data.moiat.gov.ae/api/v1/product-conformity/search
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "muis-singapore",
-		title: "Singapore (MUIS) — International Recognition",
+		section: 'halal-certification',
+		slug: 'muis-singapore',
+		title: 'Singapore (MUIS) — International Recognition',
 		summary:
 			"MUIS is Singapore's sole halal authority. Foreign companies certify via WAREES Halal Limited, MUIS's only authorised overseas body; certificates are valid 1–2 years.",
-		tags: ["singapore", "MUIS", "WAREES", "M3", "M4", "M5"],
+		tags: ['singapore', 'MUIS', 'WAREES', 'M3', 'M4', 'M5'],
 		body: `
 ## Official sources
 
@@ -936,12 +936,12 @@ Application route for Chinese companies:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "five-market-comparison",
-		title: "Five Key Markets Compared",
+		section: 'halal-certification',
+		slug: 'five-market-comparison',
+		title: 'Five Key Markets Compared',
 		summary:
-			"Malaysia, Saudi Arabia, Indonesia, UAE and Singapore side by side: authority, validity, cycle, fees and how Chinese exporters apply in each.",
-		tags: ["comparison", "JAKIM", "SABER", "BPJPH", "MoIAT", "MUIS", "overview"],
+			'Malaysia, Saudi Arabia, Indonesia, UAE and Singapore side by side: authority, validity, cycle, fees and how Chinese exporters apply in each.',
+		tags: ['comparison', 'JAKIM', 'SABER', 'BPJPH', 'MoIAT', 'MUIS', 'overview'],
 		body: `
 ## Five-market comparison
 
@@ -995,12 +995,12 @@ MUIS (Singapore)  ←→  BPJPH (Indonesia), GCC states
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "cicot-thailand",
-		title: "Thailand (CICOT) — Southeast Asian Alternative",
+		section: 'halal-certification',
+		slug: 'cicot-thailand',
+		title: 'Thailand (CICOT) — Southeast Asian Alternative',
 		summary:
 			"The Central Islamic Committee Office of Thailand (CICOT) is Thailand's official halal authority, recognised by AHF and IFANCA — useful for food, cosmetics and pharma exports to Thailand.",
-		tags: ["thailand", "CICOT", "TISI", "asean"],
+		tags: ['thailand', 'CICOT', 'TISI', 'asean'],
 		body: `
 ## Official sources
 
@@ -1049,12 +1049,12 @@ CICOT certification is accepted by:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "hak-turkey",
-		title: "Türkiye (HAK / GIMDES) — Eurasian Bridge",
+		section: 'halal-certification',
+		slug: 'hak-turkey',
+		title: 'Türkiye (HAK / GIMDES) — Eurasian Bridge',
 		summary:
-			"HAK (Halal Accreditation Agency) accredits Turkish certifiers like GIMDES. Certificates are valid 1–3 years, and the scheme supports exports to Türkiye and some Middle East markets.",
-		tags: ["turkey", "HAK", "GIMDES", "accreditation"],
+			'HAK (Halal Accreditation Agency) accredits Turkish certifiers like GIMDES. Certificates are valid 1–3 years, and the scheme supports exports to Türkiye and some Middle East markets.',
+		tags: ['turkey', 'HAK', 'GIMDES', 'accreditation'],
 		body: `
 ## Official sources
 
@@ -1094,12 +1094,12 @@ CICOT certification is accepted by:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "ahf-united-states",
-		title: "United States (AHF) — One Certificate, 180+ Markets",
+		section: 'halal-certification',
+		slug: 'ahf-united-states',
+		title: 'United States (AHF) — One Certificate, 180+ Markets',
 		summary:
-			"The American Halal Foundation (AHF) is ISO 17065-compliant, officially recognised by JAKIM, BPJPH, MUIS, MoIAT and GAC, and one certificate covers 180+ markets.",
-		tags: ["united-states", "AHF", "ISO 17065", "global"],
+			'The American Halal Foundation (AHF) is ISO 17065-compliant, officially recognised by JAKIM, BPJPH, MUIS, MoIAT and GAC, and one certificate covers 180+ markets.',
+		tags: ['united-states', 'AHF', 'ISO 17065', 'global'],
 		body: `
 ## Official sources
 
@@ -1156,12 +1156,12 @@ Core advantages:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "europe-halal-certification",
-		title: "Europe (HCE & Council Networks) — Fragmented Landscape",
+		section: 'halal-certification',
+		slug: 'europe-halal-certification',
+		title: 'Europe (HCE & Council Networks) — Fragmented Landscape',
 		summary:
-			"Europe has no single halal standard. HCE (UK, est. 1992) is recognised by JAKIM, BPJPH, MUIS, GAC, MoIAT, SASO and HAK; the World Halal Council links regional certifiers.",
-		tags: ["europe", "HCE", "World Halal Council", "uk"],
+			'Europe has no single halal standard. HCE (UK, est. 1992) is recognised by JAKIM, BPJPH, MUIS, GAC, MoIAT, SASO and HAK; the World Halal Council links regional certifiers.',
+		tags: ['europe', 'HCE', 'World Halal Council', 'uk'],
 		body: `
 ## Halal Certification Europe (HCE)
 
@@ -1197,12 +1197,12 @@ Core advantages:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "australia-nhasa",
-		title: "Australia (NHASA) — Meat Export Certifier",
+		section: 'halal-certification',
+		slug: 'australia-nhasa',
+		title: 'Australia (NHASA) — Meat Export Certifier',
 		summary:
 			"The National Halal Certification Authority (NHASA, est. 2018) certifies food service and slaughter for Australia's meat-export trade, accepted by halal-importing regions worldwide.",
-		tags: ["australia", "NHASA", "meat", "export"],
+		tags: ['australia', 'NHASA', 'meat', 'export'],
 		body: `
 ## Official sources
 
@@ -1236,12 +1236,12 @@ Core advantages:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "new-zealand-halal",
-		title: "New Zealand — Halal for Meat & Dairy",
+		section: 'halal-certification',
+		slug: 'new-zealand-halal',
+		title: 'New Zealand — Halal for Meat & Dairy',
 		summary:
 			"New Zealand's halal certification is export-oriented, covering lamb, beef and dairy, delivered by local certifiers and international bodies such as AHF and HCE.",
-		tags: ["new-zealand", "meat", "dairy", "export"],
+		tags: ['new-zealand', 'meat', 'dairy', 'export'],
 		body: `
 ## Certification landscape
 
@@ -1267,12 +1267,12 @@ New Zealand halal certification is provided mainly by:
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "gcc-conformity",
-		title: "GCC — G-Mark and Halal Across Seven States",
+		section: 'halal-certification',
+		slug: 'gcc-conformity',
+		title: 'GCC — G-Mark and Halal Across Seven States',
 		summary:
 			"The Gulf Cooperation Council's G-Mark lets one certificate cover seven states. In 2026 the GCC made a new home-appliance EMC standard mandatory.",
-		tags: ["gcc", "GSO", "G-Mark", "2026", "gulf"],
+		tags: ['gcc', 'GSO', 'G-Mark', '2026', 'gulf'],
 		body: `
 ## GCC overview
 
@@ -1326,12 +1326,12 @@ GCC member states generally mutually recognise halal certification or accept a s
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "international-body-comparison",
-		title: "International Halal Bodies — Choosing a Certification",
+		section: 'halal-certification',
+		slug: 'international-body-comparison',
+		title: 'International Halal Bodies — Choosing a Certification',
 		summary:
-			"A comparison of JAKIM, SABER/SASO, BPJPH, MoIAT, MUIS, AHF, HCE, CICOT, HAK/GIMDES and NHASA, with a recommended certification path by exporter type.",
-		tags: ["comparison", "strategy", "recommendation", "overview"],
+			'A comparison of JAKIM, SABER/SASO, BPJPH, MoIAT, MUIS, AHF, HCE, CICOT, HAK/GIMDES and NHASA, with a recommended certification path by exporter type.',
+		tags: ['comparison', 'strategy', 'recommendation', 'overview'],
 		body: `
 ## Major bodies compared
 
@@ -1383,12 +1383,12 @@ MoIAT (UAE)  BPJPH (ID)  SASO (SA)  HAK (TR)
 		`
 	},
 	{
-		section: "halal-certification",
-		slug: "official-source-directory",
-		title: "Official Information Sources Directory",
+		section: 'halal-certification',
+		slug: 'official-source-directory',
+		title: 'Official Information Sources Directory',
 		summary:
-			"A verified directory of official websites for JAKIM, SABER, BPJPH, MoIAT and MUIS — the primary sources to check before engaging any certifier.",
-		tags: ["directory", "sources", "JAKIM", "SABER", "BPJPH", "MoIAT", "MUIS"],
+			'A verified directory of official websites for JAKIM, SABER, BPJPH, MoIAT and MUIS — the primary sources to check before engaging any certifier.',
+		tags: ['directory', 'sources', 'JAKIM', 'SABER', 'BPJPH', 'MoIAT', 'MUIS'],
 		body: `
 ## Malaysia
 
@@ -1438,12 +1438,12 @@ MoIAT (UAE)  BPJPH (ID)  SASO (SA)  HAK (TR)
 
 	// ── Imported from Obsidian: 欧洲清真市场分析 / 巴基斯坦清真市场深度分析 (EN) ──
 	{
-		section: "country-market-guides",
-		slug: "europe-market-guide",
-		title: "Europe — Fragmented Certification, Deep Demand",
+		section: 'country-market-guides',
+		slug: 'europe-market-guide',
+		title: 'Europe — Fragmented Certification, Deep Demand',
 		summary:
 			"Europe's halal market is worth ~US$491B (broad measure, 2024) with ~46M Muslims. UK, France and Germany lead demand; the Netherlands is the logistics hub.",
-		tags: ["europe", "uk", "france", "germany", "netherlands", "market"],
+		tags: ['europe', 'uk', 'france', 'germany', 'netherlands', 'market'],
 		body: `
 ## Market overview
 
@@ -1542,12 +1542,12 @@ Chinese halal exports to Europe are still small (under 5% of China's food export
 		`
 	},
 	{
-		section: "country-market-guides",
-		slug: "pakistan-market-guide",
-		title: "Pakistan — The Two-Way Halal Market",
+		section: 'country-market-guides',
+		slug: 'pakistan-market-guide',
+		title: 'Pakistan — The Two-Way Halal Market',
 		summary:
-			"Pakistan is a dual-role market: a US$147B domestic halal market and supplier of meat, textiles and surgical instruments to China, while importing ingredients, chemicals and machinery.",
-		tags: ["pakistan", "PHA", "CPEC", "two-way trade", "market"],
+			'Pakistan is a dual-role market: a US$147B domestic halal market and supplier of meat, textiles and surgical instruments to China, while importing ingredients, chemicals and machinery.',
+		tags: ['pakistan', 'PHA', 'CPEC', 'two-way trade', 'market'],
 		body: `
 ## Country overview
 

@@ -29,10 +29,7 @@
 		SearchCheck
 	} as const;
 
-	let {
-		name,
-		class: className = 'size-4'
-	}: { name: string; class?: string } = $props();
+	let { name, class: className = 'size-4' }: { name: string; class?: string } = $props();
 
 	const Icon = $derived(icons[name as keyof typeof icons] ?? Sparkles);
 </script>

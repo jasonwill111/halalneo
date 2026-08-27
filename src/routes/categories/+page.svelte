@@ -1,13 +1,17 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import Icon from '$lib/components/site/icon.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import Icon from '#lib/components/site/icon.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import {
+		Card,
+		CardHeader,
+		CardTitle,
+		CardDescription,
+		CardContent
+	} from '#lib/components/ui/card/index.js';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 </script>
-
-<svelte:head><title>Categories —HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
@@ -23,7 +27,9 @@
 			{@const count = adminData.skus.filter((s) => s.categorySlug === category.slug).length}
 			<Card hoverable>
 				<CardHeader class="gap-3">
-					<div class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+					<div
+						class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+					>
 						<Icon name={category.icon} class="size-5"></Icon>
 					</div>
 					<div class="space-y-1">

@@ -1,12 +1,12 @@
-import { merchants as seedMerchants } from '$lib/data/merchants';
-import { skus as seedSkus } from '$lib/data/skus';
-import { categories as seedCategories } from '$lib/data/categories';
-import { certifyingBodies as seedBodies } from '$lib/data/certifying-bodies';
-import { kbSections as seedSections } from '$lib/data/kb-sections';
-import { kbArticles as seedArticles } from '$lib/data/kb-articles';
-import { glossaryTerms as seedGlossary } from '$lib/data/glossary';
-import { blogPosts as seedBlogPosts } from '$lib/data/blog';
-import { aiTools as seedAiTools } from '$lib/data/ai-tools';
+import { merchants as seedMerchants } from '#lib/data/merchants.js';
+import { skus as seedSkus } from '#lib/data/skus.js';
+import { categories as seedCategories } from '#lib/data/categories.js';
+import { certifyingBodies as seedBodies } from '#lib/data/certifying-bodies.js';
+import { kbSections as seedSections } from '#lib/data/kb-sections.js';
+import { kbArticles as seedArticles } from '#lib/data/kb-articles.js';
+import { glossaryTerms as seedGlossary } from '#lib/data/glossary.js';
+import { blogPosts as seedBlogPosts } from '#lib/data/blog.js';
+import { aiTools as seedAiTools } from '#lib/data/ai-tools.js';
 import type {
 	Merchant,
 	Sku,
@@ -18,7 +18,7 @@ import type {
 	BlogPost,
 	AiTool,
 	SiteSettings
-} from '$lib/data/types';
+} from '#lib/data/types.js';
 
 const PREFIX = 'halalneo:admin:v1:';
 
@@ -84,14 +84,34 @@ export const adminData = $state({
 
 export const adminSettings = $state<SiteSettings>(readSettings());
 
-function persist(collection: 'merchants' | 'skus' | 'categories' | 'certifyingBodies' | 'kbSections' | 'kbArticles' | 'glossary' | 'blogPosts' | 'aiTools') {
+function persist(
+	collection:
+		| 'merchants'
+		| 'skus'
+		| 'categories'
+		| 'certifyingBodies'
+		| 'kbSections'
+		| 'kbArticles'
+		| 'glossary'
+		| 'blogPosts'
+		| 'aiTools'
+) {
 	writeCollection(collection, adminData[collection] as unknown[]);
 }
 
 // --- generic CRUD helpers ---
 
 export function upsertItem<T extends { slug?: string; id?: string; term?: string }>(
-	collection: 'merchants' | 'skus' | 'categories' | 'kbSections' | 'kbArticles' | 'glossary' | 'blogPosts' | 'aiTools' | 'certifyingBodies',
+	collection:
+		| 'merchants'
+		| 'skus'
+		| 'categories'
+		| 'kbSections'
+		| 'kbArticles'
+		| 'glossary'
+		| 'blogPosts'
+		| 'aiTools'
+		| 'certifyingBodies',
 	item: T,
 	existing?: T
 ) {
@@ -112,7 +132,16 @@ export function upsertItem<T extends { slug?: string; id?: string; term?: string
 }
 
 export function deleteItem(
-	collection: 'merchants' | 'skus' | 'categories' | 'kbSections' | 'kbArticles' | 'glossary' | 'blogPosts' | 'aiTools' | 'certifyingBodies',
+	collection:
+		| 'merchants'
+		| 'skus'
+		| 'categories'
+		| 'kbSections'
+		| 'kbArticles'
+		| 'glossary'
+		| 'blogPosts'
+		| 'aiTools'
+		| 'certifyingBodies',
 	key: string
 ) {
 	const list = adminData[collection] as Array<{ slug?: string; id?: string; term?: string }>;
@@ -128,7 +157,18 @@ export function updateSettings(patch: Partial<SiteSettings>) {
 	writeSettings(adminSettings);
 }
 
-export function resetCollection(collection: 'merchants' | 'skus' | 'categories' | 'certifyingBodies' | 'kbSections' | 'kbArticles' | 'glossary' | 'blogPosts' | 'aiTools') {
+export function resetCollection(
+	collection:
+		| 'merchants'
+		| 'skus'
+		| 'categories'
+		| 'certifyingBodies'
+		| 'kbSections'
+		| 'kbArticles'
+		| 'glossary'
+		| 'blogPosts'
+		| 'aiTools'
+) {
 	const seedMap = {
 		merchants: seedMerchants,
 		skus: seedSkus,

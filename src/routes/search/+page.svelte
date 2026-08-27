@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData, getSection } from '$lib/stores/admin-data.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Card, CardContent, CardTitle, CardDescription } from '$lib/components/ui/card';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '$lib/components/ui/empty';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData, getSection } from '#lib/stores/admin-data.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card, CardContent, CardTitle, CardDescription } from '#lib/components/ui/card/index.js';
+	import {
+		Empty,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription
+	} from '#lib/components/ui/empty/index.js';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import BookText from '@lucide/svelte/icons/book-text';
@@ -23,8 +28,18 @@
 		if (!q) return [];
 		const results: Result[] = [];
 		for (const a of adminData.kbArticles) {
-			if (a.title.toLowerCase().includes(q) || a.summary.toLowerCase().includes(q) || a.tags.some((t) => t.toLowerCase().includes(q))) {
-				results.push({ kind: 'article', section: a.section, slug: a.slug, title: a.title, summary: a.summary });
+			if (
+				a.title.toLowerCase().includes(q) ||
+				a.summary.toLowerCase().includes(q) ||
+				a.tags.some((t) => t.toLowerCase().includes(q))
+			) {
+				results.push({
+					kind: 'article',
+					section: a.section,
+					slug: a.slug,
+					title: a.title,
+					summary: a.summary
+				});
 			}
 		}
 		for (const t of adminData.glossary) {
@@ -33,12 +48,20 @@
 			}
 		}
 		for (const m of adminData.merchants) {
-			if (m.name.toLowerCase().includes(q) || m.country.toLowerCase().includes(q) || m.description.toLowerCase().includes(q)) {
+			if (
+				m.name.toLowerCase().includes(q) ||
+				m.country.toLowerCase().includes(q) ||
+				m.description.toLowerCase().includes(q)
+			) {
 				results.push({ kind: 'supplier', slug: m.slug, name: m.name, country: m.country });
 			}
 		}
 		for (const s of adminData.skus) {
-			if (s.name.toLowerCase().includes(q) || s.shortDescription.toLowerCase().includes(q) || s.features.some((f) => f.toLowerCase().includes(q))) {
+			if (
+				s.name.toLowerCase().includes(q) ||
+				s.shortDescription.toLowerCase().includes(q) ||
+				s.features.some((f) => f.toLowerCase().includes(q))
+			) {
 				results.push({ kind: 'sku', slug: s.slug, name: s.name, description: s.shortDescription });
 			}
 		}
@@ -47,8 +70,6 @@
 
 	const resultCount = $derived(allResults.length);
 </script>
-
-<svelte:head><title>Search — HalalNeo</title></svelte:head>
 
 <section class="mx-auto max-w-3xl space-y-8">
 	<div class="space-y-2">
@@ -59,12 +80,14 @@
 	</div>
 
 	<div class="relative">
-		<SearchIcon class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></SearchIcon>
+		<SearchIcon
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></SearchIcon>
 		<input
 			bind:value={query}
 			type="search"
 			placeholder="Try “halal slaughter”, “JAKIM”, “rendang”…"
-			class="h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+			class="h-10 w-full rounded-lg border border-input bg-background pr-3 pl-9 text-sm transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
 		/>
 	</div>
 
@@ -72,7 +95,9 @@
 		<Empty>
 			<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
 			<EmptyTitle>Start typing to search</EmptyTitle>
-			<EmptyDescription>Search across 15 articles, 30 glossary terms, 7 suppliers and 12 products.</EmptyDescription>
+			<EmptyDescription
+				>Search across 15 articles, 30 glossary terms, 7 suppliers and 12 products.</EmptyDescription
+			>
 		</Empty>
 	{:else if resultCount === 0}
 		<Empty>
@@ -82,7 +107,9 @@
 		</Empty>
 	{:else}
 		<div class="space-y-2">
-			<p class="text-sm text-muted-foreground">{resultCount} result{resultCount === 1 ? '' : 's'}</p>
+			<p class="text-sm text-muted-foreground">
+				{resultCount} result{resultCount === 1 ? '' : 's'}
+			</p>
 			<div class="space-y-3">
 				{#each allResults as result}
 					{#if result.kind === 'article'}
@@ -123,7 +150,9 @@
 						<a href={localizeHref(`/suppliers/${result.slug}`)} class="block">
 							<Card hoverable class="transition-colors hover:bg-muted/50">
 								<CardContent class="flex items-center gap-3 pt-4">
-									<span class="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+									<span
+										class="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+									>
 										<Store class="size-4"></Store>
 									</span>
 									<div class="space-y-0.5">
@@ -137,7 +166,9 @@
 						<a href={localizeHref(`/products/${result.slug}`)} class="block">
 							<Card hoverable class="transition-colors hover:bg-muted/50">
 								<CardContent class="flex items-center gap-3 pt-4">
-									<span class="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+									<span
+										class="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+									>
 										<Package class="size-4"></Package>
 									</span>
 									<div class="space-y-0.5">

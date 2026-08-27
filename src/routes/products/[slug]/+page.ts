@@ -1,4 +1,19 @@
-import { skus } from '$lib/data/skus';
 import type { EntryGenerator } from './$types';
 
-export const entries: EntryGenerator = () => skus.map((s) => ({ slug: s.slug }));
+export const entries: EntryGenerator = () => [];
+
+export const load = async ({ params }) => {
+	return {
+		seo: {
+			title: `${params.slug} — HalalNeo`,
+			description: `Product details for ${params.slug} on HalalNeo — halal-certified medical devices and pharmaceuticals.`
+		},
+		item: null as {
+			name: string;
+			category: string;
+			certification: string;
+			description: string;
+			supplier: string;
+		} | null
+	};
+};

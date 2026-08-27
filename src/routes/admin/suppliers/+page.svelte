@@ -1,12 +1,25 @@
 <script lang="ts">
-	import { adminData, upsertItem, deleteItem, resetCollection } from '$lib/stores/admin-data.svelte';
-	import type { Merchant, Certification } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Field, FieldLabel, FieldDescription } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		adminData,
+		upsertItem,
+		deleteItem,
+		resetCollection
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { Merchant, Certification } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -14,8 +27,13 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -55,7 +73,10 @@
 		if (!search.trim()) return [...list];
 		const q = search.toLowerCase();
 		return list.filter(
-			(m) => m.name.toLowerCase().includes(q) || m.country.toLowerCase().includes(q) || m.slug.includes(q)
+			(m) =>
+				m.name.toLowerCase().includes(q) ||
+				m.country.toLowerCase().includes(q) ||
+				m.slug.includes(q)
 		);
 	});
 
@@ -194,7 +215,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search suppliers…" class="pl-9" />
 	</div>
 
@@ -215,7 +238,9 @@
 					<TableRow>
 						<TableCell>
 							<div class="flex items-center gap-3">
-								<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-xs font-semibold text-primary">
+								<div
+									class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-xs font-semibold text-primary"
+								>
 									{m.logoInitials}
 								</div>
 								<div class="min-w-0">
@@ -256,7 +281,7 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="sm:max-w-lg max-h-[85dvh] overflow-y-auto">
+	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit supplier' : 'New supplier'}</DialogTitle>
 			<DialogDescription>
@@ -291,7 +316,7 @@
 						</SelectTrigger>
 						<SelectContent>
 							{#each Object.entries(businessTypeLabels) as [value, label]}
-								<SelectItem value={value}>{label}</SelectItem>
+								<SelectItem {value}>{label}</SelectItem>
 							{/each}
 						</SelectContent>
 					</Select>
@@ -321,17 +346,23 @@
 				<FieldLabel>Description</FieldLabel>
 				<Textarea bind:value={form.description} rows={3} placeholder="Company description…" />
 			</Field>
-			<label class="flex items-center gap-2 text-sm">
-				<input type="checkbox" bind:checked={form.isBrand} class="size-4 rounded-sm border-border" />
-				Brand (sells under own label)
-			</label>
+		<Label class="flex items-center gap-2 text-sm">
+			<Input
+				type="checkbox"
+				bind:checked={form.isBrand}
+				class="size-4 rounded-sm border-border"
+			/>
+			Brand (sells under own label)
+		</Label>
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
 		</div>
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create supplier'}</Button>
+			<Button variant="default" onclick={save}
+				>{editing ? 'Save changes' : 'Create supplier'}</Button
+			>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

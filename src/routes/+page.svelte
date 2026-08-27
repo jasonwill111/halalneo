@@ -1,17 +1,25 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import Icon from '$lib/components/site/icon.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '$lib/components/ui/card';
-	import { Separator } from '$lib/components/ui/separator';
-	import { Avatar, AvatarFallback } from '$lib/components/ui/avatar';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import Icon from '#lib/components/site/icon.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import {
+		Card,
+		CardContent,
+		CardHeader,
+		CardTitle,
+		CardDescription
+	} from '#lib/components/ui/card/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 
-	const certifiedSkuCount = $derived(adminData.skus.filter((s) => s.certStatus === 'certified').length);
+	const certifiedSkuCount = $derived(
+		adminData.skus.filter((s) => s.certStatus === 'certified').length
+	);
 	const supplierCount = $derived(adminData.merchants.filter((m) => m.status === 'active').length);
 
 	const stats = $derived([
@@ -21,10 +29,14 @@
 		{ value: String(adminData.glossary.length), label: 'Glossary terms' }
 	]);
 
-	const featuredSuppliers = $derived(adminData.merchants.filter((m) => m.status === 'active').slice(0, 4));
+	const featuredSuppliers = $derived(
+		adminData.merchants.filter((m) => m.status === 'active').slice(0, 4)
+	);
 </script>
 
-<svelte:head><title>HalalNeo — Halal trade intelligence for buyers and suppliers</title></svelte:head>
+<svelte:head
+	><title>HalalNeo — Halal trade intelligence for buyers and suppliers</title></svelte:head
+>
 
 <section class="space-y-10">
 	<div class="mx-auto max-w-3xl space-y-6 pt-10 text-center sm:pt-16">
@@ -36,14 +48,19 @@
 			Source halal. Verify it. Ship it.
 		</h1>
 		<p class="mx-auto max-w-2xl text-lg text-muted-foreground">
-			HalalNeo is the trade-intelligence layer for halal sourcing — certified suppliers,
-			verified certificates and the knowledge to buy with confidence.
+			HalalNeo is the trade-intelligence layer for halal sourcing — certified suppliers, verified
+			certificates and the knowledge to buy with confidence.
 		</p>
 		<div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
 			<Button href={localizeHref('/products')} size="lg" class="w-full sm:w-auto">
 				Browse certified products
 			</Button>
-			<Button href={localizeHref('/knowledge-base')} variant="outline" size="lg" class="w-full sm:w-auto">
+			<Button
+				href={localizeHref('/knowledge-base')}
+				variant="outline"
+				size="lg"
+				class="w-full sm:w-auto"
+			>
 				Visit the knowledge base
 			</Button>
 		</div>
@@ -87,12 +104,15 @@
 				variant="outline"
 				class="h-auto flex-col items-start gap-3 p-5 text-left"
 			>
-				<span class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+				<span
+					class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+				>
 					<Icon name={category.icon} class="size-5"></Icon>
 				</span>
 				<span class="space-y-1 whitespace-normal">
 					<span class="block font-medium">{category.name}</span>
-					<span class="block text-sm font-normal text-muted-foreground">{category.description}</span>
+					<span class="block text-sm font-normal text-muted-foreground">{category.description}</span
+					>
 				</span>
 			</Button>
 		{/each}
@@ -160,7 +180,9 @@
 		{#each adminData.kbSections as section}
 			<Card hoverable>
 				<CardHeader class="gap-3">
-					<div class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+					<div
+						class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+					>
 						<Icon name={section.icon} class="size-5"></Icon>
 					</div>
 					<div class="space-y-1">
@@ -188,9 +210,7 @@
 		trade intelligence.
 	</p>
 	<div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-		<Button href={localizeHref('/register')} size="lg">
-			Create a free account
-		</Button>
+		<Button href={localizeHref('/register')} size="lg">Create a free account</Button>
 		<Button href={localizeHref('/glossary')} variant="outline" size="lg">
 			Browse the glossary
 		</Button>

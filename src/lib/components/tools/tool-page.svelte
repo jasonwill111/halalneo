@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import type { AiTool } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import type { AiTool } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
 		Card,
 		CardContent,
 		CardDescription,
 		CardHeader,
 		CardTitle
-	} from '$lib/components/ui/card';
-	import { Separator } from '$lib/components/ui/separator';
+	} from '#lib/components/ui/card/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
 	import {
 		Breadcrumb,
 		BreadcrumbList,
@@ -19,7 +19,7 @@
 		BreadcrumbLink,
 		BreadcrumbSeparator,
 		BreadcrumbPage
-	} from '$lib/components/ui/breadcrumb';
+	} from '#lib/components/ui/breadcrumb/index.js';
 	import Bot from '@lucide/svelte/icons/bot';
 	import CheckCircle from '@lucide/svelte/icons/check-circle';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';

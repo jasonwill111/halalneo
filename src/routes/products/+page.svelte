@@ -1,10 +1,16 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData, getMerchant, getCategory } from '$lib/stores/admin-data.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
-	import { Input } from '$lib/components/ui/input';
-	import { Badge } from '$lib/components/ui/badge';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData, getMerchant, getCategory } from '#lib/stores/admin-data.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import {
+		Card,
+		CardHeader,
+		CardTitle,
+		CardDescription,
+		CardContent
+	} from '#lib/components/ui/card/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 
 	let query = $state('');
@@ -23,15 +29,15 @@
 	);
 </script>
 
-<svelte:head><title>Products �?HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 		<div class="max-w-2xl space-y-2">
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Certified products</h1>
 			<p class="text-muted-foreground">
-				{adminData.skus.length} SKUs sourced from {new Set(adminData.skus.map((s) => s.merchantSlug)).size} certified
-				suppliers.
+				{adminData.skus.length} SKUs sourced from {new Set(
+					adminData.skus.map((s) => s.merchantSlug)
+				).size} certified suppliers.
 			</p>
 		</div>
 		<div class="w-full sm:w-72">
@@ -47,7 +53,11 @@
 				<CardHeader class="gap-3">
 					<div class="flex items-center justify-between">
 						<Badge
-							variant={product.certStatus === 'certified' ? 'default' : product.certStatus === 'pending' ? 'secondary' : 'destructive'}
+							variant={product.certStatus === 'certified'
+								? 'default'
+								: product.certStatus === 'pending'
+									? 'secondary'
+									: 'destructive'}
 						>
 							{product.certStatus}
 						</Badge>
@@ -78,7 +88,12 @@
 							by <span class="font-medium text-foreground">{merchant.name}</span>
 						</p>
 					{/if}
-					<Button href={localizeHref(`/products/${product.slug}`)} variant="outline" size="sm" class="w-full">
+					<Button
+						href={localizeHref(`/products/${product.slug}`)}
+						variant="outline"
+						size="sm"
+						class="w-full"
+					>
 						View product
 						<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
 					</Button>

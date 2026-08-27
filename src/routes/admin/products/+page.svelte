@@ -1,12 +1,24 @@
 <script lang="ts">
-	import { adminData, upsertItem, deleteItem, resetCollection } from '$lib/stores/admin-data.svelte';
-	import type { Sku } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Field, FieldLabel } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		adminData,
+		upsertItem,
+		deleteItem,
+		resetCollection
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { Sku } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -14,8 +26,13 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -58,7 +75,8 @@
 		if (!search.trim()) return list;
 		const q = search.toLowerCase();
 		return list.filter(
-			(s) => s.name.toLowerCase().includes(q) || s.merchantSlug.includes(q) || s.categorySlug.includes(q)
+			(s) =>
+				s.name.toLowerCase().includes(q) || s.merchantSlug.includes(q) || s.categorySlug.includes(q)
 		);
 	});
 
@@ -126,20 +144,22 @@
 			formError = 'Product name is required.';
 			return;
 		}
-		const base: Sku = editing ?? ({
-			slug: '',
-			name: '',
-			merchantSlug: '',
-			categorySlug: '',
-			shortDescription: '',
-			image: '',
-			moq: '',
-			priceRange: '',
-			certStatus: 'pending',
-			units: '',
-			originCountry: '',
-			features: []
-		} as Sku);
+		const base: Sku =
+			editing ??
+			({
+				slug: '',
+				name: '',
+				merchantSlug: '',
+				categorySlug: '',
+				shortDescription: '',
+				image: '',
+				moq: '',
+				priceRange: '',
+				certStatus: 'pending',
+				units: '',
+				originCountry: '',
+				features: []
+			} as Sku);
 		const updated: Sku = {
 			...base,
 			slug: form.slug || slugify(form.name),
@@ -190,7 +210,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search products…" class="pl-9" />
 	</div>
 
@@ -215,8 +237,12 @@
 								<p class="truncate text-xs text-muted-foreground">{s.slug}</p>
 							</div>
 						</TableCell>
-						<TableCell class="text-sm text-muted-foreground">{merchantName(s.merchantSlug)}</TableCell>
-						<TableCell class="text-sm text-muted-foreground">{categoryName(s.categorySlug)}</TableCell>
+						<TableCell class="text-sm text-muted-foreground"
+							>{merchantName(s.merchantSlug)}</TableCell
+						>
+						<TableCell class="text-sm text-muted-foreground"
+							>{categoryName(s.categorySlug)}</TableCell
+						>
 						<TableCell class="text-sm">
 							<div class="flex flex-col">
 								<span>{s.moq}</span>
@@ -225,9 +251,11 @@
 						</TableCell>
 						<TableCell>
 							<Badge
-								variant={
-									s.certStatus === 'certified' ? 'default' : s.certStatus === 'pending' ? 'secondary' : 'destructive'
-								}
+								variant={s.certStatus === 'certified'
+									? 'default'
+									: s.certStatus === 'pending'
+										? 'secondary'
+										: 'destructive'}
 							>
 								{certLabels[s.certStatus]}
 							</Badge>
@@ -259,9 +287,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit product' : 'New product'}</DialogTitle>
-			<DialogDescription>
-				Create or update a product SKU in the marketplace.
-			</DialogDescription>
+			<DialogDescription>Create or update a product SKU in the marketplace.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
 			<Field>
@@ -298,7 +324,11 @@
 			</div>
 			<Field>
 				<FieldLabel>Short description</FieldLabel>
-				<Textarea bind:value={form.shortDescription} rows={2} placeholder="Brief product description…" />
+				<Textarea
+					bind:value={form.shortDescription}
+					rows={2}
+					placeholder="Brief product description…"
+				/>
 			</Field>
 			<div class="grid grid-cols-2 gap-4">
 				<Field>
@@ -326,14 +356,17 @@
 					<SelectTrigger class="w-full">{certLabels[form.certStatus]}</SelectTrigger>
 					<SelectContent>
 						{#each Object.entries(certLabels) as [value, label]}
-							<SelectItem value={value}>{label}</SelectItem>
+							<SelectItem {value}>{label}</SelectItem>
 						{/each}
 					</SelectContent>
 				</Select>
 			</Field>
 			<Field>
 				<FieldLabel>Features</FieldLabel>
-				<Input bind:value={form.features} placeholder="Comma separated: halal-certified, gluten-free" />
+				<Input
+					bind:value={form.features}
+					placeholder="Comma separated: halal-certified, gluten-free"
+				/>
 			</Field>
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
@@ -341,7 +374,8 @@
 		</div>
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create product'}</Button>
+			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create product'}</Button
+			>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

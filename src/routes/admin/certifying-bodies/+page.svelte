@@ -1,10 +1,22 @@
 <script lang="ts">
-	import { adminData, upsertItem, deleteItem, resetCollection } from '$lib/stores/admin-data.svelte';
-	import type { CertifyingBody } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Field, FieldLabel } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		adminData,
+		upsertItem,
+		deleteItem,
+		resetCollection
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { CertifyingBody } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -12,7 +24,7 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
+	} from '#lib/components/ui/dialog/index.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -31,7 +43,10 @@
 		if (!search.trim()) return list;
 		const q = search.toLowerCase();
 		return list.filter(
-			(b) => b.name.toLowerCase().includes(q) || b.country.toLowerCase().includes(q) || b.standard.includes(q)
+			(b) =>
+				b.name.toLowerCase().includes(q) ||
+				b.country.toLowerCase().includes(q) ||
+				b.standard.includes(q)
 		);
 	});
 
@@ -62,12 +77,14 @@
 			formError = 'Name and country are required.';
 			return;
 		}
-		const base: CertifyingBody = editing ?? ({
-			id: '',
-			name: '',
-			country: '',
-			standard: ''
-		} as CertifyingBody);
+		const base: CertifyingBody =
+			editing ??
+			({
+				id: '',
+				name: '',
+				country: '',
+				standard: ''
+			} as CertifyingBody);
 		const id = form.id || normalizeId(form.name);
 		const existsElsewhere = adminData.certifyingBodies.some(
 			(b) => b.id === id && b.id !== editing?.id
@@ -78,7 +95,13 @@
 		}
 		upsertItem<CertifyingBody>(
 			'certifyingBodies',
-			{ ...base, id, name: form.name.trim(), country: form.country.trim(), standard: form.standard.trim() },
+			{
+				...base,
+				id,
+				name: form.name.trim(),
+				country: form.country.trim(),
+				standard: form.standard.trim()
+			},
 			editing ?? undefined
 		);
 		dialogOpen = false;
@@ -113,7 +136,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search bodies…" class="pl-9" />
 	</div>
 
@@ -160,9 +185,7 @@
 	<DialogContent class="sm:max-w-md">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit body' : 'New certifying body'}</DialogTitle>
-			<DialogDescription>
-				Register or update a halal certification body.
-			</DialogDescription>
+			<DialogDescription>Register or update a halal certification body.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
 			<Field>

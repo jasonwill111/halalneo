@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Field, FieldDescription, FieldLabel } from '$lib/components/ui/field';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Field, FieldDescription, FieldLabel } from '#lib/components/ui/field/index.js';
 	import Mail from '@lucide/svelte/icons/mail';
 	import MapPin from '@lucide/svelte/icons/map-pin';
 	import Clock from '@lucide/svelte/icons/clock';
@@ -30,8 +30,6 @@
 	}
 </script>
 
-<svelte:head><title>Contact — HalalNeo</title></svelte:head>
-
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Contact HalalNeo</h1>
@@ -54,7 +52,9 @@
 				<Clock class="mt-0.5 size-5 text-primary" data-icon="header" />
 				<div>
 					<p class="text-sm font-medium">Response time</p>
-					<p class="text-sm text-muted-foreground">Within one business day, Mon–Fri 09:00–18:00 (GMT+8)</p>
+					<p class="text-sm text-muted-foreground">
+						Within one business day, Mon–Fri 09:00–18:00 (GMT+8)
+					</p>
 				</div>
 			</div>
 			<div class="flex items-start gap-3">
@@ -62,14 +62,14 @@
 				<div>
 					<p class="text-sm font-medium">Office</p>
 					<p class="text-sm text-muted-foreground">
-						HalalNeo Pte. Ltd. — a distributed team serving buyers and suppliers across
-						Southeast Asia, the Gulf and Europe.
+						HalalNeo Pte. Ltd. — a distributed team serving buyers and suppliers across Southeast
+						Asia, the Gulf and Europe.
 					</p>
 				</div>
 			</div>
 			<div class="rounded-xl border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-				<strong class="font-semibold text-foreground">Prototype note:</strong> this form is a
-				demonstration. No message is sent anywhere — use the email above for a real response.
+				<strong class="font-semibold text-foreground">Prototype note:</strong> this form is a demonstration.
+				No message is sent anywhere — use the email above for a real response.
 			</div>
 		</div>
 
@@ -79,16 +79,21 @@
 					<CheckCircle class="size-10 text-primary" data-icon="header" />
 					<h2 class="text-lg font-semibold">Message received</h2>
 					<p class="max-w-sm text-sm text-muted-foreground">
-						Thanks, {name.split(' ')[0] || 'there'}. A member of our team will get back to
-						you at <span class="font-medium text-foreground">{email}</span> within one
-						business day.
+						Thanks, {name.split(' ')[0] || 'there'}. A member of our team will get back to you at
+						<span class="font-medium text-foreground">{email}</span> within one business day.
 					</p>
 					<Button variant="outline" size="sm" onclick={() => (sent = false)}>
 						Send another message
 					</Button>
 				</div>
 			{:else}
-				<form class="space-y-4" onsubmit={(e) => { e.preventDefault(); submit(); }}>
+				<form
+					class="space-y-4"
+					onsubmit={(e) => {
+						e.preventDefault();
+						submit();
+					}}
+				>
 					<div class="grid gap-4 sm:grid-cols-2">
 						<Field>
 							<FieldLabel>Full name</FieldLabel>
@@ -107,7 +112,7 @@
 						<FieldLabel>Topic</FieldLabel>
 						<select
 							bind:value={topic}
-							class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none transition-colors focus-visible:ring-1 focus-visible:ring-ring"
+							class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors outline-none focus-visible:ring-1 focus-visible:ring-ring"
 						>
 							{#each topics as t}
 								<option value={t}>{t}</option>

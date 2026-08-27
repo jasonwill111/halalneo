@@ -37,6 +37,7 @@ Confirmed growth path, in this order: **knowledge base first (authority) → mar
 **In Phase 1:** knowledge base (6 sections + glossary + full-text search) with real researched content; marketplace structure — Categories, Merchants, SKUs with detail pages; buyer/seller registration with role-based `/account`; self-serve `request information` affordances; `/admin` backend. Live demo auth for buyer/seller flows.
 
 **Hard constraints:**
+
 - **Design constraints (user-committed):** green (halal) palette; content centered with `max-w-7xl`; light/dark toggle on all pages (public + admin); mobile-first and mobile-responsive on mobile / tablet / desktop; every UI component is a svelte-shadcn component — no other component libraries.
 - **i18n:** English only for now, but the `/en/` URL architecture must stay ready for more languages. Do not build other locales.
 - **Roles:** `User.role` ∈ {`buyer`, `seller`}; `Merchant.businessType` ∈ {`manufacturer`, `wholesaler`, `trader`} (mutually exclusive) + `isBrand` (orthogonal boolean); `reseller` deliberately excluded.

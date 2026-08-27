@@ -3,6 +3,7 @@
 - **Language**: TypeScript
 - **Package Manager**: pnpm
 - **Add-ons**: prettier, eslint, vitest, playwright, tailwindcss, sveltekit-adapter, better-auth, drizzle, ai-tools
+- **UI 组件纪律**: 所有 UI 原语（button、input、select、textarea、dialog、card、badge、table 等）必须来自 shadcn-svelte `src/lib/components/ui/`。禁止手写原语组件。页面组合级业务逻辑组件允许手写，但其内部 UI 原语必须来自 `ui/`。新增组件先 `pnpm dlx shadcn-svelte add <component>`。主题定制只动 `layout.css` CSS 变量，不动 `ui/` 组件内部。
 
 ---
 

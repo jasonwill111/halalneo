@@ -1,11 +1,17 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { getCurrentAccount, signOut } from '$lib/stores/auth.svelte';
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Separator } from '$lib/components/ui/separator';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { getCurrentAccount, signOut } from '#lib/stores/auth.svelte.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '#lib/components/ui/card/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import PackageSearch from '@lucide/svelte/icons/package-search';
@@ -19,19 +25,17 @@
 	let currentAccount = $derived(getCurrentAccount());
 </script>
 
-<svelte:head><title>Account — HalalNeo</title></svelte:head>
-
 {#if !currentAccount}
-	<section class="mx-auto flex min-h-[70dvh] w-full max-w-md flex-col items-center justify-center py-8">
+	<section
+		class="mx-auto flex min-h-[70dvh] w-full max-w-md flex-col items-center justify-center py-8"
+	>
 		<Card class="w-full">
 			<CardHeader class="text-center">
 				<CardTitle class="text-2xl tracking-tight">Account</CardTitle>
 				<CardDescription>Sign in to view your buyer or seller dashboard</CardDescription>
 			</CardHeader>
 			<CardContent class="flex flex-col gap-3">
-				<Button href={localizeHref('/login')} variant="default" class="w-full">
-					Sign in
-				</Button>
+				<Button href={localizeHref('/login')} variant="default" class="w-full">Sign in</Button>
 				<Button href={localizeHref('/register')} variant="outline" class="w-full">
 					Create an account
 				</Button>
@@ -105,27 +109,34 @@
 				</div>
 				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					{#each verifiedSuppliers.slice(0, 3) as merchant}
-					<Card hoverable>
-						<CardHeader class="gap-3">
-							<div class="flex items-center gap-3">
-								<div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-sm font-semibold text-primary">
-									{merchant.logoInitials}
+						<Card hoverable>
+							<CardHeader class="gap-3">
+								<div class="flex items-center gap-3">
+									<div
+										class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-sm font-semibold text-primary"
+									>
+										{merchant.logoInitials}
+									</div>
+									<div class="min-w-0">
+										<CardTitle class="text-base">{merchant.name}</CardTitle>
+										<CardDescription>
+											{merchant.country} · {merchant.certifications.length} cert(s)
+										</CardDescription>
+									</div>
 								</div>
-								<div class="min-w-0">
-									<CardTitle class="text-base">{merchant.name}</CardTitle>
-									<CardDescription>
-										{merchant.country} · {merchant.certifications.length} cert(s)
-									</CardDescription>
-								</div>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<Button href={localizeHref(`/suppliers/${merchant.slug}`)} variant="outline" size="sm" class="w-full">
-								View profile
-								<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-							</Button>
-						</CardContent>
-					</Card>
+							</CardHeader>
+							<CardContent>
+								<Button
+									href={localizeHref(`/suppliers/${merchant.slug}`)}
+									variant="outline"
+									size="sm"
+									class="w-full"
+								>
+									View profile
+									<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
+								</Button>
+							</CardContent>
+						</Card>
 					{/each}
 				</div>
 			</div>
@@ -133,7 +144,11 @@
 			<div class="space-y-4">
 				<h2 class="text-lg font-semibold">Your next steps</h2>
 				<div class="grid gap-4 sm:grid-cols-3">
-					<Button href={localizeHref('/products')} variant="outline" class="h-auto justify-start gap-3 p-4">
+					<Button
+						href={localizeHref('/products')}
+						variant="outline"
+						class="h-auto justify-start gap-3 p-4"
+					>
 						<PackageSearch class="size-5 shrink-0 text-primary"></PackageSearch>
 						<span class="flex min-w-0 flex-col items-start gap-1 whitespace-normal">
 							<span class="font-medium">Browse products</span>
@@ -142,7 +157,11 @@
 							</span>
 						</span>
 					</Button>
-					<Button href={localizeHref('/suppliers')} variant="outline" class="h-auto justify-start gap-3 p-4">
+					<Button
+						href={localizeHref('/suppliers')}
+						variant="outline"
+						class="h-auto justify-start gap-3 p-4"
+					>
 						<Store class="size-5 shrink-0 text-primary"></Store>
 						<span class="flex min-w-0 flex-col items-start gap-1 whitespace-normal">
 							<span class="font-medium">Find suppliers</span>
@@ -151,7 +170,11 @@
 							</span>
 						</span>
 					</Button>
-					<Button href={localizeHref('/knowledge-base')} variant="outline" class="h-auto justify-start gap-3 p-4">
+					<Button
+						href={localizeHref('/knowledge-base')}
+						variant="outline"
+						class="h-auto justify-start gap-3 p-4"
+					>
 						<FileText class="size-5 shrink-0 text-primary"></FileText>
 						<span class="flex min-w-0 flex-col items-start gap-1 whitespace-normal">
 							<span class="font-medium">Read the knowledge base</span>
@@ -188,7 +211,9 @@
 			</div>
 
 			<Card>
-				<CardContent class="flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between">
+				<CardContent
+					class="flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between"
+				>
 					<div class="space-y-1">
 						<h2 class="font-semibold">Your company profile</h2>
 						<p class="text-sm text-muted-foreground">
@@ -205,7 +230,11 @@
 			<div class="space-y-4">
 				<h2 class="text-lg font-semibold">Seller toolkit</h2>
 				<div class="grid gap-4 sm:grid-cols-3">
-					<Button href={localizeHref('/suppliers')} variant="outline" class="h-auto justify-start gap-3 p-4">
+					<Button
+						href={localizeHref('/suppliers')}
+						variant="outline"
+						class="h-auto justify-start gap-3 p-4"
+					>
 						<Store class="size-5 shrink-0 text-primary"></Store>
 						<span class="flex min-w-0 flex-col items-start gap-1 whitespace-normal">
 							<span class="font-medium">Manage your listings</span>
@@ -214,7 +243,11 @@
 							</span>
 						</span>
 					</Button>
-					<Button href={localizeHref('/knowledge-base/halal-certification')} variant="outline" class="h-auto justify-start gap-3 p-4">
+					<Button
+						href={localizeHref('/knowledge-base/halal-certification')}
+						variant="outline"
+						class="h-auto justify-start gap-3 p-4"
+					>
 						<ClipboardCheck class="size-5 shrink-0 text-primary"></ClipboardCheck>
 						<span class="flex min-w-0 flex-col items-start gap-1 whitespace-normal">
 							<span class="font-medium">Track certification</span>
@@ -223,7 +256,11 @@
 							</span>
 						</span>
 					</Button>
-					<Button href={localizeHref('/knowledge-base/due-diligence')} variant="outline" class="h-auto justify-start gap-3 p-4">
+					<Button
+						href={localizeHref('/knowledge-base/due-diligence')}
+						variant="outline"
+						class="h-auto justify-start gap-3 p-4"
+					>
 						<FileText class="size-5 shrink-0 text-primary"></FileText>
 						<span class="flex min-w-0 flex-col items-start gap-1 whitespace-normal">
 							<span class="font-medium">Due diligence guides</span>

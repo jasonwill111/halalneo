@@ -2,73 +2,73 @@
 name: HalalNeo
 description: Halal trade intelligence for buyers and suppliers
 colors:
-  certified-green: "oklch(0.455 0.107 151.75)"
-  certified-green-dark: "oklch(0.685 0.127 152.05)"
-  verified-emerald: "oklch(0.6 0.118 184.704)"
-  ink-sage: "oklch(0.208 0.02 152.25)"
-  ink-sage-dark: "oklch(0.985 0.002 100)"
-  pure-white: "oklch(1 0 0)"
-  deep-ink-sage: "oklch(0.173 0.018 152.25)"
-  sage-mist: "oklch(0.967 0.008 109.583)"
-  sage-stone: "oklch(0.553 0.023 153.58)"
-  sage-border: "oklch(0.912 0.015 154.06)"
-  alert-red: "oklch(0.577 0.245 27.325)"
+  certified-green: 'oklch(0.455 0.107 151.75)'
+  certified-green-dark: 'oklch(0.685 0.127 152.05)'
+  verified-emerald: 'oklch(0.6 0.118 184.704)'
+  ink-sage: 'oklch(0.208 0.02 152.25)'
+  ink-sage-dark: 'oklch(0.985 0.002 100)'
+  pure-white: 'oklch(1 0 0)'
+  deep-ink-sage: 'oklch(0.173 0.018 152.25)'
+  sage-mist: 'oklch(0.967 0.008 109.583)'
+  sage-stone: 'oklch(0.553 0.023 153.58)'
+  sage-border: 'oklch(0.912 0.015 154.06)'
+  alert-red: 'oklch(0.577 0.245 27.325)'
 typography:
   display:
-    fontFamily: "Almarai, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(2.25rem, 5vw, 3.75rem)"
+    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontSize: 'clamp(2.25rem, 5vw, 3.75rem)'
     fontWeight: 600
     lineHeight: 1.1
-    letterSpacing: "-0.02em"
+    letterSpacing: '-0.02em'
   headline:
-    fontFamily: "Almarai, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.875rem"
+    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '1.875rem'
     fontWeight: 600
     lineHeight: 1.2
   title:
-    fontFamily: "Almarai, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.125rem"
+    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '1.125rem'
     fontWeight: 600
     lineHeight: 1.3
   body:
-    fontFamily: "Almarai, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1rem"
+    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '1rem'
     fontWeight: 400
     lineHeight: 1.6
   label:
-    fontFamily: "Almarai, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "0.75rem"
+    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '0.75rem'
     fontWeight: 500
     lineHeight: 1.3
 rounded:
-  md: "6px"
-  lg: "8px"
-  xl: "12px"
+  md: '6px'
+  lg: '8px'
+  xl: '12px'
 spacing:
-  base: "8px"
-  card: "16px"
-  section: "32px"
+  base: '8px'
+  card: '16px'
+  section: '32px'
 components:
   button-primary:
-    backgroundColor: "{colors.certified-green}"
-    textColor: "{colors.pure-white}"
-    rounded: "{rounded.lg}"
-    padding: "0 16px"
-    size: "32px"
+    backgroundColor: '{colors.certified-green}'
+    textColor: '{colors.pure-white}'
+    rounded: '{rounded.lg}'
+    padding: '0 16px'
+    size: '32px'
   button-outline:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-sage}"
-    rounded: "{rounded.lg}"
-    border: "1px solid {colors.sage-border}"
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink-sage}'
+    rounded: '{rounded.lg}'
+    border: '1px solid {colors.sage-border}'
   input-default:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-sage}"
-    rounded: "{rounded.lg}"
-    size: "32px"
+    backgroundColor: 'transparent'
+    textColor: '{colors.ink-sage}'
+    rounded: '{rounded.lg}'
+    size: '32px'
   card-default:
-    backgroundColor: "{colors.pure-white}"
-    textColor: "{colors.ink-sage}"
-    rounded: "{rounded.xl}"
+    backgroundColor: '{colors.pure-white}'
+    textColor: '{colors.ink-sage}'
+    rounded: '{rounded.xl}'
 ---
 
 # Design System: HalalNeo
@@ -82,6 +82,7 @@ HalalNeo is a halal trade platform whose trust mechanism is certification intell
 Density is tighter than a consumer app — controls are compact (32px), corners are gently squared (8–12px), and information is arranged in scannable, ledger-like rows. The system is mobile-first, centered on a `max-w-7xl` container, and ships equally-crafted light and dark themes. Depth is communicated through tonal layering and translucency on floating surfaces (sticky header, stat cards), plus a hybrid elevation model: a 1px ring outlines resting surfaces and interactive cards lift with an ambient shadow on hover.
 
 **Key Characteristics:**
+
 - Verification-led: green = certified; badges, rings, and status chips read like a certificate ledger.
 - Flat at rest, lifted on interaction: ring-only resting cards, shadow on hover.
 - Translucent floating surfaces (sticky header `bg-background/90`, stat cards `bg-card/70`) with backdrop blur.
@@ -94,11 +95,13 @@ Density is tighter than a consumer app — controls are compact (32px), corners 
 Sage-tinted green family — neutrals carry a green cast (hue ~152–155), so nothing ever reads as cold grey. Primary green is the single saturated accent; its rarity is the point.
 
 ### Primary
+
 - **Certified Green** (`oklch(0.455 0.107 151.75)`, light `--primary`): primary buttons, links, active nav, verified badges, focus rings, icons marking certification. The only saturated hue on a screen.
 - **Certified Green (Dark)** (`oklch(0.685 0.127 152.05)`, dark `--primary`): same role in dark mode — brighter to hold contrast on dark sage surfaces.
 - **Verified Emerald** (`oklch(0.6 0.118 184.704)`, `--chart-2`): secondary chart/graph accent and positive status tinting.
 
 ### Neutral
+
 - **Pure White** (`oklch(1 0 0)`, light `--background` / `--card`): page and card surface in light mode.
 - **Ink Sage** (`oklch(0.208 0.02 152.25)`, light `--foreground`): primary text and icons.
 - **Deep Ink-Sage** (`oklch(0.173 0.018 152.25)`, dark `--background`): page surface in dark mode.
@@ -108,6 +111,7 @@ Sage-tinted green family — neutrals carry a green cast (hue ~152–155), so no
 - **Sage Border** (`oklch(0.912 0.015 154.06)`, `--border` / `--input`): hairline borders and input strokes. In dark mode borders are `oklch(1 0 0 / 10%)` translucent white.
 
 ### Named Rules
+
 **The Rare Green Rule.** Primary green appears on ≤10% of any given screen — buttons, links, badges, and active states only. Green is evidence; it marks what is certified and what you can act on. If a surface starts feeling green, verification has stopped meaning something.
 
 ## Typography
@@ -117,6 +121,7 @@ Sage-tinted green family — neutrals carry a green cast (hue ~152–155), so no
 **Character:** Almarai is a warm geometric sans with an Arabic-friendly humanism that suits a halal trade platform — confident in headings, legible at small sizes in trade data. The family carries the whole system; hierarchy is created by weight, size, and tracking, not by switching faces.
 
 ### Hierarchy
+
 - **Display** (600, `clamp(2.25rem, 5vw, 3.75rem)`, 1.1, -0.02em): hero headlines. Balanced via `text-balance`.
 - **Headline** (600, 1.875rem, 1.2, -0.01em): page-level `h1` on interior pages and section `h2`s.
 - **Title** (600, 1.125rem, 1.3): card titles, sidebar headings.
@@ -124,6 +129,7 @@ Sage-tinted green family — neutrals carry a green cast (hue ~152–155), so no
 - **Label** (500, 0.75rem, 1.3): badge text, metadata, uppercase optional for eyebrows only where a section needs a field label.
 
 ### Named Rules
+
 **The Ledger Row Rule.** Data reads in rows: label left, value right, both on the same line (`flex items-center justify-between`), 14px body for values against 12–13px muted labels. Tables and data rows never wrap to two-column card layouts without a reason.
 
 ## Layout
@@ -145,11 +151,13 @@ Hybrid model: **tonal layering + a defined shadow scale**. Depth is mostly tonal
 - Overlays (menus, popovers, sheets, selects): `shadow-md`/`shadow-lg` from the scale below, with `ring-1 ring-foreground/10`.
 
 ### Shadow Vocabulary
+
 - **sm** (`0 1px 2px 0 rgb(0 0 0 / 0.05)`): subtle dividers, tab active states.
 - **md** (`0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04)`): hover lift on interactive cards, dropdown menus, selects.
 - **lg** (`0 12px 32px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.05)`): sheets, dialogs, large popovers.
 
 ### Named Rules
+
 **The Flat-by-Default Rule.** Surfaces are flat at rest. Shadows appear only as a response to state — hover, open, or focus. A resting card with a drop shadow is a mistake.
 
 ## Shapes
@@ -164,6 +172,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 ## Components
 
 ### Buttons
+
 - **Shape:** `rounded-lg` (8px), compact heights (default 32px, sm 28px, lg 36px).
 - **Primary:** Certified Green fill, white text, `hover:bg-primary/80`, active press `translate-y-px`. The only saturated button on a screen.
 - **Outline:** `border-border bg-background hover:bg-muted hover:text-foreground`; transparent fill, hairline border — the workhorse secondary.
@@ -174,12 +183,14 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - Icons inside buttons render at 16px via the `data-icon="inline-start|inline-end"` slot convention; multiline CTA text uses `whitespace-normal min-w-0` to avoid overflow.
 
 ### Chips / Badges
+
 - **Style:** pill `rounded-4xl`, 20px tall, 12px medium text.
 - **Default (verified):** Certified Green fill, white text.
 - **Secondary / outline:** Sage Mist fill or hairline border — used for neutral status (pending), categories, and metadata.
 - **Destructive:** translucent red text — used for failed/expired certification.
 
 ### Cards / Containers
+
 - **Corner Style:** `rounded-xl` (12px), `overflow-hidden`.
 - **Background:** `bg-card` (Pure White light / Washed Sage dark).
 - **Shadow Strategy:** ring-only at rest; `hoverable` cards lift with `shadow-md` on hover (200ms).
@@ -187,25 +198,30 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - **Internal Padding:** `16px` (`--card-spacing`), `12px` for `size="sm"`.
 
 ### Inputs / Fields
+
 - **Style:** hairline `border-input` (Sage Border light / translucent white dark), transparent fill, `rounded-lg` (8px), 32px tall.
 - **Focus:** `border-ring` + `ring-3 ring-ring/50` in Certified Green; never a glow, always a ring.
 - **Error:** `aria-invalid:border-destructive` + `ring-destructive/20`.
 - **Placeholder:** Sage Stone; labels above the field via the Field wrapper (label, optional description, error slot).
 
 ### Navigation
+
 - **Style:** sticky translucent header (`bg-background/90 backdrop-blur`) with a border-bottom hairline; nav links are plain text turning green on hover, active page in green; right cluster holds theme toggle (Sun/Moon), search icon button, and Sign in (green) / mobile hamburger (Sheet).
 - **Mobile:** hamburger opens a right-side Sheet (`w-3/4 sm:max-w-sm`) with the same items as rows plus Sign in / Create account buttons.
 - **Footer:** four-column responsive grid (brand + Marketplace / Resources / Company columns); copyright bar with the demo-data disclaimer.
 
 ### Accordion (FAQ)
+
 - Items separated by hairline borders; trigger is title-weight text with a chevron that rotates on open; content is body text with muted color. No card nesting.
 
 ### Signature Component: Verification Ledger
+
 - Supplier profiles and SKU pages render certification as a ledger row — certifying body, standard, scope, and expiry in a bordered table (`Table` with header row, `border-border` hairlines), status chips (Verified / Pending / Expired) color-coded green/neutral/red. This table is the platform's trust artifact; it must always read as precise, documented, and scannable.
 
 ## Do's and Don'ts
 
 ### Do:
+
 - **Do** use green to mark only certification, verification, and primary action. When in doubt, use outline or ghost.
 - **Do** keep resting surfaces flat — ring-only cards, no resting drop shadows. Lift only interactive cards on hover.
 - **Do** keep controls compact (32px) and corners ledger-like (8px controls, 12px cards).
@@ -215,6 +231,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - **Do** use `text-balance` on headings and `whitespace-normal min-w-0` on multiline button labels.
 
 ### Don't:
+
 - **Don't** let green exceed ~10% of a screen — it stops meaning "certified" when it becomes decorative.
 - **Don't** put a drop shadow on a resting card, or a colored left-border above 1px on any card/callout.
 - **Don't** nest cards inside cards, or use identical same-size icon-card grids as the sole page structure.

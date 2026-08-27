@@ -1,9 +1,15 @@
 <script lang="ts">
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import { localizeHref } from '$lib/paraglide/runtime.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '#lib/components/ui/card/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Users from '@lucide/svelte/icons/users';
 	import Store from '@lucide/svelte/icons/store';
 	import Package from '@lucide/svelte/icons/package';
@@ -11,13 +17,15 @@
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 
 	const activeSuppliers = $derived(adminData.merchants.filter((m) => m.status === 'active').length);
-	const pendingSuppliers = $derived(adminData.merchants.filter((m) => m.status === 'pending').length);
-	const certifiedProducts = $derived(adminData.skus.filter((s) => s.certStatus === 'certified').length);
+	const pendingSuppliers = $derived(
+		adminData.merchants.filter((m) => m.status === 'pending').length
+	);
+	const certifiedProducts = $derived(
+		adminData.skus.filter((s) => s.certStatus === 'certified').length
+	);
 	const pendingProducts = $derived(adminData.skus.filter((s) => s.certStatus === 'pending').length);
 	const expiredProducts = $derived(adminData.skus.filter((s) => s.certStatus === 'expired').length);
 </script>
-
-<svelte:head><title>Dashboard — HalalNeo Admin</title></svelte:head>
 
 <div class="space-y-8">
 	<div class="space-y-1">
@@ -88,16 +96,22 @@
 		<Card>
 			<CardHeader>
 				<CardTitle class="text-lg">Knowledge base</CardTitle>
-				<CardDescription>{adminData.kbSections.length} sections · {adminData.kbArticles.length} articles</CardDescription>
+				<CardDescription
+					>{adminData.kbSections.length} sections · {adminData.kbArticles.length} articles</CardDescription
+				>
 			</CardHeader>
 			<CardContent>
-				<Button href={localizeHref('/admin/knowledge')} variant="outline" size="sm">Manage articles</Button>
+				<Button href={localizeHref('/admin/knowledge')} variant="outline" size="sm"
+					>Manage articles</Button
+				>
 			</CardContent>
 		</Card>
 		<Card>
 			<CardHeader>
 				<CardTitle class="text-lg">Content</CardTitle>
-				<CardDescription>{adminData.glossary.length} glossary terms · {adminData.blogPosts.length} blog posts</CardDescription>
+				<CardDescription
+					>{adminData.glossary.length} glossary terms · {adminData.blogPosts.length} blog posts</CardDescription
+				>
 			</CardHeader>
 			<CardContent>
 				<Button href={localizeHref('/admin/blog')} variant="outline" size="sm">Manage blog</Button>
@@ -106,10 +120,15 @@
 		<Card>
 			<CardHeader>
 				<CardTitle class="text-lg">AI tools</CardTitle>
-				<CardDescription>{adminData.aiTools.filter((t) => t.status === 'active').length} of {adminData.aiTools.length} enabled</CardDescription>
+				<CardDescription
+					>{adminData.aiTools.filter((t) => t.status === 'active').length} of {adminData.aiTools
+						.length} enabled</CardDescription
+				>
 			</CardHeader>
 			<CardContent>
-				<Button href={localizeHref('/admin/ai-tools')} variant="outline" size="sm">Manage tools</Button>
+				<Button href={localizeHref('/admin/ai-tools')} variant="outline" size="sm"
+					>Manage tools</Button
+				>
 			</CardContent>
 		</Card>
 	</div>

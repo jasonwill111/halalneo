@@ -1,12 +1,24 @@
 <script lang="ts">
-	import { adminData, upsertItem, deleteItem, resetCollection } from '$lib/stores/admin-data.svelte';
-	import type { BlogPost } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Field, FieldLabel } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		adminData,
+		upsertItem,
+		deleteItem,
+		resetCollection
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { BlogPost } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -14,8 +26,13 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -52,7 +69,10 @@
 		if (!search.trim()) return list;
 		const q = search.toLowerCase();
 		return list.filter(
-			(p) => p.title.toLowerCase().includes(q) || p.slug.includes(q) || p.author.toLowerCase().includes(q)
+			(p) =>
+				p.title.toLowerCase().includes(q) ||
+				p.slug.includes(q) ||
+				p.author.toLowerCase().includes(q)
 		);
 	});
 
@@ -106,16 +126,18 @@
 			formError = 'Title is required.';
 			return;
 		}
-		const base: BlogPost = editing ?? ({
-			slug: '',
-			title: '',
-			excerpt: '',
-			author: '',
-			date: '',
-			tags: [],
-			status: 'draft',
-			body: ''
-		} as BlogPost);
+		const base: BlogPost =
+			editing ??
+			({
+				slug: '',
+				title: '',
+				excerpt: '',
+				author: '',
+				date: '',
+				tags: [],
+				status: 'draft',
+				body: ''
+			} as BlogPost);
 		const updated: BlogPost = {
 			...base,
 			slug: form.slug || slugify(form.title),
@@ -163,7 +185,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search posts…" class="pl-9" />
 	</div>
 
@@ -219,9 +243,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit post' : 'New post'}</DialogTitle>
-			<DialogDescription>
-				Create or update a blog post.
-			</DialogDescription>
+			<DialogDescription>Create or update a blog post.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
 			<Field>

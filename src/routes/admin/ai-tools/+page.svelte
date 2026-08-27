@@ -4,13 +4,13 @@
 		upsertItem,
 		deleteItem,
 		resetCollection
-	} from '$lib/stores/admin-data.svelte';
-	import type { AiTool } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Field, FieldLabel } from '$lib/components/ui/field';
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { AiTool } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -18,7 +18,7 @@
 		TableHead,
 		TableHeader,
 		TableRow
-	} from '$lib/components/ui/table';
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -26,14 +26,19 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Bot from '@lucide/svelte/icons/bot';
-	import { localizeHref } from '$lib/paraglide/runtime.js';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	let dialogOpen = $state(false);
 	let editing = $state<AiTool | null>(null);

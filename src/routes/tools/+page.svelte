@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
 		Card,
 		CardContent,
 		CardDescription,
 		CardHeader,
 		CardTitle
-	} from '$lib/components/ui/card';
+	} from '#lib/components/ui/card/index.js';
 	import Bot from '@lucide/svelte/icons/bot';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 
@@ -22,8 +22,6 @@
 		documentation: 'Documentation'
 	};
 </script>
-
-<svelte:head><title>AI Tools — HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">

@@ -1,11 +1,23 @@
 <script lang="ts">
-	import { adminData, upsertItem, deleteItem, resetCollection } from '$lib/stores/admin-data.svelte';
-	import type { KbArticle, SectionSlug } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Field, FieldLabel } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		adminData,
+		upsertItem,
+		deleteItem,
+		resetCollection
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { KbArticle, SectionSlug } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -13,8 +25,13 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -47,7 +64,10 @@
 		if (!search.trim()) return list;
 		const q = search.toLowerCase();
 		return list.filter(
-			(a) => a.title.toLowerCase().includes(q) || a.slug.includes(q) || a.summary.toLowerCase().includes(q)
+			(a) =>
+				a.title.toLowerCase().includes(q) ||
+				a.slug.includes(q) ||
+				a.summary.toLowerCase().includes(q)
 		);
 	});
 
@@ -89,14 +109,16 @@
 			formError = 'Title is required.';
 			return;
 		}
-		const base: KbArticle = editing ?? ({
-			section: 'halal-certification',
-			slug: '',
-			title: '',
-			summary: '',
-			tags: [],
-			body: ''
-		} as KbArticle);
+		const base: KbArticle =
+			editing ??
+			({
+				section: 'halal-certification',
+				slug: '',
+				title: '',
+				summary: '',
+				tags: [],
+				body: ''
+			} as KbArticle);
 		const updated: KbArticle = {
 			...base,
 			section: form.section,
@@ -142,7 +164,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search articles…" class="pl-9" />
 	</div>
 
@@ -169,7 +193,9 @@
 						<TableCell>
 							<div class="flex flex-wrap gap-1">
 								{#each a.tags.slice(0, 3) as tag}
-									<span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{tag}</span>
+									<span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+										>{tag}</span
+									>
 								{/each}
 							</div>
 						</TableCell>
@@ -200,9 +226,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit article' : 'New article'}</DialogTitle>
-			<DialogDescription>
-				Create or update a knowledge base article.
-			</DialogDescription>
+			<DialogDescription>Create or update a knowledge base article.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
 			<Field>
@@ -242,7 +266,8 @@
 		</div>
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create article'}</Button>
+			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create article'}</Button
+			>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

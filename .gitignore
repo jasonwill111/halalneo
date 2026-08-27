@@ -1,4 +1,11 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Temporary
+MIGRATION_TASKS.md
+
+# Wayfinder working files
+.scratch/
 
 # Paraglide generated
 /src/lib/paraglide/

@@ -1,76 +1,51 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { getArticle, getSection } from '$lib/stores/admin-data.svelte';
-	import Icon from '$lib/components/site/icon.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from '$lib/components/ui/breadcrumb';
-	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-	import { error } from '@sveltejs/kit';
-	import { marked } from 'marked';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
 
-	let { params } = $props();
-
-	const section = $derived(getSection(params.section));
-	const article = $derived(getArticle(params.section, params.article));
-	const html = $derived(article ? marked.parse(article.body) : '');
-
-	$effect(() => {
-		if (!section || !article) error(404, 'Article not found');
-	});
+	let { data } = $props();
 </script>
 
-<svelte:head><title>{article?.title ?? 'Article'} — HalalNeo</title></svelte:head>
+<svelte:head>
+	<title>{data.seo.title}</title>
+	<meta name="description" content={data.seo.description} />
+</svelte:head>
 
-{#if section && article}
-	<section class="space-y-8">
-		<Breadcrumb>
-			<BreadcrumbList>
-				<BreadcrumbItem>
-					<BreadcrumbLink href={localizeHref('/knowledge-base')}>Knowledge Base</BreadcrumbLink>
-				</BreadcrumbItem>
-				<BreadcrumbSeparator />
-				<BreadcrumbItem>
-					<BreadcrumbLink href={localizeHref(`/knowledge-base/${section.slug}`)}>
-						{section.title}
-					</BreadcrumbLink>
-				</BreadcrumbItem>
-				<BreadcrumbSeparator />
-				<BreadcrumbItem>
-					<BreadcrumbPage>{article.title}</BreadcrumbPage>
-				</BreadcrumbItem>
-			</BreadcrumbList>
-		</Breadcrumb>
+<div class="container mx-auto max-w-3xl px-4 py-8">
+	{#if data.item}
+		<article class="space-y-8">
+			<header class="space-y-4">
+				<div class="flex flex-wrap gap-2">
+					<Button href={`/knowledge-base/${data.item.sectionSlug}`} variant="outline" size="sm">
+						{data.item.sectionName}
+					</Button>
+					<Badge variant="secondary">{data.item.readTime}</Badge>
+				</div>
+				<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
+				<p class="text-muted-foreground text-lg">{data.item.summary}</p>
+			</header>
 
-		<div class="max-w-3xl space-y-6">
-			<div class="space-y-3">
-				<div class="flex items-center gap-2">
-					<div class="flex size-8 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-						<Icon name={section.icon} class="size-4"></Icon>
+			<div class="prose prose-neutral dark:prose-invert max-w-none">
+				{@html data.item.content}
+			</div>
+
+			<footer class="border-t pt-6">
+				<div class="flex flex-wrap justify-between gap-4">
+					<Button href={`/knowledge-base/${data.item.sectionSlug}`} variant="outline">
+						← Back to {data.item.sectionName}
+					</Button>
+					<div class="flex gap-2">
+						<Button variant="outline" size="sm">Share</Button>
+						<Button variant="outline" size="sm">Print</Button>
 					</div>
-					<span class="text-sm font-medium text-muted-foreground">{section.title}</span>
 				</div>
-				<h1 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-					{article.title}
-				</h1>
-				<p class="text-lg text-muted-foreground">{article.summary}</p>
-				<div class="flex flex-wrap gap-1.5 pt-1">
-					{#each article.tags as tag}
-						<Badge variant="secondary">{tag}</Badge>
-					{/each}
-				</div>
-			</div>
-
-			<div class="prose prose-green max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-p:text-foreground/90 prose-li:marker:text-muted-foreground dark:prose-invert">
-				{@html html}
-			</div>
-
-			<div class="border-t border-border pt-6">
-				<Button href={localizeHref(`/knowledge-base/${section.slug}`)} variant="ghost" size="sm">
-					<ArrowLeft class="size-4"></ArrowLeft>
-					Back to {section.title}
-				</Button>
+			</footer>
+		</article>
+	{:else}
+		<div class="flex min-h-[50vh] items-center justify-center">
+			<div class="text-center space-y-4">
+				<p class="text-muted-foreground text-lg">Article coming soon.</p>
+				<Button href="/knowledge-base" variant="outline">Browse Knowledge Base</Button>
 			</div>
 		</div>
-	</section>
-{/if}
+	{/if}
+</div>

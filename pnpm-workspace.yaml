@@ -1,3 +1,10 @@
 allowBuilds:
   workerd: true
   esbuild: true
+
+catalog:
+  '@sveltejs/kit': next
+
+overrides:
+  'better-auth>@sveltejs/kit': 'catalog:'
+  'auth>@sveltejs/kit': 'catalog:'

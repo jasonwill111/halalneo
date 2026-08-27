@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { adminData } from '$lib/stores/admin-data.svelte';
-	import Icon from '$lib/components/site/icon.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import Icon from '#lib/components/site/icon.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import {
+		Card,
+		CardHeader,
+		CardTitle,
+		CardDescription,
+		CardContent
+	} from '#lib/components/ui/card/index.js';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import SearchIcon from '@lucide/svelte/icons/search';
 </script>
-
-<svelte:head><title>Knowledge Base —HalalNeo</title></svelte:head>
 
 <section class="space-y-8">
 	<div class="space-y-4">
@@ -22,8 +26,8 @@
 				Halal trade intelligence, explained
 			</h1>
 			<p class="text-muted-foreground">
-				{adminData.kbArticles.length} articles across {adminData.kbSections.length} areas of halal trade —from
-				certification and sourcing to logistics, labeling and market entry.
+				{adminData.kbArticles.length} articles across {adminData.kbSections.length} areas of halal trade
+				—from certification and sourcing to logistics, labeling and market entry.
 			</p>
 		</div>
 		<div class="flex flex-col gap-3 sm:flex-row">
@@ -38,7 +42,9 @@
 		{#each adminData.kbSections as section}
 			<Card hoverable>
 				<CardHeader class="gap-3">
-					<div class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+					<div
+						class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+					>
 						<Icon name={section.icon} class="size-5"></Icon>
 					</div>
 					<div class="space-y-1">
@@ -51,7 +57,11 @@
 					<p class="text-sm text-muted-foreground">
 						{count} article{count === 1 ? '' : 's'}
 					</p>
-					<Button href={localizeHref(`/knowledge-base/${section.slug}`)} variant="outline" size="sm">
+					<Button
+						href={localizeHref(`/knowledge-base/${section.slug}`)}
+						variant="outline"
+						size="sm"
+					>
 						Browse the section
 						<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
 					</Button>

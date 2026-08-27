@@ -1,11 +1,23 @@
 <script lang="ts">
-	import { adminData, upsertItem, deleteItem, resetCollection } from '$lib/stores/admin-data.svelte';
-	import type { Category } from '$lib/data/types';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Field, FieldLabel } from '$lib/components/ui/field';
-	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '$lib/components/ui/table';
+	import {
+		adminData,
+		upsertItem,
+		deleteItem,
+		resetCollection
+	} from '#lib/stores/admin-data.svelte.js';
+	import type { Category } from '#lib/data/types.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -13,8 +25,13 @@
 		DialogFooter,
 		DialogHeader,
 		DialogTitle
-	} from '$lib/components/ui/dialog';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	} from '#lib/components/ui/dialog/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -31,7 +48,13 @@
 		parentSlug: string;
 		icon: string;
 	};
-	let form = $state<CategoryForm>({ slug: '', name: '', description: '', parentSlug: '', icon: '' });
+	let form = $state<CategoryForm>({
+		slug: '',
+		name: '',
+		description: '',
+		parentSlug: '',
+		icon: ''
+	});
 	let formError = $state('');
 
 	const filtered = $derived.by(() => {
@@ -83,12 +106,14 @@
 			formError = 'A category cannot be its own parent.';
 			return;
 		}
-		const base: Category = editing ?? ({
-			slug: '',
-			name: '',
-			description: '',
-			icon: ''
-		} as Category);
+		const base: Category =
+			editing ??
+			({
+				slug: '',
+				name: '',
+				description: '',
+				icon: ''
+			} as Category);
 		const updated: Category = {
 			...base,
 			slug: form.slug || slugify(form.name),
@@ -133,7 +158,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search categories…" class="pl-9" />
 	</div>
 
@@ -152,7 +179,9 @@
 					<TableRow>
 						<TableCell class="font-medium">{c.name}</TableCell>
 						<TableCell class="text-sm text-muted-foreground">{parentName(c.parentSlug)}</TableCell>
-						<TableCell class="max-w-xs truncate text-sm text-muted-foreground">{c.description}</TableCell>
+						<TableCell class="max-w-xs truncate text-sm text-muted-foreground"
+							>{c.description}</TableCell
+						>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
 								<Button variant="ghost" size="icon" aria-label="Edit" onclick={() => openEdit(c)}>
@@ -180,9 +209,7 @@
 	<DialogContent class="sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit category' : 'New category'}</DialogTitle>
-			<DialogDescription>
-				Create or update a product category.
-			</DialogDescription>
+			<DialogDescription>Create or update a product category.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
 			<Field>
@@ -219,7 +246,9 @@
 		</div>
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create category'}</Button>
+			<Button variant="default" onclick={save}
+				>{editing ? 'Save changes' : 'Create category'}</Button
+			>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

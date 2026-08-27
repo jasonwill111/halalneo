@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { Button } from '$lib/components/ui/button';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import {
 		Accordion,
 		AccordionContent,
 		AccordionItem,
 		AccordionTrigger
-	} from '$lib/components/ui/accordion';
+	} from '#lib/components/ui/accordion/index.js';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 
 	type Faq = { q: string; a: string };
@@ -47,8 +47,6 @@
 	];
 </script>
 
-<svelte:head><title>FAQ — HalalNeo</title></svelte:head>
-
 <section class="mx-auto max-w-3xl space-y-8">
 	<div class="space-y-2 text-center">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Frequently asked questions</h1>
@@ -69,7 +67,9 @@
 	<div class="rounded-xl border border-border p-6 text-center">
 		<MessageCircle class="mx-auto size-7 text-primary" data-icon="header" />
 		<h2 class="mt-3 text-lg font-semibold">Still have a question?</h2>
-		<p class="mt-1 text-sm text-muted-foreground">Talk to our team — we reply within one business day.</p>
+		<p class="mt-1 text-sm text-muted-foreground">
+			Talk to our team — we reply within one business day.
+		</p>
 		<div class="mt-4">
 			<Button href={localizeHref('/contact')} variant="outline">Contact us</Button>
 		</div>

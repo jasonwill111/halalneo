@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { localizeHref } from '$lib/paraglide/runtime.js';
-	import { getCurrentAccount, signOut } from '$lib/stores/auth.svelte';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { getCurrentAccount, signOut } from '#lib/stores/auth.svelte.js';
 	import { mode, toggleMode } from 'mode-watcher';
-	import { Button } from '$lib/components/ui/button';
-	import { Avatar, AvatarFallback } from '$lib/components/ui/avatar';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import Sun from '@lucide/svelte/icons/sun';
 	import Moon from '@lucide/svelte/icons/moon';
 	import LogOut from '@lucide/svelte/icons/log-out';
@@ -19,7 +19,7 @@
 	import Newspaper from '@lucide/svelte/icons/newspaper';
 	import Bot from '@lucide/svelte/icons/bot';
 	import Settings from '@lucide/svelte/icons/settings';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 	import { page } from '$app/state';
 
 	let { children } = $props();
@@ -58,74 +58,78 @@
 
 <div class="flex h-dvh overflow-hidden bg-background text-foreground">
 	<aside
-		class="flex h-dvh w-64 shrink-0 flex-col border-r border-border bg-card/60 backdrop-blur"
+		class="flex h-dvh w-64 shrink-0 flex-col border-r border-border/50 bg-card/60 backdrop-blur-xl"
 		aria-label="Admin navigation"
 	>
-		<div class="flex h-16 shrink-0 items-center gap-2 border-b border-border px-4">
-			<span class="text-base font-semibold tracking-tight text-primary">HalalNeo Admin</span>
+		<div class="flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16">
+			<span class="text-base font-bold tracking-tight text-primary">HalalNeo Admin</span>
 		</div>
 
-		<nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Admin pages">
+		<nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-3" aria-label="Admin pages">
 			{#each navItems as item}
 				<Button
 					href={localizeHref(item.href)}
 					variant={isActive(page.url.pathname, item.href) ? 'secondary' : 'ghost'}
-					class={cn('w-full justify-start gap-2', isActive(page.url.pathname, item.href) ? '' : '')}
+					class={cn('w-full justify-start gap-2.5 text-sm')}
 					aria-current={isActive(page.url.pathname, item.href) ? 'page' : undefined}
 				>
-					<item.icon class="size-4 shrink-0"></item.icon>
+					<item.icon class="size-4 shrink-0" />
 					{item.label}
 				</Button>
 			{/each}
 		</nav>
 
-		<div class="shrink-0 space-y-1 border-t border-border px-3 py-3">
-			<div class="flex items-center gap-2 rounded-lg px-2 py-2">
+		<div class="shrink-0 border-t border-border/50 px-3 py-3">
+			<div class="flex items-center gap-2.5 rounded-lg px-2 py-2">
 				<Avatar class="size-8">
 					<AvatarFallback class="bg-primary/15 text-xs font-semibold text-primary">
 						{currentAccount ? initials(currentAccount.fullName) : 'AD'}
 					</AvatarFallback>
 				</Avatar>
 				<div class="min-w-0 flex-1">
-					<p class="truncate text-sm font-medium">{currentAccount ? currentAccount.fullName : 'Not signed in'}</p>
+					<p class="truncate text-sm font-medium">
+						{currentAccount ? currentAccount.fullName : 'Not signed in'}
+					</p>
 					{#if currentAccount}
 						<p class="truncate text-xs text-muted-foreground">{currentAccount.email}</p>
 					{/if}
 				</div>
 			</div>
-			<div class="flex items-center justify-between gap-1 border-t border-border pt-3">
-				<button
-					type="button"
-					onclick={() => toggleMode()}
-					class="inline-flex size-8 items-center justify-center rounded-lg border border-transparent text-sm font-medium transition-all outline-none select-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px"
+			<div class="flex items-center gap-1 border-t border-border/50 pt-2">
+				<Button
+					variant="ghost"
+					size="icon"
 					aria-label="Toggle theme"
+					onclick={() => toggleMode()}
+					class="size-8"
 				>
 					{#if mode.current === 'dark'}
 						<Sun class="size-4" />
 					{:else}
 						<Moon class="size-4" />
 					{/if}
-				</button>
-				<Button href={localizeHref('/')} variant="ghost" size="icon" aria-label="Back to homepage">
+				</Button>
+				<Button href={localizeHref('/')} variant="ghost" size="icon" aria-label="Back to homepage" class="size-8">
 					<Home class="size-4" />
 				</Button>
-				<button
-					type="button"
+				<Button
+					variant="ghost"
+					size="icon"
+					aria-label="Sign out"
+					class="size-8"
 					onclick={() => {
 						signOut();
 						window.location.href = localizeHref('/');
 					}}
-					class="inline-flex size-8 items-center justify-center rounded-lg border border-transparent text-sm font-medium transition-all outline-none select-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px"
-					aria-label="Sign out"
 				>
 					<LogOut class="size-4" />
-				</button>
+				</Button>
 			</div>
 		</div>
 	</aside>
 
 	<main class="h-dvh min-w-0 flex-1 overflow-y-auto">
-		<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+		<div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
 			{@render children()}
 		</div>
 	</main>

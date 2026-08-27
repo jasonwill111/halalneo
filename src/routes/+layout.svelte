@@ -1,8 +1,8 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
-	import { localizeHref, deLocalizeUrl } from '$lib/paraglide/runtime.js';
-	import { cn } from '$lib/utils.js';
+	import favicon from '#lib/assets/favicon.svg';
+	import { localizeHref, deLocalizeUrl, localizeUrl } from '#lib/paraglide/runtime.js';
+	import { cn } from '#lib/utils.js';
 	import { mode, toggleMode } from 'mode-watcher';
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/state';
@@ -10,12 +10,59 @@
 	import Moon from '@lucide/svelte/icons/moon';
 	import MenuIcon from '@lucide/svelte/icons/menu';
 	import SearchIcon from '@lucide/svelte/icons/search';
-	import { Button } from '$lib/components/ui/button';
-	import { Sheet, SheetContent, SheetTrigger } from '$lib/components/ui/sheet';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
+	import MobileTab from '#lib/components/mobile-tab.svelte';
 
 	let { children } = $props();
 
-	const isAdminRoute = $derived(deLocalizeUrl(page.url).pathname.startsWith('/admin'));
+	const isAdminRoute = $derived(deLocalizeUrl(page.url.href).pathname.startsWith('/admin'));
+
+	const siteName = 'HalalNeo';
+	const defaultDescription = 'Halal trade intelligence for buyers and suppliers — certification, sourcing and market guides in one place.';
+	const baseUrl = 'https://halalneo.com';
+
+	const seo = $derived.by(() => {
+		const path = deLocalizeUrl(page.url.href).pathname;
+		const title = page.data?.seo?.title ?? `${path === '/' ? 'Home' : path.split('/').pop()?.replace(/-/g, ' ')} — ${siteName}`;
+		const description = page.data?.seo?.description ?? defaultDescription;
+		const canonical = localizeUrl(`${baseUrl}${path}`).toString();
+		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/og-default.png`;
+		return { title, description, canonical, ogImage, path };
+	});
+
+	const organizationSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: siteName,
+		url: baseUrl,
+		logo: `${baseUrl}/favicon.svg`,
+		description: defaultDescription,
+		sameAs: []
+	};
+
+	const breadcrumbSchema = $derived.by(() => {
+		const segments = seo.path.split('/').filter(Boolean);
+		if (segments.length === 0) return null;
+		const items = [
+			{ name: 'Home', position: 1, item: baseUrl }
+		];
+		segments.forEach((seg, i) => {
+			items.push({
+				name: seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+				position: i + 2,
+				item: `${baseUrl}/${segments.slice(0, i + 1).join('/')}`
+			});
+		});
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'BreadcrumbList',
+			itemListElement: items.map((item) => ({
+				'@type': 'ListItem',
+				...item
+			}))
+		};
+	});
 
 	const navItems = [
 		{ label: 'Knowledge Base', href: '/knowledge-base' },
@@ -34,19 +81,38 @@
 
 <ModeWatcher />
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<link rel="icon" href={favicon} />
+	<title>{seo.title}</title>
+	<meta name="description" content={seo.description} />
+	<link rel="canonical" href={seo.canonical} />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content={siteName} />
+	<meta property="og:title" content={seo.title} />
+	<meta property="og:description" content={seo.description} />
+	<meta property="og:url" content={seo.canonical} />
+	<meta property="og:image" content={seo.ogImage} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={seo.title} />
+	<meta name="twitter:description" content={seo.description} />
+	<meta name="twitter:image" content={seo.ogImage} />
+	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}</script>`}
+	{#if breadcrumbSchema}
+		{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
+	{/if}
+</svelte:head>
 
 <div class="flex min-h-dvh flex-col bg-background text-foreground">
 	{#if isAdminRoute}
 		{@render children()}
 	{:else}
-		<header class="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
+		<header class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
 			<div
-				class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6"
+				class="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:h-16 sm:px-6"
 			>
-				<a href={localizeHref('/')} class="flex shrink-0 items-center gap-2">
+				<a href={localizeHref('/')} class="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80">
 					<img src={favicon} alt="HalalNeo" class="size-7" />
-					<span class="font-semibold tracking-tight text-primary">HalalNeo</span>
+					<span class="text-lg font-bold tracking-tight text-primary">HalalNeo</span>
 				</a>
 
 				<nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
@@ -55,6 +121,7 @@
 							href={localizeHref(item.href)}
 							variant={isActive(page.url.pathname, item.href) ? 'secondary' : 'ghost'}
 							size="sm"
+							class="text-sm"
 						>
 							{item.label}
 						</Button>
@@ -62,21 +129,21 @@
 				</nav>
 
 				<div class="flex items-center gap-1">
-					<Button href={localizeHref('/search')} variant="ghost" size="icon" aria-label="Search">
+					<Button href={localizeHref('/search')} variant="ghost" size="icon" aria-label="Search" class="hidden sm:inline-flex">
 						<SearchIcon class="size-4" />
 					</Button>
-					<button
-						type="button"
-						onclick={() => toggleMode()}
-						class="inline-flex size-8 items-center justify-center rounded-lg border border-transparent text-sm font-medium transition-all outline-none select-none hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-expanded:bg-muted"
+					<Button
+						variant="ghost"
+						size="icon"
 						aria-label="Toggle theme"
+						onclick={() => toggleMode()}
 					>
 						{#if mode.current === 'dark'}
 							<Sun class="size-4" />
 						{:else}
 							<Moon class="size-4" />
 						{/if}
-					</button>
+					</Button>
 					<Button
 						href={localizeHref('/login')}
 						variant="default"
@@ -104,7 +171,7 @@
 								<Button
 									href={localizeHref('/')}
 									variant={isActive(page.url.pathname, '/') ? 'secondary' : 'ghost'}
-									class={cn('justify-start')}
+									class="justify-start"
 								>
 									Home
 								</Button>
@@ -112,13 +179,13 @@
 									<Button
 										href={localizeHref(item.href)}
 										variant={isActive(page.url.pathname, item.href) ? 'secondary' : 'ghost'}
-										class={cn('justify-start')}
+										class="justify-start"
 									>
 										{item.label}
 									</Button>
 								{/each}
 								<Button href={localizeHref('/search')} variant="ghost" class="justify-start">
-									<SearchIcon class="size-4"></SearchIcon>
+									<SearchIcon class="size-4" />
 									Search
 								</Button>
 								<div class="mt-4 border-t border-border pt-4">
@@ -136,101 +203,24 @@
 			</div>
 		</header>
 
-		<main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
+		<main class="mx-auto w-full max-w-7xl flex-1 px-4 pb-24 pt-6 sm:px-6 sm:pb-10 sm:pt-8">
 			{@render children()}
 		</main>
 
-		<footer class="border-t border-border bg-muted/40">
-			<div class="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6">
-				<div class="grid grid-cols-2 gap-8 pb-8 sm:grid-cols-3 lg:grid-cols-4">
-					<div class="col-span-2 space-y-3 sm:col-span-1">
-						<div class="flex items-center gap-2">
-							<img src={favicon} alt="HalalNeo" class="size-6" />
-							<span class="text-base font-semibold text-primary">HalalNeo</span>
-						</div>
-						<p class="max-w-xs text-sm text-muted-foreground">
-							Halal trade intelligence for buyers and suppliers — certification, sourcing and market
-							guides in one place.
-						</p>
+		<footer class="border-t border-border/50 bg-muted/30">
+			<div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6">
+				<div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+					<div class="flex items-center gap-2">
+						<img src={favicon} alt="HalalNeo" class="size-5" />
+						<span class="text-sm font-semibold text-primary">{siteName}</span>
 					</div>
-					<div class="space-y-3">
-						<h4 class="text-sm font-semibold">Marketplace</h4>
-						<ul class="space-y-1.5 text-sm text-muted-foreground">
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/categories')}
-									>Categories</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/suppliers')}
-									>Suppliers</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/products')}
-									>Products</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/tools')}
-									>AI Tools</a
-								>
-							</li>
-						</ul>
-					</div>
-					<div class="space-y-3">
-						<h4 class="text-sm font-semibold">Resources</h4>
-						<ul class="space-y-1.5 text-sm text-muted-foreground">
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/knowledge-base')}
-									>Knowledge Base</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/blog')}>Blog</a>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/glossary')}
-									>Glossary</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/search')}>Search</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/faq')}>FAQ</a>
-							</li>
-						</ul>
-					</div>
-					<div class="col-span-2 space-y-3 sm:col-span-1">
-						<h4 class="text-sm font-semibold">Company</h4>
-						<ul class="space-y-1.5 text-sm text-muted-foreground">
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/about')}>About</a>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/contact')}
-									>Contact</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/login')}>Sign in</a
-								>
-							</li>
-							<li>
-								<a class="transition hover:text-foreground" href={localizeHref('/register')}
-									>Create account</a
-								>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="border-t border-border/60 py-5 text-xs text-muted-foreground">
-					© {new Date().getFullYear()} HalalNeo. For demonstration only — verify all certificates with
-					the listed certifying bodies.
+					<p class="text-center text-xs text-muted-foreground sm:text-left">
+						© {new Date().getFullYear()} {siteName}. Halal trade intelligence — verify all certificates with listed certifying bodies.
+					</p>
 				</div>
 			</div>
 		</footer>
+
+		<MobileTab />
 	{/if}
 </div>
