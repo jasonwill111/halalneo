@@ -56,7 +56,6 @@
 		{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
 		{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
 		{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
-		{ label: 'AI Chat', href: '/tools/ai-chat', icon: BotIcon },
 		// Ecosystem
 		{ label: 'Certifying Bodies', href: '/certifying-bodies', icon: ScaleIcon },
 		{ label: 'Service Providers', href: '/service-providers', icon: HandshakeIcon },

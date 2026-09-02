@@ -200,10 +200,10 @@
 		</div>
 		<h3 class="mb-1 text-sm font-bold text-foreground">Need Help?</h3>
 		<p class="mb-4 text-sm text-muted-foreground">
-			Ask our AI assistant about halal certification, sourcing or compliance.
+			Analyze ingredients for halal compliance instantly.
 		</p>
-		<Button href={localizeHref('/tools/ai-chat')}>
-			Ask AI Assistant
+		<Button href={localizeHref('/tools/ingredient-checker')}>
+			Ingredient Checker
 			<ArrowUpRight class="size-4" data-icon="inline-end" />
 		</Button>
 	</div>

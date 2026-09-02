@@ -9,7 +9,6 @@ import GlobeIcon from '@lucide/svelte/icons/globe';
 import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
 import CalculatorIcon from '@lucide/svelte/icons/calculator';
-import BotIcon from '@lucide/svelte/icons/bot';
 import InfoIcon from '@lucide/svelte/icons/info';
 import NewspaperIcon from '@lucide/svelte/icons/newspaper';
 import HandshakeIcon from '@lucide/svelte/icons/handshake';
@@ -69,8 +68,7 @@ export const navGroups: NavGroup[] = [
 		items: [
 			{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
 			{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
-			{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
-			{ label: 'AI Chat', href: '/tools/ai-chat', icon: BotIcon }
+			{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon }
 		]
 	},
 	{

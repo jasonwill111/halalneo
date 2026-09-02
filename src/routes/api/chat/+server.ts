@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
 		});
 
 		return createUIMessageStreamResponse({ stream });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Chat failed' }, { status: 500 });
+	} catch {
+		return json({ error: 'Service temporarily unavailable' }, { status: 500 });
 	}
 };

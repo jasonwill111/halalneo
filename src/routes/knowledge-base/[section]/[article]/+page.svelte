@@ -102,8 +102,8 @@
 
 					<div class="rounded-xl border border-primary/20 bg-primary/5 p-4">
 						<h4 class="mb-1 text-sm font-semibold">Need Help?</h4>
-						<p class="mb-3 text-xs text-muted-foreground">Ask our AI assistant about halal certification.</p>
-						<Button href="/tools/ai-chat" size="sm" class="w-full">Ask AI Assistant</Button>
+						<p class="mb-3 text-xs text-muted-foreground">Check if ingredients are halal compliant.</p>
+						<Button href="/tools/ingredient-checker" size="sm" class="w-full">Ingredient Checker</Button>
 					</div>
 				</div>
 			</aside>
