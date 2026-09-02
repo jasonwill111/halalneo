@@ -84,7 +84,7 @@ _Avoid_: content generator, AI assistant
 | Certifying Bodies | `/certifying-bodies`, `/certifying-bodies/[slug]` | ✅ 14 bodies |
 | Service Providers | `/service-providers`, `/service-providers/[slug]` | ✅ 10 providers |
 | Verify | `/verify` | ✅ Certificate verification tool |
-| AI Chat | `/tools/ai-chat` | ✅ AI trade assistant |
+| AI Chat | `/tools/ai-chat` | ⏸️ Coming soon (temporarily disabled) |
 | Ingredient Checker | `/tools/ingredient-checker` | ✅ AI ingredient analysis |
 | Certification Cost | `/tools/certification-cost` | ✅ Cost estimator (7 certifiers × 6 categories × 4 sizes) |
 | Search | `/search` | ✅ Full-text search across articles, glossary, suppliers, products |
@@ -125,7 +125,7 @@ _Avoid_: content generator, AI assistant
 | `/api/media/[key]` | GET | Media retrieval (R2 + 304 support) |
 | `/api/media/upload` | POST | Media upload |
 
-### Database Schema (10 tables + 21 indexes)
+### Database Schema (14 tables + 35 indexes)
 
 | Table | Purpose | Key |
 |-------|---------|-----|
