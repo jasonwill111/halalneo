@@ -127,29 +127,12 @@
 	<div class="rounded-xl bg-muted/40 p-6 sm:p-10">
 		<div class="grid gap-8 sm:grid-cols-2 sm:items-center">
 			<div class="space-y-3">
-				<h2 class="text-2xl font-semibold tracking-tight">Today on the platform</h2>
+				<h2 class="text-2xl font-semibold tracking-tight">What's on the platform</h2>
 				<p class="text-muted-foreground">
-					A working snapshot of the HalalNeo marketplace, updated as suppliers and products are
-					onboarded.
+					Researched knowledge base, trade tools, and market intelligence — built for halal B2B buyers and suppliers.
 				</p>
-				<div class="flex flex-wrap gap-2 pt-2">
-					<Badge variant="secondary">In-memory demo data</Badge>
-					<Badge variant="secondary">Prototype</Badge>
-				</div>
 			</div>
 			<div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">{data.stats.supplierCount}</p>
-					<p class="text-sm text-muted-foreground">verified suppliers</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">{data.stats.productCount}</p>
-					<p class="text-sm text-muted-foreground">certified products</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">{data.stats.marketCountries}</p>
-					<p class="text-sm text-muted-foreground">supplier countries</p>
-				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
 					<p class="text-3xl font-semibold text-primary">{data.stats.kbSectionCount}</p>
 					<p class="text-sm text-muted-foreground">knowledge sections</p>
@@ -159,10 +142,20 @@
 					<p class="text-sm text-muted-foreground">certifying bodies</p>
 				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">
-						{data.stats.totalListings}
-					</p>
-					<p class="text-sm text-muted-foreground">listings &amp; guides</p>
+					<p class="text-3xl font-semibold text-primary">3</p>
+					<p class="text-sm text-muted-foreground">trade tools</p>
+				</div>
+				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
+					<p class="text-3xl font-semibold text-primary">7</p>
+					<p class="text-sm text-muted-foreground">market guides</p>
+				</div>
+				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
+					<p class="text-3xl font-semibold text-primary">30+</p>
+					<p class="text-sm text-muted-foreground">glossary terms</p>
+				</div>
+				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
+					<p class="text-3xl font-semibold text-primary">20+</p>
+					<p class="text-sm text-muted-foreground">trade shows</p>
 				</div>
 			</div>
 		</div>

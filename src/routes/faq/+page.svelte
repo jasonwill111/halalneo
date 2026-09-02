@@ -48,15 +48,15 @@
 		},
 		{
 			q: 'Is HalalNeo free to use?',
-			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts —shortlisting and messaging suppliers —are free in this prototype. Supplier listing is by invitation; contact us to be considered.'
+			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts —shortlisting and messaging suppliers —are free. Supplier listing is by invitation; contact us to be considered.'
 		},
 		{
 			q: 'How do I get in touch with a supplier?',
-			a: 'Each product and supplier profile includes a request-information option. In the prototype, use the feedback details on the contact page and we will connect you, or register as a buyer to build a shortlist.'
+			a: 'Each product and supplier profile includes a request-information option. Register as a buyer to build a shortlist and contact suppliers directly.'
 		},
 		{
 			q: 'Is the product data on this site real?',
-			a: 'This deployment runs on curated demonstration data to showcase the platform. Certifying bodies are real and current, but supplier and product listings are illustrative. Project sourcing from the data you see before entering into any commercial agreement.'
+			a: 'Certifying bodies and certification standards referenced on HalalNeo are real and current. Supplier and product listings are illustrative examples to demonstrate the platform. Always verify directly with the certifying body before entering into any commercial agreement.'
 		}
 	];
 

@@ -2,107 +2,88 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import {
-		Card,
-		CardContent,
-		CardDescription,
-		CardHeader,
-		CardTitle
-	} from '#lib/components/ui/card/index.js';
-	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
-	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
-	import TrustBadges from '#lib/components/site/trust-badges.svelte';
+	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import ShieldCheck from '@lucide/svelte/icons/shield-check';
+import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
 	let { data } = $props();
 
-	const verified = $derived((data.suppliers ?? []).filter((s: any) => s.status === 'active'));
-	const productCount = (slug: string) =>
-		(data.products ?? []).filter((s: any) => s.supplierSlug === slug).length;
+	const certBodies = [
+		{ name: 'JAKIM', country: 'Malaysia', standard: 'MS 1500' },
+		{ name: 'BPJPH / MUI', country: 'Indonesia', standard: 'SNI 97112:2022' },
+		{ name: 'MUIS', country: 'Singapore', standard: 'Singapore MUIS' },
+		{ name: 'SFDA', country: 'Saudi Arabia', standard: 'SASO' },
+		{ name: 'MOIAT', country: 'UAE', standard: 'ESMA' },
+		{ name: 'IFANCA', country: 'United States', standard: 'IFANCA' },
+		{ name: 'GIMDES', country: 'Türkiye', standard: 'GIMDES' },
+		{ name: 'SANHA', country: 'South Africa', standard: 'SANHA' }
+	];
+
+	const businessTypes = [
+		'Food Manufacturers',
+		'Cosmetics & Personal Care',
+		'Pharmaceutical',
+		'Food Service & Catering',
+		'Ingredients & Additives',
+		'Packaging & Logistics'
+	];
 </script>
 
 <Breadcrumb items={[{ label: 'Suppliers', href: '/suppliers' }]} />
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Verified suppliers</h1>
+		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Supplier directory</h1>
 		<p class="text-muted-foreground">
-			{verified.length} active suppliers across 5 countries, each with independently verified halal certification
-			documents.
+			Browse halal-certified suppliers by certification body, business type, or region.
 		</p>
 	</div>
 
-	{#if !data.suppliers}
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each Array(6) as _}
-				<Card>
-					<CardHeader class="gap-3">
-						<div class="flex items-center justify-between">
-							<div class="h-11 w-11 animate-pulse rounded-xl bg-muted"></div>
-							<div class="h-5 w-14 animate-pulse rounded bg-muted"></div>
-						</div>
-						<div class="space-y-1">
-							<div class="h-4 w-3/4 animate-pulse rounded bg-muted"></div>
-							<div class="h-3 w-1/2 animate-pulse rounded bg-muted"></div>
-						</div>
-					</CardHeader>
-				</Card>
-			{/each}
+	<!-- Marketplace Coming Soon -->
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-6 text-center sm:p-8">
+		<Badge variant="secondary" class="mb-3">Coming Soon</Badge>
+		<h2 class="text-xl font-semibold tracking-tight">Verified supplier profiles</h2>
+		<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
+			We're onboarding certified halal suppliers. Each profile will include certification details, scope, and verified contact information.
+		</p>
+		<div class="mt-4">
+			<Button href={localizeHref('/register')} size="sm">Join the waitlist</Button>
 		</div>
-	{:else}
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each (data.suppliers ?? []) as supplier (supplier.slug)}
-				<Card hoverable>
-					<CardHeader class="gap-3">
-						<div class="flex items-center justify-between">
-							<div
-								class="flex size-11 items-center justify-center rounded-xl bg-primary/15 text-sm font-semibold text-primary"
-							>
-								{supplier.logoInitials}
-							</div>
-							<Badge variant={supplier.status === 'active' ? 'default' : 'secondary'}>
-								{supplier.status}
-							</Badge>
-						</div>
-						<div class="space-y-1">
-							<CardTitle class="text-base">{supplier.name}</CardTitle>
-							<CardDescription>
-								{supplier.country} · {supplier.businessType}
-								{supplier.isBrand ? ' · brand' : ''}
-							</CardDescription>
-						</div>
-					</CardHeader>
-					<CardContent class="space-y-3">
-						<TrustBadges certifications={supplier.certifications} status={supplier.status} compact={true} />
-						<p class="line-clamp-3 text-sm text-muted-foreground">{supplier.description}</p>
-						<div class="flex items-center justify-between text-sm">
-							<span class="text-muted-foreground">Est.</span>
-							<span class="font-medium">{supplier.yearEstablished}</span>
-						</div>
-						<div class="flex items-center justify-between text-sm">
-							<span class="text-muted-foreground">Products</span>
-							<span class="font-medium">{productCount(supplier.slug)}</span>
-						</div>
-						<div class="flex items-center justify-between text-sm">
-							<span class="text-muted-foreground">Certifications</span>
-							<span class="font-medium">{supplier.certifications.length}</span>
-						</div>
-						<Button
-							href={localizeHref(`/suppliers/${supplier.slug}`)}
-							variant="outline"
-							size="sm"
-							class="w-full"
-						>
-							View supplier
-							<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-						</Button>
-					</CardContent>
-				</Card>
-			{:else}
-				<div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
-					<p class="text-lg font-medium text-muted-foreground">No suppliers found</p>
-					<p class="text-sm text-muted-foreground">Try adjusting your search or filters.</p>
+	</div>
+
+	<!-- Certifying Bodies -->
+	<div class="space-y-4">
+		<div>
+			<h2 class="text-lg font-semibold">Recognised certifying bodies</h2>
+			<p class="text-xs text-muted-foreground">Suppliers on HalalNeo carry certificates from these recognised bodies.</p>
+		</div>
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+			{#each certBodies as body}
+				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
+					<div class="flex items-center gap-2 mb-2">
+						<ShieldCheck class="size-4 text-primary" />
+						<span class="text-sm font-semibold">{body.name}</span>
+					</div>
+					<p class="text-xs text-muted-foreground">{body.country}</p>
+					<p class="text-xs text-muted-foreground">Standard: {body.standard}</p>
 				</div>
 			{/each}
 		</div>
-	{/if}
+	</div>
+
+	<!-- Business Types -->
+	<div class="space-y-4">
+		<div>
+			<h2 class="text-lg font-semibold">Supplier categories</h2>
+			<p class="text-xs text-muted-foreground">Halal-certified suppliers across these industries.</p>
+		</div>
+		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+			{#each businessTypes as type}
+				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
+					<h3 class="text-sm font-medium">{type}</h3>
+					<p class="mt-1 text-xs text-muted-foreground">Coming soon</p>
+				</div>
+			{/each}
+		</div>
+	</div>
 </section>

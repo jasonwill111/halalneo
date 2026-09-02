@@ -4,17 +4,20 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '#lib/components/ui/card/index.js';
-	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import Search from '@lucide/svelte/icons/search';
+	import FlaskConical from '@lucide/svelte/icons/flask-conical';
+	import Calculator from '@lucide/svelte/icons/calculator';
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
 
 	const slides = [
-		{ image: '/images/hero-1.jpg', title: 'Source halal.\nVerify it.\nShip it.', subtitle: 'Connect with certified halal suppliers worldwide. Browse verified products and simplify your supply chain.' },
-		{ image: '/images/hero-2.jpg', title: 'Certified products.\nVerified suppliers.\nGlobal reach.', subtitle: 'Every listing backed by real halal certification data from recognized certifying bodies.' },
-		{ image: '/images/hero-3.jpg', title: 'Trade intelligence.\nMarket guides.\nDue diligence.', subtitle: 'Make informed sourcing decisions with comprehensive halal trade knowledge.' }
+		{ image: '/images/hero-1.jpg', title: 'Halal trade\nintelligence.', subtitle: 'Research certification bodies, verify suppliers, and navigate global halal markets — all in one place.' },
+		{ image: '/images/hero-2.jpg', title: 'Certification\nguides.', subtitle: 'Deep-dive into JAKIM, MUI, GSO, and 14+ certifying bodies. Standards, scope, and mutual recognition explained.' },
+		{ image: '/images/hero-3.jpg', title: 'Market entry\nreports.', subtitle: 'Country-by-country analysis of halal regulations, import requirements, and sourcing opportunities.' }
 	];
 
 	let currentSlide = $state(0);
@@ -43,7 +46,7 @@
 		'@type': 'WebSite',
 		name: 'HalalNeo',
 		url: 'https://halalneo.com',
-		description: 'Halal trade intelligence platform connecting halal manufacturers, suppliers, and buyers worldwide.',
+		description: 'Halal trade intelligence platform — certification guides, market reports, and supplier verification for global halal trade.',
 		potentialAction: {
 			'@type': 'SearchAction',
 			target: {
@@ -79,8 +82,8 @@
 								{slide.subtitle}
 							</p>
 							<div class="mt-3 flex flex-col gap-1.5 sm:flex-row sm:gap-2">
-								<Button href={localizeHref('/products')} size="lg">Browse Products</Button>
-								<Button href={localizeHref('/knowledge-base')} variant="outline" size="lg">Knowledge Base</Button>
+								<Button href={localizeHref('/knowledge-base')} size="lg">Explore Knowledge Base</Button>
+								<Button href={localizeHref('/categories')} variant="outline" size="lg">Browse Categories</Button>
 							</div>
 						</div>
 					</div>
@@ -102,19 +105,12 @@
 	</div>
 
 	<p class="mb-4 text-[11px] text-muted-foreground">
-		Trusted data from <span class="font-medium text-foreground">{data.stats.kbSections} certifying bodies</span>
+		Researched data from <span class="font-medium text-foreground">{data.stats.kbSections} knowledge sections</span> · <span class="font-medium text-foreground">{data.stats.glossaryTerms} glossary terms</span>
 	</p>
 </section>
 
+<!-- STATS -->
 <section class="grid grid-cols-2 gap-2 lg:grid-cols-4">
-	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
-		<div class="text-2xl font-bold text-primary">{data.stats.verifiedSuppliers}</div>
-		<div class="mt-0.5 text-xs text-muted-foreground">Verified suppliers</div>
-	</div>
-	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
-		<div class="text-2xl font-bold text-primary">{data.stats.certifiedProducts}</div>
-		<div class="mt-0.5 text-xs text-muted-foreground">Certified products</div>
-	</div>
 	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
 		<div class="text-2xl font-bold text-primary">{data.stats.kbSections}</div>
 		<div class="mt-0.5 text-xs text-muted-foreground">Knowledge sections</div>
@@ -122,6 +118,39 @@
 	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
 		<div class="text-2xl font-bold text-primary">{data.stats.glossaryTerms}</div>
 		<div class="mt-0.5 text-xs text-muted-foreground">Glossary terms</div>
+	</div>
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
+		<div class="text-2xl font-bold text-primary">14+</div>
+		<div class="mt-0.5 text-xs text-muted-foreground">Certifying bodies</div>
+	</div>
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
+		<div class="text-2xl font-bold text-primary">7</div>
+		<div class="mt-0.5 text-xs text-muted-foreground">Market guides</div>
+	</div>
+</section>
+
+<!-- TOOLS -->
+<section>
+	<div class="mb-3">
+		<h2 class="text-lg font-semibold">Halal trade tools</h2>
+		<p class="text-xs text-muted-foreground">Free tools to help you navigate halal certification and compliance.</p>
+	</div>
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+		<a href={localizeHref('/tools/ingredient-checker')} class="group rounded-xl ring-1 ring-foreground/10 bg-card p-4 transition-all hover:shadow-md">
+			<FlaskConical class="size-6 text-primary mb-2" />
+			<h3 class="text-sm font-medium group-hover:text-primary transition-colors">Ingredient Checker</h3>
+			<p class="mt-1 text-xs text-muted-foreground">Analyze ingredient lists for halal compliance instantly.</p>
+		</a>
+		<a href={localizeHref('/tools/certification-cost')} class="group rounded-xl ring-1 ring-foreground/10 bg-card p-4 transition-all hover:shadow-md">
+			<Calculator class="size-6 text-primary mb-2" />
+			<h3 class="text-sm font-medium group-hover:text-primary transition-colors">Certification Cost</h3>
+			<p class="mt-1 text-xs text-muted-foreground">Estimate halal certification costs across 7 certifiers.</p>
+		</a>
+		<a href={localizeHref('/verify')} class="group rounded-xl ring-1 ring-foreground/10 bg-card p-4 transition-all hover:shadow-md">
+			<Search class="size-6 text-primary mb-2" />
+			<h3 class="text-sm font-medium group-hover:text-primary transition-colors">Verify Certificate</h3>
+			<p class="mt-1 text-xs text-muted-foreground">Check halal certificate authenticity and scope.</p>
+		</a>
 	</div>
 </section>
 
@@ -144,75 +173,23 @@
 	</div>
 </section>
 
-<!-- FEATURED PRODUCTS -->
-<section>
-	<div class="mb-4 flex items-end justify-between">
-		<h2 class="text-lg font-semibold">Featured products</h2>
-		<a href={localizeHref('/products')} class="text-xs text-primary hover:underline">View all</a>
-	</div>
-	<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-		{#each data.featuredProducts as product}
-			<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-3 transition-all hover:shadow-md">
-				<div class="mb-2 aspect-square rounded-md bg-muted flex items-center justify-center text-muted-foreground">
-					{#if product.image}
-						<img src={product.image} alt={product.name} class="h-full w-full rounded-md object-cover" loading="lazy" decoding="async" width="400" height="400" onerror={(e) => { e.currentTarget.style.display='none'; }}>
-					{:else}
-						<span class="text-xs">No image</span>
-					{/if}
-				</div>
-				<h3 class="text-sm font-medium leading-snug">{product.name}</h3>
-				<p class="text-xs text-muted-foreground mt-0.5">{product.originCountry} · {product.certStatus}</p>
-				{#if product.priceMin || product.priceMax}
-					<div class="mt-1 text-sm font-semibold text-primary">
-						{product.priceMin ? `$${product.priceMin}` : ''}{product.priceMin && product.priceMax ? ' - ' : ''}{product.priceMax ? `$${product.priceMax}` : ''}
-						{#if product.priceUnit}<span class="text-xs font-normal text-muted-foreground">/{product.priceUnit}</span>{/if}
-					</div>
-				{/if}
-				{#if product.moq}
-					<p class="text-xs text-muted-foreground">MOQ: {product.moq}</p>
-				{/if}
-				<a href={localizeHref(`/products/${product.slug}`)} class="mt-3 inline-flex h-8 w-full items-center justify-center rounded-md border border-border text-xs font-medium hover:bg-accent transition-colors">View details</a>
-			</div>
-		{/each}
-	</div>
-</section>
-
-<!-- FEATURED SUPPLIERS -->
-<section>
-	<div class="mb-4 flex items-end justify-between">
-		<h2 class="text-lg font-semibold">Featured suppliers</h2>
-		<a href={localizeHref('/suppliers')} class="text-xs text-primary hover:underline">View all</a>
-	</div>
-	<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-		{#each data.featuredSuppliers as supplier}
-			<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-3 transition-all hover:shadow-md">
-				<div class="flex items-center gap-2">
-					<Avatar>
-						<AvatarFallback>{supplier.logoInitials}</AvatarFallback>
-					</Avatar>
-					<div>
-						<h3 class="text-sm font-medium leading-snug">{supplier.name}</h3>
-						<p class="text-xs text-muted-foreground">{supplier.country}</p>
-					</div>
-				</div>
-				<p class="mt-2 text-xs text-muted-foreground line-clamp-2">{supplier.description}</p>
-				<div class="mt-2">
-					<Badge variant="secondary" class="capitalize">{supplier.businessType}</Badge>
-				</div>
-				<div class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground">
-					<ShieldCheck class="size-3 text-primary"></ShieldCheck>
-					{supplier.certifications.length} certs
-				</div>
-				<a href={localizeHref(`/suppliers/${supplier.slug}`)} class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-xs font-medium hover:bg-accent transition-colors">View profile</a>
-			</div>
-		{/each}
+<!-- MARKETPLACE COMING SOON -->
+<section class="rounded-xl ring-1 ring-foreground/10 bg-card p-6 text-center sm:p-8">
+	<Badge variant="secondary" class="mb-3">Coming Soon</Badge>
+	<h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Marketplace</h2>
+	<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
+		We're building a verified supplier directory and product marketplace. Every listing will be backed by real halal certification data from recognized certifying bodies.
+	</p>
+	<div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+		<Button href={localizeHref('/register')} size="lg">Join the waitlist</Button>
+		<Button href={localizeHref('/knowledge-base')} variant="outline" size="lg">Explore the knowledge base</Button>
 	</div>
 </section>
 
 <!-- KB PREVIEW -->
 <section>
 	<div class="mb-4 flex items-end justify-between">
-		<h2 class="text-lg font-semibold">Knowledge base</h2>
+		<h2 class="text-lg font-semibold">Latest from the knowledge base</h2>
 		<a href={localizeHref('/knowledge-base')} class="text-xs text-primary hover:underline">View all</a>
 	</div>
 	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -228,12 +205,12 @@
 
 <!-- CTA -->
 <section class="mt-6 rounded-xl ring-1 ring-foreground/10 bg-card p-6 text-center sm:p-8">
-	<h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Ready to start sourcing?</h2>
+	<h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Navigate halal trade with confidence</h2>
 	<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
-		Create a buyer account to shortlist certified suppliers and products, and keep up with halal trade intelligence.
+		Access comprehensive certification guides, market reports, and trade intelligence — built for B2B buyers and suppliers.
 	</p>
 	<div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-		<Button href={localizeHref('/register')} size="lg">Create a free account</Button>
+		<Button href={localizeHref('/knowledge-base')} size="lg">Start reading</Button>
 		<Button href={localizeHref('/glossary')} variant="outline" size="lg">Browse the glossary</Button>
 	</div>
 </section>

@@ -19,9 +19,9 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
 	const offices = [
-		{ city: 'Dubai, UAE', address: 'Business Bay, Tower A', phone: '+971 4 555 0123', email: 'dubai@halalneo.com' },
-		{ city: 'Istanbul, Turkey', address: 'Levent, Maslak District', phone: '+90 212 555 0456', email: 'istanbul@halalneo.com' },
-		{ city: 'Jakarta, Indonesia', address: 'SCBD, Sudirman Center', phone: '+62 21 555 0789', email: 'jakarta@halalneo.com' }
+		{ city: 'Dubai, UAE', address: 'Business Bay', email: 'dubai@halalneo.com' },
+		{ city: 'Istanbul, Türkiye', address: 'Levent, Maslak District', email: 'istanbul@halalneo.com' },
+		{ city: 'Jakarta, Indonesia', address: 'SCBD, Sudirman Center', email: 'jakarta@halalneo.com' }
 	];
 
 	let name = $state('');
@@ -80,15 +80,15 @@
 			'@type': 'Organization',
 			'name': 'HalalNeo',
 			'url': 'https://halalneo.com',
-			'email': 'hello@halalneo.example',
+			'email': 'contact@halalneo.com',
 			'address': {
 				'@type': 'PostalAddress',
-				'addressLocality': 'Singapore',
-				'addressCountry': 'SG'
+				'addressLocality': 'Kuala Lumpur',
+				'addressCountry': 'MY'
 			},
 			'contactPoint': {
 				'@type': 'ContactPoint',
-				'email': 'hello@halalneo.example',
+				'email': 'contact@halalneo.com',
 				'contactType': 'customer service',
 				'availableLanguage': ['English']
 			}
@@ -120,15 +120,11 @@
 				<CardContent class="space-y-1.5 text-sm text-muted-foreground">
 					<p class="flex items-start gap-1.5">
 						<MapPin class="mt-0.5 size-3.5 shrink-0 text-primary"></MapPin>
-						Level 28, Menara TM, Kuala Lumpur, Malaysia
+						Kuala Lumpur, Malaysia
 					</p>
 					<p class="flex items-center gap-1.5">
 						<Mail class="size-3.5 shrink-0 text-primary"></Mail>
 						contact@halalneo.com
-					</p>
-					<p class="flex items-center gap-1.5">
-						<span class="size-3.5 shrink-0 text-primary text-center text-xs">📞</span>
-						+60 3-8000-1234
 					</p>
 				</CardContent>
 			</Card>
