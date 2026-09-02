@@ -43,3 +43,10 @@ test-results
 *.jpg
 *.jpeg
 *.webp
+
+# Local dev
+local.db
+build-error*.tmp
+tmp/
+wrangler-dev*.log
+wrangler-dev-err.log

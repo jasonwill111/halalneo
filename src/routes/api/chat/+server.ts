@@ -2,11 +2,16 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { handleChatStream } from '@mastra/ai-sdk';
 import { createUIMessageStreamResponse } from 'ai';
-import { mastra } from '#lib/server/mastra/index.js';
+import { createMastra } from '#lib/server/mastra/index.js';
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals, platform }) => {
 	if (!locals.session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
+	const apiKey = platform?.env?.AGNES_API_KEY;
+	if (!apiKey) {
+		return json({ error: 'AI service unavailable' }, { status: 503 });
 	}
 
 	try {
@@ -16,6 +21,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 
 		const params = { messages: body.messages.slice(-20) };
+
+		const mastra = createMastra(apiKey);
 
 		const stream = await handleChatStream({
 			mastra,

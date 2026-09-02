@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS `categories` (
-	`slug` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `description` text, `parent_slug` text, `icon` text, `sort_order` integer DEFAULT 0, `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+	`slug` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `description` text, `parent_slug` text, `icon` text, `sort_order` integer DEFAULT 0, `status` text DEFAULT 'active', `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `certifying_bodies` (
-	`id` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `country` text NOT NULL, `standard` text, `website` text, `description` text, `status` text DEFAULT 'active', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+	`id` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `country` text NOT NULL, `standard` text, `website` text, `description` text, `status` text DEFAULT 'active', `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `inquiries` (
 	`id` text PRIMARY KEY NOT NULL, `buyer_slug` text NOT NULL, `supplier_slug` text, `product_slug` text, `subject` text NOT NULL, `message` text NOT NULL, `status` text DEFAULT 'active', `created_at` integer NOT NULL, `updated_at` integer NOT NULL,
 	FOREIGN KEY (`supplier_slug`) REFERENCES `suppliers`(`slug`), FOREIGN KEY (`product_slug`) REFERENCES `products`(`slug`)
 );
 CREATE TABLE IF NOT EXISTS `knowledge_base` (
-	`slug` text PRIMARY KEY NOT NULL, `section` text NOT NULL, `title` text NOT NULL, `summary` text, `body` text, `tags` text, `author` text, `status` text DEFAULT 'draft', `views` integer DEFAULT 0, `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+	`slug` text PRIMARY KEY NOT NULL, `section` text NOT NULL, `title` text NOT NULL, `summary` text, `body` text, `tags` text, `author` text, `status` text DEFAULT 'draft', `views` integer DEFAULT 0, `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `media` (
 	`id` text PRIMARY KEY NOT NULL, `key` text NOT NULL, `filename` text NOT NULL, `content_type` text NOT NULL, `size` integer NOT NULL, `uploaded_by` text NOT NULL, `thumbnail_key` text, `alt` text, `created_at` integer NOT NULL
@@ -22,13 +22,13 @@ CREATE TABLE IF NOT EXISTS `products` (
 	FOREIGN KEY (`supplier_slug`) REFERENCES `suppliers`(`slug`), FOREIGN KEY (`category_slug`) REFERENCES `categories`(`slug`)
 );
 CREATE TABLE IF NOT EXISTS `service_providers` (
-	`slug` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `type` text NOT NULL, `country` text NOT NULL, `description` text, `website` text, `email` text, `phone` text, `whatsapp` text, `line` text, `rating` real, `status` text DEFAULT 'pending', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+	`slug` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `type` text NOT NULL, `country` text NOT NULL, `description` text, `website` text, `email` text, `phone` text, `whatsapp` text, `line` text, `rating` real, `status` text DEFAULT 'pending', `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `site_settings` (
 	`key` text PRIMARY KEY NOT NULL, `value` text NOT NULL, `updated_at` integer NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `suppliers` (
-	`slug` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `country` text NOT NULL, `business_type` text NOT NULL, `is_brand` integer DEFAULT false, `status` text DEFAULT 'pending', `logo_initials` text, `description` text, `cover_image` text, `website` text, `email` text, `phone` text, `whatsapp` text, `line` text, `year_established` integer, `employee_count` text, `production_capacity` text, `main_markets` text, `certifications` text, `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+	`slug` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `country` text NOT NULL, `business_type` text NOT NULL, `is_brand` integer DEFAULT false, `status` text DEFAULT 'pending', `logo_initials` text, `description` text, `cover_image` text, `website` text, `email` text, `phone` text, `whatsapp` text, `line` text, `year_established` integer, `employee_count` text, `production_capacity` text, `main_markets` text, `certifications` text, `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
 );
 CREATE TABLE IF NOT EXISTS `market_guides` (
 	`slug` text PRIMARY KEY NOT NULL, `country` text NOT NULL, `flag` text DEFAULT '', `region` text DEFAULT '', `muslim_population` text DEFAULT '', `total_population` text DEFAULT '', `market_size_usd` text DEFAULT '', `mandate_status` text DEFAULT '', `mandatory_since` text DEFAULT '', `certifying_bodies` text DEFAULT '[]', `import_requirements` text DEFAULT '[]', `standard_basis` text DEFAULT '', `certificate_validity` text DEFAULT '', `estimated_cost_usd` text DEFAULT '', `processing_time` text DEFAULT '', `key_insights` text DEFAULT '[]', `opportunities` text DEFAULT '[]', `challenges` text DEFAULT '[]', `summary` text DEFAULT '', `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `status` text DEFAULT 'active', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
@@ -36,6 +36,25 @@ CREATE TABLE IF NOT EXISTS `market_guides` (
 CREATE TABLE IF NOT EXISTS `trade_shows` (
 	`id` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `city` text DEFAULT '', `country` text DEFAULT '', `region` text DEFAULT '', `start_date` text DEFAULT '', `end_date` text DEFAULT '', `venue` text DEFAULT '', `website` text DEFAULT '', `scale` text DEFAULT '', `description` text DEFAULT '', `focus` text DEFAULT '[]', `exhibitors` integer, `visitors` integer, `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `status` text DEFAULT 'active', `created_at` integer NOT NULL, `updated_at` integer NOT NULL
 );
+CREATE TABLE IF NOT EXISTS `user` (
+	`id` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `email` text NOT NULL, `email_verified` integer NOT NULL, `image` text, `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+);
+CREATE TABLE IF NOT EXISTS `session` (
+	`id` text PRIMARY KEY NOT NULL, `token` text NOT NULL, `user_id` text NOT NULL, `expires_at` integer NOT NULL, `ip_address` text, `user_agent` text, `created_at` integer NOT NULL, `updated_at` integer NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+CREATE TABLE IF NOT EXISTS `account` (
+	`id` text PRIMARY KEY NOT NULL, `user_id` text NOT NULL, `account_id` text NOT NULL, `provider_id` text NOT NULL, `access_token` text, `refresh_token` text, `access_token_expires_at` integer, `refresh_token_expires_at` integer, `scope` text, `id_token` text, `created_at` integer NOT NULL, `updated_at` integer NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+CREATE TABLE IF NOT EXISTS `verification` (
+	`id` text PRIMARY KEY NOT NULL, `identifier` text NOT NULL, `value` text NOT NULL, `expires_at` integer NOT NULL, `created_at` integer NOT NULL, `updated_at` integer NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS `user_email_unique` ON `user` (`email`);
+CREATE UNIQUE INDEX IF NOT EXISTS `session_token_unique` ON `session` (`token`);
+CREATE INDEX IF NOT EXISTS `session_user_id_idx` ON `session` (`user_id`);
+CREATE INDEX IF NOT EXISTS `account_user_id_idx` ON `account` (`user_id`);
+CREATE INDEX IF NOT EXISTS `verification_identifier_idx` ON `verification` (`identifier`);
 CREATE UNIQUE INDEX IF NOT EXISTS `media_key_unique` ON `media` (`key`);
 CREATE INDEX IF NOT EXISTS `idx_media_key` ON `media` (`key`);
 CREATE INDEX IF NOT EXISTS `idx_products_category` ON `products` (`category_slug`);

@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { eq, like, or, sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/d1';
+import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheShort } from '#lib/server/cache.js';
 
@@ -9,7 +9,8 @@ export const GET: RequestHandler = async ({ url, platform }) => {
 	const q = url.searchParams.get('q')?.trim();
 	if (!q) return json({ results: [] });
 
-	const db = drizzle(platform!.env.DB);
+	const db = getDbFromPlatform(platform);
+	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const term = `%${q}%`;
 
