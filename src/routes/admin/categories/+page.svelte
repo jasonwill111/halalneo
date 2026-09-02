@@ -9,7 +9,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -36,10 +36,13 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Category | null>(null);
+	let seoExpanded = $state(false);
 
 	type CategoryForm = {
 		slug: string;
@@ -47,13 +50,23 @@
 		description: string;
 		parentSlug: string;
 		icon: string;
+		status: 'active' | 'inactive';
+		sortOrder: string;
+		metaTitle: string;
+		metaDescription: string;
+		keywords: string;
 	};
 	let form = $state<CategoryForm>({
 		slug: '',
 		name: '',
 		description: '',
 		parentSlug: '',
-		icon: ''
+		icon: '',
+		status: 'active',
+		sortOrder: '',
+		metaTitle: '',
+		metaDescription: '',
+		keywords: ''
 	});
 	let formError = $state('');
 
@@ -79,8 +92,9 @@
 
 	function openCreate() {
 		editing = null;
-		form = { slug: '', name: '', description: '', parentSlug: '', icon: '' };
+		form = { slug: '', name: '', description: '', parentSlug: '', icon: '', status: 'active', sortOrder: '', metaTitle: '', metaDescription: '', keywords: '' };
 		formError = '';
+		seoExpanded = false;
 		dialogOpen = true;
 	}
 
@@ -91,9 +105,15 @@
 			name: c.name,
 			description: c.description,
 			parentSlug: c.parentSlug ?? '',
-			icon: c.icon
+			icon: c.icon,
+			status: c.status ?? 'active',
+			sortOrder: c.sortOrder != null ? String(c.sortOrder) : '',
+			metaTitle: c.metaTitle ?? '',
+			metaDescription: c.metaDescription ?? '',
+			keywords: c.keywords ?? ''
 		};
 		formError = '';
+		seoExpanded = false;
 		dialogOpen = true;
 	}
 
@@ -120,7 +140,12 @@
 			name: form.name.trim(),
 			description: form.description.trim(),
 			parentSlug: form.parentSlug || undefined,
-			icon: form.icon.trim() || base.icon
+			icon: form.icon.trim() || base.icon,
+			status: form.status,
+			sortOrder: form.sortOrder ? Number(form.sortOrder) : undefined,
+			metaTitle: form.metaTitle.trim() || undefined,
+			metaDescription: form.metaDescription.trim() || undefined,
+			keywords: form.keywords.trim() || undefined
 		};
 		upsertItem<Category>('categories', updated, editing ?? undefined);
 		dialogOpen = false;
@@ -161,7 +186,7 @@
 		<Search
 			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search categories…" class="pl-9" />
+		<Input bind:value={search} placeholder="Search categories..." class="pl-9" />
 	</div>
 
 	<div class="rounded-xl ring-1 ring-foreground/10">
@@ -212,16 +237,16 @@
 			<DialogDescription>Create or update a product category.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
-			<Field>
-				<FieldLabel>Name</FieldLabel>
+			<Field.Field>
+				<Field.FieldLabel>Name</Field.FieldLabel>
 				<Input bind:value={form.name} placeholder="Category name" />
-			</Field>
-			<Field>
-				<FieldLabel>Slug</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Slug</Field.FieldLabel>
 				<Input bind:value={form.slug} placeholder="category-slug" disabled={!!editing} />
-			</Field>
-			<Field>
-				<FieldLabel>Parent</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Parent</Field.FieldLabel>
 				<Select bind:value={form.parentSlug} type="single">
 					<SelectTrigger class="w-full">{parentName(form.parentSlug)}</SelectTrigger>
 					<SelectContent>
@@ -231,15 +256,63 @@
 						{/each}
 					</SelectContent>
 				</Select>
-			</Field>
-			<Field>
-				<FieldLabel>Icon</FieldLabel>
+			</Field.Field>
+			<div class="grid grid-cols-2 gap-4">
+				<Field.Field>
+					<Field.FieldLabel>Status</Field.FieldLabel>
+					<Select bind:value={form.status} type="single">
+						<SelectTrigger class="w-full">{form.status}</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="active">Active</SelectItem>
+							<SelectItem value="inactive">Inactive</SelectItem>
+						</SelectContent>
+					</Select>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Sort Order</Field.FieldLabel>
+					<Input bind:value={form.sortOrder} type="number" min="0" placeholder="0" />
+				</Field.Field>
+			</div>
+			<Field.Field>
+				<Field.FieldLabel>Icon</Field.FieldLabel>
 				<Input bind:value={form.icon} placeholder="UtensilsCrossed" />
-			</Field>
-			<Field>
-				<FieldLabel>Description</FieldLabel>
-				<Textarea bind:value={form.description} rows={3} placeholder="Category description…" />
-			</Field>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Description</Field.FieldLabel>
+				<Textarea bind:value={form.description} rows={3} placeholder="Category description..." />
+			</Field.Field>
+
+			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
+			<button
+				type="button"
+				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
+				onclick={() => (seoExpanded = !seoExpanded)}
+			>
+				{#if seoExpanded}
+					<ChevronDown class="size-4" />
+				{:else}
+					<ChevronRight class="size-4" />
+				{/if}
+				SEO & Metadata
+			</button>
+
+			{#if seoExpanded}
+				<div class="flex flex-col gap-4 pl-6">
+					<Field.Field>
+						<Field.FieldLabel>Meta Title</Field.FieldLabel>
+						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Meta Description</Field.FieldLabel>
+						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Keywords</Field.FieldLabel>
+						<Input bind:value={form.keywords} placeholder="Comma separated: halal, food, certification" />
+					</Field.Field>
+				</div>
+			{/if}
+
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}

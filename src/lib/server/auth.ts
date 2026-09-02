@@ -4,6 +4,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import { getDb } from '#lib/server/db/index.js';
+import type { RequestEvent } from '@sveltejs/kit';
 
 const authConfig = {
 	baseURL: ORIGIN,
@@ -19,6 +20,26 @@ export const createAuth = (d1: D1Database) =>
 		...authConfig,
 		database: drizzleAdapter(getDb(d1), { provider: 'sqlite' })
 	});
+
+/**
+ * Get the current session from a request event.
+ * Returns null if not authenticated.
+ */
+export async function getSession(event: RequestEvent): Promise<{ session: any; user: any } | null> {
+	// Prefer session already resolved by handleBetterAuth middleware
+	if (event.locals.session && event.locals.user) {
+		return { session: event.locals.session, user: event.locals.user };
+	}
+
+	const db = event.platform?.env?.DB;
+	if (!db) return null;
+
+	const authInstance = createAuth(db);
+	const result = await authInstance.api.getSession({ headers: event.request.headers });
+	if (!result) return null;
+
+	return { session: result.session, user: result.user };
+}
 
 /**
  * DO NOT USE!

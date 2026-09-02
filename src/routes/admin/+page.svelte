@@ -16,15 +16,19 @@
 	import FolderTree from '@lucide/svelte/icons/folder-tree';
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 
-	const activeSuppliers = $derived(adminData.merchants.filter((m) => m.status === 'active').length);
+	const activeSuppliers = $derived(adminData.suppliers.filter((s) => s.status === 'active').length);
 	const pendingSuppliers = $derived(
-		adminData.merchants.filter((m) => m.status === 'pending').length
+		adminData.suppliers.filter((s) => s.status === 'pending').length
 	);
 	const certifiedProducts = $derived(
-		adminData.skus.filter((s) => s.certStatus === 'certified').length
+		adminData.products.filter((s) => s.certStatus === 'certified').length
 	);
-	const pendingProducts = $derived(adminData.skus.filter((s) => s.certStatus === 'pending').length);
-	const expiredProducts = $derived(adminData.skus.filter((s) => s.certStatus === 'expired').length);
+	const pendingProducts = $derived(
+		adminData.products.filter((s) => s.certStatus === 'pending').length
+	);
+	const notCertifiedProducts = $derived(
+		adminData.products.filter((s) => s.certStatus === 'not-certified').length
+	);
 </script>
 
 <div class="space-y-8">
@@ -39,14 +43,14 @@
 		<Card>
 			<CardHeader class="gap-2">
 				<Users class="size-5 text-primary"></Users>
-				<CardTitle class="text-2xl">{adminData.merchants.length}</CardTitle>
+				<CardTitle class="text-2xl">{adminData.suppliers.length}</CardTitle>
 				<CardDescription>Suppliers (sellers)</CardDescription>
 			</CardHeader>
 		</Card>
 		<Card>
 			<CardHeader class="gap-2">
 				<Package class="size-5 text-primary"></Package>
-				<CardTitle class="text-2xl">{adminData.skus.length}</CardTitle>
+				<CardTitle class="text-2xl">{adminData.products.length}</CardTitle>
 				<CardDescription>Products (SKUs)</CardDescription>
 			</CardHeader>
 		</Card>
@@ -81,13 +85,13 @@
 			<CardHeader>
 				<CardTitle>Product certification</CardTitle>
 				<CardDescription>
-					{certifiedProducts} verified · {pendingProducts} pending · {expiredProducts} expired
+					{certifiedProducts} verified · {pendingProducts} pending · {notCertifiedProducts} not certified
 				</CardDescription>
 			</CardHeader>
 			<CardContent class="flex flex-wrap items-center gap-2">
 				<Badge variant="default">Certified {certifiedProducts}</Badge>
 				<Badge variant="secondary">Pending {pendingProducts}</Badge>
-				<Badge variant="destructive">Expired {expiredProducts}</Badge>
+				<Badge variant="destructive">Not certified {notCertifiedProducts}</Badge>
 			</CardContent>
 		</Card>
 	</div>

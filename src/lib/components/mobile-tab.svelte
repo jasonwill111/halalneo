@@ -2,46 +2,273 @@
 	import { page } from '$app/state';
 	import { localizeHref, deLocalizeUrl } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
+	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
 	import HomeIcon from '@lucide/svelte/icons/home';
-	import SearchIcon from '@lucide/svelte/icons/search';
+	import MenuIcon from '@lucide/svelte/icons/menu';
 	import Grid2x2Icon from '@lucide/svelte/icons/grid-2x2';
 	import BoxIcon from '@lucide/svelte/icons/box';
-	import UserIcon from '@lucide/svelte/icons/user';
+	import CompassIcon from '@lucide/svelte/icons/compass';
+	import BookOpenIcon from '@lucide/svelte/icons/book-open';
+	import GlobeIcon from '@lucide/svelte/icons/globe';
+	import CalendarIcon from '@lucide/svelte/icons/calendar';
+	import PenIcon from '@lucide/svelte/icons/pen';
+	import GraduationCapIcon from '@lucide/svelte/icons/graduation-cap';
+	import UsersIcon from '@lucide/svelte/icons/users';
+	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
+	import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
+	import CalculatorIcon from '@lucide/svelte/icons/calculator';
+	import BotIcon from '@lucide/svelte/icons/bot';
+	import ScaleIcon from '@lucide/svelte/icons/scale';
+	import HandshakeIcon from '@lucide/svelte/icons/handshake';
+	import BanknoteIcon from '@lucide/svelte/icons/banknote';
+	import HelpCircleIcon from '@lucide/svelte/icons/circle-question-mark';
+	import InfoIcon from '@lucide/svelte/icons/info';
+	import MailIcon from '@lucide/svelte/icons/mail';
+	import LogInIcon from '@lucide/svelte/icons/log-in';
+	import UserPlusIcon from '@lucide/svelte/icons/user-plus';
+	import NewspaperIcon from '@lucide/svelte/icons/newspaper';
+	import MessageCircleIcon from '@lucide/svelte/icons/message-circle';
+	import TagsIcon from '@lucide/svelte/icons/tags';
 
-	const tabs = [
-		{ id: 'home', label: 'Home', href: '/', icon: HomeIcon },
-		{ id: 'categories', label: 'Categories', href: '/categories', icon: Grid2x2Icon },
-		{ id: 'products', label: 'Products', href: '/products', icon: BoxIcon },
-		{ id: 'search', label: 'Search', href: '/search', icon: SearchIcon },
-		{ id: 'account', label: 'Account', href: '/account', icon: UserIcon }
+	let showExplore = $state(false);
+	let showMenu = $state(false);
+	let exploreBtnEl = $state<HTMLElement | null>(null);
+	let menuBtnEl = $state<HTMLElement | null>(null);
+	let explorePos = $state({ left: 0, top: 0 });
+	let menuPos = $state({ right: 0, top: 0 });
+
+	const exploreItems = [
+		{ label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenIcon },
+		{ label: 'Market Guides', href: '/market-guides', icon: GlobeIcon },
+		{ label: 'Trade Shows', href: '/trade-shows', icon: CalendarIcon },
+		{ label: 'Blog', href: '/blog', icon: PenIcon },
+		{ label: 'Glossary', href: '/glossary', icon: GraduationCapIcon }
+	];
+
+	const menuItems = [
+		// Marketplace
+		{ label: 'Home', href: '/', icon: HomeIcon },
+		{ label: 'Categories', href: '/categories', icon: Grid2x2Icon },
+		{ label: 'Suppliers', href: '/suppliers', icon: UsersIcon },
+		{ label: 'Products', href: '/products', icon: BoxIcon },
+		// Halal Tools
+		{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
+		{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
+		{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
+		{ label: 'AI Chat', href: '/tools/ai-chat', icon: BotIcon },
+		// Ecosystem
+		{ label: 'Certifying Bodies', href: '/certifying-bodies', icon: ScaleIcon },
+		{ label: 'Service Providers', href: '/service-providers', icon: HandshakeIcon },
+		{ label: 'Pricing', href: '/pricing', icon: BanknoteIcon },
+		{ label: 'FAQ', href: '/faq', icon: HelpCircleIcon },
+		// Company
+		{ label: 'About', href: '/about', icon: InfoIcon },
+		{ label: 'Contact', href: '/contact', icon: MailIcon },
+		// Account
+		{ label: 'Sign in', href: '/login', icon: LogInIcon },
+		{ label: 'Create account', href: '/register', icon: UserPlusIcon },
+		{ label: 'Saved Items', href: '/account/saved', icon: NewspaperIcon },
+		{ label: 'My Inquiries', href: '/account/inquiries', icon: MessageCircleIcon },
+		{ label: 'Supplier Sign In', href: '/supplier/login', icon: TagsIcon }
 	];
 
 	function isActive(href: string): boolean {
 		const path = deLocalizeUrl(page.url.href).pathname;
 		if (href === '/') return path === '/';
-		return path.startsWith(href);
+		return path === href || path.startsWith(href + '/');
 	}
+
+	function calcPos(btn: HTMLElement) {
+		const rect = btn.getBoundingClientRect();
+		return {
+			left: rect.left + rect.width / 2,
+			right: window.innerWidth - rect.right,
+			top: rect.top - 8
+		};
+	}
+
+	function toggleExplore() {
+		if (showExplore) {
+			showExplore = false;
+		} else {
+			showMenu = false;
+			if (exploreBtnEl) explorePos = calcPos(exploreBtnEl);
+			showExplore = true;
+		}
+	}
+
+	function toggleMenu() {
+		if (showMenu) {
+			showMenu = false;
+		} else {
+			showExplore = false;
+			if (menuBtnEl) {
+				const pos = calcPos(menuBtnEl);
+				menuPos = { right: pos.right, top: pos.top };
+			}
+			showMenu = true;
+		}
+	}
+
+	function closeAll() {
+		showExplore = false;
+		showMenu = false;
+	}
+
+	onMount(() => {
+		function handleClickOutside(e: MouseEvent) {
+			const target = e.target as HTMLElement;
+			if (!target.closest('[data-popover]') && !target.closest('[data-popover-panel]')) {
+				closeAll();
+			}
+		}
+		document.addEventListener('click', handleClickOutside, true);
+		return () => document.removeEventListener('click', handleClickOutside, true);
+	});
 </script>
 
-<nav class="fixed bottom-2 left-1/2 z-50 -translate-x-1/2 md:hidden" aria-label="Mobile navigation">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+
+<!-- Backdrop -->
+{#if showExplore || showMenu}
 	<div
-		class="flex items-center justify-around gap-1 rounded-2xl border border-white/20 bg-background/70 px-2 py-1.5 shadow-lg backdrop-blur-xl dark:border-white/10"
+		class="fixed inset-0 z-40 md:hidden"
+		onclick={closeAll}
+		transition:fade={{ duration: 150 }}
+	></div>
+{/if}
+
+<!-- Explore Popover (fixed, rendered outside tab bar) -->
+{#if showExplore}
+	<div
+		class="fixed z-50 w-56 rounded-xl border border-border/60 bg-background p-2 shadow-xl md:hidden"
+		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%);"
+		data-popover-panel
+	>
+		<p class="px-2 pb-1.5 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">Explore</p>
+		<div class="space-y-0.5">
+			{#each exploreItems as item (item.href)}
+				<a
+					href={localizeHref(item.href)}
+					onclick={closeAll}
+					class={cn(
+						'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors',
+						isActive(item.href)
+							? 'bg-primary/10 text-primary'
+							: 'text-foreground hover:bg-muted'
+					)}
+				>
+					<item.icon class="size-4 shrink-0 text-muted-foreground" />
+					{item.label}
+				</a>
+			{/each}
+		</div>
+	</div>
+{/if}
+
+<!-- Menu Popover (fixed, rendered outside tab bar) -->
+{#if showMenu}
+	<div
+		class="fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl border border-border/60 bg-background p-2 shadow-xl md:hidden"
+		style="right: {menuPos.right}px; top: {menuPos.top}px; transform: translateY(-100%);"
+		data-popover-panel
+	>
+		<div class="grid grid-cols-3 gap-1.5">
+			{#each menuItems as item (item.href)}
+				<a
+					href={localizeHref(item.href)}
+					onclick={closeAll}
+					class={cn(
+						'flex flex-col items-center gap-1 rounded-lg border p-2 text-[10px] font-medium transition-colors',
+						isActive(item.href)
+							? 'border-primary/30 bg-primary/10 text-primary'
+							: 'border-border/60 text-foreground hover:bg-muted'
+					)}
+				>
+					<item.icon class="size-4 text-muted-foreground" />
+					{item.label}
+				</a>
+			{/each}
+		</div>
+	</div>
+{/if}
+
+<!-- Bottom Tab Bar -->
+<nav
+	class="fixed bottom-1.5 left-1/2 z-50 -translate-x-1/2 md:hidden"
+	aria-label="Mobile navigation"
+>
+	<div
+		class="flex items-center justify-evenly rounded-2xl border border-white/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-white/10"
 		style="width: min(90vw, 360px);"
 	>
-		{#each tabs as tab}
-			{@const active = isActive(tab.href)}
-			<a
-				href={localizeHref(tab.href)}
-				class={cn(
-					'flex flex-col items-center gap-0.5 rounded-xl px-2.5 py-1 text-[9px] font-medium transition-all duration-200',
-					active
-						? 'bg-primary/10 text-primary'
-						: 'text-muted-foreground hover:bg-muted hover:text-foreground'
-				)}
-			>
-				<tab.icon class="size-4" strokeWidth={active ? 2.2 : 1.8} />
-				<span>{tab.label}</span>
-			</a>
-		{/each}
+		<!-- Home -->
+		<a
+			href={localizeHref('/')}
+			onclick={closeAll}
+			class={cn(
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				isActive('/') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+			)}
+		>
+			<HomeIcon class="size-4" strokeWidth={isActive('/') ? 2.2 : 1.8} />
+			<span>Home</span>
+		</a>
+
+		<!-- Categories -->
+		<a
+			href={localizeHref('/categories')}
+			onclick={closeAll}
+			class={cn(
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				isActive('/categories') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+			)}
+		>
+			<Grid2x2Icon class="size-4" strokeWidth={isActive('/categories') ? 2.2 : 1.8} />
+			<span>Categories</span>
+		</a>
+
+		<!-- Products -->
+		<a
+			href={localizeHref('/products')}
+			onclick={closeAll}
+			class={cn(
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				isActive('/products') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+			)}
+		>
+			<BoxIcon class="size-4" strokeWidth={isActive('/products') ? 2.2 : 1.8} />
+			<span>Products</span>
+		</a>
+
+		<!-- Explore -->
+		<button
+			bind:this={exploreBtnEl}
+			onclick={(e) => { e.stopPropagation(); toggleExplore(); }}
+			class={cn(
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				showExplore ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+			)}
+			data-popover
+		>
+			<CompassIcon class="size-4" strokeWidth={showExplore ? 2.2 : 1.8} />
+			<span>Explore</span>
+		</button>
+
+		<!-- Menu -->
+		<button
+			bind:this={menuBtnEl}
+			onclick={(e) => { e.stopPropagation(); toggleMenu(); }}
+			class={cn(
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				showMenu ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+			)}
+			data-popover
+		>
+			<MenuIcon class="size-4" strokeWidth={showMenu ? 2.2 : 1.8} />
+			<span>Menu</span>
+		</button>
 	</div>
 </nav>

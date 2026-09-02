@@ -1,120 +1,198 @@
+<svelte:head>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { goto } from '$app/navigation';
 	import { registerAccount } from '#lib/stores/auth.svelte.js';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import {
-		Card,
-		CardContent,
-		CardDescription,
-		CardFooter,
-		CardHeader,
-		CardTitle
-	} from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
-	import { cn } from '#lib/utils.js';
-	import StoreIcon from '@lucide/svelte/icons/store';
-	import PackageSearchIcon from '@lucide/svelte/icons/package-search';
+	import MailIcon from '@lucide/svelte/icons/mail';
+	import LockIcon from '@lucide/svelte/icons/lock';
 
-	let fullName = $state('');
+	let firstName = $state('');
+	let lastName = $state('');
 	let company = $state('');
 	let email = $state('');
 	let password = $state('');
+	let termsAccepted = $state(false);
 	let error = $state('');
-	let accountType = $state<'buyer' | 'seller'>('buyer');
 
 	function submit() {
-		if (!fullName.trim() || !email.trim() || !password) {
+		if (!firstName.trim() || !lastName.trim() || !email.trim() || !password) {
 			error = 'Please fill in all required fields.';
+			return;
+		}
+		if (!termsAccepted) {
+			error = 'Please agree to the Terms of Service and Privacy Policy.';
 			return;
 		}
 		registerAccount({
 			email: email.trim(),
-			fullName: fullName.trim(),
-			company: accountType === 'seller' ? company.trim() : undefined,
+			fullName: `${firstName.trim()} ${lastName.trim()}`.trim(),
+			company: company.trim() || undefined,
 			password,
-			type: accountType
+			type: 'buyer'
 		});
 		goto(localizeHref('/account'));
 	}
 </script>
 
-<section
-	class="mx-auto flex min-h-[70dvh] w-full max-w-md flex-col items-center justify-center py-8"
+<main
+	class="register-pattern flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pb-20 pt-8"
 >
-	<Card class="w-full">
-		<CardHeader class="text-center">
-			<CardTitle class="text-2xl tracking-tight">Create your account</CardTitle>
-			<CardDescription>Join the halal trade network — free for certified businesses</CardDescription
+	<div class="w-full max-w-md">
+		<div class="mb-5 text-center">
+			<div
+				class="bg-primary text-primary-foreground mx-auto mb-2 flex size-12 items-center justify-center rounded-2xl text-lg font-bold shadow-lg shadow-primary/20"
 			>
-		</CardHeader>
-		<CardContent class="space-y-4">
-			<div class="grid grid-cols-2 gap-3">
-				<button
-					type="button"
-					class={cn(
-						'flex flex-col items-center gap-2 rounded-xl border p-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-						accountType === 'buyer'
-							? 'border-primary bg-primary/5 text-primary'
-							: 'border-border text-muted-foreground hover:bg-muted'
-					)}
-					aria-pressed={accountType === 'buyer'}
-					onclick={() => (accountType = 'buyer')}
-				>
-					<PackageSearchIcon class="size-5"></PackageSearchIcon>
-					Buyer
-				</button>
-				<button
-					type="button"
-					class={cn(
-						'flex flex-col items-center gap-2 rounded-xl border p-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-						accountType === 'seller'
-							? 'border-primary bg-primary/5 text-primary'
-							: 'border-border text-muted-foreground hover:bg-muted'
-					)}
-					aria-pressed={accountType === 'seller'}
-					onclick={() => (accountType = 'seller')}
-				>
-					<StoreIcon class="size-5"></StoreIcon>
-					Seller
-				</button>
+				H
+			</div>
+			<h1 class="text-lg font-bold tracking-tight text-foreground">Create your account</h1>
+			<p class="mt-1 text-xs text-muted-foreground">Join the global halal trade network</p>
+		</div>
+
+		<div class="rounded-2xl bg-card p-5 shadow-sm">
+			<!-- Step indicator -->
+			<div class="mb-5 flex items-center justify-center gap-1.5">
+				<div class="flex items-center gap-1.5">
+					<div
+						class="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full text-[10px] font-semibold"
+					>
+						1
+					</div>
+					<span class="text-primary text-[10px] font-medium">Account</span>
+				</div>
+				<div class="h-px w-6 bg-border"></div>
+				<div class="flex items-center gap-1.5">
+					<div
+						class="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-[10px] font-semibold"
+					>
+						2
+					</div>
+					<span class="text-[10px] text-muted-foreground">Verify</span>
+				</div>
 			</div>
 
-			<Field>
-				<FieldLabel>Full name</FieldLabel>
-				<Input bind:value={fullName} type="text" placeholder="Amina Yusuf"></Input>
-			</Field>
+			<!-- Supplier banner -->
+			<div class="bg-muted/50 mb-3 rounded-lg px-3 py-2 text-center">
+				<p class="text-[10px] text-muted-foreground">
+					Want to sell products?
+					<a
+						href={localizeHref('/supplier/onboarding')}
+						class="text-primary font-semibold hover:underline"
+					>
+						Apply as a Supplier
+					</a>
+				</p>
+			</div>
 
-			{#if accountType === 'seller'}
+			<form class="space-y-2.5" onsubmit={(e) => { e.preventDefault(); submit(); }}>
+				<div class="grid grid-cols-2 gap-2.5">
+					<Field>
+						<FieldLabel>First Name</FieldLabel>
+						<Input bind:value={firstName} type="text" placeholder="John" />
+					</Field>
+					<Field>
+						<FieldLabel>Last Name</FieldLabel>
+						<Input bind:value={lastName} type="text" placeholder="Doe" />
+					</Field>
+				</div>
+
 				<Field>
-					<FieldLabel>Company name</FieldLabel>
-					<Input bind:value={company} type="text" placeholder="Amina Foods Ltd."></Input>
+					<FieldLabel>Company Name</FieldLabel>
+					<Input bind:value={company} type="text" placeholder="Your company" />
 				</Field>
-			{/if}
 
-			<Field>
-				<FieldLabel>Email</FieldLabel>
-				<Input bind:value={email} type="email" placeholder="you@company.com"></Input>
-			</Field>
+				<Field>
+					<FieldLabel>Email</FieldLabel>
+					<div class="relative">
+						<MailIcon
+							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+						></MailIcon>
+						<Input bind:value={email} type="email" placeholder="you@company.com" class="pl-9" />
+					</div>
+				</Field>
 
-			<Field>
-				<FieldLabel>Password</FieldLabel>
-				<Input bind:value={password} type="password" placeholder="••••••••"></Input>
-			</Field>
-		</CardContent>
-		<CardFooter class="flex flex-col gap-3">
-			{#if error}
-				<p class="w-full text-center text-sm text-destructive">{error}</p>
-			{/if}
-			<Button variant="default" class="w-full" onclick={submit}>Create {accountType} account</Button
-			>
-			<p class="text-center text-sm text-muted-foreground">
+				<Field>
+					<FieldLabel>Password</FieldLabel>
+					<div class="relative">
+						<LockIcon
+							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+						></LockIcon>
+						<Input
+							bind:value={password}
+							type="password"
+							placeholder="Min. 8 characters"
+							class="pl-9"
+						/>
+					</div>
+				</Field>
+
+				<div class="flex items-start gap-2">
+					<Checkbox bind:checked={termsAccepted} class="mt-0.5" />
+					<label for="terms" class="text-xs leading-snug text-muted-foreground">
+						I agree to the
+						<a href="/terms" class="text-primary font-medium hover:underline">Terms of Service</a>
+						and
+						<a href="/privacy" class="text-primary font-medium hover:underline">Privacy Policy</a>
+					</label>
+				</div>
+
+				{#if error}
+					<p class="text-center text-sm text-destructive">{error}</p>
+				{/if}
+
+				<Button type="submit" class="w-full" onclick={submit}>
+					<span class="inline-flex items-center gap-2">
+						Create Account
+						<svg
+							class="size-3.5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M13 7l5 5m0 0l-5 5m5-5H6"
+							/></svg
+						>
+					</span>
+				</Button>
+			</form>
+
+
+		</div>
+
+		<div class="mt-5 text-center">
+			<p class="text-xs text-muted-foreground">
 				Already have an account?
-				<a href={localizeHref('/login')} class="font-medium text-primary hover:underline">Sign in</a
-				>
+				<a href={localizeHref('/login')} class="text-primary font-semibold hover:underline">
+					Sign in
+				</a>
 			</p>
-			<p class="text-center text-xs text-muted-foreground">Demo only — auth not connected yet.</p>
-		</CardFooter>
-	</Card>
-</section>
+			<p class="text-muted-foreground mt-1.5 text-[10px]">
+				<a href={localizeHref('/')} class="hover:text-primary transition-colors">
+					&larr; Back to home
+				</a>
+			</p>
+		</div>
+	</div>
+</main>
+
+<style>
+	:global(.register-pattern) {
+		background-image:
+			radial-gradient(circle at 80% 50%, oklch(0.42 0.12 155 / 0.04) 0%, transparent 50%),
+			radial-gradient(circle at 20% 80%, oklch(0.42 0.12 155 / 0.03) 0%, transparent 50%);
+	}
+	:global(.dark .register-pattern) {
+		background-image:
+			radial-gradient(circle at 80% 50%, oklch(0.65 0.15 155 / 0.06) 0%, transparent 50%),
+			radial-gradient(circle at 20% 80%, oklch(0.65 0.15 155 / 0.04) 0%, transparent 50%);
+	}
+</style>

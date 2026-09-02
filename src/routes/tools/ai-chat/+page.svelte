@@ -23,11 +23,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>AI Assistant — HalalNeo</title>
-	<meta name="description" content="AI-powered halal trade assistant for certification, sourcing, and compliance questions." />
-</svelte:head>
-
 <div class="mx-auto flex max-w-3xl flex-col gap-4">
 	<div class="flex items-center gap-3">
 		<div class="flex size-10 items-center justify-center rounded-xl bg-primary/15">
@@ -35,11 +30,15 @@
 		</div>
 		<div>
 			<h1 class="text-xl font-bold">HalalNeo AI</h1>
-			<p class="text-sm text-muted-foreground">Ask about halal certification, sourcing, or compliance</p>
+			<p class="text-sm text-muted-foreground">
+				Ask about halal certification, sourcing, or compliance
+			</p>
 		</div>
 	</div>
 
-	<div class="flex min-h-[50vh] flex-col gap-4 rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm">
+	<div
+		class="flex min-h-[50vh] flex-col gap-4 rounded-xl border border-border/50 bg-card/50 p-4 backdrop-blur-sm"
+	>
 		{#if chat.messages.length === 0}
 			<div class="flex flex-1 items-center justify-center">
 				<div class="text-center text-muted-foreground">
@@ -52,11 +51,17 @@
 				{#each chat.messages as message (message.id)}
 					<div class="flex gap-3 {message.role === 'user' ? 'justify-end' : ''}">
 						{#if message.role !== 'user'}
-							<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15">
+							<div
+								class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15"
+							>
 								<BotIcon class="size-4 text-primary" />
 							</div>
 						{/if}
-						<div class="max-w-[80%] rounded-xl px-4 py-3 text-sm {message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
+						<div
+							class="max-w-[80%] rounded-xl px-4 py-3 text-sm {message.role === 'user'
+								? 'bg-primary text-primary-foreground'
+								: 'bg-muted'}"
+						>
 							{#each message.parts as part}
 								{#if part.type === 'text'}
 									{part.text}

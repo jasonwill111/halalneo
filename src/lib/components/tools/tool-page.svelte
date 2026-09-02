@@ -24,7 +24,6 @@
 	import CheckCircle from '@lucide/svelte/icons/check-circle';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
-	import { error } from '@sveltejs/kit';
 
 	let { slug, toolPath = '' }: { slug: string; toolPath?: string } = $props();
 
@@ -44,13 +43,9 @@
 	}
 
 	const others = $derived.by(() => findOthers(tool));
-
-	$effect(() => {
-		if (!tool) error(404, 'Tool not found');
-	});
 </script>
 
-<svelte:head><title>{tool?.name ?? 'Tool'} — HalalNeo</title></svelte:head>
+<svelte:head><title>{tool?.name ?? 'Tool'} —HalalNeo</title></svelte:head>
 
 {#if tool}
 	<section class="space-y-8">
@@ -127,7 +122,7 @@
 							<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
 						</Button>
 						<p class="mt-3 text-center text-xs text-muted-foreground">
-							Demo only — tool execution arrives with the AI engine.
+							Demo only —tool execution arrives with the AI engine.
 						</p>
 					</CardContent>
 				</Card>

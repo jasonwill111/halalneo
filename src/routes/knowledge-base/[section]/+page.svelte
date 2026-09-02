@@ -7,13 +7,19 @@
 </script>
 
 <svelte:head>
-	<title>{data.seo.title}</title>
-	<meta name="description" content={data.seo.description} />
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'CollectionPage',
+		name: data.seo.title,
+		description: data.seo.description,
+		url: `https://halalneo.com/knowledge-base/${data.item?.slug ?? ''}`,
+		isPartOf: { '@type': 'WebSite', name: 'HalalNeo', url: 'https://halalneo.com' }
+	})}</script>`}
 </svelte:head>
 
 <div class="container mx-auto max-w-7xl px-4 py-8">
 	{#if data.item}
-		<header class="space-y-2 mb-8">
+		<header class="mb-8 space-y-2">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.name}</h1>
 			<p class="text-muted-foreground">{data.item.description}</p>
 			<div class="flex flex-wrap gap-2">
@@ -42,8 +48,8 @@
 		</div>
 	{:else}
 		<div class="flex min-h-[50vh] items-center justify-center">
-			<div class="text-center space-y-4">
-				<p class="text-muted-foreground text-lg">Knowledge base section coming soon.</p>
+			<div class="space-y-4 text-center">
+				<p class="text-lg text-muted-foreground">Knowledge base section coming soon.</p>
 				<Button href="/knowledge-base" variant="outline">Browse Knowledge Base</Button>
 			</div>
 		</div>

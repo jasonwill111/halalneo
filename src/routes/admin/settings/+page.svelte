@@ -2,8 +2,8 @@
 	import { adminSettings, updateSettings } from '#lib/stores/admin-data.svelte.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { Label } from '#lib/components/ui/label/index.js';
-	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
 	import {
 		Card,
 		CardContent,
@@ -46,17 +46,17 @@
 				<CardDescription>Name and tagline shown in the header, footer and hero.</CardDescription>
 			</CardHeader>
 			<CardContent class="space-y-4">
-				<Field>
-					<FieldLabel>Site name</FieldLabel>
+				<Field.Field>
+					<Field.FieldLabel>Site name</Field.FieldLabel>
 					<Input bind:value={form.siteName} placeholder="HalalNeo" />
-				</Field>
-				<Field>
-					<FieldLabel>Tagline</FieldLabel>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Tagline</Field.FieldLabel>
 					<Input
 						bind:value={form.tagline}
 						placeholder="Halal trade intelligence for buyers and suppliers"
 					/>
-				</Field>
+				</Field.Field>
 			</CardContent>
 		</Card>
 
@@ -66,18 +66,18 @@
 				<CardDescription>Email addresses surfaced on the contact page and footer.</CardDescription>
 			</CardHeader>
 			<CardContent class="space-y-4">
-				<Field>
-					<FieldLabel>Support email</FieldLabel>
+				<Field.Field>
+					<Field.FieldLabel>Support email</Field.FieldLabel>
 					<Input
 						bind:value={form.supportEmail}
 						type="email"
 						placeholder="support@halalneo.example"
 					/>
-				</Field>
-				<Field>
-					<FieldLabel>Contact email</FieldLabel>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Contact email</Field.FieldLabel>
 					<Input bind:value={form.contactEmail} type="email" placeholder="hello@halalneo.example" />
-				</Field>
+				</Field.Field>
 			</CardContent>
 		</Card>
 
@@ -87,32 +87,24 @@
 				<CardDescription>Feature toggles applied across the site.</CardDescription>
 			</CardHeader>
 			<CardContent class="space-y-4">
-			<Label class="flex items-start gap-3">
-				<Input
-					type="checkbox"
-					bind:checked={form.enableDemoNotice}
-					class="mt-1 size-4 rounded-sm border-border"
-				/>
-				<div>
-					<p class="text-sm font-medium">Demo notice</p>
-					<p class="text-sm text-muted-foreground">
-						Show the "for demonstration only" disclaimer in the footer.
-					</p>
+				<div class="flex items-center justify-between gap-3">
+					<div>
+						<p class="text-sm font-medium">Demo notice</p>
+						<p class="text-sm text-muted-foreground">
+							Show the "for demonstration only" disclaimer in the footer.
+						</p>
+					</div>
+					<Switch checked={form.enableDemoNotice} onCheckedChange={(v) => form.enableDemoNotice = v} />
 				</div>
-			</Label>
-			<Label class="flex items-start gap-3">
-				<Input
-					type="checkbox"
-					bind:checked={form.enableMaintenanceMode}
-					class="mt-1 size-4 rounded-sm border-border"
-				/>
-				<div>
-					<p class="text-sm font-medium">Maintenance mode</p>
-					<p class="text-sm text-muted-foreground">
-						Placeholder flag — not yet enforced in the demo.
-					</p>
+				<div class="flex items-center justify-between gap-3">
+					<div>
+						<p class="text-sm font-medium">Maintenance mode</p>
+						<p class="text-sm text-muted-foreground">
+							Placeholder flag — not yet enforced in the demo.
+						</p>
+					</div>
+					<Switch checked={form.enableMaintenanceMode} onCheckedChange={(v) => form.enableMaintenanceMode = v} />
 				</div>
-			</Label>
 			</CardContent>
 		</Card>
 	</div>

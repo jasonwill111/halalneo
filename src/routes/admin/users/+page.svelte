@@ -10,7 +10,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -151,7 +151,7 @@
 			<Search
 				class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
-			<Input bind:value={search} placeholder="Search buyers…" class="pl-9" />
+			<Input bind:value={search} placeholder="Search buyers..." class="pl-9" />
 		</div>
 		<Button variant="outline" size="icon" aria-label="Refresh" onclick={refreshAccounts}>
 			<RefreshCw class="size-4"></RefreshCw>
@@ -229,7 +229,7 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="sm:max-w-md">
+	<DialogContent class="sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit buyer' : 'New buyer'}</DialogTitle>
 			<DialogDescription>
@@ -239,28 +239,28 @@
 			</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
-			<Field>
-				<FieldLabel>Full name</FieldLabel>
+			<Field.Field>
+				<Field.FieldLabel>Full name</Field.FieldLabel>
 				<Input bind:value={form.fullName} placeholder="Aisha Rahman" />
-			</Field>
-			<Field>
-				<FieldLabel>Email</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Email</Field.FieldLabel>
 				<Input
 					bind:value={form.email}
 					type="email"
 					placeholder="aisha@company.com"
 					disabled={!!editing}
 				/>
-			</Field>
-			<Field>
-				<FieldLabel>Company (optional)</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Company (optional)</Field.FieldLabel>
 				<Input bind:value={form.company} placeholder="Company name" />
-			</Field>
-			<Field>
-				<FieldLabel>Password</FieldLabel>
-				<Input bind:value={form.password} type="password" placeholder="••••••••" />
-				<FieldDescription>Demo only — stored in local storage.</FieldDescription>
-			</Field>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Password</Field.FieldLabel>
+				<Input bind:value={form.password} type="password" placeholder="•••••••••••••••••" />
+				<Field.FieldDescription>Demo only — stored in local storage.</Field.FieldDescription>
+			</Field.Field>
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}

@@ -8,7 +8,7 @@ export const aiTools: AiTool[] = [
 		description:
 			'Reads a certificate document and summarises scope, status, body and expiry into a ledger row.',
 		longDescription:
-			"Upload or paste a halal certificate document and get a structured verification summary — issuing body, standard, scope, status and expiry — in seconds. Built for buyers who need to check a supplier's claims before committing to a shipment.",
+			"Upload or paste a halal certificate document and get a structured verification summary —issuing body, standard, scope, status and expiry —in seconds. Built for buyers who need to check a supplier's claims before committing to a shipment.",
 		features: [
 			'Extracts certificate number, issuing body and standard',
 			'Flags expired, pending and unrecognised certificates',
@@ -23,7 +23,7 @@ export const aiTools: AiTool[] = [
 		name: 'Supplier Match',
 		description: "Maps a buyer's product requirements to certified suppliers ranked by scope fit.",
 		longDescription:
-			'Describe the products and certification you need and Supplier Match ranks verified suppliers by how well their certified scope covers your requirement — country, standard and business type included.',
+			'Describe the products and certification you need and Supplier Match ranks verified suppliers by how well their certified scope covers your requirement —country, standard and business type included.',
 		features: [
 			'Matches against certified scope, not just category',
 			'Ranking by certification fit and country of origin',
@@ -38,7 +38,7 @@ export const aiTools: AiTool[] = [
 		name: 'Halal Trade Assistant',
 		description: 'Answers sourcing and compliance questions from the knowledge base.',
 		longDescription:
-			'Ask sourcing and compliance questions and get answers grounded in the HalalNeo knowledge base — certification recognition, import rules, logistics and market guides.',
+			'Ask sourcing and compliance questions and get answers grounded in the HalalNeo knowledge base —certification recognition, import rules, logistics and market guides.',
 		features: [
 			'Answers grounded in the knowledge base',
 			'Covers certification, import and logistics questions',

@@ -6,6 +6,7 @@ export const GET: RequestHandler = async () => {
 Allow: /
 Disallow: /admin/
 Disallow: /account/
+Disallow: /supplier/
 Disallow: /api/
 
 Sitemap: https://halalneo.com${resolve('/sitemap.xml')}`;

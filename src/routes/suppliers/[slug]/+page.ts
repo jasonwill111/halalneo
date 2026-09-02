@@ -1,20 +1,54 @@
-import type { EntryGenerator } from './$types';
+import type { EntryGenerator, PageLoad } from './$types';
 
 export const entries: EntryGenerator = () => [];
 
-export const load = async ({ params }) => {
+interface SupplierItem {
+	name?: string;
+	description?: string;
+	businessType?: string;
+	country?: string;
+	logoInitials?: string;
+	certifications?: string[];
+	yearEstablished?: number;
+	employeeCount?: string;
+	products?: unknown[];
+}
+
+export const load: PageLoad = async ({ params, fetch }) => {
+	try {
+		const [res, productsRes] = await Promise.all([
+			fetch(`/api/suppliers/${params.slug}`),
+			fetch(`/api/products?supplierSlug=${params.slug}&limit=20`)
+		]);
+
+		if (res.ok) {
+			const data: SupplierItem = await res.json();
+			const certificationsParsed = typeof data.certifications === 'string' ? JSON.parse(data.certifications || '[]') : data.certifications ?? [];
+			const products = productsRes.ok ? (await productsRes.json()).items ?? [] : [];
+			return {
+				slug: params.slug,
+				seo: {
+					title: data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`,
+					description:
+						data.description ||
+						`${data.name || params.slug} — halal-certified ${data.businessType || 'supplier'} from ${data.country || 'worldwide'}. View products, certifications, and contact info on HalalNeo.`,
+					ogImage: data.logoInitials
+						? `https://halalneo.com/api/og/supplier/${params.slug}`
+						: 'https://halalneo.com/og-default.svg',
+					keywords: [data.name, 'halal supplier', data.country, data.businessType, 'certified'].filter(Boolean)
+				},
+				item: { ...data, certifications: certificationsParsed },
+				products
+			};
+		}
+	} catch {}
+
 	return {
+		slug: params.slug,
 		seo: {
 			title: `${params.slug} — HalalNeo`,
-			description: `Supplier profile for ${params.slug} on HalalNeo — halal-certified medical device and pharmaceutical suppliers.`
+			description: `${params.slug} — halal-certified supplier on HalalNeo.`
 		},
-		item: null as {
-			name: string;
-			description: string;
-			location: string;
-			founded: string;
-			certifications: string[];
-			products: { name: string; slug: string }[];
-		} | null
+		item: null
 	};
 };

@@ -1,15 +1,27 @@
 <script lang="ts">
-	import { adminData } from '#lib/stores/admin-data.svelte.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import Newspaper from '@lucide/svelte/icons/newspaper';
+	import SearchIcon from '@lucide/svelte/icons/search';
+	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
+
+	let { data } = $props();
+	let search = $state('');
 
 	const published = $derived(
-		adminData.blogPosts
-			.filter((p) => p.status === 'published')
-			.toSorted((a, b) => b.date.localeCompare(a.date))
+		(data.posts ?? [])
+			.filter((p: any) => p.status === 'published')
+			.toSorted((a: any, b: any) => (b.date ?? '').localeCompare(a.date ?? ''))
+			.filter((p: any) =>
+				search.trim()
+					? p.title.toLowerCase().includes(search.toLowerCase())
+					: true
+			)
 	);
 </script>
+
+<Breadcrumb items={[{ label: 'Blog', href: '/blog' }]} />
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
@@ -23,6 +35,16 @@
 		</p>
 	</div>
 
+	<div class="relative">
+		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input
+			type="search"
+			placeholder="Search articles..."
+			class="pl-9"
+			bind:value={search}
+		/>
+	</div>
+
 	{#if published.length === 0}
 		<div
 			class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground"
@@ -31,7 +53,7 @@
 		</div>
 	{:else}
 		<div class="grid gap-3 sm:grid-cols-2">
-			{#each published as post}
+			{#each published as post (post.slug)}
 				<Card>
 					<a href="/blog/{post.slug}" class="group block">
 						<CardContent class="space-y-2 pt-4">

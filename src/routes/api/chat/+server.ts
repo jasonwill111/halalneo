@@ -1,14 +1,30 @@
-import { streamText } from 'ai';
-import { agnesFlash } from '#lib/server/ai.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { handleChatStream } from '@mastra/ai-sdk';
+import { createUIMessageStreamResponse } from 'ai';
+import { mastra } from '#lib/server/mastra/index.js';
 
-export const POST = async ({ request }) => {
-	const { messages } = await request.json();
+export const POST: RequestHandler = async ({ request, locals }) => {
+	if (!locals.session) {
+		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
 
-	const result = streamText({
-		model: agnesFlash,
-		system: `You are HalalNeo AI Assistant — an expert in halal trade, certification, compliance, and market intelligence. You help buyers and suppliers navigate the halal ecosystem. Be concise, professional, and actionable. When discussing certification bodies or standards, always recommend verifying with official sources.`,
-		messages
-	});
+	try {
+		const body = await request.json().catch(() => null);
+		if (!body || !Array.isArray(body.messages)) {
+			return json({ error: 'Invalid request: messages array required' }, { status: 400 });
+		}
 
-	return result.toDataStreamResponse();
+		const params = { messages: body.messages.slice(-20) };
+
+		const stream = await handleChatStream({
+			mastra,
+			agentId: 'halal-agent',
+			params
+		});
+
+		return createUIMessageStreamResponse({ stream });
+	} catch (e: any) {
+		return json({ error: e?.message ?? 'Chat failed' }, { status: 500 });
+	}
 };

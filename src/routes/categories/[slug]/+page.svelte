@@ -2,34 +2,39 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 
 	let { data } = $props();
+	const category = $derived(data.category);
+	const products = $derived(data.products ?? []);
 </script>
 
-<svelte:head>
-	<title>{data.seo.title}</title>
-	<meta name="description" content={data.seo.description} />
-</svelte:head>
-
 <div class="container mx-auto max-w-7xl px-4 py-8">
-	{#if data.item}
-		<header class="space-y-2 mb-8">
-			<h1 class="text-3xl font-bold tracking-tight">{data.item.name}</h1>
-			<p class="text-muted-foreground">{data.item.description}</p>
-			<div class="flex flex-wrap gap-2">
-				<Badge>{data.item.productCount} products</Badge>
-			</div>
-		</header>
+	<header class="mb-8 space-y-2">
+		<h1 class="text-3xl font-bold tracking-tight">{category?.name ?? data.slug}</h1>
+		{#if category?.description}
+			<p class="text-muted-foreground">{category.description}</p>
+		{/if}
+		<Badge variant="secondary">{products.length} products</Badge>
+	</header>
 
+	{#if products.length > 0}
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each data.item.products as product}
-				<Card>
+			{#each products as product}
+				<Card hoverable>
 					<CardHeader>
 						<CardTitle class="text-lg">{product.name}</CardTitle>
 					</CardHeader>
 					<CardContent class="space-y-3">
-						<p class="text-sm text-muted-foreground">{product.description}</p>
-						<Button href={`/products/${product.slug}`} variant="outline" size="sm">
+						{#if product.shortDescription}
+							<p class="text-sm text-muted-foreground">{product.shortDescription}</p>
+						{/if}
+						{#if product.priceMin}
+							<p class="text-sm font-semibold text-primary">
+								${product.priceMin}{product.priceMax ? ` - $${product.priceMax}` : ''}
+							</p>
+						{/if}
+						<Button href={localizeHref(`/products/${product.slug}`)} variant="outline" size="sm">
 							View Details
 						</Button>
 					</CardContent>
@@ -37,11 +42,8 @@
 			{/each}
 		</div>
 	{:else}
-		<div class="flex min-h-[50vh] items-center justify-center">
-			<div class="text-center space-y-4">
-				<p class="text-muted-foreground text-lg">Category details coming soon.</p>
-				<Button href="/categories" variant="outline">Browse Categories</Button>
-			</div>
+		<div class="flex min-h-[30vh] items-center justify-center">
+			<p class="text-sm text-muted-foreground">No products in this category yet.</p>
 		</div>
 	{/if}
 </div>

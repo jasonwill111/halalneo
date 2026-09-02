@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { adminData, getSection } from '#lib/stores/admin-data.svelte.js';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { Card, CardContent, CardTitle, CardDescription } from '#lib/components/ui/card/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
+	import {
+		Card,
+		CardContent,
+		CardTitle,
+		CardDescription
+	} from '#lib/components/ui/card/index.js';
 	import {
 		Empty,
 		EmptyMedia,
@@ -13,9 +19,45 @@
 	import FileText from '@lucide/svelte/icons/file-text';
 	import BookText from '@lucide/svelte/icons/book-text';
 	import Store from '@lucide/svelte/icons/store';
-	import Package from '@lucide/svelte/icons/package';
+	import Star from '@lucide/svelte/icons/star';
+	import SlidersHorizontal from '@lucide/svelte/icons/sliders-horizontal';
 
+	let { data } = $props();
 	let query = $state('');
+
+	let articles = $state<any[]>([]);
+	let suppliers = $state<any[]>([]);
+	let products = $state<any[]>([]);
+	let loaded = $state(false);
+	let loading = $state(false);
+
+	async function loadSearchData() {
+		if (loaded || loading) return;
+		loading = true;
+		try {
+			const [articlesRes, suppliersRes, productsRes] = await Promise.all([
+				fetch('/api/knowledge-base?limit=50'),
+				fetch('/api/suppliers?limit=100'),
+				fetch('/api/products?limit=100')
+			]);
+			articles = (articlesRes.ok ? (await articlesRes.json()).items ?? [] : []).map((a: any) => ({
+				...a,
+				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
+			}));
+			suppliers = (suppliersRes.ok ? (await suppliersRes.json()).items ?? [] : []).map((s: any) => ({
+				...s,
+				certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
+				mainMarkets: typeof s.mainMarkets === 'string' ? JSON.parse(s.mainMarkets || '[]') : s.mainMarkets ?? []
+			}));
+			products = (productsRes.ok ? (await productsRes.json()).items ?? [] : []).map((p: any) => ({
+				...p,
+				features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? []
+			}));
+			loaded = true;
+		} finally {
+			loading = false;
+		}
+	}
 
 	type Result =
 		| { kind: 'article'; section: string; slug: string; title: string; summary: string }
@@ -26,12 +68,56 @@
 	const allResults = $derived.by(() => {
 		const q = query.trim().toLowerCase();
 		if (!q) return [];
+		if (!loaded) {
+			loadSearchData();
+			return [];
+		}
+
+		// Helper: check if a product matches price range filters
+		function matchesPriceRange(p: any, ranges: Set<string>): boolean {
+			if (ranges.size === 0) return true;
+			const price = p.priceMin ? Number(p.priceMin) : null;
+			if (price === null) return ranges.has('Under $20'); // no price = treat as low
+			for (const r of ranges) {
+				if (r === 'Under $20' && price < 20) return true;
+				if (r === '$20 – $50' && price >= 20 && price <= 50) return true;
+				if (r === '$50 – $100' && price >= 50 && price <= 100) return true;
+				if (r === '$100+' && price >= 100) return true;
+			}
+			return false;
+		}
+
+		// Helper: check if a product/supplier matches cert filters
+		function matchesCert(item: any, certs: Set<string>): boolean {
+			if (certs.size === 0) return true;
+			const status = item.certStatus ?? '';
+			const itemCerts = Array.isArray(item.certifications) ? item.certifications : [];
+			for (const c of certs) {
+				const cLower = c.toLowerCase();
+				if (status.toLowerCase().includes(cLower)) return true;
+				if (itemCerts.some((ic: any) => {
+					const name = typeof ic === 'string' ? ic : (ic.name ?? ic.bodyName ?? '');
+					return name.toLowerCase().includes(cLower);
+				})) return true;
+			}
+			return false;
+		}
+
 		const results: Result[] = [];
-		for (const a of adminData.kbArticles) {
+
+		// Category mapping: UI label → possible categorySlug values
+		const categoryMap: Record<string, string[]> = {
+			'Food & Beverage': ['food-beverage', 'food', 'beverage'],
+			'Cosmetics': ['cosmetics', 'cosmetic'],
+			'Pharmaceuticals': ['pharmaceuticals', 'pharmaceutical'],
+			'Ingredients': ['ingredients', 'ingredient']
+		};
+
+		for (const a of articles) {
 			if (
 				a.title.toLowerCase().includes(q) ||
 				a.summary.toLowerCase().includes(q) ||
-				a.tags.some((t) => t.toLowerCase().includes(q))
+				a.tags?.some((t: string) => t.toLowerCase().includes(q))
 			) {
 				results.push({
 					kind: 'article',
@@ -42,26 +128,45 @@
 				});
 			}
 		}
-		for (const t of adminData.glossary) {
+		for (const t of data.glossary ?? []) {
 			if (t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q)) {
 				results.push({ kind: 'term', term: t.term, definition: t.definition });
 			}
 		}
-		for (const m of adminData.merchants) {
-			if (
-				m.name.toLowerCase().includes(q) ||
-				m.country.toLowerCase().includes(q) ||
-				m.description.toLowerCase().includes(q)
-			) {
-				results.push({ kind: 'supplier', slug: m.slug, name: m.name, country: m.country });
-			}
-		}
-		for (const s of adminData.skus) {
+		for (const s of suppliers) {
 			if (
 				s.name.toLowerCase().includes(q) ||
-				s.shortDescription.toLowerCase().includes(q) ||
-				s.features.some((f) => f.toLowerCase().includes(q))
+				s.country.toLowerCase().includes(q) ||
+				s.description?.toLowerCase().includes(q)
 			) {
+				// Apply location filter
+				if (selectedLocations.size > 0 && !selectedLocations.has(s.country)) continue;
+				// Apply cert filter
+				if (selectedCerts.size > 0 && !matchesCert(s, selectedCerts)) continue;
+				results.push({ kind: 'supplier', slug: s.slug, name: s.name, country: s.country });
+			}
+		}
+		for (const s of products) {
+			if (
+				s.name.toLowerCase().includes(q) ||
+				s.shortDescription?.toLowerCase().includes(q) ||
+				s.features?.some((f: string) => f.toLowerCase().includes(q))
+			) {
+				// Apply category filter
+				if (selectedCategories.size > 0) {
+					const catSlug = s.categorySlug?.toLowerCase() ?? '';
+					const matched = [...selectedCategories].some((cat) => {
+						const slugs = categoryMap[cat] ?? [];
+						return slugs.some((sl) => catSlug.includes(sl));
+					});
+					if (!matched) continue;
+				}
+				// Apply price filter
+				if (selectedPrices.size > 0 && !matchesPriceRange(s, selectedPrices)) continue;
+				// Apply location filter
+				if (selectedLocations.size > 0 && !selectedLocations.has(s.originCountry)) continue;
+				// Apply cert filter
+				if (selectedCerts.size > 0 && !matchesCert(s, selectedCerts)) continue;
 				results.push({ kind: 'sku', slug: s.slug, name: s.name, description: s.shortDescription });
 			}
 		}
@@ -69,118 +174,262 @@
 	});
 
 	const resultCount = $derived(allResults.length);
+
+	const categories = ['Food & Beverage', 'Cosmetics', 'Pharmaceuticals', 'Ingredients'];
+	const priceRanges = ['Under $20', '$20 – $50', '$50 – $100', '$100+'];
+	const supplierLocations = ['Malaysia', 'Indonesia', 'Philippines', 'Sri Lanka', 'India'];
+	const certifications = ['JAKIM', 'MUI', 'ESMA', 'HFA', 'IFANCA'];
+
+	let selectedCategories = $state<Set<string>>(new Set(['Food & Beverage']));
+	let selectedPrices = $state<Set<string>>(new Set(['Under $20']));
+	let selectedLocations = $state<Set<string>>(new Set(['Malaysia', 'Indonesia']));
+	let selectedCerts = $state<Set<string>>(new Set(['JAKIM']));
+	let sortBy = $state('Relevance');
+	let showMobileFilters = $state(false);
+
+	const PAGE_SIZE = 9;
+	let currentPage = $state(1);
+
+	const totalPages = $derived(Math.max(1, Math.ceil(resultCount / PAGE_SIZE)));
+
+	const paginatedResults = $derived(() => {
+		const start = (currentPage - 1) * PAGE_SIZE;
+		return allResults.slice(start, start + PAGE_SIZE);
+	});
+
+	// Reset to page 1 when query changes
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		query;
+		currentPage = 1;
+	});
+
+	function toggleSet<T>(set: Set<T>, val: T): Set<T> {
+		const next = new Set(set);
+		if (next.has(val)) next.delete(val);
+		else next.add(val);
+		return next;
+	}
+
+	function getSection(section: string) {
+		const sections: Record<string, { title: string }> = {
+			'getting-started': { title: 'Getting Started' },
+			'certification': { title: 'Certification' },
+			'sourcing': { title: 'Sourcing' },
+			'compliance': { title: 'Compliance' },
+			'markets': { title: 'Markets' }
+		};
+		return sections[section];
+	}
 </script>
 
-<section class="mx-auto max-w-3xl space-y-8">
-	<div class="space-y-2">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Search</h1>
-		<p class="text-muted-foreground">
-			Search knowledge articles, glossary terms, suppliers and products.
-		</p>
-	</div>
+<svelte:head>
+	<title>Search — HalalNeo</title>
+	<meta name="description" content="Search for halal products, suppliers, and market intelligence." />
+</svelte:head>
 
-	<div class="relative">
-		<SearchIcon
-			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-		></SearchIcon>
+<div class="border-b border-border bg-card/50 -mx-4 sm:-mx-6 px-4 sm:px-6">
+	<div class="mx-auto flex h-12 w-full max-w-7xl items-center gap-2">
+		<SearchIcon class="size-4 shrink-0 text-muted-foreground" />
 		<input
 			bind:value={query}
-			type="search"
-			placeholder="Try “halal slaughter”, “JAKIM”, “rendang”…"
-			class="h-10 w-full rounded-lg border border-input bg-background pr-3 pl-9 text-sm transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+			type="text"
+			placeholder="Search products, suppliers, articles..."
+			class="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
 		/>
+		<Button size="sm" class="h-8 text-xs">Search</Button>
+	</div>
+</div>
+
+<div class="mx-auto max-w-7xl">
+	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
+		<div class="flex items-center gap-1 text-[10px] text-muted-foreground">
+			<a href="/" class="hover:text-foreground transition-colors">Home</a>
+			<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+			<span class="text-foreground font-medium">Search results</span>
+		</div>
+		<p class="text-xs text-muted-foreground">Showing <span class="font-medium text-foreground">{resultCount}</span> results{#if query.trim()} for "<span class="font-medium text-foreground">{query.trim()}</span>"{/if}</p>
 	</div>
 
-	{#if query.trim() === ''}
-		<Empty>
-			<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-			<EmptyTitle>Start typing to search</EmptyTitle>
-			<EmptyDescription
-				>Search across 15 articles, 30 glossary terms, 7 suppliers and 12 products.</EmptyDescription
-			>
-		</Empty>
-	{:else if resultCount === 0}
-		<Empty>
-			<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-			<EmptyTitle>No results</EmptyTitle>
-			<EmptyDescription>Nothing matched “{query.trim()}”. Try a different term.</EmptyDescription>
-		</Empty>
-	{:else}
-		<div class="space-y-2">
-			<p class="text-sm text-muted-foreground">
-				{resultCount} result{resultCount === 1 ? '' : 's'}
-			</p>
-			<div class="space-y-3">
-				{#each allResults as result}
-					{#if result.kind === 'article'}
-						<Card>
-							<CardContent class="space-y-1 pt-4">
-								<div class="flex items-center gap-2">
-									<FileText class="size-4 text-primary"></FileText>
-									<span class="text-xs font-medium text-muted-foreground">
-										{getSection(result.section)?.title ?? result.section}
-									</span>
-								</div>
-								<a
-									href={localizeHref(`/knowledge-base/${result.section}/${result.slug}`)}
-									class="text-base font-medium transition-colors outline-none hover:text-primary focus-visible:underline"
-								>
-									{result.title}
-								</a>
-								<CardDescription>{result.summary}</CardDescription>
-							</CardContent>
-						</Card>
-					{:else if result.kind === 'term'}
-						<Card>
-							<CardContent class="space-y-1 pt-4">
-								<div class="flex items-center gap-2">
-									<BookText class="size-4 text-primary"></BookText>
-									<span class="text-xs font-medium text-muted-foreground">Glossary</span>
-								</div>
-								<a
-									href={localizeHref(`/glossary#term-${result.term[0].toUpperCase()}`)}
-									class="text-base font-medium transition-colors outline-none hover:text-primary focus-visible:underline"
-								>
-									{result.term}
-								</a>
-								<CardDescription>{result.definition}</CardDescription>
-							</CardContent>
-						</Card>
-					{:else if result.kind === 'supplier'}
-						<a href={localizeHref(`/suppliers/${result.slug}`)} class="block">
-							<Card hoverable class="transition-colors hover:bg-muted/50">
-								<CardContent class="flex items-center gap-3 pt-4">
-									<span
-										class="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground"
-									>
-										<Store class="size-4"></Store>
-									</span>
-									<div class="space-y-0.5">
-										<CardTitle class="text-base">{result.name}</CardTitle>
-										<CardDescription>Supplier · {result.country}</CardDescription>
-									</div>
-								</CardContent>
-							</Card>
-						</a>
-					{:else}
-						<a href={localizeHref(`/products/${result.slug}`)} class="block">
-							<Card hoverable class="transition-colors hover:bg-muted/50">
-								<CardContent class="flex items-center gap-3 pt-4">
-									<span
-										class="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground"
-									>
-										<Package class="size-4"></Package>
-									</span>
-									<div class="space-y-0.5">
-										<CardTitle class="text-base">{result.name}</CardTitle>
-										<CardDescription>Product · {result.description}</CardDescription>
-									</div>
-								</CardContent>
-							</Card>
-						</a>
-					{/if}
-				{/each}
+	<div class="flex gap-5">
+		<aside class="hidden w-52 shrink-0 lg:block">
+			<div class="sticky top-20 space-y-4">
+				<div>
+					<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
+					<div class="space-y-1">
+						{#each categories as cat}
+							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
+								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedCategories.has(cat)} onchange={() => selectedCategories = toggleSet(selectedCategories, cat)}>
+								{cat}
+							</label>
+						{/each}
+					</div>
+					<Button variant="ghost" size="sm" class="mt-1 h-auto p-0 text-[10px] text-primary hover:underline">Show more</Button>
+				</div>
+
+				<hr class="border-border">
+
+				<div>
+					<h3 class="mb-1.5 text-xs font-semibold">Price Range</h3>
+					<div class="space-y-1">
+						{#each priceRanges as pr}
+							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
+								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedPrices.has(pr)} onchange={() => selectedPrices = toggleSet(selectedPrices, pr)}>
+								{pr}
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<hr class="border-border">
+
+				<div>
+					<h3 class="mb-1.5 text-xs font-semibold">Supplier Location</h3>
+					<div class="space-y-1">
+						{#each supplierLocations as loc}
+							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
+								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedLocations.has(loc)} onchange={() => selectedLocations = toggleSet(selectedLocations, loc)}>
+								{loc}
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<hr class="border-border">
+
+				<div>
+					<h3 class="mb-1.5 text-xs font-semibold">Halal Certification</h3>
+					<div class="space-y-1">
+						{#each certifications as cert}
+							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
+								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedCerts.has(cert)} onchange={() => selectedCerts = toggleSet(selectedCerts, cert)}>
+								{cert}
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<Button variant="outline" class="w-full text-xs" onclick={() => { selectedCategories = new Set(); selectedPrices = new Set(); selectedLocations = new Set(); selectedCerts = new Set(); }}>Clear all filters</Button>
 			</div>
+		</aside>
+
+		<div class="flex-1 min-w-0">
+			<div class="mb-3 flex items-center justify-between gap-2">
+				<Button variant="outline" size="sm" class="lg:hidden gap-1.5 text-xs" onclick={() => showMobileFilters = !showMobileFilters}>
+					<SlidersHorizontal class="size-3.5" />
+					Filters
+				</Button>
+				<div class="flex items-center gap-2">
+					<span class="text-[10px] text-muted-foreground hidden sm:inline">Sort by:</span>
+					<Select type="single" bind:value={sortBy}>
+						<SelectTrigger class="h-7 w-[140px] text-[10px]">
+							Relevance
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="relevance">Relevance</SelectItem>
+							<SelectItem value="price-asc">Price: Low to High</SelectItem>
+							<SelectItem value="price-desc">Price: High to Low</SelectItem>
+							<SelectItem value="newest">Newest</SelectItem>
+							<SelectItem value="rating">Rating</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
+
+			{#if query.trim() === ''}
+				<Empty>
+					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+					<EmptyTitle>Start typing to search</EmptyTitle>
+					<EmptyDescription>Search across {(data.articles ?? []).length} articles, {(data.glossary ?? []).length} glossary terms, {(data.suppliers ?? []).length} suppliers and {(data.products ?? []).length} products.</EmptyDescription>
+				</Empty>
+			{:else if resultCount === 0}
+				<Empty>
+					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+					<EmptyTitle>No results</EmptyTitle>
+					<EmptyDescription>Nothing matched "{query.trim()}" — Try a different term.</EmptyDescription>
+				</Empty>
+			{:else}
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+					{#each paginatedResults() as result}
+						{#if result.kind === 'sku'}
+							<a href={localizeHref(`/products/${result.slug}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
+								<div class="mb-2 aspect-square rounded-md bg-muted relative">
+									<span class="absolute top-1.5 left-1.5 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">JAKIM</span>
+								</div>
+								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.name}</h3>
+								<p class="mt-0.5 text-[10px] text-muted-foreground">{result.description ?? 'Halal product'}</p>
+								<div class="mt-1 flex items-center gap-1">
+									<Star class="size-3 fill-amber-500 text-amber-500" />
+									<span class="text-[10px] font-medium">4.8</span>
+								</div>
+								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">View details</span>
+							</a>
+						{:else if result.kind === 'supplier'}
+							<a href={localizeHref(`/suppliers/${result.slug}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
+								<div class="mb-2 aspect-square rounded-md bg-muted relative flex items-center justify-center">
+									<Store class="size-8 text-muted-foreground/40" />
+								</div>
+								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.name}</h3>
+								<p class="mt-0.5 text-[10px] text-muted-foreground">Supplier · {result.country}</p>
+								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">View details</span>
+							</a>
+						{:else if result.kind === 'article'}
+							<a href={localizeHref(`/knowledge-base/${result.section}/${result.slug}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
+								<div class="mb-2 aspect-square rounded-md bg-muted relative flex items-center justify-center">
+									<FileText class="size-8 text-muted-foreground/40" />
+								</div>
+								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.title}</h3>
+								<p class="mt-0.5 text-[10px] text-muted-foreground line-clamp-2">{result.summary}</p>
+								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">Read article</span>
+							</a>
+						{:else}
+							<a href={localizeHref(`/glossary#term-${result.term[0].toUpperCase()}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
+								<div class="mb-2 aspect-square rounded-md bg-muted relative flex items-center justify-center">
+									<BookText class="size-8 text-muted-foreground/40" />
+								</div>
+								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.term}</h3>
+								<p class="mt-0.5 text-[10px] text-muted-foreground line-clamp-2">{result.definition}</p>
+								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">View term</span>
+							</a>
+						{/if}
+					{/each}
+				</div>
+
+				{#if totalPages > 1}
+					<div class="mt-5 flex items-center justify-center gap-1">
+						<Button
+							variant="outline"
+							size="icon"
+							class="size-7"
+							disabled={currentPage === 1}
+							onclick={() => currentPage = Math.max(1, currentPage - 1)}
+						>
+							<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+						</Button>
+						{#each Array.from({ length: totalPages }, (_, i) => i + 1) as page}
+							{#if page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)}
+								<Button
+									variant={page === currentPage ? 'default' : 'outline'}
+									size="icon"
+									class="size-7"
+									onclick={() => currentPage = page}
+								>{page}</Button>
+							{:else if page === currentPage - 2 || page === currentPage + 2}
+								<span class="size-7 flex items-center justify-center text-[10px] text-muted-foreground">...</span>
+							{/if}
+						{/each}
+						<Button
+							variant="outline"
+							size="icon"
+							class="size-7"
+							disabled={currentPage === totalPages}
+							onclick={() => currentPage = Math.min(totalPages, currentPage + 1)}
+						>
+							<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+						</Button>
+					</div>
+				{/if}
+			{/if}
 		</div>
-	{/if}
-</section>
+	</div>
+</div>

@@ -22,5 +22,8 @@
 			"binding": "halalneo_assets",
 			"bucket_name": "halalneo-media"
 		}
-	]
+	],
+	"images": {
+		"binding": "IMAGES"
+	}
 }

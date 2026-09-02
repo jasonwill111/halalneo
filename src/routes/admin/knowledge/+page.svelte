@@ -7,9 +7,10 @@
 	} from '#lib/stores/admin-data.svelte.js';
 	import type { KbArticle, SectionSlug } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -36,10 +37,15 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<KbArticle | null>(null);
+	let aiLoading = $state(false);
+	let seoExpanded = $state(false);
 
 	type ArticleForm = {
 		section: SectionSlug;
@@ -48,6 +54,9 @@
 		summary: string;
 		tags: string;
 		body: string;
+		metaTitle: string;
+		metaDescription: string;
+		keywords: string;
 	};
 	let form = $state<ArticleForm>({
 		section: 'halal-certification',
@@ -55,7 +64,10 @@
 		title: '',
 		summary: '',
 		tags: '',
-		body: ''
+		body: '',
+		metaTitle: '',
+		metaDescription: '',
+		keywords: ''
 	});
 	let formError = $state('');
 
@@ -85,8 +97,9 @@
 
 	function openCreate() {
 		editing = null;
-		form = { section: 'halal-certification', slug: '', title: '', summary: '', tags: '', body: '' };
+		form = { section: 'halal-certification', slug: '', title: '', summary: '', tags: '', body: '', metaTitle: '', metaDescription: '', keywords: '' };
 		formError = '';
+		seoExpanded = false;
 		dialogOpen = true;
 	}
 
@@ -98,9 +111,13 @@
 			title: a.title,
 			summary: a.summary,
 			tags: a.tags.join(', '),
-			body: a.body
+			body: a.body,
+			metaTitle: a.metaTitle ?? '',
+			metaDescription: a.metaDescription ?? '',
+			keywords: a.keywords ?? ''
 		};
 		formError = '';
+		seoExpanded = false;
 		dialogOpen = true;
 	}
 
@@ -129,7 +146,10 @@
 				.split(',')
 				.map((t) => t.trim())
 				.filter(Boolean),
-			body: form.body
+			body: form.body,
+			metaTitle: form.metaTitle.trim() || undefined,
+			metaDescription: form.metaDescription.trim() || undefined,
+			keywords: form.keywords.trim() || undefined
 		};
 		upsertItem<KbArticle>('kbArticles', updated, editing ?? undefined);
 		dialogOpen = false;
@@ -139,6 +159,15 @@
 		if (window.confirm(`Delete article ${a.title}?`)) {
 			deleteItem('kbArticles', a.slug);
 		}
+	}
+
+	async function generateBody() {
+		aiLoading = true;
+		await new Promise((r) => setTimeout(r, 800));
+		const section = adminData.kbSections.find((s) => s.slug === form.section);
+		const sectionName = section?.name ?? form.section;
+		form.body = `## ${form.title}\n\nThis article covers ${form.title.toLowerCase()} in the context of ${sectionName}.\n\n### Overview\n\n${form.summary || 'A comprehensive guide to help buyers and suppliers navigate halal compliance.'}\n\n### Key Points\n\n- Understanding the fundamentals of ${form.title.toLowerCase()}\n- Practical steps for compliance\n- Common challenges and how to overcome them\n\n### Detailed Guide\n\n[Write detailed content here]\n\n### Best Practices\n\n1. Always verify certification status\n2. Keep documentation up to date\n3. Work with recognized certifying bodies\n\n### References\n\n- HalalNeo Knowledge Base\n- Relevant certification body guidelines`;
+		aiLoading = false;
 	}
 </script>
 
@@ -167,7 +196,7 @@
 		<Search
 			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search articles…" class="pl-9" />
+		<Input bind:value={search} placeholder="Search articles..." class="pl-9" />
 	</div>
 
 	<div class="rounded-xl ring-1 ring-foreground/10">
@@ -193,9 +222,7 @@
 						<TableCell>
 							<div class="flex flex-wrap gap-1">
 								{#each a.tags.slice(0, 3) as tag}
-									<span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
-										>{tag}</span
-									>
+									<Badge variant="secondary">{tag}</Badge>
 								{/each}
 							</div>
 						</TableCell>
@@ -229,8 +256,8 @@
 			<DialogDescription>Create or update a knowledge base article.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
-			<Field>
-				<FieldLabel>Section</FieldLabel>
+			<Field.Field>
+				<Field.FieldLabel>Section</Field.FieldLabel>
 				<Select bind:value={form.section} type="single">
 					<SelectTrigger class="w-full">{sectionName(form.section)}</SelectTrigger>
 					<SelectContent>
@@ -239,27 +266,65 @@
 						{/each}
 					</SelectContent>
 				</Select>
-			</Field>
-			<Field>
-				<FieldLabel>Title</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Title</Field.FieldLabel>
 				<Input bind:value={form.title} placeholder="Article title" />
-			</Field>
-			<Field>
-				<FieldLabel>Slug</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Slug</Field.FieldLabel>
 				<Input bind:value={form.slug} placeholder="article-slug" disabled={!!editing} />
-			</Field>
-			<Field>
-				<FieldLabel>Summary</FieldLabel>
-				<Textarea bind:value={form.summary} rows={2} placeholder="One-line summary…" />
-			</Field>
-			<Field>
-				<FieldLabel>Tags</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Summary</Field.FieldLabel>
+				<Textarea bind:value={form.summary} rows={2} placeholder="One-line summary..." />
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Tags</Field.FieldLabel>
 				<Input bind:value={form.tags} placeholder="Comma separated: certification, export" />
-			</Field>
-			<Field>
-				<FieldLabel>Body</FieldLabel>
-				<Textarea bind:value={form.body} rows={8} placeholder="Article content…" />
-			</Field>
+			</Field.Field>
+			<Field.Field>
+				<div class="flex items-center justify-between">
+					<Field.FieldLabel>Body</Field.FieldLabel>
+					<Button variant="outline" size="sm" type="button" onclick={generateBody} disabled={aiLoading || !form.title.trim()}>
+						<Sparkles class="size-3.5" />
+						{aiLoading ? 'Generating...' : 'Generate with AI'}
+					</Button>
+				</div>
+				<Textarea bind:value={form.body} rows={8} placeholder="Article content..." />
+			</Field.Field>
+
+			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
+			<button
+				type="button"
+				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
+				onclick={() => (seoExpanded = !seoExpanded)}
+			>
+				{#if seoExpanded}
+					<ChevronDown class="size-4" />
+				{:else}
+					<ChevronRight class="size-4" />
+				{/if}
+				SEO & Metadata
+			</button>
+
+			{#if seoExpanded}
+				<div class="flex flex-col gap-4 pl-6">
+					<Field.Field>
+						<Field.FieldLabel>Meta Title</Field.FieldLabel>
+						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Meta Description</Field.FieldLabel>
+						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Keywords</Field.FieldLabel>
+						<Input bind:value={form.keywords} placeholder="Comma separated: halal, certification, knowledge" />
+					</Field.Field>
+				</div>
+			{/if}
+
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}

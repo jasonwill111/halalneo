@@ -39,7 +39,7 @@ export const glossaryTerms: GlossaryTerm[] = [
 	{
 		term: 'MOQ',
 		definition:
-			'Minimum order quantity — the smallest volume a supplier will accept for a single order, set by merchants on each SKU.'
+			'Minimum order quantity —the smallest volume a supplier will accept for a single order, set by suppliers on each SKU.'
 	},
 	{
 		term: 'Incoterms',
@@ -79,12 +79,12 @@ export const glossaryTerms: GlossaryTerm[] = [
 	{
 		term: 'Traceability',
 		definition:
-			"The ability to track a product's history, application and location — from origin materials through processing, to the final shipment."
+			"The ability to track a product's history, application and location —from origin materials through processing, to the final shipment."
 	},
 	{
 		term: 'GMID',
 		definition:
-			'Global Market Identifier for halal — also used to refer to recognized halal market identifiers that let certifying bodies register export markets.'
+			'Global Market Identifier for halal —also used to refer to recognized halal market identifiers that let certifying bodies register export markets.'
 	},
 	{
 		term: 'GSO 2055',
@@ -94,32 +94,32 @@ export const glossaryTerms: GlossaryTerm[] = [
 	{
 		term: 'JAKIM',
 		definition:
-			"Jabatan Kemajuan Islam Malaysia — Malaysia's official authority issuing internationally recognized halal certification."
+			"Jabatan Kemajuan Islam Malaysia —Malaysia's official authority issuing internationally recognized halal certification."
 	},
 	{
 		term: 'BPJPH',
 		definition:
-			"Badan Penyelenggara Jaminan Produk Halal — Indonesia's statutory halal product assurance body, the mandatory certifier for products sold in Indonesia."
+			"Badan Penyelenggara Jaminan Produk Halal —Indonesia's statutory halal product assurance body, the mandatory certifier for products sold in Indonesia."
 	},
 	{
 		term: 'MUI',
 		definition:
-			"Majelis Ulama Indonesia — the Indonesian Ulama Council. Its halal fatwa underpins BPJPH's certification decisions."
+			"Majelis Ulama Indonesia —the Indonesian Ulama Council. Its halal fatwa underpins BPJPH's certification decisions."
 	},
 	{
 		term: 'MUIS',
 		definition:
-			"Majlis Ugama Islam Singapura — Singapore's Islamic Religious Council, which runs the city-state's halal certification scheme."
+			"Majlis Ugama Islam Singapura —Singapore's Islamic Religious Council, which runs the city-state's halal certification scheme."
 	},
 	{
 		term: 'SFDA',
 		definition:
-			'Saudi Food and Drug Authority — regulates imported food including halal slaughter certificates entering Saudi Arabia.'
+			'Saudi Food and Drug Authority —regulates imported food including halal slaughter certificates entering Saudi Arabia.'
 	},
 	{
 		term: 'MOIAT',
 		definition:
-			'Ministry of Industry and Advanced Technology (United Arab Emirates) — issues halal certificates for products exported to the UAE.'
+			'Ministry of Industry and Advanced Technology (United Arab Emirates) —issues halal certificates for products exported to the UAE.'
 	},
 	{
 		term: 'GIMDES',
@@ -129,17 +129,17 @@ export const glossaryTerms: GlossaryTerm[] = [
 	{
 		term: 'SANHA',
 		definition:
-			'South African National Halaal Authority — the major halal certification body in Southern Africa.'
+			'South African National Halaal Authority —the major halal certification body in Southern Africa.'
 	},
 	{
 		term: 'IFANCA',
 		definition:
-			'Islamic Food and Nutrition Council of America — a widely recognized halal certification body based in the United States.'
+			'Islamic Food and Nutrition Council of America —a widely recognized halal certification body based in the United States.'
 	},
 	{
 		term: 'Due diligence',
 		definition:
-			'The investigation and verification process buyers run on a supplier before committing — checking certificates, scope, expiry, recognition and audit history.'
+			'The investigation and verification process buyers run on a supplier before committing —checking certificates, scope, expiry, recognition and audit history.'
 	},
 	{
 		term: 'Private label',
@@ -149,7 +149,7 @@ export const glossaryTerms: GlossaryTerm[] = [
 	{
 		term: 'HORECA',
 		definition:
-			'Hotels, restaurants and catering — a major distribution channel for halal food service products.'
+			'Hotels, restaurants and catering —a major distribution channel for halal food service products.'
 	}
 ];
 

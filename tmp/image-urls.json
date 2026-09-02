@@ -1,0 +1,194 @@
+{
+  "hero-1": {
+    "url": "/images/hero-1.jpg",
+    "group": "hero",
+    "w": 1200,
+    "h": 630
+  },
+  "hero-2": {
+    "url": "/images/hero-2.jpg",
+    "group": "hero",
+    "w": 1200,
+    "h": 630
+  },
+  "hero-3": {
+    "url": "/images/hero-3.jpg",
+    "group": "hero",
+    "w": 1200,
+    "h": 630
+  },
+  "rendang": {
+    "url": "/images/rendang.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "sambal": {
+    "url": "/images/sambal.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "mango": {
+    "url": "/images/mango.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "guava": {
+    "url": "/images/guava.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "biscuit": {
+    "url": "/images/biscuit.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "cake": {
+    "url": "/images/cake.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "beef": {
+    "url": "/images/beef.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "chicken": {
+    "url": "/images/chicken.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "bulgur": {
+    "url": "/images/bulgur.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "lentils": {
+    "url": "/images/lentils.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "capsule": {
+    "url": "/images/capsule.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "protein": {
+    "url": "/images/protein.jpg",
+    "group": "products",
+    "w": 800,
+    "h": 800
+  },
+  "cat-food-beverages": {
+    "url": "/images/cat-food-beverages.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "cat-meat-poultry": {
+    "url": "/images/cat-meat-poultry.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "cat-dairy-eggs": {
+    "url": "/images/cat-dairy-eggs.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "cat-confectionery": {
+    "url": "/images/cat-confectionery.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "cat-beverages": {
+    "url": "/images/cat-beverages.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "cat-supplements": {
+    "url": "/images/cat-supplements.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "cat-cosmetics": {
+    "url": "/images/cat-cosmetics.jpg",
+    "group": "categories",
+    "w": 400,
+    "h": 400
+  },
+  "blog-1": {
+    "url": "/images/blog-1.jpg",
+    "group": "blog",
+    "w": 1200,
+    "h": 630
+  },
+  "blog-2": {
+    "url": "/images/blog-2.jpg",
+    "group": "blog",
+    "w": 1200,
+    "h": 630
+  },
+  "blog-3": {
+    "url": "/images/blog-3.jpg",
+    "group": "blog",
+    "w": 1200,
+    "h": 630
+  },
+  "sup-nusantara": {
+    "url": "/images/sup-nusantara.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  },
+  "sup-santosa": {
+    "url": "/images/sup-santosa.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  },
+  "sup-albarakah": {
+    "url": "/images/sup-albarakah.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  },
+  "sup-medina": {
+    "url": "/images/sup-medina.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  },
+  "sup-grainpath": {
+    "url": "/images/sup-grainpath.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  },
+  "sup-saffron": {
+    "url": "/images/sup-saffron.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  },
+  "sup-pureharvest": {
+    "url": "/images/sup-pureharvest.jpg",
+    "group": "suppliers",
+    "w": 1200,
+    "h": 400
+  }
+}

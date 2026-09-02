@@ -5,7 +5,7 @@ export const categories: Category[] = [
 		slug: 'food-beverages',
 		name: 'Food & Beverages',
 		description:
-			'Halal-certified food products for import, retail and food service — ingredients through finished goods.',
+			'Halal-certified food products for import, retail and food service —ingredients through finished goods.',
 		icon: 'UtensilsCrossed'
 	},
 	{
@@ -47,7 +47,7 @@ export const categories: Category[] = [
 		slug: 'cosmetics-personal-care',
 		name: 'Cosmetics & Personal Care',
 		description:
-			'Cosmetics and personal care certified halal — no porcine derivatives in ingredients or packaging.',
+			'Cosmetics and personal care certified halal —no porcine derivatives in ingredients or packaging.',
 		icon: 'Sparkles'
 	}
 ];

@@ -1,0 +1,121 @@
+﻿node.exe : [WARN] The following settings cannot be set in the global config file ("C:\Users\Nick\AppData\Local\pnpm\con
+fig\config.yaml") and were ignored: "globalShims". Move them to a project-level pnpm-workspace.yaml. To share these set
+tings across projects, use config dependencies: https://pnpm.io/11.x/config-dependencies
+所在位置 C:\Users\Nick\node-global\pnpm.ps1:24 字符: 5
++     & "node$exe"  "$basedir/node_modules/pnpm/bin/pnpm.mjs" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WARN] The foll...ig-dependencies:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WARN] The following settings cannot be set in the global config file ("C:\Users\Nick\AppData\Local\pnpm\config\config.
+yaml") and were ignored: "globalShims". Move them to a project-level pnpm-workspace.yaml. To share these settings acros
+s projects, use config dependencies: https://pnpm.io/11.x/config-dependencies
+Already up to date
+Done in 750ms using pnpm v11.21.0
+$ node scripts/worker-types.mjs && vite build
+[33m鈻?[43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch r
+equests.[0m
+
+
+
+ 鉀咃笍 wrangler 4.125.0 (update available 4.127.1)
+鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+Generating project types...
+
+interface __BaseEnv_Env {
+	halalneo_assets: R2Bucket;
+	DB: D1Database;
+	IMAGES: ImagesBinding;
+	ASSETS: Fetcher;
+	CLOUDFLARE_ACCOUNT_ID: string;
+	CLOUDFLARE_DATABASE_ID: string;
+	CLOUDFLARE_D1_TOKEN: string;
+	ORIGIN: string;
+	BETTER_AUTH_SECRET: string;
+}
+declare namespace Cloudflare {
+	interface Env extends __BaseEnv_Env {}
+}
+interface Env extends __BaseEnv_Env {}
+type StringifyValues<EnvType extends Record<string, unknown>> = {
+	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
+};
+declare namespace NodeJS {
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "CLOUDFLARE_ACCOUNT_ID" | "CLOUDFLARE_DATABASE_ID" | "CLOUDFLARE_D1_TOKEN" | "ORIGIN" | "BETTER_AUTH_SECRET">> {}
+}
+
+Generating runtime types...
+
+Runtime types generated.
+
+
+鉁?Types written to worker-configuration.d.ts
+
+馃摉 Read about runtime types
+https://developers.cloudflare.com/workers/languages/typescript/#generate-types
+馃摚 Remember to rerun 'wrangler types' after you change your wrangler.jsonc file.
+
+[33m鈻?[43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch r
+equests.[0m
+
+
+[36mvite v8.2.2 [32mbuilding ssr environment for production...[36m[39m
+[36mi[39m [1m[34m[paraglide-js] [39m[22mCompilation skipped 鈥?inputs unchanged (message-modules)
+transforming...
+17:03:48 [vite-plugin-svelte] src/routes/register/+page.svelte:140:9 '#' is not a valid href attribute
+https://svelte.dev/e/a11y_invalid_attribute
+138:           <label for="terms" class="text-xs leading-snug text-muted-foreground">
+139:             I agree to the
+140:             <a href="#" class="text-primary font-medium hover:underline">Terms of Service</a>
+                            ^
+141:             and
+142:             <a href="#" class="text-primary font-medium hover:underline">Privacy Policy</a>
+17:03:48 [vite-plugin-svelte] src/routes/register/+page.svelte:142:9 '#' is not a valid href attribute
+https://svelte.dev/e/a11y_invalid_attribute
+140:             <a href="#" class="text-primary font-medium hover:underline">Terms of Service</a>
+141:             and
+142:             <a href="#" class="text-primary font-medium hover:underline">Privacy Policy</a>
+                            ^
+143:           </label>
+144:         </div>
+鉁?1602 modules transformed.
+[31m鉁?[39m Build failed in 12.95s
+[31merror during build:
+[31mBuild failed with 1 error:
+
+[31m[builtin:vite-transform] [0mExpected `,` or `]` but found `{`
+      [38;5;246m鈺?[0m[38;5;246m鈹€[0m[38;5;246m[[0m src/lib/data/kb-articles.ts:1602:2 [38;5;246m][0m
+      [38;5;246m鈹?[0m
+ [38;5;246m   3 鈹?[0m [38;5;249me[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m
+[38;5;249m [0m[38;5;249mc[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249m [0m[38;5;
+249mk[0m[38;5;249mb[0m[38;5;249mA[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mc[0m[38;5;249ml[
+0m[38;5;249me[0m[38;5;249ms[0m[38;5;249m:[0m[38;5;249m [0m[38;5;249mK[0m[38;5;249mb[0m[38;5;249mA[0m[38;
+5;249mr[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249mc[0m[38;5;249ml[0m[38;5;249me[0m[38;5;249m[[0m[38;5;249m]
+[0m[38;5;249m [0m[38;5;249m=[0m[38;5;249m [0m[
+ [38;5;240m     鈹?[0m                                        鈹? 
+ [38;5;240m     鈹?[0m                                        鈺扳攢鈹€ Opened here
+ [38;5;240m     鈹?[0m 
+ [38;5;246m1602 鈹?[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m{
+ [38;5;240m     鈹?[0m     鈹? 
+ [38;5;240m     鈹?[0m     鈺扳攢鈹€ `,` or `]` expected
+[38;5;246m鈹€鈹€鈹€鈹€鈹€鈹€鈺?[0m
+[31m
+    at aggregateBindingErrorsIntoJsError (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/rolldown@1.2.5/node_mod
+ules/rolldown/dist/shared/error-NcRuXAVN.mjs:48:18)
+    at unwrapBindingResult (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/rolldown@1.2.5/node_modules/rolldown/
+dist/shared/error-NcRuXAVN.mjs:18:128)
+    at #build (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/rolldown@1.2.5/node_modules/rolldown/dist/shared/r
+olldown-vcii7mEa.mjs:132:34)
+    at async buildEnvironment (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/vite@8.2.2_@types+node@24.1_b9ce48
+5ba7239ab4b877ef718d83a356/node_modules/vite/dist/node/chunks/node.js:33821:66)
+    at async Object.build (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/vite@8.2.2_@types+node@24.1_b9ce485ba7
+239ab4b877ef718d83a356/node_modules/vite/dist/node/chunks/node.js:34242:19)
+    at async BasicMinimalPluginContext.buildApp (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/@sveltejs+kit@3.
+0.0-next.25_e256068f077c3e10a062f14831f2eeca/node_modules/@sveltejs/kit/src/exports/vite/index.js:1158:20)
+    at async Object.buildApp (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/vite@8.2.2_@types+node@24.1_b9ce485
+ba7239ab4b877ef718d83a356/node_modules/vite/dist/node/chunks/node.js:34236:5)
+    at async CAC.<anonymous> (file:///D:/Dev%20Projects/halalneo/node_modules/.pnpm/vite@8.2.2_@types+node@24.1_b9ce485
+ba7239ab4b877ef718d83a356/node_modules/vite/dist/node/cli.js:776:3) {
+  errors: [Getter/Setter]
+}[39m
+[ELIFECYCLE] Command failed with exit code 1.

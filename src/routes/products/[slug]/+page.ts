@@ -1,19 +1,47 @@
-import type { EntryGenerator } from './$types';
+import type { EntryGenerator, PageLoad } from './$types';
 
 export const entries: EntryGenerator = () => [];
 
-export const load = async ({ params }) => {
+interface ProductItem {
+	name?: string;
+	shortDescription?: string;
+	image?: string;
+	category?: string;
+}
+
+export const load: PageLoad = async ({ params, fetch }) => {
+	try {
+		const res = await fetch(`/api/products/${params.slug}`);
+		if (res.ok) {
+			const data: ProductItem = await res.json();
+			const parsed = {
+				...data,
+				features: typeof data.features === 'string' ? JSON.parse(data.features || '[]') : data.features ?? [],
+				specifications: typeof data.specifications === 'string' ? JSON.parse(data.specifications || '{}') : data.specifications ?? {},
+				images: typeof data.images === 'string' ? JSON.parse(data.images || '[]') : data.images ?? [],
+				videos: typeof data.videos === 'string' ? JSON.parse(data.videos || '[]') : data.videos ?? [],
+				faqs: typeof data.faqs === 'string' ? JSON.parse(data.faqs || '[]') : data.faqs ?? [],
+				resources: typeof data.resources === 'string' ? JSON.parse(data.resources || '[]') : data.resources ?? [],
+			};
+			return {
+				seo: {
+					title: parsed.name ? `${parsed.name} — HalalNeo` : `${params.slug} — HalalNeo`,
+					description:
+						parsed.shortDescription ||
+						`Product details for ${parsed.name || params.slug} on HalalNeo — halal-certified medical devices and pharmaceuticals.`,
+					ogImage: parsed.image || 'https://halalneo.com/og-products.png',
+					keywords: [parsed.name, 'halal product', parsed.category, 'certified product'].filter(Boolean)
+				},
+				item: parsed
+			};
+		}
+	} catch {}
+
 	return {
 		seo: {
 			title: `${params.slug} — HalalNeo`,
 			description: `Product details for ${params.slug} on HalalNeo — halal-certified medical devices and pharmaceuticals.`
 		},
-		item: null as {
-			name: string;
-			category: string;
-			certification: string;
-			description: string;
-			supplier: string;
-		} | null
+		item: null
 	};
 };

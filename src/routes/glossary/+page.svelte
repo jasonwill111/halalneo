@@ -1,13 +1,29 @@
 <script lang="ts">
-	import { adminData } from '#lib/stores/admin-data.svelte.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import BookText from '@lucide/svelte/icons/book-text';
+	import SearchIcon from '@lucide/svelte/icons/search';
+	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
 
-	const sorted = $derived(adminData.glossary.toSorted((a, b) => a.term.localeCompare(b.term)));
+	let { data } = $props();
+	let search = $state('');
 
-	const grouped = $derived(Object.groupBy(sorted, (t) => t.term[0].toUpperCase()));
+	const sorted = $derived(
+		(data.terms ?? [])
+			.toSorted((a: any, b: any) => a.term.localeCompare(b.term))
+			.filter((t: any) =>
+				search.trim()
+					? t.term.toLowerCase().includes(search.toLowerCase()) ||
+						t.definition.toLowerCase().includes(search.toLowerCase())
+					: true
+			)
+	);
+
+	const grouped = $derived(Object.groupBy(sorted, (t: any) => t.term[0].toUpperCase()));
 	const letters = $derived(Object.keys(grouped).toSorted());
 </script>
+
+<Breadcrumb items={[{ label: 'Glossary', href: '/glossary' }]} />
 
 <section class="space-y-8">
 	<div class="max-w-2xl space-y-2">
@@ -19,6 +35,16 @@
 		<p class="text-muted-foreground">
 			{sorted.length} terms covering certification, sourcing, logistics and market entry.
 		</p>
+	</div>
+
+	<div class="relative">
+		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input
+			type="search"
+			placeholder="Search glossary terms..."
+			class="pl-9"
+			bind:value={search}
+		/>
 	</div>
 
 	<nav class="flex flex-wrap gap-1.5" aria-label="Glossary index">
@@ -46,6 +72,11 @@
 						</Card>
 					{/each}
 				</div>
+			</div>
+		{:else}
+			<div class="flex flex-col items-center justify-center py-12 text-center">
+				<p class="text-lg font-medium text-muted-foreground">No glossary terms found</p>
+				<p class="text-sm text-muted-foreground">Try adjusting your search.</p>
 			</div>
 		{/each}
 	</div>

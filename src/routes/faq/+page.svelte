@@ -8,8 +8,22 @@
 		AccordionTrigger
 	} from '#lib/components/ui/accordion/index.js';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
+	import SearchIcon from '@lucide/svelte/icons/search';
+	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
 
 	type Faq = { q: string; a: string };
+	let search = $state('');
+
+	const filteredFaqs = $derived(
+		search.trim()
+			? faqs.filter(
+					(f) =>
+						f.q.toLowerCase().includes(search.toLowerCase()) ||
+						f.a.toLowerCase().includes(search.toLowerCase())
+				)
+			: faqs
+	);
 
 	const faqs: Faq[] = [
 		{
@@ -26,7 +40,7 @@
 		},
 		{
 			q: 'How do I confirm a certificate is valid?',
-			a: 'Check three things on the supplier profile: the certifying body, the standard (e.g. MS 1500:2019) and the certificate scope and expiry. For critical orders, contact the issuing body directly — most publish a public verification lookup.'
+			a: 'Check three things on the supplier profile: the certifying body, the standard (e.g. MS 1500:2019) and the certificate scope and expiry. For critical orders, contact the issuing body directly —most publish a public verification lookup.'
 		},
 		{
 			q: 'Do you vet product ingredients or manufacturing sites?',
@@ -34,7 +48,7 @@
 		},
 		{
 			q: 'Is HalalNeo free to use?',
-			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts — shortlisting and messaging suppliers — are free in this prototype. Supplier listing is by invitation; contact us to be considered.'
+			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts —shortlisting and messaging suppliers —are free in this prototype. Supplier listing is by invitation; contact us to be considered.'
 		},
 		{
 			q: 'How do I get in touch with a supplier?',
@@ -45,9 +59,55 @@
 			a: 'This deployment runs on curated demonstration data to showcase the platform. Certifying bodies are real and current, but supplier and product listings are illustrative. Project sourcing from the data you see before entering into any commercial agreement.'
 		}
 	];
+
+	const faqSchema = {
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faqs.map((faq) => ({
+			'@type': 'Question',
+			name: faq.q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: faq.a
+			}
+		}))
+	};
 </script>
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		'name': 'FAQ — HalalNeo',
+		'description': 'Frequently asked questions about halal certification, supplier verification and how HalalNeo works for buyers and suppliers.',
+		'url': 'https://halalneo.com/faq',
+		mainEntity: faqs.map((faq) => ({
+			'@type': 'Question',
+			name: faq.q,
+			acceptedAnswer: {
+				'@type': 'Answer',
+				text: faq.a
+			}
+		}))
+	})}</script>`}
+</svelte:head>
+
+<Breadcrumb items={[{ label: 'FAQ', href: '/faq' }]} />
+
 <section class="mx-auto max-w-3xl space-y-8">
+	<div class="rounded-xl bg-card shadow-sm p-6 text-center space-y-4">
+		<h2 class="text-lg font-semibold">How can we help?</h2>
+		<div class="relative mx-auto max-w-md">
+			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<Input
+				type="search"
+				placeholder="Search questions..."
+				class="pl-9"
+				bind:value={search}
+			/>
+		</div>
+	</div>
+
 	<div class="space-y-2 text-center">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Frequently asked questions</h1>
 		<p class="text-muted-foreground">
@@ -56,7 +116,7 @@
 	</div>
 
 	<Accordion type="multiple">
-		{#each faqs as faq, i}
+		{#each filteredFaqs as faq, i}
 			<AccordionItem value={String(i)}>
 				<AccordionTrigger>{faq.q}</AccordionTrigger>
 				<AccordionContent>{faq.a}</AccordionContent>
@@ -68,7 +128,7 @@
 		<MessageCircle class="mx-auto size-7 text-primary" data-icon="header" />
 		<h2 class="mt-3 text-lg font-semibold">Still have a question?</h2>
 		<p class="mt-1 text-sm text-muted-foreground">
-			Talk to our team — we reply within one business day.
+			Talk to our team —we reply within one business day.
 		</p>
 		<div class="mt-4">
 			<Button href={localizeHref('/contact')} variant="outline">Contact us</Button>

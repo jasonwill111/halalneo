@@ -10,7 +10,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -273,25 +273,25 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="sm:max-w-md">
+	<DialogContent class="sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit tool' : 'New tool'}</DialogTitle>
 			<DialogDescription>Register or update an AI tool offered on the platform.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
-			<Field>
-				<FieldLabel>Name</FieldLabel>
+			<Field.Field>
+				<Field.FieldLabel>Name</Field.FieldLabel>
 				<Input bind:value={form.name} placeholder="Certification Checker" />
-			</Field>
-			<Field>
-				<FieldLabel>Slug</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Slug</Field.FieldLabel>
 				<Input bind:value={form.slug} placeholder="certification-checker" disabled={!!editing} />
 				<p class="text-xs text-muted-foreground">
-					Unique URL segment — auto-derived from the name when left blank.
+					Unique URL segment —auto-derived from the name when left blank.
 				</p>
-			</Field>
-			<Field>
-				<FieldLabel>Category</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Category</Field.FieldLabel>
 				<Select bind:value={form.category} type="single">
 					<SelectTrigger class="w-full">{categoryLabels[form.category]}</SelectTrigger>
 					<SelectContent>
@@ -300,9 +300,9 @@
 						{/each}
 					</SelectContent>
 				</Select>
-			</Field>
-			<Field>
-				<FieldLabel>Status</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Status</Field.FieldLabel>
 				<Select bind:value={form.status} type="single">
 					<SelectTrigger class="w-full">{form.status}</SelectTrigger>
 					<SelectContent>
@@ -310,27 +310,27 @@
 						<SelectItem value="disabled">disabled</SelectItem>
 					</SelectContent>
 				</Select>
-			</Field>
-			<Field>
-				<FieldLabel>Short description</FieldLabel>
-				<Textarea bind:value={form.description} rows={2} placeholder="What the tool does…" />
-			</Field>
-			<Field>
-				<FieldLabel>Long description</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Short description</Field.FieldLabel>
+				<Textarea bind:value={form.description} rows={2} placeholder="What the tool does..." />
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Long description</Field.FieldLabel>
 				<Textarea
 					bind:value={form.longDescription}
 					rows={3}
-					placeholder="Page-level description shown on the tool's dedicated page…"
+					placeholder="Page-level description shown on the tool's dedicated page"
 				/>
-			</Field>
-			<Field>
-				<FieldLabel>Features</FieldLabel>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Features</Field.FieldLabel>
 				<Textarea
 					bind:value={form.features}
 					rows={3}
-					placeholder="Comma-separated features shown on the tool page…"
+					placeholder="Comma-separated features shown on the tool page..."
 				/>
-			</Field>
+			</Field.Field>
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}

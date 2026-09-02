@@ -1,19 +1,45 @@
-import type { EntryGenerator } from './$types';
+import type { PageLoad } from './$types';
 
-export const entries: EntryGenerator = () => [];
+export const prerender = false;
 
-export const load = async ({ params }) => {
+interface KbSectionResponse {
+	articles?: unknown[];
+}
+
+export const load: PageLoad = async ({ params, fetch }) => {
+	const sectionTitle = params.section.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+	try {
+		const res = await fetch(`/api/knowledge-base?section=${params.section}&limit=50`);
+		if (res.ok) {
+			const data: KbSectionResponse = await res.json();
+			const articles = (data.items ?? data.articles ?? []).map((a: any) => ({
+				...a,
+				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
+			}));
+			return {
+				seo: {
+					title: `${sectionTitle} — HalalNeo Knowledge Base`,
+					description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
+					ogImage: 'https://halalneo.com/og-kb.png',
+					keywords: [sectionTitle, 'halal knowledge base', 'certification guide', 'compliance']
+				},
+				item: {
+					slug: params.section,
+					name: sectionTitle,
+					articleCount: articles.length,
+					articles
+				}
+			};
+		}
+	} catch {}
+
 	return {
 		seo: {
-			title: `${params.section} — HalalNeo Knowledge Base`,
-			description: `Explore articles and guides in the ${params.section} section of the HalalNeo knowledge base.`
+			title: `${sectionTitle} — HalalNeo Knowledge Base`,
+			description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
+			ogImage: 'https://halalneo.com/og-kb.png'
 		},
-		item: null as {
-			name: string;
-			slug: string;
-			description: string;
-			articleCount: number;
-			articles: { title: string; slug: string; summary: string }[];
-		} | null
+		item: null
 	};
 };

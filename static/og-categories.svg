@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#2d7a3a"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#ffffff" fill-opacity="0.1"/>
+  <text x="600" y="260" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#ffffff">Product Categories</text>
+  <text x="600" y="340" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#d4f5d8">Browse Halal-Certified Products</text>
+  <text x="600" y="420" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#a8e6ab">Food, cosmetics, pharmaceuticals, medical devices &amp; more</text>
+</svg>

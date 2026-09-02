@@ -9,7 +9,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -115,7 +115,7 @@
 		<Search
 			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search terms…" class="pl-9" />
+		<Input bind:value={search} placeholder="Search terms..." class="pl-9" />
 	</div>
 
 	<div class="rounded-xl ring-1 ring-foreground/10">
@@ -156,20 +156,20 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="sm:max-w-md">
+	<DialogContent class="sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit term' : 'New term'}</DialogTitle>
 			<DialogDescription>Add or update a glossary entry.</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
-			<Field>
-				<FieldLabel>Term</FieldLabel>
+			<Field.Field>
+				<Field.FieldLabel>Term</Field.FieldLabel>
 				<Input bind:value={form.term} placeholder="Halal" />
-			</Field>
-			<Field>
-				<FieldLabel>Definition</FieldLabel>
-				<Textarea bind:value={form.definition} rows={4} placeholder="Definition…" />
-			</Field>
+			</Field.Field>
+			<Field.Field>
+				<Field.FieldLabel>Definition</Field.FieldLabel>
+				<Textarea bind:value={form.definition} rows={4} placeholder="Definition..." />
+			</Field.Field>
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}

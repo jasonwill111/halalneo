@@ -1,218 +1,239 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { adminData } from '#lib/stores/admin-data.svelte.js';
 	import Icon from '#lib/components/site/icon.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import {
-		Card,
-		CardContent,
-		CardHeader,
-		CardTitle,
-		CardDescription
-	} from '#lib/components/ui/card/index.js';
-	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '#lib/components/ui/card/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
-	import SearchIcon from '@lucide/svelte/icons/search';
-	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
+	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
+	import { onMount } from 'svelte';
 
-	const certifiedSkuCount = $derived(
-		adminData.skus.filter((s) => s.certStatus === 'certified').length
-	);
-	const supplierCount = $derived(adminData.merchants.filter((m) => m.status === 'active').length);
+	let { data } = $props();
 
-	const stats = $derived([
-		{ value: String(supplierCount), label: 'Verified suppliers' },
-		{ value: String(certifiedSkuCount), label: 'Certified products' },
-		{ value: String(adminData.kbSections.length), label: 'Knowledge sections' },
-		{ value: String(adminData.glossary.length), label: 'Glossary terms' }
-	]);
+	const slides = [
+		{ image: '/images/hero-1.jpg', title: 'Source halal.\nVerify it.\nShip it.', subtitle: 'Connect with certified halal suppliers worldwide. Browse verified products and simplify your supply chain.' },
+		{ image: '/images/hero-2.jpg', title: 'Certified products.\nVerified suppliers.\nGlobal reach.', subtitle: 'Every listing backed by real halal certification data from recognized certifying bodies.' },
+		{ image: '/images/hero-3.jpg', title: 'Trade intelligence.\nMarket guides.\nDue diligence.', subtitle: 'Make informed sourcing decisions with comprehensive halal trade knowledge.' }
+	];
 
-	const featuredSuppliers = $derived(
-		adminData.merchants.filter((m) => m.status === 'active').slice(0, 4)
-	);
+	let currentSlide = $state(0);
+	let intervalId: ReturnType<typeof setInterval> | undefined;
+
+	function nextSlide() {
+		currentSlide = (currentSlide + 1) % slides.length;
+	}
+
+	function goToSlide(i: number) {
+		currentSlide = i;
+		if (intervalId) clearInterval(intervalId);
+		intervalId = setInterval(nextSlide, 5000);
+	}
+
+	onMount(() => {
+		intervalId = setInterval(nextSlide, 5000);
+		return () => { if (intervalId) clearInterval(intervalId); };
+	});
 </script>
 
-<svelte:head
-	><title>HalalNeo — Halal trade intelligence for buyers and suppliers</title></svelte:head
->
+<svelte:head>
+	<link rel="preload" as="image" href={slides[0].image} fetchpriority="high" />
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		name: 'HalalNeo',
+		url: 'https://halalneo.com',
+		description: 'Halal trade intelligence platform connecting halal manufacturers, suppliers, and buyers worldwide.',
+		potentialAction: {
+			'@type': 'SearchAction',
+			target: {
+				'@type': 'EntryPoint',
+				urlTemplate: 'https://halalneo.com/search?q={search_term_string}'
+			},
+			'query-input': 'required name=search_term_string'
+		}
+	})}</script>`}
+</svelte:head>
 
-<section class="space-y-10">
-	<div class="mx-auto max-w-3xl space-y-6 pt-10 text-center sm:pt-16">
-		<Badge variant="secondary" class="gap-1.5">
-			<ShieldCheck class="size-3.5"></ShieldCheck>
-			Halal trade intelligence platform
-		</Badge>
-		<h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-6xl">
-			Source halal. Verify it. Ship it.
-		</h1>
-		<p class="mx-auto max-w-2xl text-lg text-muted-foreground">
-			HalalNeo is the trade-intelligence layer for halal sourcing — certified suppliers, verified
-			certificates and the knowledge to buy with confidence.
-		</p>
-		<div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
-			<Button href={localizeHref('/products')} size="lg" class="w-full sm:w-auto">
-				Browse certified products
-			</Button>
-			<Button
-				href={localizeHref('/knowledge-base')}
-				variant="outline"
-				size="lg"
-				class="w-full sm:w-auto"
-			>
-				Visit the knowledge base
-			</Button>
-		</div>
-		<div class="flex items-center justify-center gap-2 pt-2 text-sm text-muted-foreground">
-			<SearchIcon class="size-4"></SearchIcon>
-			<span>Halal certification covered across 8 recognized certifying bodies</span>
-		</div>
-	</div>
+<!-- HERO -->
+<section class="flex flex-col items-center text-center py-6 sm:py-10">
+	<span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2.5 py-0.5 text-[10px] font-medium text-secondary-foreground mb-3">
+		<ShieldCheck class="size-2.5 text-primary"></ShieldCheck>
+		Halal trade intelligence platform
+	</span>
 
-	<div class="mx-auto grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
-		{#each stats as stat}
-			<Card class="border-primary/15 bg-card/70 text-center backdrop-blur-sm">
-				<CardHeader class="pb-1">
-					<CardTitle class="text-3xl font-semibold tabular-nums">{stat.value}</CardTitle>
-				</CardHeader>
-				<CardContent class="pt-0">
-					<p class="text-sm text-muted-foreground">{stat.label}</p>
-				</CardContent>
-			</Card>
-		{/each}
-	</div>
-</section>
-
-<Separator class="my-14" />
-
-<section class="space-y-6">
-	<div class="flex items-end justify-between gap-4">
-		<div class="space-y-1">
-			<h2 class="text-2xl font-semibold tracking-tight">Browse by category</h2>
-			<p class="text-muted-foreground">Seven product verticals with halal certification.</p>
-		</div>
-		<Button href={localizeHref('/categories')} variant="ghost" size="sm">
-			All categories
-			<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-		</Button>
-	</div>
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each adminData.categories as category}
-			<Button
-				href={localizeHref(`/categories/${category.slug}`)}
-				variant="outline"
-				class="h-auto flex-col items-start gap-3 p-5 text-left"
-			>
-				<span
-					class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
-				>
-					<Icon name={category.icon} class="size-5"></Icon>
-				</span>
-				<span class="space-y-1 whitespace-normal">
-					<span class="block font-medium">{category.name}</span>
-					<span class="block text-sm font-normal text-muted-foreground">{category.description}</span
-					>
-				</span>
-			</Button>
-		{/each}
-	</div>
-</section>
-
-<Separator class="my-14" />
-
-<section class="space-y-6">
-	<div class="flex items-end justify-between gap-4">
-		<div class="space-y-1">
-			<h2 class="text-2xl font-semibold tracking-tight">Featured suppliers</h2>
-			<p class="text-muted-foreground">Certified manufacturers, wholesalers and traders.</p>
-		</div>
-		<Button href={localizeHref('/suppliers')} variant="ghost" size="sm">
-			All suppliers
-			<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-		</Button>
-	</div>
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-		{#each featuredSuppliers as merchant}
-			<Card hoverable>
-				<CardHeader class="flex flex-row items-center gap-3 space-y-0">
-					<Avatar>
-						<AvatarFallback>{merchant.logoInitials}</AvatarFallback>
-					</Avatar>
-					<div class="min-w-0 space-y-0.5">
-						<CardTitle class="text-base leading-snug">{merchant.name}</CardTitle>
-						<CardDescription>{merchant.country}</CardDescription>
+	<!-- Hero Carousel -->
+	<div class="relative mb-4 w-full overflow-hidden rounded-xl">
+		<div class="relative aspect-[16/6] sm:aspect-[16/5]">
+			{#each slides as slide, i}
+				<div class="absolute inset-0 transition-opacity duration-500 {i === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}">
+					<img src={slide.image} alt={slide.title.replace(/\n/g, ' ')} class="absolute inset-0 h-full w-full object-cover" aria-hidden="true" loading="eager" fetchpriority={i === 0 ? 'high' : 'low'} width="1200" height="500" />
+					<div class="h-full w-full bg-cover bg-center" style="background-image: url('{slide.image}')"></div>
+					<div class="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/30"></div>
+					<div class="absolute inset-0 flex items-center">
+						<div class="px-6 sm:px-10 max-w-xl">
+							<h1 class="text-lg sm:text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl leading-tight whitespace-pre-line" fetchpriority={i === 0 ? 'high' : undefined}>
+								{slide.title}
+							</h1>
+							<p class="mt-2 max-w-md text-xs sm:text-sm text-muted-foreground">
+								{slide.subtitle}
+							</p>
+							<div class="mt-3 flex flex-col gap-1.5 sm:flex-row sm:gap-2">
+								<Button href={localizeHref('/products')} size="lg">Browse Products</Button>
+								<Button href={localizeHref('/knowledge-base')} variant="outline" size="lg">Knowledge Base</Button>
+							</div>
+						</div>
 					</div>
-				</CardHeader>
-				<CardContent class="space-y-3">
-					<p class="line-clamp-2 text-sm text-muted-foreground">{merchant.description}</p>
-					<div class="flex items-center justify-between">
-						<Badge variant="secondary" class="capitalize">{merchant.businessType}</Badge>
-						<Badge variant="outline" class="gap-1">
-							<ShieldCheck class="size-3"></ShieldCheck>
-							{merchant.certifications.length}
-						</Badge>
-					</div>
+				</div>
+			{/each}
+			<!-- Carousel Dots -->
+			<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+				{#each slides as _, i}
 					<Button
-						href={localizeHref(`/suppliers/${merchant.slug}`)}
-						variant="outline"
-						size="sm"
-						class="w-full"
-					>
-						View profile
-					</Button>
-				</CardContent>
-			</Card>
+						variant="ghost"
+						size="icon"
+						onclick={() => goToSlide(i)}
+						class="size-2 rounded-full p-0 {i === currentSlide ? 'bg-primary hover:bg-primary/80' : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'}"
+						aria-label="Go to slide {i + 1}"
+					></Button>
+				{/each}
+			</div>
+		</div>
+	</div>
+
+	<p class="mb-4 text-[11px] text-muted-foreground">
+		Trusted data from <span class="font-medium text-foreground">{data.stats.kbSections} certifying bodies</span>
+	</p>
+</section>
+
+<section class="grid grid-cols-2 gap-2 lg:grid-cols-4">
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
+		<div class="text-2xl font-bold text-primary">{data.stats.verifiedSuppliers}</div>
+		<div class="mt-0.5 text-xs text-muted-foreground">Verified suppliers</div>
+	</div>
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
+		<div class="text-2xl font-bold text-primary">{data.stats.certifiedProducts}</div>
+		<div class="mt-0.5 text-xs text-muted-foreground">Certified products</div>
+	</div>
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
+		<div class="text-2xl font-bold text-primary">{data.stats.kbSections}</div>
+		<div class="mt-0.5 text-xs text-muted-foreground">Knowledge sections</div>
+	</div>
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card px-3 py-3 text-center">
+		<div class="text-2xl font-bold text-primary">{data.stats.glossaryTerms}</div>
+		<div class="mt-0.5 text-xs text-muted-foreground">Glossary terms</div>
+	</div>
+</section>
+
+<!-- CATEGORIES -->
+<section>
+	<div class="mb-3 flex items-end justify-between">
+		<h2 class="text-lg font-semibold">Browse by category</h2>
+		<a href={localizeHref('/categories')} class="text-xs text-primary hover:underline">View all</a>
+	</div>
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+		{#each data.categories as category}
+			<a href={localizeHref(`/categories/${category.slug}`)} class="group rounded-xl ring-1 ring-foreground/10 bg-card p-3 transition-all hover:shadow-md">
+				<div class="mb-2 text-lg sm:text-2xl">
+					<Icon name={category.icon} class="size-5"></Icon>
+				</div>
+				<h3 class="text-sm font-medium group-hover:text-primary transition-colors">{category.name}</h3>
+				<p class="mt-0.5 text-xs text-muted-foreground line-clamp-2">{category.description}</p>
+			</a>
 		{/each}
 	</div>
 </section>
 
-<Separator class="my-14" />
-
-<section class="space-y-6">
-	<div class="space-y-1">
-		<h2 class="text-2xl font-semibold tracking-tight">Knowledge base</h2>
-		<p class="text-muted-foreground">
-			{adminData.kbArticles.length} articles across {adminData.kbSections.length} areas of halal trade.
-		</p>
+<!-- FEATURED PRODUCTS -->
+<section>
+	<div class="mb-4 flex items-end justify-between">
+		<h2 class="text-lg font-semibold">Featured products</h2>
+		<a href={localizeHref('/products')} class="text-xs text-primary hover:underline">View all</a>
 	</div>
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each adminData.kbSections as section}
-			<Card hoverable>
-				<CardHeader class="gap-3">
-					<div
-						class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
-					>
-						<Icon name={section.icon} class="size-5"></Icon>
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+		{#each data.featuredProducts as product}
+			<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-3 transition-all hover:shadow-md">
+				<div class="mb-2 aspect-square rounded-md bg-muted flex items-center justify-center text-muted-foreground">
+					{#if product.image}
+						<img src={product.image} alt={product.name} class="h-full w-full rounded-md object-cover" loading="lazy" decoding="async" width="400" height="400" onerror={(e) => { e.currentTarget.style.display='none'; }}>
+					{:else}
+						<span class="text-xs">No image</span>
+					{/if}
+				</div>
+				<h3 class="text-sm font-medium leading-snug">{product.name}</h3>
+				<p class="text-xs text-muted-foreground mt-0.5">{product.originCountry} · {product.certStatus}</p>
+				{#if product.priceMin || product.priceMax}
+					<div class="mt-1 text-sm font-semibold text-primary">
+						{product.priceMin ? `$${product.priceMin}` : ''}{product.priceMin && product.priceMax ? ' - ' : ''}{product.priceMax ? `$${product.priceMax}` : ''}
+						{#if product.priceUnit}<span class="text-xs font-normal text-muted-foreground">/{product.priceUnit}</span>{/if}
 					</div>
-					<div class="space-y-1">
-						<CardTitle class="text-base">{section.title}</CardTitle>
-						<CardDescription>{section.description}</CardDescription>
-					</div>
-				</CardHeader>
-				<CardContent>
-					<Button href={localizeHref(`/knowledge-base/${section.slug}`)} variant="ghost" size="sm">
-						Explore the section
-						<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-					</Button>
-				</CardContent>
-			</Card>
+				{/if}
+				{#if product.moq}
+					<p class="text-xs text-muted-foreground">MOQ: {product.moq}</p>
+				{/if}
+				<a href={localizeHref(`/products/${product.slug}`)} class="mt-3 inline-flex h-8 w-full items-center justify-center rounded-md border border-border text-xs font-medium hover:bg-accent transition-colors">View details</a>
+			</div>
 		{/each}
 	</div>
 </section>
 
-<Separator class="my-14" />
+<!-- FEATURED SUPPLIERS -->
+<section>
+	<div class="mb-4 flex items-end justify-between">
+		<h2 class="text-lg font-semibold">Featured suppliers</h2>
+		<a href={localizeHref('/suppliers')} class="text-xs text-primary hover:underline">View all</a>
+	</div>
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+		{#each data.featuredSuppliers as supplier}
+			<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-3 transition-all hover:shadow-md">
+				<div class="flex items-center gap-2">
+					<Avatar>
+						<AvatarFallback>{supplier.logoInitials}</AvatarFallback>
+					</Avatar>
+					<div>
+						<h3 class="text-sm font-medium leading-snug">{supplier.name}</h3>
+						<p class="text-xs text-muted-foreground">{supplier.country}</p>
+					</div>
+				</div>
+				<p class="mt-2 text-xs text-muted-foreground line-clamp-2">{supplier.description}</p>
+				<div class="mt-2">
+					<Badge variant="secondary" class="capitalize">{supplier.businessType}</Badge>
+				</div>
+				<div class="mt-1.5 flex items-center gap-1 text-[10px] text-muted-foreground">
+					<ShieldCheck class="size-3 text-primary"></ShieldCheck>
+					{supplier.certifications.length} certs
+				</div>
+				<a href={localizeHref(`/suppliers/${supplier.slug}`)} class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-xs font-medium hover:bg-accent transition-colors">View profile</a>
+			</div>
+		{/each}
+	</div>
+</section>
 
-<section class="rounded-xl border border-border bg-card p-8 text-center sm:p-12">
+<!-- KB PREVIEW -->
+<section>
+	<div class="mb-4 flex items-end justify-between">
+		<h2 class="text-lg font-semibold">Knowledge base</h2>
+		<a href={localizeHref('/knowledge-base')} class="text-xs text-primary hover:underline">View all</a>
+	</div>
+	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+		{#each data.kbArticles.slice(0, 6) as article}
+			<a href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)} class="group rounded-xl ring-1 ring-foreground/10 bg-card p-3 transition-all hover:shadow-md">
+				<Badge variant="secondary" class="mb-1.5 text-[10px]">{article.section}</Badge>
+				<h3 class="text-sm font-medium leading-snug group-hover:text-primary transition-colors">{article.title}</h3>
+				<p class="mt-1 text-xs text-muted-foreground line-clamp-2">{article.summary}</p>
+			</a>
+		{/each}
+	</div>
+</section>
+
+<!-- CTA -->
+<section class="mt-6 rounded-xl ring-1 ring-foreground/10 bg-card p-6 text-center sm:p-8">
 	<h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">Ready to start sourcing?</h2>
 	<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
-		Create a buyer account to shortlist certified suppliers and products, and keep up with halal
-		trade intelligence.
+		Create a buyer account to shortlist certified suppliers and products, and keep up with halal trade intelligence.
 	</p>
 	<div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
 		<Button href={localizeHref('/register')} size="lg">Create a free account</Button>
-		<Button href={localizeHref('/glossary')} variant="outline" size="lg">
-			Browse the glossary
-		</Button>
+		<Button href={localizeHref('/glossary')} variant="outline" size="lg">Browse the glossary</Button>
 	</div>
 </section>
