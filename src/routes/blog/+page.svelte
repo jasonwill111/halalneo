@@ -10,6 +10,8 @@
 	let { data } = $props();
 	let search = $state('');
 
+	const blogImages = ['/images/blog-featured-1.webp', '/images/blog-featured-2.webp', '/images/blog-1.webp', '/images/blog-2.webp', '/images/blog-3.webp'];
+
 	const published = $derived(
 		(data.posts ?? [])
 			.filter((p: any) => p.status === 'published')
@@ -54,10 +56,13 @@
 		</div>
 	{:else}
 		<div class="grid gap-3 sm:grid-cols-2">
-			{#each published as post (post.slug)}
-				<Card>
+			{#each published as post, idx (post.slug)}
+				<Card class="overflow-hidden">
 					<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
-						<CardContent class="space-y-2 pt-4">
+						<div class="aspect-[2/1] overflow-hidden bg-muted">
+							<img src={post.featuredImage || blogImages[idx % blogImages.length]} alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="300" />
+						</div>
+						<CardContent class="space-y-2 pt-3">
 							<div class="flex items-center gap-2 text-xs text-muted-foreground">
 								<span class="font-medium text-foreground/80">{post.author}</span>
 								<span>·</span>

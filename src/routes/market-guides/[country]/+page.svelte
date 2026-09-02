@@ -17,6 +17,16 @@
 	let { data } = $props();
 	const guide = $derived(data.guide);
 
+	const countryImages: Record<string, string> = {
+		'Malaysia': '/images/market-malaysia.webp',
+		'Indonesia': '/images/market-indonesia.webp',
+		'UAE': '/images/market-uae.webp',
+		'Saudi Arabia': '/images/market-saudi.webp',
+		'Japan': '/images/market-japan.webp',
+		'Turkey': '/images/market-turkey.webp',
+		'India': '/images/market-india.webp',
+	};
+
 	const mandateStatuses: Record<string, { label: string; class: string }> = {
 		mandatory: {
 			label: 'Mandatory',
@@ -72,6 +82,12 @@
 />
 
 <section class="space-y-8">
+	{#if countryImages[guide.country]}
+		<div class="relative overflow-hidden rounded-xl">
+			<img src={countryImages[guide.country]} alt={guide.country} class="aspect-[3/1] w-full object-cover" loading="lazy" decoding="async" width="1200" height="400" />
+			<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+		</div>
+	{/if}
 	<div class="max-w-3xl space-y-3">
 		<div class="flex items-center gap-3">
 			<span class="text-4xl">{guide.flag}</span>

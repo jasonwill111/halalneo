@@ -14,10 +14,20 @@
 
 	let { data } = $props();
 
+	const categoryImages: Record<string, string> = {
+		'food-beverage': '/images/cat-food-beverages.webp',
+		'cosmetics': '/images/cat-cosmetics.webp',
+		'supplements': '/images/cat-supplements.webp',
+		'meat-poultry': '/images/cat-meat-poultry.webp',
+		'dairy-eggs': '/images/cat-dairy-eggs.webp',
+		'confectionery': '/images/cat-confectionery.webp',
+		'beverages': '/images/cat-beverages.webp',
+	};
+
 	const slides = [
-		{ image: '/images/hero-1.jpg', title: 'Halal trade\nintelligence.', subtitle: 'Research certification bodies, verify suppliers, and navigate global halal markets — all in one place.' },
-		{ image: '/images/hero-2.jpg', title: 'Certification\nguides.', subtitle: 'Deep-dive into JAKIM, MUI, GSO, and 14+ certifying bodies. Standards, scope, and mutual recognition explained.' },
-		{ image: '/images/hero-3.jpg', title: 'Market entry\nreports.', subtitle: 'Country-by-country analysis of halal regulations, import requirements, and sourcing opportunities.' }
+		{ image: '/images/hero-1.webp', title: 'Halal trade\nintelligence.', subtitle: 'Research certification bodies, verify suppliers, and navigate global halal markets — all in one place.' },
+		{ image: '/images/hero-2.webp', title: 'Certification\nguides.', subtitle: 'Deep-dive into JAKIM, MUI, GSO, and 14+ certifying bodies. Standards, scope, and mutual recognition explained.' },
+		{ image: '/images/hero-3.webp', title: 'Market entry\nreports.', subtitle: 'Country-by-country analysis of halal regulations, import requirements, and sourcing opportunities.' }
 	];
 
 	let currentSlide = $state(0);
@@ -168,12 +178,20 @@
 	</div>
 	<div class="grid grid-cols-3 sm:grid-cols-3 gap-1.5 sm:gap-3 lg:grid-cols-3">
 		{#each data.categories.slice(0, 6) as category}
-			<a href={localizeHref(`/categories/${category.slug}`)} class="group rounded-lg sm:rounded-xl ring-1 ring-foreground/10 bg-card p-2 sm:p-3 transition-all hover:shadow-md">
-				<div class="mb-1 sm:mb-2">
-					<Icon name={category.icon} class="size-3.5 sm:size-5"></Icon>
+			<a href={localizeHref(`/categories/${category.slug}`)} class="group rounded-lg sm:rounded-xl ring-1 ring-foreground/10 bg-card overflow-hidden transition-all hover:shadow-md">
+				{#if categoryImages[category.slug]}
+					<div class="aspect-[4/3] overflow-hidden">
+						<img src={categoryImages[category.slug]} alt={category.name} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="400" height="300" />
+					</div>
+				{:else}
+					<div class="mb-1 sm:mb-2 p-2 sm:p-3">
+						<Icon name={category.icon} class="size-3.5 sm:size-5"></Icon>
+					</div>
+				{/if}
+				<div class="p-2 sm:p-3">
+					<h3 class="text-[10px] sm:text-sm font-medium group-hover:text-primary transition-colors leading-tight">{category.name}</h3>
+					<p class="mt-0.5 text-[9px] sm:text-xs text-muted-foreground line-clamp-2 hidden sm:block">{category.description}</p>
 				</div>
-				<h3 class="text-[10px] sm:text-sm font-medium group-hover:text-primary transition-colors leading-tight">{category.name}</h3>
-				<p class="mt-0.5 text-[9px] sm:text-xs text-muted-foreground line-clamp-2 hidden sm:block">{category.description}</p>
 			</a>
 		{/each}
 	</div>

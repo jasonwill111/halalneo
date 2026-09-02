@@ -14,6 +14,16 @@
 
 	let selectedRegion = $state('all');
 
+	const countryImages: Record<string, string> = {
+		'Malaysia': '/images/market-malaysia.webp',
+		'Indonesia': '/images/market-indonesia.webp',
+		'UAE': '/images/market-uae.webp',
+		'Saudi Arabia': '/images/market-saudi.webp',
+		'Japan': '/images/market-japan.webp',
+		'Turkey': '/images/market-turkey.webp',
+		'India': '/images/market-india.webp',
+	};
+
 	const regions = ['all', 'Southeast Asia', 'Middle East', 'South Asia', 'Europe', 'North America'];
 
 	const mandateStatuses: Record<string, { label: string; class: string }> = {
@@ -68,7 +78,12 @@
 
 	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as guide (guide.slug)}
-			<Card class="bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md">
+			<Card class="bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md overflow-hidden">
+				{#if countryImages[guide.country]}
+					<div class="aspect-[2/1] overflow-hidden">
+						<img src={countryImages[guide.country]} alt={guide.country} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
+					</div>
+				{/if}
 				<CardContent class="space-y-3 p-4">
 					<div class="flex items-start justify-between gap-2">
 						<div class="space-y-1">

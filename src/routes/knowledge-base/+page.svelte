@@ -56,6 +56,15 @@
 			countLabel: 'terms'
 		}
 	]);
+
+	const sectionImages: Record<string, string> = {
+		'getting-started': '/images/kb-certification.webp',
+		'certification': '/images/kb-certification.webp',
+		'sourcing': '/images/kb-sourcing.webp',
+		'compliance': '/images/kb-compliance.webp',
+		'supply-chain': '/images/kb-supply-chain.webp',
+		'markets': '/images/kb-sourcing.webp',
+	};
 </script>
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
@@ -124,12 +133,17 @@
 		</div>
 	</div>
 
-	<!-- KB Sections -->
+<!-- KB Sections -->
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each filteredSections as section}
-			<Card hoverable>
+			<Card hoverable class="overflow-hidden">
+				{#if sectionImages[section.slug]}
+					<div class="aspect-[2/1] overflow-hidden">
+						<img src={sectionImages[section.slug]} alt={section.title} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
+					</div>
+				{/if}
 				<CardHeader class="gap-3">
 					<div
 						class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"

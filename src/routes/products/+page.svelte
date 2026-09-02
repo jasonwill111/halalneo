@@ -8,6 +8,16 @@
 
 	let { data } = $props();
 
+	const catImages: Record<string, string> = {
+		'food-beverage': '/images/cat-food-beverages.webp',
+		'cosmetics': '/images/cat-cosmetics.webp',
+		'supplements': '/images/cat-supplements.webp',
+		'meat-poultry': '/images/cat-meat-poultry.webp',
+		'dairy-eggs': '/images/cat-dairy-eggs.webp',
+		'confectionery': '/images/cat-confectionery.webp',
+		'beverages': '/images/cat-beverages.webp',
+	};
+
 	const productCategories = [
 		{ name: 'Meat & Poultry', description: 'Halal-certified beef, chicken, lamb, and processed meat products' },
 		{ name: 'Dairy & Eggs', description: 'Milk, cheese, yogurt, and egg products from certified sources' },
@@ -59,10 +69,20 @@
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 			{#each productCategories as cat}
-				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
-					<Package class="size-5 text-primary mb-2" />
-					<h3 class="text-sm font-medium">{cat.name}</h3>
-					<p class="mt-1 text-xs text-muted-foreground line-clamp-2">{cat.description}</p>
+				<div class="rounded-xl ring-1 ring-foreground/10 bg-card overflow-hidden">
+					{#if catImages[cat.slug]}
+						<div class="aspect-[4/3] overflow-hidden">
+							<img src={catImages[cat.slug]} alt={cat.name} class="h-full w-full object-cover" loading="lazy" decoding="async" width="400" height="300" />
+						</div>
+					{:else}
+						<div class="p-4">
+							<Package class="size-5 text-primary mb-2" />
+						</div>
+					{/if}
+					<div class="p-4">
+						<h3 class="text-sm font-medium">{cat.name}</h3>
+						<p class="mt-1 text-xs text-muted-foreground line-clamp-2">{cat.description}</p>
+					</div>
 				</div>
 			{/each}
 		</div>

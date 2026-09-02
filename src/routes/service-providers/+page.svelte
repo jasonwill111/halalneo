@@ -83,6 +83,11 @@
 
 <Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }]} />
 
+<div class="relative overflow-hidden rounded-xl mb-6">
+	<img src="/images/sp-hero.webp" alt="Halal trade services" class="aspect-[3/1] w-full object-cover" loading="lazy" decoding="async" width="1200" height="400" />
+	<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+</div>
+
 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
 	<div>
 		<h1 class="text-xl font-bold tracking-tight">Service Providers</h1>

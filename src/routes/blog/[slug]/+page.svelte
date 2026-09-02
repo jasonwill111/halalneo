@@ -9,6 +9,8 @@
 
 	let { data } = $props();
 
+	const blogImages = ['/images/blog-featured-1.webp', '/images/blog-featured-2.webp', '/images/blog-1.webp', '/images/blog-2.webp', '/images/blog-3.webp'];
+
 	const seo = $derived(data.seo ?? {});
 	const item = $derived(data.item);
 	const readTime = $derived((data.item as any)?.readTime as string | undefined);
@@ -82,11 +84,8 @@
 				<img src={data.item.image} alt={data.item.title} class="aspect-[2/1] w-full rounded-xl object-cover" loading="lazy" decoding="async" width="1200" height="600" onerror={(e) => { e.currentTarget.style.display='none'; }} />
 			{:else}
 				<div class="relative overflow-hidden rounded-xl border border-border">
-					<div class="aspect-[2/1] w-full bg-gradient-to-br from-primary/10 via-muted to-accent flex items-center justify-center">
-						<div class="text-center space-y-2">
-							<svg class="mx-auto size-10 text-primary/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-							<p class="text-xs text-muted-foreground">Featured image</p>
-						</div>
+					<div class="aspect-[2/1] w-full">
+						<img src={blogImages[0]} alt={data.item.title} class="h-full w-full object-cover" loading="lazy" decoding="async" width="1200" height="600" />
 					</div>
 				</div>
 			{/if}
