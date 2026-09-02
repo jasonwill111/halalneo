@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types';
-import { resolve } from '$app/paths';
 
 export const GET: RequestHandler = async () => {
 	const body = `User-agent: *
@@ -9,7 +8,7 @@ Disallow: /account/
 Disallow: /supplier/
 Disallow: /api/
 
-Sitemap: https://halalneo.com${resolve('/sitemap.xml')}`;
+Sitemap: https://halalneo.com/sitemap.xml`;
 
 	return new Response(body, {
 		headers: {
