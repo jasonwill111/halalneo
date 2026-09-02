@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
@@ -36,7 +37,7 @@
 					<CardContent class="space-y-3">
 						<p class="text-sm text-muted-foreground">{article.summary}</p>
 						<Button
-							href={`/knowledge-base/${data.item.slug}/${article.slug}`}
+							href={localizeHref(`/knowledge-base/${data.item.slug}/${article.slug}`)}
 							variant="outline"
 							size="sm"
 						>
@@ -50,7 +51,7 @@
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
 				<p class="text-lg text-muted-foreground">Knowledge base section coming soon.</p>
-				<Button href="/knowledge-base" variant="outline">Browse Knowledge Base</Button>
+				<Button href={localizeHref('/knowledge-base')} variant="outline">Browse Knowledge Base</Button>
 			</div>
 		</div>
 	{/if}

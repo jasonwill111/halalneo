@@ -331,7 +331,7 @@
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
 				<p class="text-lg text-muted-foreground">Certifying body details coming soon.</p>
-				<Button href="/certifying-bodies" variant="outline">Browse Bodies</Button>
+				<Button href={localizeHref('/certifying-bodies')} variant="outline">Browse Bodies</Button>
 			</div>
 		</div>
 	{/if}

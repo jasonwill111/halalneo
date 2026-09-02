@@ -9,14 +9,13 @@
 	}: NavigationMenuPrimitive.ViewportProps = $props();
 </script>
 
-	<div class={cn('absolute left-0 top-full isolate z-[100] flex justify-center')}>
-	<NavigationMenuPrimitive.Viewport
-		bind:ref
-		data-slot="navigation-menu-viewport"
-		class={cn(
-			'data-open:animate-in data-open:zoom-in-90 data-closed:animate-out data-closed:zoom-out-90 origin-top-center relative mt-1.5 h-[calc(var(--bits-navigation-menu-viewport-height)+1rem)] w-full overflow-hidden rounded-lg bg-popover text-popover-foreground shadow ring-1 ring-foreground/10 duration-100 md:w-[calc(var(--bits-navigation-menu-viewport-width)+1rem)]',
-			className
-		)}
-		{...restProps}
-	/>
-</div>
+<NavigationMenuPrimitive.Viewport
+	bind:ref
+	data-slot="navigation-menu-viewport"
+	class={cn(
+		'absolute top-full left-1/2 -translate-x-1/2 z-[100] mt-1.5 h-[calc(var(--bits-navigation-menu-viewport-height)+1rem)] w-full overflow-hidden rounded-lg bg-popover text-popover-foreground shadow ring-1 ring-foreground/10 duration-100 md:w-[calc(var(--bits-navigation-menu-viewport-width)+1rem)]',
+		'data-open:animate-in data-open:zoom-in-90 data-closed:animate-out data-closed:zoom-out-90 origin-top-center relative',
+		className
+	)}
+	{...restProps}
+/>

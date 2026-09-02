@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
@@ -160,7 +161,7 @@
 						</dd>
 					</div>
 				</dl>
-				<Button href="/certifying-bodies" variant="outline" size="sm" class="w-full">
+				<Button href={localizeHref('/certifying-bodies')} variant="outline" size="sm" class="w-full">
 					Browse All Certifying Bodies
 					<ArrowRightIcon class="size-3" />
 				</Button>
@@ -226,7 +227,7 @@
 			<h2 class="text-lg font-semibold tracking-tight">Related markets</h2>
 			<div class="grid gap-3 sm:grid-cols-3">
 				{#each relatedGuides as rel (rel.slug)}
-					<Button href="/market-guides/{rel.slug}" variant="outline" class="h-auto justify-between p-4 text-left">
+					<Button href={localizeHref(`/market-guides/${rel.slug}`)} variant="outline" class="h-auto justify-between p-4 text-left">
 						<span class="flex items-center gap-2">
 							<span class="text-lg">{rel.flag}</span>
 							<span>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { getCurrentAccount } from '#lib/stores/auth.svelte.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
@@ -23,7 +24,7 @@
 	<div class="rounded-2xl bg-card p-6 shadow-sm text-center">
 		<h2 class="text-sm font-bold">Not signed in</h2>
 		<p class="mt-1 text-[10px] text-muted-foreground">Sign in to view your account profile.</p>
-		<Button href="/login" class="mt-3">Sign in</Button>
+		<Button href={localizeHref('/login')} class="mt-3">Sign in</Button>
 	</div>
 {:else}
 	<div class="space-y-4">

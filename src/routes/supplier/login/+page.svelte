@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Label } from '#lib/components/ui/field/index.js';
@@ -61,10 +62,10 @@
 	<div class="mt-5 space-y-1.5 text-center">
 		<p class="text-[11px] text-muted-foreground">
 			New to selling on HalalNeo?
-			<a href="/supplier/onboarding" class="text-primary hover:underline">Apply to become a supplier</a>
+			<a href={localizeHref('/supplier/onboarding')} class="text-primary hover:underline">Apply to become a supplier</a>
 		</p>
 		<p class="text-[10px] text-muted-foreground">
-			Looking to source? <a href="/login" class="text-primary hover:underline">Buyer sign in</a>
+			Looking to source? <a href={localizeHref('/login')} class="text-primary hover:underline">Buyer sign in</a>
 		</p>
 	</div>
 </div>

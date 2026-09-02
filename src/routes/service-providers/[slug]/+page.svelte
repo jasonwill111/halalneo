@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
@@ -256,7 +257,7 @@
 				<h2 class="mb-1 text-sm font-semibold">Related Service Providers</h2>
 				<div class="grid gap-1.5 sm:grid-cols-2">
 					{#each related as rel}
-						<a href="/service-providers/{rel.slug}" class="rounded-lg bg-card shadow-sm p-1.5 transition-all hover:shadow-md">
+						<a href={localizeHref(`/service-providers/${rel.slug}`)} class="rounded-lg bg-card shadow-sm p-1.5 transition-all hover:shadow-md">
 							<div class="flex items-center gap-1.5">
 								<div class="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-semibold">{initials(rel.name)}</div>
 								<div class="min-w-0 flex-1">
@@ -277,7 +278,7 @@
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
 				<p class="text-lg text-muted-foreground">Provider profile coming soon.</p>
-				<Button href="/service-providers" variant="outline">Browse Providers</Button>
+				<Button href={localizeHref('/service-providers')} variant="outline">Browse Providers</Button>
 			</div>
 		</div>
 	{/if}

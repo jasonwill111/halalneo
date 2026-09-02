@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
@@ -68,9 +69,9 @@
 
 <div class="space-y-1 mb-4">
 	<nav class="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-		<a href="/" class="hover:text-foreground transition-colors">Home</a>
+		<a href={localizeHref('/')} class="hover:text-foreground transition-colors">Home</a>
 		<span>/</span>
-		<a href="/supplier/dashboard" class="hover:text-foreground transition-colors">Supplier</a>
+		<a href={localizeHref('/supplier/dashboard')} class="hover:text-foreground transition-colors">Supplier</a>
 		<span>/</span>
 		<span class="text-foreground font-medium">Manage</span>
 	</nav>

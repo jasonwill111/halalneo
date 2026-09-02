@@ -178,7 +178,7 @@
 					<span class="text-lg font-bold tracking-tight text-primary">HalalNeo</span>
 				</a>
 
-			<NavigationMenuRoot class="hidden lg:flex lg:justify-start">
+			<NavigationMenuRoot viewport={false} class="hidden lg:flex lg:justify-start">
 				<NavigationMenuList>
 					{#each primaryNav as item (item.href)}
 						<NavigationMenuItem>

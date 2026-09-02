@@ -244,7 +244,7 @@
 <div class="mx-auto max-w-7xl">
 	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-1 text-[10px] text-muted-foreground">
-			<a href="/" class="hover:text-foreground transition-colors">Home</a>
+			<a href={localizeHref('/')} class="hover:text-foreground transition-colors">Home</a>
 			<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
 			<span class="text-foreground font-medium">Search results</span>
 		</div>

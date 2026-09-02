@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import Newspaper from '@lucide/svelte/icons/newspaper';
@@ -55,7 +56,7 @@
 		<div class="grid gap-3 sm:grid-cols-2">
 			{#each published as post (post.slug)}
 				<Card>
-					<a href="/blog/{post.slug}" class="group block">
+					<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
 						<CardContent class="space-y-2 pt-4">
 							<div class="flex items-center gap-2 text-xs text-muted-foreground">
 								<span class="font-medium text-foreground/80">{post.author}</span>

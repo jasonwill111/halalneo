@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 
 	let status = $derived(page.status);
@@ -22,7 +23,7 @@
 				? "The page you're looking for doesn't exist or has been moved."
 				: 'An unexpected error occurred. Please try again.'}
 		</p>
-		<Button href="/" class="mt-6">
+		<Button href={localizeHref('/')} class="mt-6">
 			Back to Home
 		</Button>
 	</div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { page } from '$app/state';
 
@@ -30,7 +31,7 @@
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
 				<p class="text-lg text-muted-foreground">Page not found.</p>
-				<Button href="/" variant="outline">Go Home</Button>
+				<Button href={localizeHref('/')} variant="outline">Go Home</Button>
 			</div>
 		</div>
 	{/if}
