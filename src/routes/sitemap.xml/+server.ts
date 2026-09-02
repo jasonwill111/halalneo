@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types';
-import { resolve } from '$app/paths';
 import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { cachedQuery } from '#lib/server/cache.js';
 import {
@@ -36,8 +35,7 @@ const staticRoutes = [
 	'/certifying-bodies',
 	'/service-providers',
 	'/tools/ingredient-checker',
-	'/tools/certification-cost',
-	'/tools/ai-chat'
+	'/tools/certification-cost'
 ];
 
 function formatDate(date: Date | null | undefined): string {
@@ -60,7 +58,7 @@ function buildUrlEntry(
 	changefreq: string,
 	priority: string
 ): string {
-	const loc = `${BASE_URL}${resolve(path)}`;
+	const loc = `${BASE_URL}${path}`;
 	return `<url>
   <loc>${escapeXml(loc)}</loc>
   <lastmod>${lastmod}</lastmod>
