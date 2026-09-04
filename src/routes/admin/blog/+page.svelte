@@ -191,11 +191,11 @@
 	</div>
 
 	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Total Posts</p>
 			<p class="text-xl font-bold">{blogPosts.length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Published</p>
 			<p class="text-xl font-bold">
 				{blogPosts.length > 0
@@ -203,7 +203,7 @@
 					: 0}%
 			</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Total Views</p>
 			<p class="text-xl font-bold">
 				{blogPosts.reduce((sum, p) => sum + (p.views ?? 0), 0).toLocaleString()}
@@ -250,7 +250,7 @@
 							</div>
 						</TableCell>
 						<TableCell>
-							<Badge variant={p.status === 'published' ? 'default' : 'secondary'} class="capitalize text-[9px]">{p.status}</Badge>
+							<Badge variant={p.status === 'published' ? 'default' : 'secondary'} class="capitalize text-[10px]">{p.status}</Badge>
 						</TableCell>
 						<TableCell class="text-muted-foreground"
 							>{(p.views ?? 0).toLocaleString()}</TableCell

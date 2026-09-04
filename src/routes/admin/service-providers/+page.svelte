@@ -205,9 +205,9 @@
 	}
 
 	function statusColor(s: string): string {
-		if (s === 'active') return 'bg-green-500/10 text-green-600';
-		if (s === 'pending') return 'bg-amber-500/10 text-amber-600';
-		if (s === 'suspended') return 'bg-red-500/10 text-red-500';
+		if (s === 'active') return 'bg-success/10 text-success';
+		if (s === 'pending') return 'bg-warn/10 text-warn';
+		if (s === 'suspended') return 'bg-destructive/10 text-destructive';
 		return 'bg-muted text-muted-foreground';
 	}
 </script>
@@ -237,15 +237,15 @@
 	</div>
 
 	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Total Providers</p>
 			<p class="text-xl font-bold">{providers.length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Active</p>
 			<p class="text-xl font-bold">{providers.filter((s) => s.status === 'active').length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Avg. Rating</p>
 			<p class="text-xl font-bold">{providers.filter((s) => s.rating != null).length > 0 ? (providers.reduce((sum, s) => sum + (s.rating ?? 0), 0) / providers.filter((s) => s.rating != null).length).toFixed(1) : '—'}</p>
 		</div>
@@ -276,7 +276,7 @@
 						<TableCell>{sp.country}</TableCell>
 						<TableCell>{sp.rating ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[8px] capitalize ${statusColor(sp.status)}`}>{sp.status}</Badge>
+							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(sp.status)}`}>{sp.status}</Badge>
 						</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">

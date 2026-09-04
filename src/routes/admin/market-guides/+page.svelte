@@ -272,9 +272,9 @@
 	}
 
 	function statusColor(s: string): string {
-		if (s === 'active') return 'bg-green-500/10 text-green-600';
-		if (s === 'draft') return 'bg-amber-500/10 text-amber-600';
-		if (s === 'archived') return 'bg-red-500/10 text-red-500';
+		if (s === 'active') return 'bg-success/10 text-success';
+		if (s === 'draft') return 'bg-warn/10 text-warn';
+		if (s === 'archived') return 'bg-destructive/10 text-destructive';
 		return 'bg-muted text-muted-foreground';
 	}
 </script>
@@ -304,15 +304,15 @@
 	</div>
 
 	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Total Guides</p>
 			<p class="text-xl font-bold">{guides.length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Active</p>
 			<p class="text-xl font-bold">{guides.filter((g) => g.status === 'active').length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Mandatory Markets</p>
 			<p class="text-xl font-bold">{guides.filter((g) => g.mandateStatus === 'mandatory').length}</p>
 		</div>
@@ -343,7 +343,7 @@
 						<TableCell class="capitalize">{g.mandateStatus ?? '—'}</TableCell>
 						<TableCell>{g.marketSizeUsd ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[8px] capitalize ${statusColor(g.status ?? 'active')}`}>{g.status ?? 'active'}</Badge>
+							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(g.status ?? 'active')}`}>{g.status ?? 'active'}</Badge>
 						</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">

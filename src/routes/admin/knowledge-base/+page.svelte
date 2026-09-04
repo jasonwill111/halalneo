@@ -49,12 +49,12 @@
 	const sections = $derived([...new Set(articles.map((a: any) => a.section).filter(Boolean))]);
 
 	const sectionColors: Record<string, string> = {
-		'getting-started': 'bg-blue-500/10 text-blue-600',
-		'halal-certification': 'bg-emerald-500/10 text-emerald-600',
-		'product-guidelines': 'bg-amber-500/10 text-amber-600',
-		'buying-shipping': 'bg-violet-500/10 text-violet-600',
-		'supplier-verification': 'bg-rose-500/10 text-rose-600',
-		'platform-usage': 'bg-cyan-500/10 text-cyan-600'
+		'getting-started': 'bg-info/10 text-info',
+		'halal-certification': 'bg-success/10 text-success',
+		'product-guidelines': 'bg-warn/10 text-warn',
+		'buying-shipping': 'bg-accent-purple/10 text-accent-purple',
+		'supplier-verification': 'bg-accent-rose/10 text-accent-rose',
+		'platform-usage': 'bg-info/10 text-info'
 	};
 
 	function sectionColor(slug: string): string {
@@ -101,44 +101,44 @@
 	{/if}
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<div class="flex items-center justify-between mb-1">
 				<span class="text-[10px] text-muted-foreground">Total Articles</span>
 				<FileText class="size-4 text-muted-foreground"></FileText>
 			</div>
 			<div class="text-xl font-bold">{totalArticles}</div>
-			<div class="text-[9px] text-emerald-600">{publishedCount} published</div>
+			<div class="text-[10px] text-success">{publishedCount} published</div>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<div class="flex items-center justify-between mb-1">
 				<span class="text-[10px] text-muted-foreground">Sections</span>
 				<FolderOpen class="size-4 text-muted-foreground"></FolderOpen>
 			</div>
 			<div class="text-xl font-bold">{sections.length}</div>
-			<div class="text-[9px] text-muted-foreground">active sections</div>
+			<div class="text-[10px] text-muted-foreground">active sections</div>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<div class="flex items-center justify-between mb-1">
 				<span class="text-[10px] text-muted-foreground">Drafts</span>
 				<BookOpen class="size-4 text-muted-foreground"></BookOpen>
 			</div>
 			<div class="text-xl font-bold">{draftCount}</div>
-			<div class="text-[9px] text-muted-foreground">unpublished</div>
+			<div class="text-[10px] text-muted-foreground">unpublished</div>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<div class="flex items-center justify-between mb-1">
 				<span class="text-[10px] text-muted-foreground">Total Views</span>
 				<BarChart3 class="size-4 text-muted-foreground"></BarChart3>
 			</div>
 			<div class="text-xl font-bold">{totalViews.toLocaleString()}</div>
-			<div class="text-[9px] text-emerald-600">across all articles</div>
+			<div class="text-[10px] text-success">across all articles</div>
 		</div>
 	</div>
 
 	<Tabs value={activeTab} onValueChange={(v) => activeTab = v}>
 		<TabsList>
-			<TabsTrigger value="articles">Articles <span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] text-primary">{totalArticles}</span></TabsTrigger>
-			<TabsTrigger value="sections">Sections <span class="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">{sections.length}</span></TabsTrigger>
+			<TabsTrigger value="articles">Articles <span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">{totalArticles}</span></TabsTrigger>
+			<TabsTrigger value="sections">Sections <span class="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{sections.length}</span></TabsTrigger>
 		</TabsList>
 	</Tabs>
 
@@ -171,7 +171,7 @@
 							</TableCell>
 							<TableCell>
 								{#if article.section}
-									<span class="inline-flex rounded-md px-1.5 py-0.5 text-[9px] font-medium {sectionColor(article.section)}">
+									<span class="inline-flex rounded-md px-1.5 py-0.5 text-[10px] font-medium {sectionColor(article.section)}">
 										{formatSection(article.section)}
 									</span>
 								{:else}
@@ -185,7 +185,7 @@
 										: article.status === 'draft'
 											? 'secondary'
 											: 'outline'}
-									class="capitalize text-[9px]"
+									class="capitalize text-[10px]"
 								>
 									{article.status ?? 'unknown'}
 								</Badge>
@@ -226,18 +226,18 @@
 	{:else}
 		<div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
 			{#each sections as section (section)}
-				<div class="rounded-xl bg-card p-3 shadow-sm hover:shadow-md transition-shadow">
+				<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 hover:shadow-md transition-shadow">
 					<div class="flex items-start justify-between mb-2">
 						<div class="flex size-8 items-center justify-center rounded-lg {sectionColor(section)}">
 							<BookOpen class="size-4"></BookOpen>
 						</div>
 					</div>
 					<h3 class="text-[11px] font-semibold">{formatSection(section)}</h3>
-					<p class="text-[9px] text-muted-foreground mb-2">
+					<p class="text-[10px] text-muted-foreground mb-2">
 						{articles.filter((a: any) => a.section === section).length} articles
 					</p>
 					<div class="flex items-center gap-2">
-						<span class="text-[9px] text-green-600 font-medium">Active</span>
+						<span class="text-[10px] text-success font-medium">Active</span>
 					</div>
 				</div>
 			{/each}

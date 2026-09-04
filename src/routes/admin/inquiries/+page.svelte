@@ -55,11 +55,11 @@
 	const flaggedCount = $derived(inquiries.filter((i) => i.status === 'flagged').length);
 
 	function statusColor(s: string): string {
-		if (s === 'active') return 'bg-green-500/10 text-green-600';
+		if (s === 'active') return 'bg-success/10 text-success';
 		if (s === 'in-progress') return 'bg-primary/10 text-primary';
-		if (s === 'pending') return 'bg-amber-500/10 text-amber-600';
+		if (s === 'pending') return 'bg-warn/10 text-warn';
 		if (s === 'closed') return 'bg-muted text-muted-foreground';
-		if (s === 'flagged') return 'bg-red-500/10 text-red-500';
+		if (s === 'flagged') return 'bg-destructive/10 text-destructive';
 		return 'bg-muted text-muted-foreground';
 	}
 
@@ -100,15 +100,15 @@
 	</div>
 
 	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Total Inquiries</p>
 			<p class="text-xl font-bold">{totalInquiries}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Active</p>
 			<p class="text-xl font-bold">{activeCount}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Flagged</p>
 			<p class="text-xl font-bold">{flaggedCount}</p>
 		</div>
@@ -134,7 +134,7 @@
 						<TableCell>{inq.supplierSlug ?? '—'}</TableCell>
 						<TableCell>{inq.subject}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[8px] capitalize ${statusColor(inq.status ?? '')}`}>{inq.status}</Badge>
+							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(inq.status ?? '')}`}>{inq.status}</Badge>
 						</TableCell>
 						<TableCell class="text-right">
 							<Button variant="ghost" size="sm" class="h-7 text-[10px]" onclick={() => viewInquiry(inq)}>

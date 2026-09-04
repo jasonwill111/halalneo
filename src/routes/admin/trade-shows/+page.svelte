@@ -219,9 +219,9 @@
 	}
 
 	function statusColor(s: string): string {
-		if (s === 'active') return 'bg-green-500/10 text-green-600';
-		if (s === 'draft') return 'bg-amber-500/10 text-amber-600';
-		if (s === 'archived') return 'bg-red-500/10 text-red-500';
+		if (s === 'active') return 'bg-success/10 text-success';
+		if (s === 'draft') return 'bg-warn/10 text-warn';
+		if (s === 'archived') return 'bg-destructive/10 text-destructive';
 		return 'bg-muted text-muted-foreground';
 	}
 
@@ -260,15 +260,15 @@
 	</div>
 
 	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Total Shows</p>
 			<p class="text-xl font-bold">{shows.length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Active</p>
 			<p class="text-xl font-bold">{shows.filter((s) => s.status === 'active').length}</p>
 		</div>
-		<div class="rounded-xl bg-card p-3 shadow-sm">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-[10px] text-muted-foreground">Mega Shows</p>
 			<p class="text-xl font-bold">{shows.filter((s) => s.scale === 'mega').length}</p>
 		</div>
@@ -299,7 +299,7 @@
 						<TableCell class="text-xs">{formatDate(s.startDate ?? '')} — {formatDate(s.endDate ?? '')}</TableCell>
 						<TableCell class="capitalize">{s.scale ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[8px] capitalize ${statusColor(s.status ?? 'active')}`}>{s.status ?? 'active'}</Badge>
+							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(s.status ?? 'active')}`}>{s.status ?? 'active'}</Badge>
 						</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
