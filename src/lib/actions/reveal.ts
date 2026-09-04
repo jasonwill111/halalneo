@@ -1,16 +1,17 @@
 /**
- * Scroll-reveal action: adds `.reveal` on mount, then `.in` when the element
+ * Scroll-reveal: adds `.reveal` on attach, then `.in` when the element
  * enters the viewport. Reduced-motion users see content immediately because
  * layout.css disables the transition and shows `.reveal` at full opacity.
  *
- * Usage: <div use:reveal>...</div>
+ * Usage (Svelte 5 attach syntax):
+ *   <section {@attach reveal}>...</section>
  */
-export function reveal(node: HTMLElement) {
+export function reveal(node: HTMLElement): () => void {
 	node.classList.add('reveal');
 
 	if (typeof IntersectionObserver === 'undefined') {
 		node.classList.add('in');
-		return;
+		return () => {};
 	}
 
 	const observer = new IntersectionObserver(
@@ -27,9 +28,5 @@ export function reveal(node: HTMLElement) {
 
 	observer.observe(node);
 
-	return {
-		destroy() {
-			observer.disconnect();
-		}
-	};
+	return () => observer.disconnect();
 }

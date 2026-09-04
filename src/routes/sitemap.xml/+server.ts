@@ -7,6 +7,7 @@ import {
 	getBlogPosts,
 	getCategories,
 	getKbArticles,
+	getKbSections,
 	getServiceProviders,
 	getCertifyingBodies,
 	getPages
@@ -64,6 +65,7 @@ function buildUrlEntry(
   <changefreq>${changefreq}</changefreq>
   <priority>${priority}</priority>
   <xhtml:link rel="alternate" hreflang="en" href="${escapeXml(loc)}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(loc)}" />
 </url>`;
 }
 
@@ -146,6 +148,19 @@ export const GET: RequestHandler = async (event) => {
 					'monthly',
 					'0.6'
 				);
+			}
+
+			// KB section index pages
+			const kbSections = await cachedQuery(
+				`${cacheKey}:kb-sections`,
+				() => getKbSections(db),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			const seenSections = new Set<string>();
+			for (const sec of kbSections) {
+				if (seenSections.has(sec.section)) continue;
+				seenSections.add(sec.section);
+				addEntry(`/knowledge-base/${sec.section}`, new Date('2026-01-01'), 'weekly', '0.7');
 			}
 
 			const serviceProviders = await cachedQuery(

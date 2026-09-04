@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Icon from '#lib/components/site/icon.svelte';
+	import { reveal } from '#lib/actions/reveal.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
@@ -17,7 +18,6 @@
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 	import Calculator from '@lucide/svelte/icons/calculator';
 	import SectionHead from '#lib/components/site/section-head.svelte';
-	import { reveal } from '#lib/actions/reveal.js';
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
@@ -213,7 +213,7 @@
 </section>
 
 <!-- TOOLS -->
-<section use:reveal>
+<section {@attach reveal}>
 	<SectionHead
 		number="01"
 		title="Halal trade tools"
@@ -268,7 +268,7 @@
 </section>
 
 <!-- CATEGORIES -->
-<section use:reveal>
+<section {@attach reveal}>
 	<SectionHead number="02" title="Browse by category" href="/categories" linkLabel="View all" />
 	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
 		{#each data.categories.slice(0, 6) as category, i}
@@ -296,7 +296,7 @@
 
 <!-- MARKETPLACE COMING SOON -->
 <section
-	use:reveal
+	{@attach reveal}
 	class="rounded-lg bg-card p-4 ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
 >
 	<div class="text-center">
@@ -330,7 +330,7 @@
 </section>
 
 <!-- KB PREVIEW -->
-<section use:reveal>
+<section {@attach reveal}>
 	<SectionHead
 		number="03"
 		title="Latest from the knowledge base"
@@ -362,7 +362,7 @@
 </section>
 
 <!-- EXPLORE ECOSYSTEM -->
-<section use:reveal>
+<section {@attach reveal}>
 	<SectionHead
 		number="04"
 		title="Explore the halal trade ecosystem"
@@ -442,7 +442,7 @@
 
 <!-- CTA -->
 <section
-	use:reveal
+	{@attach reveal}
 	class="rounded-lg bg-card p-4 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
 >
 	<h2 class="text-xl font-semibold tracking-tight sm:text-2xl sm:text-3xl">
@@ -463,7 +463,7 @@
 </section>
 
 <!-- TRUST / METHODOLOGY -->
-<section use:reveal class="space-y-4">
+<section {@attach reveal} class="space-y-4">
 	<div class="max-w-2xl space-y-2">
 		<h2 class="text-sm font-semibold text-foreground">How we verify</h2>
 		<p class="text-xs text-muted-foreground sm:text-sm">

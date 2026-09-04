@@ -63,7 +63,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	return {
 		seo: {
 			title: `${params.slug} — HalalNeo`,
-			description: `Product details for ${params.slug} on HalalNeo — halal-certified products with verified certification scope.`
+			description: `Product details for ${params.slug} on HalalNeo — halal-certified products with verified certification scope.`,
+			robots: 'noindex, nofollow'
 		},
 		item: null
 	};

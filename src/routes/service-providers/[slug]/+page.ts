@@ -45,7 +45,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `${params.slug} — HalalNeo`,
 			description: `${params.slug} — halal service provider on HalalNeo.`,
-			ogImage: 'https://halalneo.com/api/media/og-default.svg'
+			ogImage: 'https://halalneo.com/api/media/og-default.svg',
+			robots: 'noindex, nofollow'
 		},
 		item: null,
 		slug: params.slug,

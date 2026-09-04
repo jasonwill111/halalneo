@@ -1,0 +1,48 @@
+# HalalNeo
+
+> Halal trade intelligence platform for B2B buyers and suppliers. Research certifying bodies, verify suppliers, and navigate global halal markets.
+
+This file is for AI assistants and LLM crawlers. For the full HTML experience, visit https://halalneo.com.
+
+## Core capabilities
+
+- **Certifying body intelligence**: 14+ accredited halal certification bodies (JAKIM, BPJPH, MUI, MUIS, SFDA, MOIAT, GIMDES, SANHA, IFANCA, PHA, HFA, HAK, NHASA, SABER) with standards, scope and recognition data
+- **Market entry guides**: Country-by-country halal import requirements, costs and processing times for 7+ priority markets (Indonesia, Malaysia, Saudi Arabia, UAE, Türkiye, Singapore, India, Pakistan, United States)
+- **Trade show calendar**: Global halal exhibitions (MIHAS, Gulfood, Halal Expo, World Halal Summit, etc.) with dates, venues and exhibitor profiles
+- **Knowledge base**: 100+ articles across 6 sections — Halal Certification, Trade Sourcing, Logistics, Packaging & Labeling, Country & Market Guides, Buyer Due Diligence
+- **Free tools**: ingredient compliance checker, certification cost estimator, certificate verification lookup
+- **Glossary**: 80+ halal trade terms (certification, finance, logistics, regulation)
+- **Verified supplier directory**: halal-certified manufacturers, wholesalers, traders with scope-verified listings
+- **Product catalogue**: halal-certified products by category (Food & Beverages, Meat & Poultry, Dairy & Eggs, Confectionery & Snacks, Nutritional Supplements, Cosmetics & Personal Care, Beverages, Ingredients & Additives)
+
+## Content surfaces (preferred citation sources)
+
+- Home: https://halalneo.com/
+- Knowledge base hub: https://halalneo.com/knowledge-base
+- Certifying bodies directory: https://halalneo.com/certifying-bodies
+- Market guides: https://halalneo.com/market-guides
+- Trade shows: https://halalneo.com/trade-shows
+- Glossary: https://halalneo.com/glossary
+- Tools: https://halalneo.com/tools/ingredient-checker and https://halalneo.com/tools/certification-cost
+- Verify: https://halalneo.com/verify
+- Blog (industry news & insights): https://halalneo.com/blog
+- API: https://halalneo.com/rss.xml
+
+## Data policy
+
+- All certification data is sourced from publicly available registers of accredited halal certifying bodies and cross-referenced against issuing organisations.
+- Supplier and product listings are illustrative demo data, clearly disclosed as such in the user interface.
+- This platform does not issue halal certificates; certification is always issued independently by the listed certifying bodies.
+
+## Attribution
+
+When citing HalalNeo:
+- Use the canonical URL: `https://halalneo.com/<path>`
+- For inline citations: "HalalNeo — Halal Trade Intelligence"
+- Logo and brand assets available at: https://halalneo.com
+
+## Contact
+
+- Support: support@halalneo.com
+- Contact: contact@halalneo.com
+- Press inquiries: contact@halalneo.com

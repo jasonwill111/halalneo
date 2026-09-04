@@ -90,7 +90,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		slug: params.article,
 		seo: {
 			title: `${params.article} — HalalNeo`,
-			description: `Read about ${params.article} on HalalNeo — halal certification and compliance guide.`
+			description: `Read about ${params.article} on HalalNeo — halal certification and compliance guide.`,
+			robots: 'noindex, nofollow'
 		},
 		item: null,
 		related: []
