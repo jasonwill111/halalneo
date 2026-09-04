@@ -14,19 +14,25 @@
 
 	let { data } = $props();
 	let query = $state(data.q ?? '');
+
+	// Resync when navigating between ?q= values (same component instance)
+	$effect(() => {
+		const q = data.q ?? '';
+		if (q !== query) query = q;
+	});
 	let loading = $state(false);
 	let results = $state.raw<any[]>([]);
 	let searched = $state(false);
 
 	const certifiers = [
-		{ name: 'JAKIM', country: 'Malaysia', color: 'bg-blue-500/15 text-blue-600 dark:text-blue-400' },
-		{ name: 'MUI / LPPOM', country: 'Indonesia', color: 'bg-green-500/15 text-green-600 dark:text-green-400' },
-		{ name: 'ESMA', country: 'UAE', color: 'bg-purple-500/15 text-purple-600 dark:text-purple-400' },
-		{ name: 'GAC', country: 'Gulf States', color: 'bg-amber-500/15 text-amber-600 dark:text-amber-400' },
-		{ name: 'IFANCA', country: 'USA', color: 'bg-red-500/15 text-red-600 dark:text-red-400' },
-		{ name: 'SFDA', country: 'Saudi Arabia', color: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' },
-		{ name: 'Halal Food Council (HFC)', country: 'Singapore', color: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400' },
-		{ name: 'MHJ', country: 'Japan', color: 'bg-pink-500/15 text-pink-600 dark:text-pink-400' }
+		{ name: 'JAKIM', country: 'Malaysia', color: 'bg-info/10 text-info' },
+		{ name: 'MUI / LPPOM', country: 'Indonesia', color: 'bg-success/10 text-success' },
+		{ name: 'ESMA', country: 'UAE', color: 'bg-accent-purple/10 text-accent-purple' },
+		{ name: 'GAC', country: 'Gulf States', color: 'bg-warn/10 text-warn' },
+		{ name: 'IFANCA', country: 'USA', color: 'bg-accent-rose/10 text-accent-rose' },
+		{ name: 'SFDA', country: 'Saudi Arabia', color: 'bg-primary/10 text-primary' },
+		{ name: 'Halal Food Council (HFC)', country: 'Singapore', color: 'bg-info/10 text-info' },
+		{ name: 'MHJ', country: 'Japan', color: 'bg-success/10 text-success' }
 	];
 
 	async function handleSearch(e: Event) {
@@ -48,7 +54,7 @@
 
 <Breadcrumb items={[{ label: 'Verify', href: '/verify' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<ShieldCheckIcon class="size-4"></ShieldCheckIcon>
@@ -67,7 +73,7 @@
 			<input
 				type="search"
 				placeholder="Search certificates, brands, products..."
-				class="h-10 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+				class="h-8 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
 				bind:value={query}
 			/>
 		</div>
@@ -112,7 +118,7 @@
 				<p class="text-sm text-muted-foreground">{results.length} result{results.length !== 1 ? 's' : ''} found</p>
 				<div class="grid gap-3 sm:grid-cols-2">
 					{#each results as r (r.type + ':' + r.slug)}
-						<Card class="bg-card shadow-sm transition-shadow hover:shadow-md">
+						<Card class="bg-card transition-shadow hover:shadow-md">
 							<CardContent class="space-y-2 p-4">
 								<div class="flex items-start justify-between gap-2">
 									<div class="space-y-1">
@@ -124,11 +130,11 @@
 										{/if}
 									</div>
 									{#if r.certStatus === 'certified'}
-										<CheckCircleIcon class="size-5 shrink-0 text-green-500" />
+										<CheckCircleIcon class="size-5 shrink-0 text-success" />
 									{:else if r.certStatus === 'pending'}
-										<ClockIcon class="size-5 shrink-0 text-amber-500" />
+										<ClockIcon class="size-5 shrink-0 text-warn" />
 									{:else}
-										<XCircleIcon class="size-5 shrink-0 text-red-500" />
+										<XCircleIcon class="size-5 shrink-0 text-destructive" />
 									{/if}
 								</div>
 
@@ -140,9 +146,9 @@
 
 								<div class="flex items-center gap-2 pt-1">
 									{#if r.certStatus === 'certified'}
-										<Badge class="bg-green-500/15 text-green-600 dark:text-green-400">Certified</Badge>
+										<Badge class="bg-success/15 text-success">Certified</Badge>
 									{:else if r.certStatus === 'pending'}
-										<Badge class="bg-amber-500/15 text-amber-600 dark:text-amber-400">Pending</Badge>
+										<Badge class="bg-warn/15 text-warn">Pending</Badge>
 									{:else}
 										<Badge variant="secondary">Uncertified</Badge>
 									{/if}

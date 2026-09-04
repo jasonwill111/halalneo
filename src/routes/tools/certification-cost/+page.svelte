@@ -21,8 +21,8 @@
 			notes: 'Gold standard. Recognized by Middle East, ASEAN, OIC countries. 5-year extension for clean record holders.'
 		},
 		{
-			id: 'mui',
-			name: 'MUI / LPPOM',
+			id: 'bpjph',
+			name: 'BPJPH / MUI',
 			country: 'Indonesia',
 			baseFeeUsd: 1500,
 			timelineWeeks: '8–16',
@@ -31,8 +31,8 @@
 			notes: 'Mandatory for F&B since Oct 2024. Free for SMEs (subsidized). World\'s largest halal market.'
 		},
 		{
-			id: 'esma',
-			name: 'ESMA',
+			id: 'moiat',
+			name: 'MOIAT',
 			country: 'UAE',
 			baseFeeUsd: 3000,
 			timelineWeeks: '3–8',
@@ -41,8 +41,8 @@
 			notes: 'Mandatory for imported poultry, meat, supplements, cosmetics with animal-origin ingredients. UAE Halal National Mark available.'
 		},
 		{
-			id: 'gac',
-			name: 'GAC',
+			id: 'saber',
+			name: 'SABER / SASO',
 			country: 'Gulf States',
 			baseFeeUsd: 2500,
 			timelineWeeks: '6–12',
@@ -71,14 +71,14 @@
 			notes: 'Saudi Food and Drug Authority. Mandatory for food imports to Saudi Arabia.'
 		},
 		{
-			id: 'hfc',
-			name: 'HFC / MUIS',
+			id: 'muis',
+			name: 'MUIS',
 			country: 'Singapore',
 			baseFeeUsd: 2200,
 			timelineWeeks: '8–12',
 			validityYears: 1,
 			requirements: ['Application', 'Audit', 'Product review'],
-			notes: 'Halal Food Council. Recognized across ASEAN and Middle East.'
+			notes: 'Majlis Ugama Islam Singapura. Recognized across ASEAN and Middle East.'
 		}
 	];
 
@@ -123,7 +123,7 @@
 	]}
 />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<CalculatorIcon class="size-4"></CalculatorIcon>
@@ -143,7 +143,7 @@
 				<div class="grid gap-2 sm:grid-cols-2">
 					{#each certifiers as c}
 						<button
-							class="rounded-lg border border-border p-3 text-left text-sm transition-colors {selectedCertifier ===
+							class="rounded-md border border-border p-3 text-left text-sm transition-colors {selectedCertifier ===
 							c.id
 								? 'border-primary bg-primary/5'
 								: 'hover:bg-muted'}"
@@ -161,7 +161,7 @@
 				<div class="grid gap-2 sm:grid-cols-2">
 					{#each categories as cat}
 						<button
-							class="rounded-lg border border-border p-3 text-left text-sm transition-colors {selectedCategory ===
+							class="rounded-md border border-border p-3 text-left text-sm transition-colors {selectedCategory ===
 							cat.id
 								? 'border-primary bg-primary/5'
 								: 'hover:bg-muted'}"
@@ -178,7 +178,7 @@
 				<div class="grid gap-2 sm:grid-cols-2">
 					{#each companySizes as s}
 						<button
-							class="rounded-lg border border-border p-3 text-left text-sm transition-colors {selectedSize ===
+							class="rounded-md border border-border p-3 text-left text-sm transition-colors {selectedSize ===
 							s.id
 								? 'border-primary bg-primary/5'
 								: 'hover:bg-muted'}"
@@ -192,7 +192,7 @@
 		</div>
 
 		<div class="space-y-4 lg:sticky lg:top-24 lg:h-fit">
-			<Card class="bg-card shadow-sm">
+			<Card class="bg-card">
 				<CardContent class="space-y-4 p-5">
 					<div class="text-center">
 						<p class="text-xs text-muted-foreground">Estimated Total Cost</p>
@@ -203,12 +203,12 @@
 					</div>
 
 					<div class="grid grid-cols-2 gap-3 text-center">
-						<div class="rounded-lg bg-muted/50 p-3">
+						<div class="rounded-xl bg-muted/50 p-3">
 							<ClockIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
 							<p class="text-sm font-semibold">{certifier.timelineWeeks} weeks</p>
 							<p class="text-[10px] text-muted-foreground">Typical timeline</p>
 						</div>
-						<div class="rounded-lg bg-muted/50 p-3">
+						<div class="rounded-xl bg-muted/50 p-3">
 							<DollarSignIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
 							<p class="text-sm font-semibold">{certifier.validityYears} year{certifier.validityYears > 1 ? 's' : ''}</p>
 							<p class="text-[10px] text-muted-foreground">Certificate validity</p>
@@ -229,7 +229,7 @@
 
 					<p class="text-xs leading-relaxed text-muted-foreground">{certifier.notes}</p>
 
-					<div class="rounded-lg bg-muted/50 p-3 text-center text-xs text-muted-foreground">
+					<div class="rounded-xl bg-muted/50 p-3 text-center text-xs text-muted-foreground">
 						<Button href={localizeHref(`/certifying-bodies/${certifier.id}`)} variant="outline" size="sm" class="w-full">
 							View {certifier.name} Details
 						</Button>

@@ -22,7 +22,7 @@
 	}
 </script>
 
-<div class="mx-auto w-full max-w-7xl px-5 pb-24 pt-3 sm:px-6 sm:pb-10 sm:pt-6">
+<div class="mx-auto w-full max-w-7xl px-4 pb-24 pt-3 sm:px-6 sm:pb-10 sm:pt-6">
 	<nav class="mb-2 flex items-center gap-1 text-[10px] text-muted-foreground">
 		<a href={localizeHref('/')} class="hover:text-primary transition-colors">Home</a>
 		<span class="text-foreground font-medium">My Account</span>
@@ -42,7 +42,7 @@
 
 	<div class="flex gap-4">
 		<aside class="hidden w-52 shrink-0 lg:block">
-			<div class="sticky top-20 space-y-0.5 rounded-2xl bg-card p-1.5 shadow-sm">
+			<div class="sticky top-20 space-y-0.5 rounded-xl bg-card p-1.5 ring-1 ring-foreground/10">
 				{#each navItems as item}
 					<a
 						href={localizeHref(item.href)}
@@ -56,7 +56,7 @@
 				<Button
 					variant="ghost"
 					onclick={signOut}
-					class="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-[11px] font-medium text-red-500 transition-colors hover:bg-red-500/10"
+					class="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-[11px] font-medium text-destructive transition-colors hover:bg-destructive/10"
 				>
 					<LogOut class="size-3.5"></LogOut>
 					Sign Out

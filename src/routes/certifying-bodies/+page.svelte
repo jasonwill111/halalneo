@@ -5,12 +5,9 @@
 	import {
 		Card,
 		CardContent,
-		CardDescription,
-		CardHeader,
 		CardTitle
 	} from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
 	let { data } = $props();
@@ -60,11 +57,21 @@
 			return matchesQuery && matchesRegion;
 		})
 	);
+
+	// Initials tile palette — same order as homepage categoryColors for cross-page consistency
+	const tileColors = [
+		'bg-info/10 text-info',
+		'bg-warn/10 text-warn',
+		'bg-success/10 text-success',
+		'bg-accent-purple/10 text-accent-purple',
+		'bg-accent-rose/10 text-accent-rose',
+		'bg-primary/10 text-primary'
+	];
 </script>
 
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 		<div class="max-w-2xl space-y-2">
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Certifying bodies</h1>
@@ -90,45 +97,33 @@
 		{/each}
 	</div>
 
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each filtered as body}
-			<Card hoverable>
-				<CardHeader class="gap-3">
-					<div class="flex items-center justify-between">
+	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
+		{#each filtered as body, i}
+			<a href={localizeHref(`/certifying-bodies/${body.id}`)} class="group h-full">
+				<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
+					<CardContent class="flex items-center gap-3 p-3">
 						<div
-							class="flex size-11 items-center justify-center rounded-xl bg-primary/15 text-sm font-semibold text-primary"
+							class="flex size-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold {tileColors[
+								i % tileColors.length
+							]}"
 						>
 							{body.name.slice(0, 2).toUpperCase()}
 						</div>
-						<Badge variant="outline">{getRegion(body.country)}</Badge>
-					</div>
-					<div class="space-y-1">
-						<CardTitle class="text-base">{body.name}</CardTitle>
-						<CardDescription>{body.country}</CardDescription>
-					</div>
-				</CardHeader>
-				<CardContent class="space-y-3">
-					<div class="space-y-1.5 rounded-lg bg-muted p-3 text-sm">
-						<div class="flex items-center justify-between">
-							<span class="text-muted-foreground">Standard</span>
-							<span class="text-right text-xs font-medium">{body.standard}</span>
+						<div class="min-w-0 flex-1">
+							<div class="flex items-center justify-between gap-2">
+								<CardTitle class="truncate text-sm transition-colors group-hover:text-primary">{body.name}</CardTitle>
+								<Badge variant="outline" class="shrink-0 text-[10px]">{getRegion(body.country)}</Badge>
+							</div>
+							<p
+								class="mt-0.5 truncate text-xs text-muted-foreground"
+								title={`${body.country} · ${body.standard}`}
+							>
+								{body.country} · {body.standard}
+							</p>
 						</div>
-						<div class="flex items-center justify-between">
-							<span class="text-muted-foreground">Region</span>
-							<span class="font-medium">{getRegion(body.country)}</span>
-						</div>
-					</div>
-					<Button
-						href={localizeHref(`/certifying-bodies/${body.id}`)}
-						variant="outline"
-						size="sm"
-						class="w-full"
-					>
-						View body
-						<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-					</Button>
-				</CardContent>
-			</Card>
+					</CardContent>
+				</Card>
+			</a>
 		{/each}
 	</div>
 

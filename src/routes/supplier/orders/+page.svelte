@@ -23,11 +23,11 @@
 
 	function badgeColor(status: string): string {
 		if (status === 'Processing') return 'bg-primary/10 text-primary';
-		if (status === 'Pending') return 'bg-yellow-500/10 text-yellow-600';
-		if (status === 'Shipped') return 'bg-blue-500/10 text-blue-600';
-		if (status === 'Delivered') return 'bg-green-500/10 text-green-600';
-		if (status === 'Flagged') return 'bg-orange-500/10 text-orange-600';
-		return 'bg-red-500/10 text-red-500';
+		if (status === 'Pending') return 'bg-warn/10 text-warn';
+		if (status === 'Shipped') return 'bg-info/10 text-info';
+		if (status === 'Delivered') return 'bg-success/10 text-success';
+		if (status === 'Flagged') return 'bg-accent-rose/10 text-accent-rose';
+		return 'bg-destructive/10 text-destructive';
 	}
 </script>
 
@@ -54,18 +54,18 @@
 					<div class="flex items-center justify-between">
 						<div>
 							<p class="text-[11px] font-semibold">{order.id}</p>
-							<p class="text-[9px] text-muted-foreground">{order.date}</p>
+							<p class="text-[10px] text-muted-foreground">{order.date}</p>
 						</div>
-						<Badge variant="secondary" class={`px-1.5 py-0.5 text-[8px] ${badgeColor(order.status)}`}>{order.status}</Badge>
+						<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] ${badgeColor(order.status)}`}>{order.status}</Badge>
 					</div>
 					<div class="mt-1.5 flex items-center justify-between">
 						<div>
 							<p class="text-[10px] font-medium">{order.product}</p>
-							<p class="text-[9px] text-muted-foreground">{order.buyer}</p>
+							<p class="text-[10px] text-muted-foreground">{order.buyer}</p>
 						</div>
 						<div class="text-right">
 							<p class="text-[11px] font-semibold">{order.amount}</p>
-							<Button variant="ghost" size="sm" class="h-5 text-[9px] text-primary">View details</Button>
+							<Button variant="ghost" size="sm" class="h-5 text-[10px] text-primary">View details</Button>
 						</div>
 					</div>
 				</div>

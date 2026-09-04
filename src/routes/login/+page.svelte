@@ -37,7 +37,7 @@
 	<div class="w-full max-w-md">
 		<div class="mb-5 text-center">
 			<div
-				class="bg-primary text-primary-foreground mx-auto mb-2 flex size-12 items-center justify-center rounded-2xl text-lg font-bold shadow-lg shadow-primary/20"
+				class="bg-primary text-primary-foreground mx-auto mb-2 flex size-12 items-center justify-center rounded-xl text-lg font-bold"
 			>
 				H
 			</div>
@@ -45,7 +45,7 @@
 			<p class="mt-1 text-xs text-muted-foreground">Sign in to your HalalNeo account</p>
 		</div>
 
-		<div class="rounded-2xl bg-card p-5 shadow-sm">
+		<div class="rounded-xl bg-card p-5 ring-1 ring-foreground/10">
 			<form class="space-y-3" onsubmit={(e) => { e.preventDefault(); submit(); }}>
 				<Field>
 					<FieldLabel>Email</FieldLabel>

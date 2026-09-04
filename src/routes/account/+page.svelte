@@ -37,7 +37,7 @@
 </svelte:head>
 
 {#if !account}
-	<div class="rounded-2xl bg-card p-6 shadow-sm text-center">
+	<div class="rounded-xl bg-card p-6 text-center">
 		<h2 class="text-sm font-bold">Not signed in</h2>
 		<p class="mt-1 text-[10px] text-muted-foreground">Sign in to view your account.</p>
 		<a
@@ -69,7 +69,7 @@
 							</div>
 							<div>
 								<h3 class="text-[11px] font-bold text-foreground">{link.label}</h3>
-								<p class="mt-0.5 text-[9px] leading-relaxed text-muted-foreground">
+								<p class="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
 									{link.description}
 								</p>
 							</div>

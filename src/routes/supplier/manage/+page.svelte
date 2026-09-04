@@ -24,8 +24,13 @@
 	let yearEstablished = $state('');
 	let website = $state('');
 
+	// Initialize form fields once per supplier — never overwrite user edits
+	// when the underlying store updates.
+	let initializedSlug = $state('');
+
 	$effect(() => {
-		if (supplier) {
+		if (supplier && supplier.slug !== initializedSlug) {
+			initializedSlug = supplier.slug;
 			companyName = supplier.name;
 			description = supplier.description;
 			country = supplier.country;
@@ -34,11 +39,7 @@
 		}
 	});
 
-	let teamMembers = $state([
-		{ name: 'Ahmad Jamal', email: 'ahmad@aljazeerafoods.com', role: 'Owner', initials: 'AJ' },
-		{ name: 'Siti Nurhaliza', email: 'siti@aljazeerafoods.com', role: 'Manager', initials: 'SN' },
-		{ name: 'Rizal Hassan', email: 'rizal@aljazeerafoods.com', role: 'Sales', initials: 'RH' }
-	]);
+	let teamMembers = $state<{ name: string; email: string; role: string; initials: string }[]>([]);
 
 	let newMemberName = $state('');
 	let newMemberEmail = $state('');
@@ -137,9 +138,9 @@
 						</div>
 						<div class="min-w-0 flex-1">
 							<p class="truncate text-[11px] font-medium">{member.name}</p>
-							<p class="truncate text-[9px] text-muted-foreground">{member.email}</p>
+							<p class="truncate text-[10px] text-muted-foreground">{member.email}</p>
 						</div>
-						<Badge variant="secondary" class="text-[9px]">{member.role}</Badge>
+						<Badge variant="secondary" class="text-[10px]">{member.role}</Badge>
 						{#if member.role !== 'Owner'}
 							<Button
 								variant="ghost"
@@ -175,11 +176,11 @@
 			<CardContent class="space-y-3">
 				<div class="flex items-center justify-between text-[11px]">
 					<span class="text-muted-foreground">Verification</span>
-					<Badge class="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[9px]">Verified</Badge>
+					<Badge class="bg-success/10 text-success text-[10px]">Verified</Badge>
 				</div>
 				<div class="flex items-center justify-between text-[11px]">
 					<span class="text-muted-foreground">Plan</span>
-					<Badge variant="secondary" class="text-[9px]">Business</Badge>
+					<Badge variant="secondary" class="text-[10px]">Business</Badge>
 				</div>
 				<div class="flex items-center justify-between text-[11px]">
 					<span class="text-muted-foreground">Products</span>
@@ -203,7 +204,7 @@
 				{#if supplier && supplier.certifications.length > 0}
 					{#each supplier.certifications as cert}
 						<div class="flex items-center gap-2 rounded-lg bg-muted/40 px-2.5 py-2 text-[11px]">
-							<Badge class="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[9px]">{cert.bodyName}</Badge>
+							<Badge class="bg-success/10 text-success text-[10px]">{cert.bodyName}</Badge>
 							<span class="text-muted-foreground">{cert.scope}</span>
 						</div>
 					{/each}

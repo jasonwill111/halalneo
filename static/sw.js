@@ -4,8 +4,8 @@ const STATIC_ASSETS = [
 	'/manifest.json',
 	'/icons/icon-192.svg',
 	'/icons/icon-512.svg',
-	'/fonts/space-grotesk/space-grotesk-latin.woff2',
-	'/fonts/space-grotesk/space-grotesk-latin-ext.woff2',
+	'/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
+	'/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
 	'/fonts/almarai/almarai-400.woff2',
 	'/fonts/almarai/almarai-700.woff2'
 ];

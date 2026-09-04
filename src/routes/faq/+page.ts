@@ -13,10 +13,10 @@ export const load: PageLoad = async ({ fetch }) => {
 			const data: PagesResponse = await res.json();
 			return {
 				seo: {
-					title: 'Frequently Asked Questions —HalalNeo',
+					title: 'Frequently Asked Questions — HalalNeo',
 					description:
 						'Find answers to common questions about halal certification, sourcing, compliance, and the HalalNeo platform.',
-					ogImage: 'https://halalneo.com/og-faq.png',
+					ogImage: 'https://halalneo.com/api/media/og-faq.svg',
 					keywords: ['halal FAQ', 'certification questions', 'halal sourcing help', 'compliance FAQ']
 				},
 				faqs: data.items ?? []
@@ -26,10 +26,10 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Frequently Asked Questions —HalalNeo',
+			title: 'Frequently Asked Questions — HalalNeo',
 			description:
 				'Find answers to common questions about halal certification, sourcing, compliance, and the HalalNeo platform.',
-			ogImage: 'https://halalneo.com/og-faq.png',
+			ogImage: 'https://halalneo.com/api/media/og-faq.svg',
 			keywords: ['halal FAQ', 'certification questions', 'halal sourcing help', 'compliance FAQ']
 		},
 		faqs: []

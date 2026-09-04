@@ -18,7 +18,6 @@
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
 	import CalculatorIcon from '@lucide/svelte/icons/calculator';
-	import BotIcon from '@lucide/svelte/icons/bot';
 	import ScaleIcon from '@lucide/svelte/icons/scale';
 	import HandshakeIcon from '@lucide/svelte/icons/handshake';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
@@ -38,33 +37,40 @@
 	let explorePos = $state({ left: 0, top: 0 });
 	let menuPos = $state({ right: 0, top: 0 });
 
-	const exploreItems = [
-		{ label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenIcon },
-		{ label: 'Market Guides', href: '/market-guides', icon: GlobeIcon },
-		{ label: 'Trade Shows', href: '/trade-shows', icon: CalendarIcon },
-		{ label: 'Blog', href: '/blog', icon: PenIcon },
-		{ label: 'Glossary', href: '/glossary', icon: GraduationCapIcon }
+	const exploreGroups = [
+		{
+			label: 'Resources',
+			items: [
+				{ label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenIcon },
+				{ label: 'Market Guides', href: '/market-guides', icon: GlobeIcon },
+				{ label: 'Trade Shows', href: '/trade-shows', icon: CalendarIcon },
+				{ label: 'Blog', href: '/blog', icon: PenIcon },
+				{ label: 'Glossary', href: '/glossary', icon: GraduationCapIcon }
+			]
+		},
+		{
+			label: 'Halal Tools',
+			items: [
+				{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
+				{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
+				{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon }
+			]
+		},
+		{
+			label: 'Ecosystem',
+			items: [
+				{ label: 'Certifying Bodies', href: '/certifying-bodies', icon: ScaleIcon },
+				{ label: 'Service Providers', href: '/service-providers', icon: HandshakeIcon }
+			]
+		}
 	];
 
 	const menuItems = [
-		// Marketplace
-		{ label: 'Home', href: '/', icon: HomeIcon },
-		{ label: 'Categories', href: '/categories', icon: Grid2x2Icon },
 		{ label: 'Suppliers', href: '/suppliers', icon: UsersIcon },
-		{ label: 'Products', href: '/products', icon: BoxIcon },
-		// Halal Tools
-		{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
-		{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
-		{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
-		// Ecosystem
-		{ label: 'Certifying Bodies', href: '/certifying-bodies', icon: ScaleIcon },
-		{ label: 'Service Providers', href: '/service-providers', icon: HandshakeIcon },
 		{ label: 'Pricing', href: '/pricing', icon: BanknoteIcon },
 		{ label: 'FAQ', href: '/faq', icon: HelpCircleIcon },
-		// Company
 		{ label: 'About', href: '/about', icon: InfoIcon },
 		{ label: 'Contact', href: '/contact', icon: MailIcon },
-		// Account
 		{ label: 'Sign in', href: '/login', icon: LogInIcon },
 		{ label: 'Create account', href: '/register', icon: UserPlusIcon },
 		{ label: 'Saved Items', href: '/account/saved', icon: NewspaperIcon },
@@ -142,26 +148,34 @@
 <!-- Explore Popover (fixed, rendered outside tab bar) -->
 {#if showExplore}
 	<div
-		class="fixed z-50 w-56 rounded-xl border border-border/60 bg-background p-2 shadow-xl md:hidden"
+		class="fixed z-50 max-h-[60vh] w-56 overflow-y-auto rounded-xl border border-border/60 bg-background p-2 shadow-xl md:hidden"
 		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%);"
 		data-popover-panel
 	>
-		<p class="px-2 pb-1.5 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">Explore</p>
-		<div class="space-y-0.5">
-			{#each exploreItems as item (item.href)}
-				<a
-					href={localizeHref(item.href)}
-					onclick={closeAll}
-					class={cn(
-						'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors',
-						isActive(item.href)
-							? 'bg-primary/10 text-primary'
-							: 'text-foreground hover:bg-muted'
-					)}
-				>
-					<item.icon class="size-4 shrink-0 text-muted-foreground" />
-					{item.label}
-				</a>
+		<div class="space-y-2">
+			{#each exploreGroups as group (group.label)}
+				<div>
+					<p class="px-2 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+						{group.label}
+					</p>
+					<div class="space-y-0.5">
+						{#each group.items as item (item.href)}
+							<a
+								href={localizeHref(item.href)}
+								onclick={closeAll}
+								class={cn(
+									'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors',
+									isActive(item.href)
+										? 'bg-primary/10 text-primary'
+										: 'text-foreground hover:bg-muted'
+								)}
+							>
+								<item.icon class="size-4 shrink-0 text-muted-foreground" />
+								{item.label}
+							</a>
+						{/each}
+					</div>
+				</div>
 			{/each}
 		</div>
 	</div>
@@ -194,7 +208,7 @@
 	</div>
 {/if}
 
-<!-- Bottom Tab Bar -->
+<!-- Bottom Tab Bar (App Dock �?all breakpoints) -->
 <nav
 	class="fixed bottom-1.5 left-1/2 z-50 -translate-x-1/2 md:hidden"
 	aria-label="Mobile navigation"
@@ -208,7 +222,7 @@
 			href={localizeHref('/')}
 			onclick={closeAll}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				isActive('/') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 		>
@@ -221,7 +235,7 @@
 			href={localizeHref('/categories')}
 			onclick={closeAll}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				isActive('/categories') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 		>
@@ -234,7 +248,7 @@
 			href={localizeHref('/products')}
 			onclick={closeAll}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				isActive('/products') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 		>
@@ -247,7 +261,7 @@
 			bind:this={exploreBtnEl}
 			onclick={(e) => { e.stopPropagation(); toggleExplore(); }}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				showExplore ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 			data-popover
@@ -261,7 +275,7 @@
 			bind:this={menuBtnEl}
 			onclick={(e) => { e.stopPropagation(); toggleMenu(); }}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[9px] font-medium transition-all duration-200',
+				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				showMenu ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 			data-popover

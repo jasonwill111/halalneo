@@ -23,11 +23,11 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Halal-Certified Products —HalalNeo',
+			title: 'Halal-Certified Products — HalalNeo',
 			description:
-				'Browse halal-certified products from verified suppliers worldwide. Medical devices, pharmaceuticals, food, and cosmetics.',
-			ogImage: 'https://halalneo.com/og-products.png',
-			keywords: ['halal products', 'certified suppliers', 'B2B marketplace', 'halal medical devices']
+				'Browse halal-certified products from verified suppliers worldwide. Food, beverages, cosmetics and nutritional products.',
+			ogImage: 'https://halalneo.com/api/media/og-products.svg',
+			keywords: ['halal products', 'certified suppliers', 'B2B marketplace', 'halal food']
 		},
 		products,
 		suppliers,

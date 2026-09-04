@@ -10,7 +10,7 @@
 	let { data } = $props();
 	let search = $state('');
 
-	const blogImages = ['/images/blog-featured-1.webp', '/images/blog-featured-2.webp', '/images/blog-1.webp', '/images/blog-2.webp', '/images/blog-3.webp'];
+	const blogImages = ['/api/media/blog-featured-1.webp', '/api/media/blog-featured-2.webp', '/api/media/blog-1.webp', '/api/media/blog-2.webp', '/api/media/blog-3.webp'];
 
 	const published = $derived(
 		(data.posts ?? [])
@@ -26,7 +26,7 @@
 
 <Breadcrumb items={[{ label: 'Blog', href: '/blog' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<Newspaper class="size-4"></Newspaper>

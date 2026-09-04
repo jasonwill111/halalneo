@@ -57,9 +57,9 @@
 	// AI generation mock state
 	let aiLoading = $state(false);
 
-	type SpecRow = { key: string; value: string };
-	type FaqRow = { question: string; answer: string };
-	type ResourceRow = { name: string; url: string };
+	type SpecRow = { id: string; key: string; value: string };
+	type FaqRow = { id: string; question: string; answer: string };
+	type ResourceRow = { id: string; name: string; url: string };
 
 	type ProductForm = {
 		slug: string;
@@ -204,13 +204,13 @@
 			features: s.features.join(', '),
 			description: s.description ?? '',
 			specifications: s.specifications
-				? Object.entries(s.specifications).map(([key, value]) => ({ key, value }))
+				? Object.entries(s.specifications).map(([key, value]) => ({ id: crypto.randomUUID(), key, value }))
 				: [],
-			faqs: s.faqs ? [...s.faqs] : [],
+			faqs: s.faqs ? s.faqs.map((f) => ({ id: crypto.randomUUID(), ...f })) : [],
 			imageUrl: s.image ?? '',
 			images: (s.images ?? []).join(', '),
 			videos: (s.videos ?? []).join(', '),
-			resources: s.resources ? [...s.resources] : [],
+			resources: s.resources ? s.resources.map((r) => ({ id: crypto.randomUUID(), ...r })) : [],
 			metaTitle: s.metaTitle ?? '',
 			metaDescription: s.metaDescription ?? '',
 			keywords: s.keywords ?? ''
@@ -249,7 +249,7 @@
 	}
 
 	function addSpec() {
-		form.specifications = [...form.specifications, { key: '', value: '' }];
+		form.specifications = [...form.specifications, { id: crypto.randomUUID(), key: '', value: '' }];
 	}
 	function removeSpec(index: number) {
 		form.specifications = form.specifications.filter((_, i) => i !== index);
@@ -261,7 +261,7 @@
 	}
 
 	function addFaq() {
-		form.faqs = [...form.faqs, { question: '', answer: '' }];
+		form.faqs = [...form.faqs, { id: crypto.randomUUID(), question: '', answer: '' }];
 	}
 	function removeFaq(index: number) {
 		form.faqs = form.faqs.filter((_, i) => i !== index);
@@ -273,7 +273,7 @@
 	}
 
 	function addResource() {
-		form.resources = [...form.resources, { name: '', url: '' }];
+		form.resources = [...form.resources, { id: crypto.randomUUID(), name: '', url: '' }];
 	}
 	function removeResource(index: number) {
 		form.resources = form.resources.filter((_, i) => i !== index);
@@ -347,7 +347,7 @@
 				.filter(Boolean),
 			description: form.description.trim() || undefined,
 			specifications: Object.keys(specifications).length > 0 ? specifications : undefined,
-			faqs: form.faqs.length > 0 ? form.faqs.filter((f) => f.question.trim()) : undefined,
+			faqs: form.faqs.length > 0 ? form.faqs.filter((f) => f.question.trim()).map(({ question, answer }) => ({ question, answer })) : undefined,
 			image: form.imageUrl.trim() || '',
 			images: form.images
 				? form.images.split(',').map((s) => s.trim()).filter(Boolean)
@@ -356,7 +356,7 @@
 				? form.videos.split(',').map((s) => s.trim()).filter(Boolean)
 				: undefined,
 			resources:
-				form.resources.length > 0 ? form.resources.filter((r) => r.name.trim() || r.url.trim()) : undefined,
+				form.resources.length > 0 ? form.resources.filter((r) => r.name.trim() || r.url.trim()).map(({ name, url }) => ({ name, url })) : undefined,
 			metaTitle: form.metaTitle.trim() || undefined,
 			metaDescription: form.metaDescription.trim() || undefined,
 			keywords: form.keywords.trim() || undefined
@@ -400,7 +400,7 @@
 		<Input bind:value={search} placeholder="Search products..." class="pl-9" />
 	</div>
 
-	<div class="rounded-xl ring-1 ring-foreground/10">
+	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
 		<Table>
 			<TableHeader>
 				<TableRow class="hover:bg-transparent">
@@ -679,7 +679,7 @@
 								<Plus class="size-3" /> Add
 							</Button>
 						</div>
-						{#each form.specifications as spec, i (i)}
+						{#each form.specifications as spec, i (spec.id)}
 							<div class="flex items-center gap-2">
 								<Input
 									value={spec.key}
@@ -714,7 +714,7 @@
 								<Plus class="size-3" /> Add
 							</Button>
 						</div>
-						{#each form.faqs as faq, i (i)}
+						{#each form.faqs as faq, i (faq.id)}
 							<div class="flex flex-col gap-2 rounded-md border p-3">
 								<div class="flex items-center gap-2">
 									<Input
@@ -787,7 +787,7 @@
 								<Plus class="size-3" /> Add
 							</Button>
 						</div>
-						{#each form.resources as resource, i (i)}
+						{#each form.resources as resource, i (resource.id)}
 							<div class="flex items-center gap-2">
 								<Input
 									value={resource.name}

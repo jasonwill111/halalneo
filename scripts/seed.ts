@@ -170,7 +170,7 @@ async function main() {
 			body: p.body,
 			author: p.author ?? null,
 			category: 'blog',
-			featuredImage: null,
+			featuredImage: p.featuredImage ?? null,
 			tags: p.tags ? JSON.stringify(p.tags) : null,
 			metaTitle: null,
 			metaDescription: null,

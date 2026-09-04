@@ -40,7 +40,7 @@ export const certifyingBodies: CertifyingBody[] = [
 	{
 		id: 'gimdes',
 		name: 'GIMDES',
-		country: 'Turkey',
+		country: 'Türkiye',
 		standard: 'OIC/SMIIC 1:2019'
 	},
 	{
@@ -76,7 +76,7 @@ export const certifyingBodies: CertifyingBody[] = [
 	{
 		id: 'hak',
 		name: 'HAK',
-		country: 'Turkey',
+		country: 'Türkiye',
 		standard: 'OIC/SMIIC 1:2019'
 	},
 	{

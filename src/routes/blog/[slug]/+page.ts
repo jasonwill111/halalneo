@@ -55,10 +55,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				slug: params.slug,
 				seo: {
 					title: data.title ? `${data.title} — HalalNeo Blog` : `${params.slug} — HalalNeo Blog`,
-					description:
-						data.excerpt || data.metaDescription ||
-						`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and medical device compliance.`,
-					ogImage: data.featuredImage || 'https://halalneo.com/og-blog.png',
+				description:
+					data.excerpt || data.metaDescription ||
+					`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
+					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-blog.svg',
 					keywords: data.keywords || ['halal blog', 'certification insights', 'trade news']
 				},
 				item,
@@ -71,7 +71,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		slug: params.slug,
 		seo: {
 			title: `${params.slug} — HalalNeo Blog`,
-			description: `Read about ${params.slug} on the HalalNeo blog — insights on halal certification and medical device compliance.`
+			description: `Read about ${params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`
 		},
 		item: null as any,
 		related: []

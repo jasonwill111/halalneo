@@ -23,7 +23,7 @@
 
 <Breadcrumb items={[{ label: 'About', href: '/about' }]} />
 
-<section class="space-y-12">
+<section class="space-y-8">
 	<div class="max-w-3xl space-y-4">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-5xl">
 			Halal trade, without the guesswork
@@ -36,7 +36,7 @@
 	</div>
 
 	<div class="relative overflow-hidden rounded-xl">
-		<img src="/images/about-hero.webp" alt="Global halal trade" class="aspect-[3/1] w-full object-cover" loading="lazy" decoding="async" width="1200" height="400" />
+		<img src="/api/media/about-hero.webp" alt="Global halal trade" class="aspect-[3/1] w-full object-cover" loading="lazy" decoding="async" width="1200" height="400" />
 		<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 	</div>
 
@@ -139,31 +139,42 @@
 			</div>
 			<div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">{data.stats.kbSectionCount}</p>
+					<p class="text-3xl font-semibold text-info">{data.stats.kbSectionCount}</p>
 					<p class="text-sm text-muted-foreground">knowledge sections</p>
 				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">{data.stats.certifierCount}</p>
+					<p class="text-3xl font-semibold text-warn">{data.stats.certifierCount}</p>
 					<p class="text-sm text-muted-foreground">certifying bodies</p>
 				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">3</p>
+					<p class="text-3xl font-semibold text-success">3</p>
 					<p class="text-sm text-muted-foreground">trade tools</p>
 				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">7</p>
+					<p class="text-3xl font-semibold text-accent-purple">7</p>
 					<p class="text-sm text-muted-foreground">market guides</p>
 				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">30+</p>
+					<p class="text-3xl font-semibold text-accent-rose">80+</p>
 					<p class="text-sm text-muted-foreground">glossary terms</p>
 				</div>
 				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-primary">20+</p>
+					<p class="text-3xl font-semibold text-info">20+</p>
 					<p class="text-sm text-muted-foreground">trade shows</p>
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div class="rounded-xl bg-card p-6">
+		<h2 class="mb-2 text-lg font-bold text-foreground">How we source data</h2>
+		<p class="text-sm text-muted-foreground leading-relaxed">
+			All certification data on HalalNeo is sourced from publicly available registers of accredited halal
+			certifying bodies — JAKIM, MUI/LPPOM, ESMA, SFDA, IFANCA, and others. We cross-reference
+			certificate numbers, issuing organisations and scope details against each body's published records.
+			Supplier and product listings are illustrative examples to demonstrate the platform; always verify
+			directly with the certifying body before entering into any commercial agreement.
+		</p>
 	</div>
 
 	<div class="space-y-6">

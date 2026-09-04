@@ -71,6 +71,11 @@
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
+	--color-info: var(--info);
+	--color-warn: var(--warn);
+	--color-success: var(--success);
+	--color-accent-purple: var(--accent-purple);
+	--color-accent-rose: var(--accent-rose);
 	--color-chart-1: var(--chart-1);
 	--color-chart-2: var(--chart-2);
 	--color-chart-3: var(--chart-3);
@@ -118,6 +123,11 @@
 	--border: oklch(0.94 0.006 85);
 	--input: oklch(0.94 0.006 85);
 	--ring: oklch(0.45 0.14 155);
+	--info: oklch(0.55 0.15 255);
+	--warn: oklch(0.55 0.15 75);
+	--success: oklch(0.5 0.16 150);
+	--accent-purple: oklch(0.55 0.18 300);
+	--accent-rose: oklch(0.55 0.19 12);
 	--chart-1: oklch(0.45 0.14 155);
 	--chart-2: oklch(0.55 0.12 185);
 	--chart-3: oklch(0.4 0.08 227);
@@ -153,6 +163,11 @@
 	--border: oklch(0.18 0.012 250);
 	--input: oklch(0.18 0.012 250);
 	--ring: oklch(0.72 0.14 155);
+	--info: oklch(0.72 0.14 255);
+	--warn: oklch(0.75 0.14 80);
+	--success: oklch(0.7 0.15 150);
+	--accent-purple: oklch(0.72 0.16 300);
+	--accent-rose: oklch(0.72 0.16 12);
 	--chart-1: oklch(0.72 0.14 155);
 	--chart-2: oklch(0.65 0.17 162);
 	--chart-3: oklch(0.72 0.18 70);

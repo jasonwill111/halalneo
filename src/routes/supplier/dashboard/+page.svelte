@@ -38,17 +38,17 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="mb-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+<div class="mb-3 rounded-xl border border-success/20 bg-success/5 p-3">
 	<div class="flex items-center gap-2">
-		<TrendingUp class="size-4 text-emerald-600"></TrendingUp>
-		<span class="text-[10px] font-medium text-emerald-700">Welcome back, {supplier?.name ?? 'Supplier'}!</span>
-		<span class="ml-1.5 text-[9px] text-emerald-600/70">Your profile is fully verified</span>
+		<TrendingUp class="size-4 text-success"></TrendingUp>
+		<span class="text-[10px] font-medium text-success">Welcome back, {supplier?.name ?? 'Supplier'}!</span>
+		<span class="ml-1.5 text-[10px] text-success/70">Your profile is fully verified</span>
 	</div>
 </div>
 
 <div class="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
 	{#each stats as s}
-		<Card class="p-3 shadow-sm">
+		<Card class="p-3">
 			<CardContent class="p-0">
 				<div class="flex items-center justify-between mb-1">
 					<span class="text-[10px] font-medium text-muted-foreground">{s.label}</span>
@@ -57,7 +57,7 @@
 					</div>
 				</div>
 				<div class="text-xl font-bold text-foreground">{s.value}</div>
-				<div class="text-[9px] text-emerald-600">{s.change}</div>
+				<div class="text-[10px] text-success">{s.change}</div>
 			</CardContent>
 		</Card>
 	{/each}
@@ -70,7 +70,7 @@
 		</div>
 		<div class="text-left">
 			<div class="text-[11px] font-medium">Add Product</div>
-			<div class="text-[9px] text-muted-foreground">List a new item</div>
+			<div class="text-[10px] text-muted-foreground">List a new item</div>
 		</div>
 	</Button>
 	<Button variant="outline" class="flex items-center justify-start gap-2 rounded-xl p-3">
@@ -79,12 +79,12 @@
 		</div>
 		<div class="text-left">
 			<div class="text-[11px] font-medium">View Messages</div>
-			<div class="text-[9px] text-muted-foreground">{supplierInquiries.filter((i) => i.status === 'pending').length} unread inquiries</div>
+			<div class="text-[10px] text-muted-foreground">{supplierInquiries.filter((i) => i.status === 'pending').length} unread inquiries</div>
 		</div>
 	</Button>
 </div>
 
-<div class="rounded-xl bg-card p-3 shadow-sm">
+<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 	<div class="mb-2 flex items-center justify-between">
 		<h2 class="text-[11px] font-bold">Recent Orders</h2>
 		<Button variant="ghost" size="sm" class="text-[10px]">View all</Button>
@@ -99,11 +99,11 @@
 			<Table>
 				<TableHeader>
 					<TableRow>
-						<TableHead class="text-[9px]">Order ID</TableHead>
-						<TableHead class="text-[9px]">Buyer</TableHead>
-						<TableHead class="text-[9px]">Product</TableHead>
-						<TableHead class="text-[9px]">Amount</TableHead>
-						<TableHead class="text-[9px]">Status</TableHead>
+						<TableHead class="text-[10px]">Order ID</TableHead>
+						<TableHead class="text-[10px]">Buyer</TableHead>
+						<TableHead class="text-[10px]">Product</TableHead>
+						<TableHead class="text-[10px]">Amount</TableHead>
+						<TableHead class="text-[10px]">Status</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -114,7 +114,7 @@
 							<TableCell class="text-[10px] text-muted-foreground">{order.product}</TableCell>
 							<TableCell class="text-[10px] font-medium">{order.amount}</TableCell>
 							<TableCell>
-								<Badge variant="secondary" class="capitalize text-[8px]">{order.status}</Badge>
+								<Badge variant="secondary" class="capitalize text-[10px]">{order.status}</Badge>
 							</TableCell>
 						</TableRow>
 					{/each}

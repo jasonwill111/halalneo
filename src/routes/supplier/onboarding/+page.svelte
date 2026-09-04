@@ -9,10 +9,10 @@
 	import Users from '@lucide/svelte/icons/users';
 
 	const benefits = [
-		{ icon: Globe, title: 'Global buyer reach', desc: 'Connect with certified buyers across ASEAN, Gulf and Europe.' },
-		{ icon: ShieldCheck, title: 'Certification trust', desc: 'Showcase verified halal certificates buyers can check.' },
-		{ icon: BarChart3, title: 'Sales analytics', desc: 'Track inquiries, product views and market demand.' },
-		{ icon: Users, title: 'Direct inquiries', desc: 'Receive qualified RFQs directly in your dashboard.' }
+		{ icon: Globe, title: 'Global buyer reach', desc: 'Connect with certified buyers across ASEAN, Gulf and Europe.', color: 'bg-info/10 text-info' },
+		{ icon: ShieldCheck, title: 'Certification trust', desc: 'Showcase verified halal certificates buyers can check.', color: 'bg-success/10 text-success' },
+		{ icon: BarChart3, title: 'Sales analytics', desc: 'Track inquiries, product views and market demand.', color: 'bg-warn/10 text-warn' },
+		{ icon: Users, title: 'Direct inquiries', desc: 'Receive qualified RFQs directly in your dashboard.', color: 'bg-accent-purple/10 text-accent-purple' }
 	];
 
 	const steps = ['Company info', 'Verification', 'Approval'];
@@ -36,9 +36,9 @@
 		{#each benefits as b}
 			<Card class="p-3">
 				<CardContent class="space-y-1 p-0">
-					<div class="mx-auto mb-1 flex size-7 items-center justify-center rounded-lg bg-primary/10">
-						<b.icon class="size-4 text-primary"></b.icon>
-					</div>
+				<div class="mx-auto mb-1 flex size-7 items-center justify-center rounded-lg {b.color}">
+					<b.icon class="size-4"></b.icon>
+				</div>
 					<h3 class="text-[11px] font-semibold leading-tight text-center">{b.title}</h3>
 					<p class="text-center text-[10px] text-muted-foreground">{b.desc}</p>
 				</CardContent>
@@ -67,16 +67,16 @@
 			{#if step === 1}
 				<div class="space-y-2">
 					<div class="space-y-0.5">
-						<Label class="mb-1 block text-[10px]">Company Legal Name <span class="text-red-500">*</span></Label>
+						<Label class="mb-1 block text-[10px]">Company Legal Name <span class="text-destructive">*</span></Label>
 						<Input type="text" class="w-full" placeholder="e.g. Nusantara Foods Sdn Bhd" />
 					</div>
 					<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 						<div class="space-y-0.5">
-							<Label class="mb-1 block text-[10px]">Country <span class="text-red-500">*</span></Label>
+							<Label class="mb-1 block text-[10px]">Country <span class="text-destructive">*</span></Label>
 							<Input type="text" placeholder="Country" />
 						</div>
 						<div class="space-y-0.5">
-							<Label class="mb-1 block text-[10px]">Business Type <span class="text-red-500">*</span></Label>
+							<Label class="mb-1 block text-[10px]">Business Type <span class="text-destructive">*</span></Label>
 							<Input type="text" placeholder="Manufacturer / Trader / Wholesaler" />
 						</div>
 					</div>

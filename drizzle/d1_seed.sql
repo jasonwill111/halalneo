@@ -21,33 +21,33 @@ INSERT INTO "certifying_bodies" ("id","name","country","standard","website","des
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('sfda','SFDA','Saudi Arabia','GSO 2055-1',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('moiat','MOIAT','UAE','UAE.S 2055-1',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('ifanca','IFANCA','United States','OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
-INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('gimdes','GIMDES','Turkey','OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('gimdes','GIMDES','TÃ¼rkiye','OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('sanha','SANHA','South Africa','OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('saber','SABER / SASO','Saudi Arabia','GSO 2055-1 (SASO technical regulations)',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('cicot','CICOT','Thailand','Thai national halal standard (GSO 2055-based)',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('pha','PHA','Pakistan','PS OIC/SMIIC 3:2021 / PS OIC/SMIIC 9:2022',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('hfa','HFA','United Kingdom','HFA certification scheme / OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
-INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('hak','HAK','Turkey','OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('hak','HAK','TÃ¼rkiye','OIC/SMIIC 1:2019',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "certifying_bodies" ("id","name","country","standard","website","description","status","created_at","updated_at") VALUES ('nhasa','NHASA','Australia','Australian halal standard (GSO-aligned)',NULL,NULL,'active',1788082542,1788082542);
 INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('nusantara-foods','Nusantara Foods','Indonesia','manufacturer',1,'active','NF','Family-owned manufacturer of halal-certified spice pastes, sauces and ready-to-cook bases from Jakarta. Operates a dedicated halal production line under a BPJPH Halal Assurance System.',NULL,NULL,NULL,NULL,NULL,NULL,2009,NULL,NULL,NULL,'[{"id":"nf-1","body":{"id":"bpjph","name":"BPJPH / MUI","country":"Indonesia","standard":"HAS 23000"},"scope":"Spice pastes, sauces, condiments","status":"certified","expiry":"2027-06-30","number":"BPJPH-2024-004871"},{"id":"nf-2","body":{"id":"jakim","name":"JAKIM","country":"Malaysia","standard":"MS 1500:2019"},"scope":"Ready-to-cook bases (export)","status":"certified","expiry":"2026-11-15","number":"MYE-HCB-22134"}]',1788082542,1788082542);
 INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('santosa-beverages','Santosa Beverages','Indonesia','manufacturer',1,'active','SB','Bottler of halal fruit drinks and juice concentrates. All production lines certified halal; uses alcohol-free flavouring systems and dedicated tank storage.',NULL,NULL,NULL,NULL,NULL,NULL,2012,NULL,NULL,NULL,'[{"id":"sb-1","body":{"id":"bpjph","name":"BPJPH / MUI","country":"Indonesia","standard":"HAS 23000"},"scope":"Fruit drinks, juice concentrates","status":"certified","expiry":"2027-03-20","number":"BPJPH-2025-008113"}]',1788082542,1788082542);
 INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('al-barakah-heritage','Al-Barakah Heritage Foods','Malaysia','manufacturer',1,'active','AB','Malaysian producer of traditional halal sweets, biscuits and snack mixes. JAKIM-certified across two facilities with export recognition for Singapore and the Gulf.',NULL,NULL,NULL,NULL,NULL,NULL,2004,NULL,NULL,NULL,'[{"id":"ab-1","body":{"id":"jakim","name":"JAKIM","country":"Malaysia","standard":"MS 1500:2019"},"scope":"Biscuits, snacks, traditional sweets","status":"certified","expiry":"2026-12-31","number":"JAKIM-2024-081132"},{"id":"ab-2","body":{"id":"muis","name":"MUIS","country":"Singapore","standard":"MUIS-HC-S001"},"scope":"Snack mixes (Singapore import)","status":"certified","expiry":"2026-08-18","number":"MUIS-FHCB-2025-0912"}]',1788082542,1788082542);
 INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('medina-halal-meat','Medina Halal Meat Co.','United Arab Emirates','manufacturer',0,'active','MH','UAE-based processor and exporter of halal beef and poultry. Certified under GSO 2055 with SFDA-approved halal slaughter certificates for Gulf and MENA import.',NULL,NULL,NULL,NULL,NULL,NULL,2011,NULL,NULL,NULL,'[{"id":"mh-1","body":{"id":"moiat","name":"MOIAT","country":"UAE","standard":"UAE.S 2055-1"},"scope":"Frozen beef, poultry (GCC)","status":"certified","expiry":"2027-01-10","number":"MOIAT-HCB-0193"},{"id":"mh-2","body":{"id":"sfda","name":"SFDA","country":"Saudi Arabia","standard":"GSO 2055-1"},"scope":"Halal slaughter certificates, chilled beef","status":"certified","expiry":"2026-09-05","number":"SFDA-HSC-2025-4120"}]',1788082542,1788082542);
-INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('grainpath-trading','GrainPath Trading','Turkey','trader',0,'active','GP','Istanbul-based halal trading house sourcing and consolidating certified grains, pulses and bulk ingredients from GIMDES-certified mills across TÃ¼rkiye and Central Asia.',NULL,NULL,NULL,NULL,NULL,NULL,2015,NULL,NULL,NULL,'[{"id":"gp-1","body":{"id":"gimdes","name":"GIMDES","country":"Turkey","standard":"OIC/SMIIC 1:2019"},"scope":"Grains, pulses, bulk ingredients","status":"certified","expiry":"2026-10-22","number":"GIMDES-TR-10234"}]',1788082542,1788082542);
+INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('grainpath-trading','GrainPath Trading','TÃ¼rkiye','trader',0,'active','GP','Istanbul-based halal trading house sourcing and consolidating certified grains, pulses and bulk ingredients from GIMDES-certified mills across TÃ¼rkiye and Central Asia.',NULL,NULL,NULL,NULL,NULL,NULL,2015,NULL,NULL,NULL,'[{"id":"gp-1","body":{"id":"gimdes","name":"GIMDES","country":"Turkey","standard":"OIC/SMIIC 1:2019"},"scope":"Grains, pulses, bulk ingredients","status":"certified","expiry":"2026-10-22","number":"GIMDES-TR-10234"}]',1788082542,1788082542);
 INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('saffron-distributors','Saffron Distributors','Singapore','wholesaler',0,'active','SD','Singapore wholesaler distributing halal-certified FMCG and food service products to HORECA and retail across Southeast Asia. Focuses on suppliers with MUIS-recognized certification.',NULL,NULL,NULL,NULL,NULL,NULL,2008,NULL,NULL,NULL,'[{"id":"sd-1","body":{"id":"muis","name":"MUIS","country":"Singapore","standard":"MUIS-HC-S001"},"scope":"Distribution, warehousing","status":"certified","expiry":"2027-02-28","number":"MUIS-DIST-2025-0188"}]',1788082542,1788082542);
 INSERT INTO "suppliers" ("slug","name","country","business_type","is_brand","status","logo_initials","description","cover_image","website","email","phone","whatsapp","line","year_established","employee_count","production_capacity","main_markets","certifications","created_at","updated_at") VALUES ('pureharvest-snacks','PureHarvest Snacks','South Africa','manufacturer',1,'pending','PH','Cape Town snack manufacturer producing halal chips and baked snacks. SANHA certification in progress â€”verification pending.',NULL,NULL,NULL,NULL,NULL,NULL,2018,NULL,NULL,NULL,'[{"id":"ph-1","body":{"id":"sanha","name":"SANHA","country":"South Africa","standard":"OIC/SMIIC 1:2019"},"scope":"Baked snacks, chips","status":"pending","expiry":"2026-12-01","number":"SANHA-PEND-7712"}]',1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('rendang-braising-paste','nusantara-foods','food-beverages','Rendang Braising Paste (Industrial)','Ready-to-cook rendang paste in bulk, produced on a dedicated BPJPH halal line with certified ingredient traceability.',NULL,'rendang',NULL,NULL,'200 kg',NULL,NULL,NULL,'certified','20 kg food-grade pails','Indonesia','["Certified alcohol-free","Batch-level halal certificate","12-month shelf life","Custom spice profiles available"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('sambal-bawang-hot-sauce','nusantara-foods','food-beverages','Sambal Bawang Hot Sauce (Bulk)','Shallot-forward sambal hot sauce in bulk containers for private label and food service distribution.',NULL,'sambal',NULL,NULL,'500 kg',NULL,NULL,NULL,'certified','200 L drums / 5 L pouches','Indonesia','["Zero preservatives","Halal certificate per shipment","Private label ready"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('mango-juice-concentrate','santosa-beverages','beverages','Mango Juice Concentrate 65Â°Bx','Alcohol-free mango concentrate for beverage manufacturing, kosher and halal certified.',NULL,'mango',NULL,NULL,'1,000 kg',NULL,NULL,NULL,'certified','220 kg aseptic drums','Indonesia','["Aseptic, ambient stable","Certified no added alcohol","Full traceability"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('guava-juice-concentrate','santosa-beverages','beverages','Guava Juice Concentrate 60Â°Bx','Premium guava concentrate with certified halal processing and dedicated tank storage.',NULL,'guava',NULL,NULL,'1,000 kg',NULL,NULL,NULL,'certified','220 kg aseptic drums','Indonesia','["High yield","No artificial colours","Halal certified"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('kurma-biscuits','al-barakah-heritage','confectionery-snacks','Kurma-filled Biscuits (Export)','Date-filled halal biscuits with JAKIM and MUIS-recognized certification for SEA and Gulf markets.',NULL,'biscuit',NULL,NULL,'500 cartons',NULL,NULL,NULL,'certified','24 Ã— 150 g cartons','Malaysia','["Date filling certified free of haram additives","Export pack designed for Gulf retail","Long 9-month shelf life"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('bahulu-sponge-cakes','al-barakah-heritage','confectionery-snacks','Bahulu Sponge Cakes (Bulk)','Traditional Malaysian sponge cakes in bulk, halal-certified under a JAKIM Halal Assurance System.',NULL,'cake',NULL,NULL,'300 cartons',NULL,NULL,NULL,'certified','12 Ã— 250 g cartons','Malaysia','["Egg-based, no alcohol","Bulk food-service pack","Halal certified"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('frozen-beef-quarter-cuts','medina-halal-meat','meat-poultry','Frozen Beef Quarter Cuts (Halal)','SFDA-approved halal slaughtered beef with batch halal slaughter certificate for GCC import.',NULL,'beef',NULL,NULL,'1 Ã— 40 ft reefer',NULL,NULL,NULL,'certified','20 kg export cartons','UAE','["Batch halal slaughter certificate","Cold-chain monitored","GSO 2055 compliant"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('frozen-chicken-whole','medina-halal-meat','meat-poultry','Frozen Whole Chicken (Halal)','Whole frozen broiler chickens, hand-slaughtered and certified per shipment for MENA markets.',NULL,'chicken',NULL,NULL,'1 Ã— 40 ft reefer',NULL,NULL,NULL,'certified','10 kg cartons','UAE','["Hand slaughter, no stunning","Per-shipment halal certificate","HACCP certified plant"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('bulgur-wheat-grain','grainpath-trading','food-beverages','Bulgur Wheat (Pilavlik) Bulk','GIMDES-certified bulgur wheat consolidated from Anatolian mills for bulk food import.',NULL,'bulgur',NULL,NULL,'25 MT',NULL,NULL,NULL,'certified','25 / 50 kg bags','Turkey','["GIMDES certified","Steel-milled, no additives","Export documentation included"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('red-lentils','grainpath-trading','food-beverages','Red Lentils (Split)','Premium split red lentils for wholesale distribution, certified halal at origin.',NULL,'lentils',NULL,NULL,'25 MT',NULL,NULL,NULL,'certified','25 / 50 kg bags','Turkey','["High split quality","GIMDES certified","SGS inspection optional"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('halal-gelatine-capsules','saffron-distributors','nutritional-supplements','Halal Gelatine Empty Capsules (Size 00)','Bovine-sourced halal gelatine capsules for supplement manufacturers, distributed regionally.',NULL,'capsule',NULL,NULL,'1,000,000 pcs',NULL,NULL,NULL,'certified','100,000 pcs / box','Singapore (source: Brazil)','["Bovine gelatine, halal certified","No porcine contamination","Pharma-grade"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
-INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('plant-based-protein-blend','pureharvest-snacks','nutritional-supplements','Plant-Based Protein Blend (Pending)','Pea and rice protein blend for the halal supplement market. SANHA certification pending review.',NULL,'protein',NULL,NULL,'5 MT',NULL,NULL,NULL,'pending','25 kg bags','South Africa','["Allergen-free","Certification in progress","Suitable for halal dry blend"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('rendang-braising-paste','nusantara-foods','food-beverages','Rendang Braising Paste (Industrial)','Ready-to-cook rendang paste in bulk, produced on a dedicated BPJPH halal line with certified ingredient traceability.',NULL,'/api/media/rendang.jpg',NULL,NULL,'200 kg',NULL,NULL,NULL,'certified','20 kg food-grade pails','Indonesia','["Certified alcohol-free","Batch-level halal certificate","12-month shelf life","Custom spice profiles available"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('sambal-bawang-hot-sauce','nusantara-foods','food-beverages','Sambal Bawang Hot Sauce (Bulk)','Shallot-forward sambal hot sauce in bulk containers for private label and food service distribution.',NULL,'/api/media/sambal.jpg',NULL,NULL,'500 kg',NULL,NULL,NULL,'certified','200 L drums / 5 L pouches','Indonesia','["Zero preservatives","Halal certificate per shipment","Private label ready"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('mango-juice-concentrate','santosa-beverages','beverages','Mango Juice Concentrate 65Â°Bx','Alcohol-free mango concentrate for beverage manufacturing, kosher and halal certified.',NULL,'/api/media/mango.jpg',NULL,NULL,'1,000 kg',NULL,NULL,NULL,'certified','220 kg aseptic drums','Indonesia','["Aseptic, ambient stable","Certified no added alcohol","Full traceability"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('guava-juice-concentrate','santosa-beverages','beverages','Guava Juice Concentrate 60Â°Bx','Premium guava concentrate with certified halal processing and dedicated tank storage.',NULL,'/api/media/guava.jpg',NULL,NULL,'1,000 kg',NULL,NULL,NULL,'certified','220 kg aseptic drums','Indonesia','["High yield","No artificial colours","Halal certified"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('kurma-biscuits','al-barakah-heritage','confectionery-snacks','Kurma-filled Biscuits (Export)','Date-filled halal biscuits with JAKIM and MUIS-recognized certification for SEA and Gulf markets.',NULL,'/api/media/biscuit.jpg',NULL,NULL,'500 cartons',NULL,NULL,NULL,'certified','24 Ã— 150 g cartons','Malaysia','["Date filling certified free of haram additives","Export pack designed for Gulf retail","Long 9-month shelf life"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('bahulu-sponge-cakes','al-barakah-heritage','confectionery-snacks','Bahulu Sponge Cakes (Bulk)','Traditional Malaysian sponge cakes in bulk, halal-certified under a JAKIM Halal Assurance System.',NULL,'/api/media/cake.jpg',NULL,NULL,'300 cartons',NULL,NULL,NULL,'certified','12 Ã— 250 g cartons','Malaysia','["Egg-based, no alcohol","Bulk food-service pack","Halal certified"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('frozen-beef-quarter-cuts','medina-halal-meat','meat-poultry','Frozen Beef Quarter Cuts (Halal)','SFDA-approved halal slaughtered beef with batch halal slaughter certificate for GCC import.',NULL,'/api/media/beef.jpg',NULL,NULL,'1 Ã— 40 ft reefer',NULL,NULL,NULL,'certified','20 kg export cartons','UAE','["Batch halal slaughter certificate","Cold-chain monitored","GSO 2055 compliant"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('frozen-chicken-whole','medina-halal-meat','meat-poultry','Frozen Whole Chicken (Halal)','Whole frozen broiler chickens, hand-slaughtered and certified per shipment for MENA markets.',NULL,'/api/media/chicken.jpg',NULL,NULL,'1 Ã— 40 ft reefer',NULL,NULL,NULL,'certified','10 kg cartons','UAE','["Hand slaughter, no stunning","Per-shipment halal certificate","HACCP certified plant"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('bulgur-wheat-grain','grainpath-trading','food-beverages','Bulgur Wheat (Pilavlik) Bulk','GIMDES-certified bulgur wheat consolidated from Anatolian mills for bulk food import.',NULL,'/api/media/bulgur.jpg',NULL,NULL,'25 MT',NULL,NULL,NULL,'certified','25 / 50 kg bags','TÃ¼rkiye','["GIMDES certified","Steel-milled, no additives","Export documentation included"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('red-lentils','grainpath-trading','food-beverages','Red Lentils (Split)','Premium split red lentils for wholesale distribution, certified halal at origin.',NULL,'/api/media/lentils.jpg',NULL,NULL,'25 MT',NULL,NULL,NULL,'certified','25 / 50 kg bags','TÃ¼rkiye','["High split quality","GIMDES certified","SGS inspection optional"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('halal-gelatine-capsules','saffron-distributors','nutritional-supplements','Halal Gelatine Empty Capsules (Size 00)','Bovine-sourced halal gelatine capsules for supplement manufacturers, distributed regionally.',NULL,'/api/media/capsule.jpg',NULL,NULL,'1,000,000 pcs',NULL,NULL,NULL,'certified','100,000 pcs / box','Singapore (source: Brazil)','["Bovine gelatine, halal certified","No porcine contamination","Pharma-grade"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
+INSERT INTO "products" ("slug","supplier_slug","category_slug","name","short_description","description","image","images","videos","moq","price_min","price_max","price_unit","cert_status","units","origin_country","features","specifications","faqs","resources","status","views","created_at","updated_at") VALUES ('plant-based-protein-blend','pureharvest-snacks','nutritional-supplements','Plant-Based Protein Blend (Pending)','Pea and rice protein blend for the halal supplement market. SANHA certification pending review.',NULL,'/api/media/protein.jpg',NULL,NULL,'5 MT',NULL,NULL,NULL,'pending','25 kg bags','South Africa','["Allergen-free","Certification in progress","Suitable for halal dry blend"]',NULL,NULL,NULL,'active',0,1788082542,1788082542);
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('halal-certification-landscape','halal-certification','The Global Halal Certification Landscape','Halal certification is a country-by-country patchwork, not a single global scheme. Around 300 halal certification bodies exist worldwide; ~120 are officially registered and active.','
 Halal certification is a **country-by-country patchwork**, not a single global scheme. Around **300 halal certification bodies (HCBs) exist worldwide**, of which roughly **120 are officially registered** as active with formal accreditation or mutual-recognition agreements with governments.
 
@@ -6706,7 +6706,7 @@ Research the verification capabilities of each certification body you work with:
 Establish relationships with certification bodies to expedite verification when time is critical.
 
 		','["document-verification","authentication","certificates","fraud-prevention"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('qa-overview','quality-assurance','Quality Assurance in Halal Product Trade','Comprehensive guide to establishing quality assurance frameworks that satisfy both halal integrity and international trade standards.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('qa-overview','due-diligence','Quality Assurance in Halal Product Trade','Comprehensive guide to establishing quality assurance frameworks that satisfy both halal integrity and international trade standards.','
 
 ## Why Quality Assurance Matters in Halal Trade
 
@@ -6780,7 +6780,7 @@ Integrating halal requirements into these existing frameworks avoids duplication
 8. Review and update halal QA procedures whenever regulations or standards change.
 
 		','["quality-assurance","halal-certification","trade-standards","compliance"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('haccp-halal','quality-assurance','HACCP Integration with Halal Standards','How to merge HACCP food safety principles with halal requirements into a single, auditable system.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('haccp-halal','due-diligence','HACCP Integration with Halal Standards','How to merge HACCP food safety principles with halal requirements into a single, auditable system.','
 
 ## The Overlap Between HACCP and Halal
 
@@ -6883,7 +6883,7 @@ Integrated systems require integrated documentation. Avoid separate HACCP and ha
 - **Stronger importer confidence**: Demonstrates maturity in both food safety and halal compliance.
 
 		','["haccp","halal","food-safety","hazard-analysis","critical-control-points"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('iso-22000-halal','quality-assurance','ISO 22000 & Halal Food Safety Management','Mapping ISO 22000:2018 requirements to halal food safety management for streamlined certification.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('iso-22000-halal','due-diligence','ISO 22000 & Halal Food Safety Management','Mapping ISO 22000:2018 requirements to halal food safety management for streamlined certification.','
 
 ## ISO 22000:2018 at a Glance
 
@@ -6973,7 +6973,7 @@ For organizations seeking both ISO 22000 certification and halal certification:
 **Pro tip**: Some halal certification bodies (e.g., SGS, Bureau Veritas) offer integrated ISO 22000 + halal audits, reducing downtime and cost.
 
 		','["iso-22000","food-safety","management-system","certification","halal"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('product-testing','quality-assurance','Product Testing Requirements for Halal Goods','Essential testing protocols for halal products covering ingredient verification, contamination screening, and shelf-life stability.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('product-testing','due-diligence','Product Testing Requirements for Halal Goods','Essential testing protocols for halal products covering ingredient verification, contamination screening, and shelf-life stability.','
 
 ## Why Testing Is Non-Negotiable for Halal Products
 
@@ -7073,7 +7073,7 @@ Set conservative action limits based on your facility''s risk assessment. Exampl
 - **Expired test methods**: Methods validated five years ago may not meet current sensitivity requirements. Review and update methods annually.
 
 		','["product-testing","laboratory","halal-analysis","food-safety","quality-control"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('food-safety-systems','food-safety','Food Safety Systems for Halal Producers','Selecting and implementing food safety management systems that satisfy both halal certification and global regulatory requirements.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('food-safety-systems','due-diligence','Food Safety Systems for Halal Producers','Selecting and implementing food safety management systems that satisfy both halal certification and global regulatory requirements.','
 
 ## The Dual Imperative: Food Safety + Halal Integrity
 
@@ -7175,7 +7175,7 @@ Prerequisite programs (PRPs) form the foundation upon which HACCP and halal cont
 - **Annually**: External certification audits, system review, staff re-training.
 
 		','["food-safety","management-system","halal-production","haccp","prerequisite-programs"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('allergen-management','food-safety','Allergen Management in Halal Food Production','Controlling allergen risks in halal facilities where ingredient complexity and cross-contamination threats are heightened.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('allergen-management','due-diligence','Allergen Management in Halal Food Production','Controlling allergen risks in halal facilities where ingredient complexity and cross-contamination threats are heightened.','
 
 ## The Allergen-Halal Intersection
 
@@ -7270,7 +7270,7 @@ Some ingredients raise both halal and allergen concerns simultaneously:
 When a product is reformulated for halal compliance (e.g., replacing pork gelatin with bovine gelatin), the allergen profile changes. Ensure label updates reflect both the halal change and any new allergen implications.
 
 		','["allergen-management","food-safety","halal-production","labeling","cross-contamination"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('contamination-prevention','food-safety','Contamination Prevention in Halal Facilities','Strategies for preventing physical, chemical, and biological contamination while maintaining halal integrity throughout production.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('contamination-prevention','due-diligence','Contamination Prevention in Halal Facilities','Strategies for preventing physical, chemical, and biological contamination while maintaining halal integrity throughout production.','
 
 ## Types of Contamination in Halal Facilities
 
@@ -7380,7 +7380,7 @@ Divide the facility into zones based on risk level:
 - Review against updated regulatory and halal certification requirements.
 
 		','["contamination-prevention","food-safety","halal-facility","hygiene","cross-contamination"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('recall-management','food-safety','Product Recall Procedures for Halal Products','Designing and executing product recalls that address both food safety urgency and halal certification body notification requirements.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('recall-management','due-diligence','Product Recall Procedures for Halal Products','Designing and executing product recalls that address both food safety urgency and halal certification body notification requirements.','
 
 ## Why Halal Recalls Are More Complex
 
@@ -7478,7 +7478,7 @@ A product recall for halal products involves more stakeholders and faster timeli
 - **Insurance**: Ensure product liability insurance covers halal-specific recall costs, including re-certification expenses.
 
 		','["recall-management","food-safety","halal-certification","crisis-management","traceability"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('halal-market-overview','market-intelligence','Global Halal Market Size & Growth Trends','Data-driven overview of the global halal market including size, growth projections, regional distribution, and key drivers.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('halal-market-overview','country-market-guides','Global Halal Market Size & Growth Trends','Data-driven overview of the global halal market including size, growth projections, regional distribution, and key drivers.','
 
 ## Market Size and Trajectory
 
@@ -7559,7 +7559,7 @@ The global halal market has grown from a niche segment into one of the fastest-e
 - **ASEAN Secretariat**: Regional halal standards and trade data.
 
 		','["market-size","growth-trends","global-halal","market-data","industry-overview"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('consumer-preferences','market-intelligence','Halal Consumer Preferences by Region','Understanding how halal consumer expectations, purchasing behavior, and trust factors vary across major markets.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('consumer-preferences','country-market-guides','Halal Consumer Preferences by Region','Understanding how halal consumer expectations, purchasing behavior, and trust factors vary across major markets.','
 
 ## Why Regional Preferences Matter
 
@@ -7649,7 +7649,7 @@ Regardless of region, certain trust factors consistently influence halal consume
 5. **Digital presence**: Halal brands with active social media, ingredient information online, and consumer reviews build trust faster.
 
 		','["consumer-preferences","regional-analysis","halal-marketing","buyer-behavior","trust"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('competitive-analysis','market-intelligence','Competitive Analysis in Halal Markets','Framework for analyzing competitors in halal food trade, identifying positioning opportunities, and building sustainable competitive advantages.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('competitive-analysis','country-market-guides','Competitive Analysis in Halal Markets','Framework for analyzing competitors in halal food trade, identifying positioning opportunities, and building sustainable competitive advantages.','
 
 ## The Competitive Landscape
 
@@ -7764,7 +7764,7 @@ Based on your competitive analysis, identify your positioning options:
 5. **Innovate continuously**: Develop new products, packaging formats, and value-added services that address evolving consumer needs.
 
 		','["competitive-analysis","market-strategy","halal-trade","positioning","benchmarking"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('demand-forecasting','market-intelligence','Demand Forecasting for Halal Products','Methods and models for predicting halal product demand across export markets, incorporating seasonal, cultural, and regulatory factors.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('demand-forecasting','country-market-guides','Demand Forecasting for Halal Products','Methods and models for predicting halal product demand across export markets, incorporating seasonal, cultural, and regulatory factors.','
 
 ## Why Halal Demand Forecasting Is Unique
 
@@ -7873,7 +7873,7 @@ Demand forecasting for halal products requires accounting for factors that conve
 6. **Collaborate with importers**: Share forecast data with key buyers to improve demand signal accuracy (CPFRâ€”Collaborative Planning, Forecasting, and Replenishment).
 
 		','["demand-forecasting","market-analysis","halal-trade","inventory","planning"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('sustainable-halal','sustainability','Sustainability in Halal Supply Chains','Integrating environmental sustainability with halal supply chain management for long-term resilience and market access.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('sustainable-halal','logistics','Sustainability in Halal Supply Chains','Integrating environmental sustainability with halal supply chain management for long-term resilience and market access.','
 
 ## The Convergence of Halal and Sustainability
 
@@ -7974,7 +7974,7 @@ Complementary to halal certification:
 5. **Investment attraction**: ESG-compliant halal companies access a growing pool of Shariah-compliant ESG capital.
 
 		','["sustainability","halal-supply-chain","environmental","responsible-sourcing","ESG"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('environmental-compliance','sustainability','Environmental Compliance for Halal Exporters','Navigating environmental regulations across halal export markets, from waste management to emissions reporting.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('environmental-compliance','logistics','Environmental Compliance for Halal Exporters','Navigating environmental regulations across halal export markets, from waste management to emissions reporting.','
 
 ## The Regulatory Landscape
 
@@ -8090,7 +8090,7 @@ Key reduction strategies:
 10. Set annual environmental improvement targets and track progress.
 
 		','["environmental-compliance","regulations","halal-export","waste-management","emissions"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('ethical-supply-chain','sustainability','Ethical Supply Chain Management','Building halal supply chains that uphold ethical standards in labor practices, animal welfare, fair trade, and community impact.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('ethical-supply-chain','logistics','Ethical Supply Chain Management','Building halal supply chains that uphold ethical standards in labor practices, animal welfare, fair trade, and community impact.','
 
 ## Ethical Dimensions of Halal Supply Chains
 
@@ -8201,7 +8201,7 @@ Many halal raw materials (spices, tropical fruits, small-scale livestock) come f
 | Supplier retention | Contract renewal rates | Above 85% |
 
 		','["ethical-supply-chain","fair-trade","animal-welfare","labor-practices","halal-values"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('carbon-footprint','sustainability','Carbon Footprint Reduction in Halal Trade','Measuring, managing, and reducing carbon emissions across halal supply chains while maintaining certification integrity.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('carbon-footprint','logistics','Carbon Footprint Reduction in Halal Trade','Measuring, managing, and reducing carbon emissions across halal supply chains while maintaining certification integrity.','
 
 ## Carbon Footprint in Halal Food Trade
 
@@ -8309,7 +8309,7 @@ The largest category for most food companies, including:
 7. **Continuous improvement** (Ongoing): Review and update targets as technology and market conditions evolve.
 
 		','["carbon-footprint","emissions","climate-change","halal-trade","decarbonization"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('blockchain-halal','technology','Blockchain for Halal Supply Chain Traceability','How blockchain technology enables transparent, tamper-proof traceability in halal supply chains from farm to consumer.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('blockchain-halal','logistics','Blockchain for Halal Supply Chain Traceability','How blockchain technology enables transparent, tamper-proof traceability in halal supply chains from farm to consumer.','
 
 ## Why Blockchain for Halal?
 
@@ -8340,7 +8340,7 @@ For halal trade, blockchain addresses the fundamental trust problem: how can a c
 
 
 		','["blockchain","traceability","supply-chain","technology","halal-verification"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('ai-quality-control','technology','AI-Powered Quality Control in Halal Production','Leveraging artificial intelligence for automated halal quality inspection, defect detection, and compliance verification.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('ai-quality-control','logistics','AI-Powered Quality Control in Halal Production','Leveraging artificial intelligence for automated halal quality inspection, defect detection, and compliance verification.','
 
 ## The Case for AI in Halal Quality Control
 
@@ -8459,7 +8459,7 @@ Traditional halal quality control relies on human inspection, manual sampling, a
 | Time to detect quality deviation | Hours to days | Real-time |
 
 		','["artificial-intelligence","quality-control","automation","computer-vision","halal-production"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('iot-monitoring','technology','IoT Monitoring for Halal Logistics','Deploying Internet of Things sensors and platforms to monitor halal product conditions throughout the supply chain.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('iot-monitoring','logistics','IoT Monitoring for Halal Logistics','Deploying Internet of Things sensors and platforms to monitor halal product conditions throughout the supply chain.','
 
 ## The Need for Real-Time Monitoring in Halal Logistics
 
@@ -8501,7 +8501,7 @@ IoT monitoring provides real-time, continuous visibility into product conditions
 
 
 		','["iot","sensors","logistics","cold-chain","real-time-monitoring"]',NULL,'published',0,1788082542,1788082542);
-INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('digital-certificates','technology','Digital Halal Certificates & Verification','Transitioning from paper-based to digital halal certificates with real-time verification, reducing fraud and streamlining trade.','
+INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES ('digital-certificates','logistics','Digital Halal Certificates & Verification','Transitioning from paper-based to digital halal certificates with real-time verification, reducing fraud and streamlining trade.','
 
 ## The Problem with Paper Certificates
 
@@ -8652,9 +8652,9 @@ A few practical checks for cross-border buyers:
 2. Check whether the exporting body is mutually recognised in your import market.
 3. Watch for pending renewals â€”an issued certificate that expired last month changes the supplier''s risk profile.
 
-The HalalNeo ledger exists so that buyers can run these checks in a single view instead of chasing PDFs.','HalalNeo Editorial','blog',NULL,'["certification","buying","supply-chain"]',NULL,NULL,NULL,'published',0,1785196800,1788082542,1788082542);
-INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('news-of-dubai-global-village-pushes-ms-1500','MS 1500 Update: What Changed for Exporters','blog','The 2019 revision of Malaysia''s halal standard has downstream effects on how certificates are scoped for export.','Exporters relying on MS 1500:2019 certifications should confirm their audit scope still matches the product lines they ship. Standards bodies in the Gulf and Southeast Asia regularly cross-reference scope statements during import inspection.','HalalNeo Editorial','blog',NULL,'["standards","malaysia"]',NULL,NULL,NULL,'published',0,1781222400,1788082542,1788082542);
-INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('how-to-build-a-certification-vault','How to Build a Certification Vault for Your Buying Team','blog','A practical workflow for keeping supplier certificates current across renewals, scopes and bodies.','Draft post â€”certification vault workflow content pending.','HalalNeo Editorial','blog',NULL,'["buying","operations"]',NULL,NULL,NULL,'draft',0,1775088000,1788082542,1788082542);
+The HalalNeo ledger exists so that buyers can run these checks in a single view instead of chasing PDFs.','HalalNeo Editorial','blog','/api/media/blog-1.jpg','["certification","buying","supply-chain"]',NULL,NULL,NULL,'published',0,1785196800,1788082542,1788082542);
+INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('news-of-dubai-global-village-pushes-ms-1500','MS 1500 Update: What Changed for Exporters','blog','The 2019 revision of Malaysia''s halal standard has downstream effects on how certificates are scoped for export.','Exporters relying on MS 1500:2019 certifications should confirm their audit scope still matches the product lines they ship. Standards bodies in the Gulf and Southeast Asia regularly cross-reference scope statements during import inspection.','HalalNeo Editorial','blog','/api/media/blog-2.jpg','["standards","malaysia"]',NULL,NULL,NULL,'published',0,1781222400,1788082542,1788082542);
+INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('how-to-build-a-certification-vault','How to Build a Certification Vault for Your Buying Team','blog','A practical workflow for keeping supplier certificates current across renewals, scopes and bodies.','Draft post â€”certification vault workflow content pending.','HalalNeo Editorial','blog','/api/media/blog-3.jpg','["buying","operations"]',NULL,NULL,NULL,'draft',0,1775088000,1788082542,1788082542);
 INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('glossary-halal','Halal','landing','Arabic for ''permissible''. In food and trade, any product, process or business activity permitted under Islamic law.','Arabic for ''permissible''. In food and trade, any product, process or business activity permitted under Islamic law.',NULL,'glossary',NULL,NULL,'Halal','Arabic for ''permissible''. In food and trade, any product, process or business activity permitted under Islamic law.',NULL,'published',0,NULL,1788082542,1788082542);
 INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('glossary-haram','Haram','landing','Arabic for ''forbidden''. Includes pork and porcine derivatives, alcohol and intoxicants, blood, and animals not slaughtered in accordance with Islamic law.','Arabic for ''forbidden''. Includes pork and porcine derivatives, alcohol and intoxicants, blood, and animals not slaughtered in accordance with Islamic law.',NULL,'glossary',NULL,NULL,'Haram','Arabic for ''forbidden''. Includes pork and porcine derivatives, alcohol and intoxicants, blood, and animals not slaughtered in accordance with Islamic law.',NULL,'published',0,NULL,1788082542,1788082542);
 INSERT INTO "pages" ("slug","title","type","excerpt","body","author","category","featured_image","tags","meta_title","meta_description","keywords","status","views","published_at","created_at","updated_at") VALUES ('glossary-halal-certification','Halal certification','landing','A formal assurance issued by a recognized certifying body that a product or facility meets halal requirements, typically covering ingredients, processing and handling.','A formal assurance issued by a recognized certifying body that a product or facility meets halal requirements, typically covering ingredients, processing and handling.',NULL,'glossary',NULL,NULL,'Halal certification','A formal assurance issued by a recognized certifying body that a product or facility meets halal requirements, typically covering ingredients, processing and handling.',NULL,'published',0,NULL,1788082542,1788082542);
@@ -8697,7 +8697,7 @@ INSERT INTO "service_providers" ("slug","name","type","country","description","w
 INSERT INTO "service_providers" ("slug","name","type","country","description","website","email","phone","whatsapp","line","rating","status","created_at","updated_at") VALUES ('halalpay-global','HalalPay Global','payment','Indonesia','Cross-border payment processing for halal e-commerce. Multi-currency settlement, Shariah compliance screening and real-time FX for ASEAN, MENA and African corridors.',NULL,'hello@halalpay.example','+62-21-3333-6700',NULL,NULL,4.4,'active',1788082542,1788082542);
 INSERT INTO "service_providers" ("slug","name","type","country","description","website","email","phone","whatsapp","line","rating","status","created_at","updated_at") VALUES ('takaful-trade-shield','Takaful Trade Shield','insurance','Malaysia','Takaful (Islamic cooperative) insurance for halal supply chains. Marine cargo, stock-throughput and product liability coverage with Shariah board oversight.','https://takafulshield.example','cover@takafulshield.example','+60-3-9999-2300','+60-12-888-2300',NULL,4.8,'active',1788082542,1788082542);
 INSERT INTO "service_providers" ("slug","name","type","country","description","website","email","phone","whatsapp","line","rating","status","created_at","updated_at") VALUES ('amanah-halal-insurance','Amanah Halal Insurance','insurance','United Arab Emirates','Mutual Takaful provider for halal manufacturers and distributors. Covers product recall, trade disruption and transit risks across the Gulf region.','https://amanahins.example','info@amanahins.example','+971-4-555-7700',NULL,NULL,4.5,'active',1788082542,1788082542);
-INSERT INTO "service_providers" ("slug","name","type","country","description","website","email","phone","whatsapp","line","rating","status","created_at","updated_at") VALUES ('halal-trade-advisory','Halal Trade Advisory','consulting','Turkey','GIMDES and HFG-certified consulting for Turkish and Central Asian halal exporters. Market entry strategy, regulatory compliance and buyer matchmaking.','https://halaladvisory.example','consult@halaladvisory.example','+90-212-555-3400',NULL,NULL,4.3,'active',1788082542,1788082542);
+INSERT INTO "service_providers" ("slug","name","type","country","description","website","email","phone","whatsapp","line","rating","status","created_at","updated_at") VALUES ('halal-trade-advisory','Halal Trade Advisory','consulting','TÃ¼rkiye','GIMDES and HFG-certified consulting for Turkish and Central Asian halal exporters. Market entry strategy, regulatory compliance and buyer matchmaking.','https://halaladvisory.example','consult@halaladvisory.example','+90-212-555-3400',NULL,NULL,4.3,'active',1788082542,1788082542);
 INSERT INTO "service_providers" ("slug","name","type","country","description","website","email","phone","whatsapp","line","rating","status","created_at","updated_at") VALUES ('neo-halal-consulting','NeoHalal Consulting','consulting','Singapore','End-to-end halal compliance consulting for food, cosmetics and pharma. Certification gap analysis, supply chain mapping and training programmes for exporters entering ASEAN.','https://neohalal.example','team@neohalal.example','+65-6444-5500','+65-8444-5500',NULL,4.7,'active',1788082542,1788082542);-- New Knowledge Base Articles: 4 Missing Sections (20 articles)
 -- Sections: financial-banking, legal-compliance, marketing-branding, operations-management
 -- 10 Checklists + 10 Case Studies
@@ -8712,12 +8712,12 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'Islamic Trade Finance Fundamentals: Al-Rahman Foods Case Study',
 'A case study on how Al-Rahman Foods, a mid-size Malaysian halal exporter, transitioned from conventional financing to Islamic trade finance and reduced financing costs by 18% while expanding into 3 new markets.',
 '<h1>Islamic Trade Finance Fundamentals: Al-Rahman Foods Case Study</h1>
-<p>Al-Rahman Foods is a <strong>mid-size halal food exporter</strong> based in Kuala Lumpur, Malaysia. In 2024, the company was spending RM 2.4 million annually on conventional trade financing â€?interest-based loans that conflicted with their Sharia-compliant mission. This case study documents their transition to Islamic trade finance.</p>
+<p>Al-Rahman Foods is a <strong>mid-size halal food exporter</strong> based in Kuala Lumpur, Malaysia. In 2024, the company was spending RM 2.4 million annually on conventional trade financing ï¿½?interest-based loans that conflicted with their Sharia-compliant mission. This case study documents their transition to Islamic trade finance.</p>
 
 <h2>The Challenge</h2>
 <p>Al-Rahman Foods faced three compounding problems:</p>
 <ul>
-<li><strong>Sharia misalignment:</strong> Their customer base was 80% Muslim-majority countries, yet they used conventional interest-based financing â€?creating a credibility gap with buyers.</li>
+<li><strong>Sharia misalignment:</strong> Their customer base was 80% Muslim-majority countries, yet they used conventional interest-based financing ï¿½?creating a credibility gap with buyers.</li>
 <li><strong>High financing costs:</strong> Conventional LC fees and working capital loans cost 4.2% annually, eating into already thin margins on frozen food exports.</li>
 <li><strong>Market access barriers:</strong> Several Middle Eastern buyers requested Sharia-compliant financial documentation, which Al-Rahman could not provide.</li>
 </ul>
@@ -8728,7 +8728,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <h3>Phase 1: Murabaha Working Capital (Month 1-2)</h3>
 <ul>
 <li>Replaced RM 800,000 conventional overdraft with Murabaha facility</li>
-<li>Bank purchases inventory â†?sells to Al-Rahman at agreed markup â†?90-day repayment</li>
+<li>Bank purchases inventory ï¿½?sells to Al-Rahman at agreed markup ï¿½?90-day repayment</li>
 <li>Cost: 3.1% markup vs. 4.5% conventional interest</li>
 </ul>
 
@@ -8741,7 +8741,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h3>Phase 3: Salam for Forward Purchases (Month 5-6)</h3>
 <ul>
-<li>Used Salam contracts for bulk palm oil purchases â€?pay now, deliver later</li>
+<li>Used Salam contracts for bulk palm oil purchases ï¿½?pay now, deliver later</li>
 <li>Locked in prices 3 months ahead, reducing commodity price risk</li>
 <li>Cost: 2.8% premium vs. 3.5% conventional forward contract</li>
 </ul>
@@ -8750,17 +8750,17 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li><strong>Financing costs reduced 18%:</strong> From RM 2.4M to RM 1.97M annually</li>
 <li><strong>LC documentation disputes down 60%:</strong> Halal-specific clauses eliminated ambiguity</li>
-<li><strong>3 new markets opened:</strong> Saudi Arabia, UAE, and Kuwait â€?all requiring Sharia-compliant financing</li>
+<li><strong>3 new markets opened:</strong> Saudi Arabia, UAE, and Kuwait ï¿½?all requiring Sharia-compliant financing</li>
 <li><strong>Revenue growth 23%:</strong> RM 12M to RM 14.8M within 12 months</li>
 <li><strong>Buyer trust score up 35%:</strong> Measured via post-transaction surveys</li>
 </ul>
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>Islamic finance is not more expensive â€?it is often cheaper when structured correctly</li>
+<li>Islamic finance is not more expensive ï¿½?it is often cheaper when structured correctly</li>
 <li>Murabaha is the easiest entry point for businesses new to Islamic finance</li>
 <li>Sharia-compliant financing is a competitive advantage, not a constraint</li>
-<li>Transition can be phased â€?start with one instrument, expand over time</li>
+<li>Transition can be phased ï¿½?start with one instrument, expand over time</li>
 </ul>
 
 <h2>How to Apply This</h2>
@@ -8781,12 +8781,12 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'Letter of Credit for Halal Trade: PureHalal Trading Case Study',
 'How PureHalal Trading, a Dubai-based halal cosmetics distributor, structured Sharia-compliant LCs to eliminate $340K in annual dispute losses and accelerate payment cycles from 45 to 12 days.',
 '<h1>Letter of Credit for Halal Trade: PureHalal Trading Case Study</h1>
-<p>PureHalal Trading distributes halal cosmetics across the GCC from their Dubai hub. In 2023, they lost <strong>$340,000 to LC disputes</strong> â€?vague certification clauses, expired certificates, and documentation mismatches. This case study shows how they restructured their LC process.</p>
+<p>PureHalal Trading distributes halal cosmetics across the GCC from their Dubai hub. In 2023, they lost <strong>$340,000 to LC disputes</strong> ï¿½?vague certification clauses, expired certificates, and documentation mismatches. This case study shows how they restructured their LC process.</p>
 
 <h2>The Challenge</h2>
 <p>PureHalal Trading processed 200+ LCs annually with Korean, Chinese, and Turkish manufacturers. Their problems were systemic:</p>
 <ul>
-<li><strong>Vague certification clauses:</strong> "Halal certificate required" â€?no specific certifying body specified, leading to rejected documents</li>
+<li><strong>Vague certification clauses:</strong> "Halal certificate required" ï¿½?no specific certifying body specified, leading to rejected documents</li>
 <li><strong>Expired certificates:</strong> Suppliers submitted certificates dated 6+ months prior, banks refused payment</li>
 <li><strong>No contamination clause:</strong> Non-halal cosmetics shipped alongside halal products in the same container</li>
 <li><strong>Wrong incoterms:</strong> Using DDP created unnecessary risk and delayed payments</li>
@@ -8805,7 +8805,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <p>"Products must pass pre-shipment inspection at [specified SGS/Intertek facility]. Inspection certificate required."</p>
 
 <h3>4. Incoterms Clause</h3>
-<p>All LCs switched to FOB (Free on Board) â€?buyer controls shipping and insurance, reducing seller risk.</p>
+<p>All LCs switched to FOB (Free on Board) ï¿½?buyer controls shipping and insurance, reducing seller risk.</p>
 
 <h2>The Results</h2>
 <ul>
@@ -8818,7 +8818,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>Generic LC clauses create disputes â€?halal-specific language is essential</li>
+<li>Generic LC clauses create disputes ï¿½?halal-specific language is essential</li>
 <li>Specify the certifying body, not just "halal certificate required"</li>
 <li>FOB incoterms reduce risk for halal importers</li>
 <li>Pre-shipment inspection prevents 80% of documentation disputes</li>
@@ -8840,14 +8840,14 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'sukuk-islamic-bonds-trade-expansion',
 'financial-banking',
 'Sukuk for Trade Expansion: NutraHalal Industries Case Study',
-'How NutraHalal Industries, an Indonesian halal pharmaceutical company, raised $25M through Sukuk al-Ijarah to fund a new production facility â€?and why conventional bonds were not an option.',
+'How NutraHalal Industries, an Indonesian halal pharmaceutical company, raised $25M through Sukuk al-Ijarah to fund a new production facility ï¿½?and why conventional bonds were not an option.',
 '<h1>Sukuk for Trade Expansion: NutraHalal Industries Case Study</h1>
 <p>NutraHalal Industries is a <strong>halal pharmaceutical manufacturer</strong> in Surabaya, Indonesia. When they needed $25M to build a new production facility in 2024, they chose Sukuk over conventional bonds. This case study explains why, how, and the results.</p>
 
 <h2>The Challenge</h2>
 <ul>
 <li><strong>Capital need:</strong> $25M for a new GMP-certified halal pharmaceutical facility</li>
-<li><strong>Sharia constraint:</strong> 95% of their customer base required Sharia-compliant operations â€?issuing conventional bonds with interest would violate their certification</li>
+<li><strong>Sharia constraint:</strong> 95% of their customer base required Sharia-compliant operations ï¿½?issuing conventional bonds with interest would violate their certification</li>
 <li><strong>Timeline pressure:</strong> Competitors were scaling fast; 12-month delay meant losing market share</li>
 <li><strong>Investor appetite:</strong> Needed to attract Sharia-compliant institutional investors (Islamic banks, Takaful funds, sovereign wealth)</li>
 </ul>
@@ -8861,7 +8861,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <li><strong>Asset identified:</strong> Existing production facility valued at $30M</li>
 <li><strong>Lease structure:</strong> SPV purchased facility, leased it back to NutraHalal</li>
 <li><strong>Certificates issued:</strong> $25M in Sukuk certificates (investors own share of facility)</li>
-<li><strong>Rental income:</strong> NutraHalal pays lease â†?SPV distributes rental income to investors</li>
+<li><strong>Rental income:</strong> NutraHalal pays lease ï¿½?SPV distributes rental income to investors</li>
 <li><strong>Maturity:</strong> 5 years, with option to repurchase at par</li>
 </ol>
 
@@ -8886,7 +8886,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>Sukuk is often cheaper than conventional bonds â€?Sharia compliance attracts dedicated investors</li>
+<li>Sukuk is often cheaper than conventional bonds ï¿½?Sharia compliance attracts dedicated investors</li>
 <li>Sukuk al-Ijarah is ideal for asset-heavy businesses needing expansion capital</li>
 <li>Minimum issuance size ($10M+) makes Sukuk accessible to mid-size companies</li>
 <li>Sharia board approval adds credibility and attracts Islamic institutional investors</li>
@@ -8910,15 +8910,15 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'Payment Gateways for Halal E-Commerce: HalalCart Case Study',
 'How HalalCart, a UK-based halal grocery e-commerce platform, increased checkout conversion by 27% by switching to Sharia-compliant payment gateways and adding Islamic banking options.',
 '<h1>Payment Gateways for Halal E-Commerce: HalalCart Case Study</h1>
-<p>HalalCart is an <strong>online halal grocery platform</strong> serving 15,000+ customers across the UK. In 2024, they lost 34% of checkout attempts â€?customers abandoned when they saw conventional payment processors. This case study documents their payment gateway transformation.</p>
+<p>HalalCart is an <strong>online halal grocery platform</strong> serving 15,000+ customers across the UK. In 2024, they lost 34% of checkout attempts ï¿½?customers abandoned when they saw conventional payment processors. This case study documents their payment gateway transformation.</p>
 
 <h2>The Challenge</h2>
 <ul>
-<li><strong>Checkout abandonment rate:</strong> 34% â€?customers left at payment step</li>
+<li><strong>Checkout abandonment rate:</strong> 34% ï¿½?customers left at payment step</li>
 <li><strong>Customer complaints:</strong> 23% of support tickets mentioned "payment concerns"</li>
 <li><strong>Sharia feedback:</strong> Customer surveys showed 41% wanted Sharia-compliant payment options</li>
-<li><strong>Limited payment methods:</strong> Only Stripe available â€?no Islamic banking, no MENA payment methods</li>
-<li><strong>Currency conversion fees:</strong> 3.2% on international orders â€?uncompetitive for MENA buyers</li>
+<li><strong>Limited payment methods:</strong> Only Stripe available ï¿½?no Islamic banking, no MENA payment methods</li>
+<li><strong>Currency conversion fees:</strong> 3.2% on international orders ï¿½?uncompetitive for MENA buyers</li>
 </ul>
 
 <h2>The Solution</h2>
@@ -8933,7 +8933,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h3>Gateway 2: PayTabs (added for MENA)</h3>
 <ul>
-<li>Sharia-compliant by design â€?no interest-based processing</li>
+<li>Sharia-compliant by design ï¿½?no interest-based processing</li>
 <li>Supports local payment methods: mada, KNET, Fawry</li>
 <li>Fee: 2.85% + $0.30</li>
 <li>Multi-currency: SAR, AED, EGP, KWD</li>
@@ -8950,7 +8950,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li>Added "Pay via Islamic Bank" option at checkout</li>
 <li>Integrated with Gatehouse Bank (UK Islamic bank)</li>
-<li>Customers can pay via Islamic debit cards â€?no interest</li>
+<li>Customers can pay via Islamic debit cards ï¿½?no interest</li>
 </ul>
 
 <h2>The Results</h2>
@@ -8965,7 +8965,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>Payment gateway choice directly impacts conversion â€?34% to 7% abandonment is transformative</li>
+<li>Payment gateway choice directly impacts conversion ï¿½?34% to 7% abandonment is transformative</li>
 <li>Multi-gateway strategy optimizes fees by region</li>
 <li>Sharia-compliant payment options are a competitive advantage, not a cost center</li>
 <li>Local payment methods (mada, FPX) are essential for regional expansion</li>
@@ -8987,7 +8987,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'currency-hedging-cross-border-halal-trade',
 'financial-banking',
 'Currency Hedging for Cross-Border Halal Trade: GlobalHalal Corp Case Study',
-'How GlobalHalal Corp, a US-based halal food distributor, protected $12M in annual cross-border revenue from currency fluctuations using Sharia-compliant forward contracts â€?saving $890K in potential losses.',
+'How GlobalHalal Corp, a US-based halal food distributor, protected $12M in annual cross-border revenue from currency fluctuations using Sharia-compliant forward contracts ï¿½?saving $890K in potential losses.',
 '<h1>Currency Hedging for Cross-Border Halal Trade: GlobalHalal Corp Case Study</h1>
 <p>GlobalHalal Corp is a <strong>US-based halal food distributor</strong> importing from Malaysia, Indonesia, and Turkey. In 2023, currency fluctuations cost them <strong>$890,000</strong> in unexpected losses. This case study shows how they implemented Sharia-compliant hedging to protect their margins.</p>
 
@@ -8995,8 +8995,8 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li><strong>$12M annual cross-border exposure:</strong> Payments in MYR, IDR, TRY, and USD</li>
 <li><strong>90-day payment terms:</strong> Currency could move 5-10% during the payment cycle</li>
-<li><strong>2023 losses:</strong> MYR/USD moved from 4.20 to 4.55 during a 90-day LC â€?$890K extra cost</li>
-<li><strong>Sharia constraint:</strong> Conventional currency futures and swaps not acceptable â€?need Sharia-compliant instruments</li>
+<li><strong>2023 losses:</strong> MYR/USD moved from 4.20 to 4.55 during a 90-day LC ï¿½?$890K extra cost</li>
+<li><strong>Sharia constraint:</strong> Conventional currency futures and swaps not acceptable ï¿½?need Sharia-compliant instruments</li>
 <li><strong>No hedging policy:</strong> CFO was managing currency risk ad-hoc, reacting to market moves</li>
 </ul>
 
@@ -9045,7 +9045,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>Currency hedging pays for itself â€?$45K cost saved $890K in losses</li>
+<li>Currency hedging pays for itself ï¿½?$45K cost saved $890K in losses</li>
 <li>Sharia-compliant forwards are effective and widely available</li>
 <li>70-80% hedging ratio balances protection with flexibility</li>
 <li>Systematic policy beats ad-hoc management every time</li>
@@ -9056,7 +9056,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <li>Calculate your total foreign currency exposure for next 12 months</li>
 <li>Set a hedging policy (70-80% of forecasted exposure)</li>
 <li>Contact an Islamic bank for Sharia-compliant forward contracts</li>
-<li>Start with your largest currency exposure â€?hedge that first</li>
+<li>Start with your largest currency exposure ï¿½?hedge that first</li>
 <li>Review and adjust hedging positions quarterly</li>
 </ul>',
 '["currency-hedging","foreign-exchange","risk-management","trade-finance","forward-contracts","fx-hedging","case-study"]',
@@ -9071,118 +9071,118 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'import-export-regulations-halal-products',
 'legal-compliance',
 'Import/Export Regulations for Halal Products: Complete Checklist',
-'A comprehensive checklist for halal product import/export compliance â€?covering product registration, labeling, certificates, and country-specific regulations across 5 major markets.',
+'A comprehensive checklist for halal product import/export compliance ï¿½?covering product registration, labeling, certificates, and country-specific regulations across 5 major markets.',
 '<h1>Import/Export Regulations for Halal Products: Complete Checklist</h1>
 <p>Halal products face <strong>double regulatory scrutiny</strong>: general food safety regulations PLUS halal-specific requirements. This checklist ensures you address every requirement before shipping.</p>
 
 <h2>1. Product Registration Checklist</h2>
 <ul>
-<li><strong>â–?Research target market requirements</strong> â€?Check if product registration is mandatory (Indonesia: mandatory for all food; Malaysia: mandatory for exports)</li>
-<li><strong>â–?Prepare product specifications</strong> â€?Full product description, ingredients, processing methods, shelf life</li>
-<li><strong>â–?Obtain lab test results</strong> â€?microbiological, chemical, physical testing from accredited lab</li>
-<li><strong>â–?Compile manufacturer details</strong> â€?Company registration, facility address, production capacity</li>
-<li><strong>â–?Budget for registration fees</strong> â€?$100-$5,000 per product depending on country</li>
-<li><strong>â–?Allow processing time</strong> â€?2-12 weeks depending on country; start early</li>
+<li><strong>ï¿½?Research target market requirements</strong> ï¿½?Check if product registration is mandatory (Indonesia: mandatory for all food; Malaysia: mandatory for exports)</li>
+<li><strong>ï¿½?Prepare product specifications</strong> ï¿½?Full product description, ingredients, processing methods, shelf life</li>
+<li><strong>ï¿½?Obtain lab test results</strong> ï¿½?microbiological, chemical, physical testing from accredited lab</li>
+<li><strong>ï¿½?Compile manufacturer details</strong> ï¿½?Company registration, facility address, production capacity</li>
+<li><strong>ï¿½?Budget for registration fees</strong> ï¿½?$100-$5,000 per product depending on country</li>
+<li><strong>ï¿½?Allow processing time</strong> ï¿½?2-12 weeks depending on country; start early</li>
 </ul>
 
 <h2>2. Labeling Requirements Checklist</h2>
 <ul>
-<li><strong>â–?Country of origin</strong> â€?Clearly displayed on packaging</li>
-<li><strong>â–?Ingredients list</strong> â€?In destination country language, in descending order of weight</li>
-<li><strong>â–?Nutritional information</strong> â€?Per serving and per 100g/ml</li>
-<li><strong>â–?Halal logo</strong> â€?From recognized certifying body (JAKIM, MUI, ESMA, GAC)</li>
-<li><strong>â–?Best before / expiry date</strong> â€?Format compliant with destination country standards</li>
-<li><strong>â–?Allergen warnings</strong> â€?Bold or highlighted, covering all major allergens</li>
-<li><strong>â–?Net weight / volume</strong> â€?Metric units preferred</li>
-<li><strong>â–?Storage instructions</strong> â€?If product requires specific storage conditions</li>
-<li><strong>â–?Barcode</strong> â€?GS1 standard, registered in destination country</li>
+<li><strong>ï¿½?Country of origin</strong> ï¿½?Clearly displayed on packaging</li>
+<li><strong>ï¿½?Ingredients list</strong> ï¿½?In destination country language, in descending order of weight</li>
+<li><strong>ï¿½?Nutritional information</strong> ï¿½?Per serving and per 100g/ml</li>
+<li><strong>ï¿½?Halal logo</strong> ï¿½?From recognized certifying body (JAKIM, MUI, ESMA, GAC)</li>
+<li><strong>ï¿½?Best before / expiry date</strong> ï¿½?Format compliant with destination country standards</li>
+<li><strong>ï¿½?Allergen warnings</strong> ï¿½?Bold or highlighted, covering all major allergens</li>
+<li><strong>ï¿½?Net weight / volume</strong> ï¿½?Metric units preferred</li>
+<li><strong>ï¿½?Storage instructions</strong> ï¿½?If product requires specific storage conditions</li>
+<li><strong>ï¿½?Barcode</strong> ï¿½?GS1 standard, registered in destination country</li>
 </ul>
 
 <h2>3. Halal Certificate Checklist</h2>
 <ul>
-<li><strong>â–?Certificate from recognized body</strong> â€?JAKIM, MUI, ESMA, GAC, or IFANCA</li>
-<li><strong>â–?Certificate is valid</strong> â€?Not expired; check renewal date</li>
-<li><strong>â–?Certificate covers specific products</strong> â€?Not just the company, but the exact products being shipped</li>
-<li><strong>â–?Certificate translated</strong> â€?Into destination country language</li>
-<li><strong>â–?Certificate number verifiable</strong> â€?Online verification possible via certifying body website</li>
-<li><strong>â–?Certificate matches shipment</strong> â€?Product names, quantities, and specifications match</li>
+<li><strong>ï¿½?Certificate from recognized body</strong> ï¿½?JAKIM, MUI, ESMA, GAC, or IFANCA</li>
+<li><strong>ï¿½?Certificate is valid</strong> ï¿½?Not expired; check renewal date</li>
+<li><strong>ï¿½?Certificate covers specific products</strong> ï¿½?Not just the company, but the exact products being shipped</li>
+<li><strong>ï¿½?Certificate translated</strong> ï¿½?Into destination country language</li>
+<li><strong>ï¿½?Certificate number verifiable</strong> ï¿½?Online verification possible via certifying body website</li>
+<li><strong>ï¿½?Certificate matches shipment</strong> ï¿½?Product names, quantities, and specifications match</li>
 </ul>
 
 <h2>4. Import Permit Checklist</h2>
 <ul>
-<li><strong>â–?Check if import permit required</strong> â€?Some countries require per-shipment permits, others annual</li>
-<li><strong>â–?Register as importer</strong> â€?In destination country if required</li>
-<li><strong>â–?Prepare permit application</strong> â€?Product details, supplier information, halal certificate</li>
-<li><strong>â–?Allow processing time</strong> â€?1-4 weeks depending on country</li>
-<li><strong>â–?Obtain permit before shipping</strong> â€?Shipment can be rejected without valid permit</li>
+<li><strong>ï¿½?Check if import permit required</strong> ï¿½?Some countries require per-shipment permits, others annual</li>
+<li><strong>ï¿½?Register as importer</strong> ï¿½?In destination country if required</li>
+<li><strong>ï¿½?Prepare permit application</strong> ï¿½?Product details, supplier information, halal certificate</li>
+<li><strong>ï¿½?Allow processing time</strong> ï¿½?1-4 weeks depending on country</li>
+<li><strong>ï¿½?Obtain permit before shipping</strong> ï¿½?Shipment can be rejected without valid permit</li>
 </ul>
 
 <h2>5. Country-Specific Requirements</h2>
 
 <h3>Indonesia (BPJPH)</h3>
 <ul>
-<li><strong>â–?Halal certification mandatory</strong> â€?For ALL food products</li>
-<li><strong>â–?Certified by BPJPH-registered body</strong> â€?Not just any body</li>
-<li><strong>â–?Annual renewal</strong> â€?Certificate must be renewed every 12 months</li>
-<li><strong>â–?Halal assurance system (SJPH)</strong> â€?Must implement and document</li>
-<li><strong>â–?Registration via OSS system</strong> â€?Online Single Submission</li>
+<li><strong>ï¿½?Halal certification mandatory</strong> ï¿½?For ALL food products</li>
+<li><strong>ï¿½?Certified by BPJPH-registered body</strong> ï¿½?Not just any body</li>
+<li><strong>ï¿½?Annual renewal</strong> ï¿½?Certificate must be renewed every 12 months</li>
+<li><strong>ï¿½?Halal assurance system (SJPH)</strong> ï¿½?Must implement and document</li>
+<li><strong>ï¿½?Registration via OSS system</strong> ï¿½?Online Single Submission</li>
 </ul>
 
 <h3>Malaysia (JAKIM)</h3>
 <ul>
-<li><strong>â–?JAKIM certificate for exports</strong> â€?Internationally recognized</li>
-<li><strong>â–?Annual audits</strong> â€?JAKIM conducts annual facility audits</li>
-<li><strong>â–?MS 2400 standard</strong> â€?Must comply with Malaysian halal standard</li>
-<li><strong>â–?Halal Malaysia logo usage</strong> â€?Follow JAKIM logo guidelines strictly</li>
+<li><strong>ï¿½?JAKIM certificate for exports</strong> ï¿½?Internationally recognized</li>
+<li><strong>ï¿½?Annual audits</strong> ï¿½?JAKIM conducts annual facility audits</li>
+<li><strong>ï¿½?MS 2400 standard</strong> ï¿½?Must comply with Malaysian halal standard</li>
+<li><strong>ï¿½?Halal Malaysia logo usage</strong> ï¿½?Follow JAKIM logo guidelines strictly</li>
 </ul>
 
 <h3>Saudi Arabia (SFDA)</h3>
 <ul>
-<li><strong>â–?SFDA-approved certifying body</strong> â€?Check SFDA approved list</li>
-<li><strong>â–?Product registration via SFDA portal</strong> â€?electronic registration required</li>
-<li><strong>â–?Lab testing may be required</strong> â€?SFDA can request samples</li>
-<li><strong>â–?Arabic labeling mandatory</strong> â€?All text in Arabic</li>
+<li><strong>ï¿½?SFDA-approved certifying body</strong> ï¿½?Check SFDA approved list</li>
+<li><strong>ï¿½?Product registration via SFDA portal</strong> ï¿½?electronic registration required</li>
+<li><strong>ï¿½?Lab testing may be required</strong> ï¿½?SFDA can request samples</li>
+<li><strong>ï¿½?Arabic labeling mandatory</strong> ï¿½?All text in Arabic</li>
 </ul>
 
 <h3>UAE (MoIAT)</h3>
 <ul>
-<li><strong>â–?National Halal Mark required</strong> â€?For certain product categories</li>
-<li><strong>â–?ECAS compliance</strong> â€?Emirates Conformity Assessment Scheme</li>
-<li><strong>â–?Product registration via ECAS portal</strong> â€?Online submission</li>
-<li><strong>â–?Halal certificate from UAE-recognized body</strong> â€?ESMA-approved</li>
+<li><strong>ï¿½?National Halal Mark required</strong> ï¿½?For certain product categories</li>
+<li><strong>ï¿½?ECAS compliance</strong> ï¿½?Emirates Conformity Assessment Scheme</li>
+<li><strong>ï¿½?Product registration via ECAS portal</strong> ï¿½?Online submission</li>
+<li><strong>ï¿½?Halal certificate from UAE-recognized body</strong> ï¿½?ESMA-approved</li>
 </ul>
 
 <h3>European Union</h3>
 <ul>
-<li><strong>â–?No mandatory halal certification at EU level</strong> â€?Country-specific</li>
-<li><strong>â–?General food safety regulations</strong> â€?EU Regulation 178/2002</li>
-<li><strong>â–?Country-specific requirements</strong> â€?Research each target market</li>
-<li><strong>â–?Allergen labeling (EU FIC)</strong> â€?Regulation 1169/2011</li>
+<li><strong>ï¿½?No mandatory halal certification at EU level</strong> ï¿½?Country-specific</li>
+<li><strong>ï¿½?General food safety regulations</strong> ï¿½?EU Regulation 178/2002</li>
+<li><strong>ï¿½?Country-specific requirements</strong> ï¿½?Research each target market</li>
+<li><strong>ï¿½?Allergen labeling (EU FIC)</strong> ï¿½?Regulation 1169/2011</li>
 </ul>
 
 <h2>6. Documentation Package Checklist</h2>
 <ul>
-<li><strong>â–?Commercial invoice</strong> â€?With correct HS codes, values, and descriptions</li>
-<li><strong>â–?Packing list</strong> â€?Detailed contents, weights, measurements</li>
-<li><strong>â–?Bill of lading / Airway bill</strong> â€?Shipping document</li>
-<li><strong>â–?Halal certificate</strong> â€?Valid, translated, product-specific</li>
-<li><strong>â–?Certificate of origin</strong> â€?Chamber of Commerce certified</li>
-<li><strong>â–?Insurance certificate</strong> â€?Covering full shipment value</li>
-<li><strong>â–?Pre-shipment inspection certificate</strong> â€?If required by destination</li>
-<li><strong>â–?Fumigation certificate</strong> â€?For certain products (grains, timber)</li>
-<li><strong>â–?Health certificate</strong> â€?From competent authority</li>
-<li><strong>â–?Phytosanitary certificate</strong> â€?For plant-based products</li>
+<li><strong>ï¿½?Commercial invoice</strong> ï¿½?With correct HS codes, values, and descriptions</li>
+<li><strong>ï¿½?Packing list</strong> ï¿½?Detailed contents, weights, measurements</li>
+<li><strong>ï¿½?Bill of lading / Airway bill</strong> ï¿½?Shipping document</li>
+<li><strong>ï¿½?Halal certificate</strong> ï¿½?Valid, translated, product-specific</li>
+<li><strong>ï¿½?Certificate of origin</strong> ï¿½?Chamber of Commerce certified</li>
+<li><strong>ï¿½?Insurance certificate</strong> ï¿½?Covering full shipment value</li>
+<li><strong>ï¿½?Pre-shipment inspection certificate</strong> ï¿½?If required by destination</li>
+<li><strong>ï¿½?Fumigation certificate</strong> ï¿½?For certain products (grains, timber)</li>
+<li><strong>ï¿½?Health certificate</strong> ï¿½?From competent authority</li>
+<li><strong>ï¿½?Phytosanitary certificate</strong> ï¿½?For plant-based products</li>
 </ul>
 
 <h2>7. Final Pre-Shipment Review</h2>
 <ul>
-<li><strong>â–?All certificates valid and not expired</strong></li>
-<li><strong>â–?Labels compliant with destination country</strong></li>
-<li><strong>â–?HS codes correct (affects tariffs)</strong></li>
-<li><strong>â–?Incoterms correctly specified</strong></li>
-<li><strong>â–?Payment terms confirmed</strong></li>
-<li><strong>â–?Insurance coverage adequate</strong></li>
-<li><strong>â–?Documentation package complete</strong></li>
+<li><strong>ï¿½?All certificates valid and not expired</strong></li>
+<li><strong>ï¿½?Labels compliant with destination country</strong></li>
+<li><strong>ï¿½?HS codes correct (affects tariffs)</strong></li>
+<li><strong>ï¿½?Incoterms correctly specified</strong></li>
+<li><strong>ï¿½?Payment terms confirmed</strong></li>
+<li><strong>ï¿½?Insurance coverage adequate</strong></li>
+<li><strong>ï¿½?Documentation package complete</strong></li>
 </ul>',
 '["import-regulations","export-regulations","customs","product-registration","labeling-requirements","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -9192,115 +9192,115 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'contract-law-international-halal-trade',
 'legal-compliance',
 'Contract Law in International Halal Trade: Complete Checklist',
-'Essential checklist for drafting enforceable halal trade contracts â€?covering product specs, payment terms, delivery, quality assurance, halal compliance, IP protection, and dispute resolution.',
+'Essential checklist for drafting enforceable halal trade contracts ï¿½?covering product specs, payment terms, delivery, quality assurance, halal compliance, IP protection, and dispute resolution.',
 '<h1>Contract Law in International Halal Trade: Complete Checklist</h1>
 <p>Every international halal trade transaction needs a <strong>clear, enforceable contract</strong>. This checklist ensures your contract covers every critical clause.</p>
 
 <h2>1. Parties & Definitions</h2>
 <ul>
-<li><strong>â–?Full legal names</strong> â€?Both buyer and seller, including registered addresses</li>
-<li><strong>â–?Key terms defined</strong> â€?"Halal," "certification," "contamination," "force majeure" â€?define everything</li>
-<li><strong>â–?Governing entity</strong> â€?Which entity signs (parent company vs. subsidiary)</li>
-<li><strong>â–?Authorized signatories</strong> â€?Names and titles of authorized representatives</li>
+<li><strong>ï¿½?Full legal names</strong> ï¿½?Both buyer and seller, including registered addresses</li>
+<li><strong>ï¿½?Key terms defined</strong> ï¿½?"Halal," "certification," "contamination," "force majeure" ï¿½?define everything</li>
+<li><strong>ï¿½?Governing entity</strong> ï¿½?Which entity signs (parent company vs. subsidiary)</li>
+<li><strong>ï¿½?Authorized signatories</strong> ï¿½?Names and titles of authorized representatives</li>
 </ul>
 
 <h2>2. Product Specification Checklist</h2>
 <ul>
-<li><strong>â–?Product name and description</strong> â€?Clear, unambiguous identification</li>
-<li><strong>â–?Specifications</strong> â€?Quality parameters, composition, dimensions</li>
-<li><strong>â–?Halal certification requirements</strong> â€?Certifying body, validity period, renewal</li>
-<li><strong>â–?Packaging requirements</strong> â€?Materials, labeling, size, quantity</li>
-<li><strong>â–?Quality standards</strong> â€?HACCP, ISO 22000, BRC, or specific buyer requirements</li>
-<li><strong>â–?Accepted tolerances</strong> â€?Allowable variations in weight, size, composition</li>
-<li><strong>â–?Sample approval</strong> â€?Pre-production sample required before mass production</li>
+<li><strong>ï¿½?Product name and description</strong> ï¿½?Clear, unambiguous identification</li>
+<li><strong>ï¿½?Specifications</strong> ï¿½?Quality parameters, composition, dimensions</li>
+<li><strong>ï¿½?Halal certification requirements</strong> ï¿½?Certifying body, validity period, renewal</li>
+<li><strong>ï¿½?Packaging requirements</strong> ï¿½?Materials, labeling, size, quantity</li>
+<li><strong>ï¿½?Quality standards</strong> ï¿½?HACCP, ISO 22000, BRC, or specific buyer requirements</li>
+<li><strong>ï¿½?Accepted tolerances</strong> ï¿½?Allowable variations in weight, size, composition</li>
+<li><strong>ï¿½?Sample approval</strong> ï¿½?Pre-production sample required before mass production</li>
 </ul>
 
 <h2>3. Pricing & Payment Checklist</h2>
 <ul>
-<li><strong>â–?Price per unit</strong> â€?Clear currency, no ambiguity</li>
-<li><strong>â–?Total contract value</strong> â€?Based on estimated or minimum quantities</li>
-<li><strong>â–?Currency</strong> â€?Specify (USD, EUR, MYR, etc.)</li>
-<li><strong>â–?Exchange rate provisions</strong> â€?Who bears currency risk? Fixed rate or floating?</li>
-<li><strong>â–?Payment terms</strong> â€?LC, T/T, D/P, open account, milestone-based</li>
-<li><strong>â–?Payment schedule</strong> â€?30% advance, 70% against B/L? Define clearly</li>
-<li><strong>â–?Late payment penalties</strong> â€?Interest-free penalty per Islamic finance principles</li>
-<li><strong>â–?Price adjustment mechanisms</strong> â€?For long-term contracts, define review periods</li>
-<li><strong>â–?Bank details</strong> â€?Account name, bank, SWIFT, IBAN</li>
+<li><strong>ï¿½?Price per unit</strong> ï¿½?Clear currency, no ambiguity</li>
+<li><strong>ï¿½?Total contract value</strong> ï¿½?Based on estimated or minimum quantities</li>
+<li><strong>ï¿½?Currency</strong> ï¿½?Specify (USD, EUR, MYR, etc.)</li>
+<li><strong>ï¿½?Exchange rate provisions</strong> ï¿½?Who bears currency risk? Fixed rate or floating?</li>
+<li><strong>ï¿½?Payment terms</strong> ï¿½?LC, T/T, D/P, open account, milestone-based</li>
+<li><strong>ï¿½?Payment schedule</strong> ï¿½?30% advance, 70% against B/L? Define clearly</li>
+<li><strong>ï¿½?Late payment penalties</strong> ï¿½?Interest-free penalty per Islamic finance principles</li>
+<li><strong>ï¿½?Price adjustment mechanisms</strong> ï¿½?For long-term contracts, define review periods</li>
+<li><strong>ï¿½?Bank details</strong> ï¿½?Account name, bank, SWIFT, IBAN</li>
 </ul>
 
 <h2>4. Delivery Terms Checklist</h2>
 <ul>
-<li><strong>â–?Incoterms specified</strong> â€?FOB, CIF, DDP, or other â€?define clearly</li>
-<li><strong>â–?Delivery schedule</strong> â€?Specific dates or timeframes</li>
-<li><strong>â–?Shipping method</strong> â€?Sea freight, air freight, road, rail</li>
-<li><strong>â–?Port of loading</strong> â€?Specific port, not just country</li>
-<li><strong>â–?Port of destination</strong> â€?Specific port</li>
-<li><strong>â–?Partial shipments</strong> â€?Allowed or prohibited?</li>
-<li><strong>â–?Transshipment</strong> â€?Allowed or prohibited?</li>
-<li><strong>â–?Late delivery penalties</strong> â€?Liquidated damages per day/week of delay</li>
-<li><strong>â–?Force majeure</strong> â€?Definition and consequences of unforeseeable events</li>
+<li><strong>ï¿½?Incoterms specified</strong> ï¿½?FOB, CIF, DDP, or other ï¿½?define clearly</li>
+<li><strong>ï¿½?Delivery schedule</strong> ï¿½?Specific dates or timeframes</li>
+<li><strong>ï¿½?Shipping method</strong> ï¿½?Sea freight, air freight, road, rail</li>
+<li><strong>ï¿½?Port of loading</strong> ï¿½?Specific port, not just country</li>
+<li><strong>ï¿½?Port of destination</strong> ï¿½?Specific port</li>
+<li><strong>ï¿½?Partial shipments</strong> ï¿½?Allowed or prohibited?</li>
+<li><strong>ï¿½?Transshipment</strong> ï¿½?Allowed or prohibited?</li>
+<li><strong>ï¿½?Late delivery penalties</strong> ï¿½?Liquidated damages per day/week of delay</li>
+<li><strong>ï¿½?Force majeure</strong> ï¿½?Definition and consequences of unforeseeable events</li>
 </ul>
 
 <h2>5. Quality Assurance Checklist</h2>
 <ul>
-<li><strong>â–?Inspection rights</strong> â€?Who inspects, when, where</li>
-<li><strong>â–?Third-party inspection</strong> â€?SGS, Intertek, Bureau Veritas â€?specify if required</li>
-<li><strong>â–?Acceptance criteria</strong> â€?Clear pass/fail standards</li>
-<li><strong>â–?Rejection procedures</strong> â€?How to reject, timeline, documentation</li>
-<li><strong>â–?Remedies for defects</strong> â€?Replacement, refund, or credit</li>
-<li><strong>â–?Warranty period</strong> â€?How long after delivery</li>
-<li><strong>â–?Quality dispute resolution</strong> â€?Independent lab testing as final arbiter</li>
+<li><strong>ï¿½?Inspection rights</strong> ï¿½?Who inspects, when, where</li>
+<li><strong>ï¿½?Third-party inspection</strong> ï¿½?SGS, Intertek, Bureau Veritas ï¿½?specify if required</li>
+<li><strong>ï¿½?Acceptance criteria</strong> ï¿½?Clear pass/fail standards</li>
+<li><strong>ï¿½?Rejection procedures</strong> ï¿½?How to reject, timeline, documentation</li>
+<li><strong>ï¿½?Remedies for defects</strong> ï¿½?Replacement, refund, or credit</li>
+<li><strong>ï¿½?Warranty period</strong> ï¿½?How long after delivery</li>
+<li><strong>ï¿½?Quality dispute resolution</strong> ï¿½?Independent lab testing as final arbiter</li>
 </ul>
 
 <h2>6. Halal Compliance Checklist</h2>
 <ul>
-<li><strong>â–?Valid halal certificate required</strong> â€?At time of shipment AND delivery</li>
-<li><strong>â–?Certifying body specified</strong> â€?JAKIM, MUI, ESMA, GAC â€?name the specific body</li>
-<li><strong>â–?Certificate validity period</strong> â€?Must be valid for entire shipment duration</li>
-<li><strong>â–?Halal audit rights</strong> â€?Buyer can audit supplier''s halal compliance</li>
-<li><strong>â–?Contamination prevention</strong> â€?Dedicated production, storage, transport</li>
-<li><strong>â–?Consequences of non-compliance</strong> â€?Contract termination, penalties, liability</li>
-<li><strong>â–?Halal logistics certificate</strong> â€?Required for storage and transport</li>
-<li><strong>â–?Traceability requirement</strong> â€?Full supply chain traceability</li>
+<li><strong>ï¿½?Valid halal certificate required</strong> ï¿½?At time of shipment AND delivery</li>
+<li><strong>ï¿½?Certifying body specified</strong> ï¿½?JAKIM, MUI, ESMA, GAC ï¿½?name the specific body</li>
+<li><strong>ï¿½?Certificate validity period</strong> ï¿½?Must be valid for entire shipment duration</li>
+<li><strong>ï¿½?Halal audit rights</strong> ï¿½?Buyer can audit supplier''s halal compliance</li>
+<li><strong>ï¿½?Contamination prevention</strong> ï¿½?Dedicated production, storage, transport</li>
+<li><strong>ï¿½?Consequences of non-compliance</strong> ï¿½?Contract termination, penalties, liability</li>
+<li><strong>ï¿½?Halal logistics certificate</strong> ï¿½?Required for storage and transport</li>
+<li><strong>ï¿½?Traceability requirement</strong> ï¿½?Full supply chain traceability</li>
 </ul>
 
 <h2>7. Intellectual Property Checklist</h2>
 <ul>
-<li><strong>â–?Trademark usage rights</strong> â€?Can seller use buyer''s brand? Under what conditions?</li>
-<li><strong>â–?Brand guidelines compliance</strong> â€?Packaging, labeling, marketing materials</li>
-<li><strong>â–?Prohibition on unauthorized use</strong> â€?Seller cannot use buyer''s brand without written consent</li>
-<li><strong>â–?Confidentiality clause</strong> â€?Product formulas, processes, customer lists</li>
-<li><strong>â–?Non-compete clause</strong> â€?Seller cannot sell competing products to buyer''s competitors</li>
+<li><strong>ï¿½?Trademark usage rights</strong> ï¿½?Can seller use buyer''s brand? Under what conditions?</li>
+<li><strong>ï¿½?Brand guidelines compliance</strong> ï¿½?Packaging, labeling, marketing materials</li>
+<li><strong>ï¿½?Prohibition on unauthorized use</strong> ï¿½?Seller cannot use buyer''s brand without written consent</li>
+<li><strong>ï¿½?Confidentiality clause</strong> ï¿½?Product formulas, processes, customer lists</li>
+<li><strong>ï¿½?Non-compete clause</strong> ï¿½?Seller cannot sell competing products to buyer''s competitors</li>
 </ul>
 
 <h2>8. Dispute Resolution Checklist</h2>
 <ul>
-<li><strong>â–?Governing law specified</strong> â€?English, Singapore, UAE, or CISG</li>
-<li><strong>â–?Dispute resolution mechanism</strong> â€?Arbitration preferred over litigation</li>
-<li><strong>â–?Arbitration institution</strong> â€?ICC, SIAC, DIAC, or LCIA</li>
-<li><strong>â–?Arbitration seat</strong> â€?Neutral venue (Singapore, London, Dubai)</li>
-<li><strong>â–?Number of arbitrators</strong> â€?1 or 3 (based on claim amount)</li>
-<li><strong>â–?Language of arbitration</strong> â€?English (recommended)</li>
-<li><strong>â–?Enforcement</strong> â€?New York Convention (170+ countries)</li>
-<li><strong>â–?Mediation before arbitration</strong> â€?Try to resolve amicably first</li>
+<li><strong>ï¿½?Governing law specified</strong> ï¿½?English, Singapore, UAE, or CISG</li>
+<li><strong>ï¿½?Dispute resolution mechanism</strong> ï¿½?Arbitration preferred over litigation</li>
+<li><strong>ï¿½?Arbitration institution</strong> ï¿½?ICC, SIAC, DIAC, or LCIA</li>
+<li><strong>ï¿½?Arbitration seat</strong> ï¿½?Neutral venue (Singapore, London, Dubai)</li>
+<li><strong>ï¿½?Number of arbitrators</strong> ï¿½?1 or 3 (based on claim amount)</li>
+<li><strong>ï¿½?Language of arbitration</strong> ï¿½?English (recommended)</li>
+<li><strong>ï¿½?Enforcement</strong> ï¿½?New York Convention (170+ countries)</li>
+<li><strong>ï¿½?Mediation before arbitration</strong> ï¿½?Try to resolve amicably first</li>
 </ul>
 
 <h2>9. Termination & Exit Checklist</h2>
 <ul>
-<li><strong>â–?Termination for cause</strong> â€?Material breach, non-payment, halal non-compliance</li>
-<li><strong>â–?Termination for convenience</strong> â€?Notice period, penalties</li>
-<li><strong>â–?Wind-down provisions</strong> â€?What happens to pending orders</li>
-<li><strong>â–?Survival clauses</strong> â€?Which clauses survive termination (confidentiality, IP, dispute)</li>
+<li><strong>ï¿½?Termination for cause</strong> ï¿½?Material breach, non-payment, halal non-compliance</li>
+<li><strong>ï¿½?Termination for convenience</strong> ï¿½?Notice period, penalties</li>
+<li><strong>ï¿½?Wind-down provisions</strong> ï¿½?What happens to pending orders</li>
+<li><strong>ï¿½?Survival clauses</strong> ï¿½?Which clauses survive termination (confidentiality, IP, dispute)</li>
 </ul>
 
 <h2>10. Final Contract Review</h2>
 <ul>
-<li><strong>â–?All blanks filled in</strong> â€?No placeholder text remaining</li>
-<li><strong>â–?Dates and timelines consistent</strong></li>
-<li><strong>â–?Dollar amounts match</strong> â€?Invoice, LC, contract all agree</li>
-<li><strong>â–?Incoterms match</strong> â€?Contract, LC, shipping documents all agree</li>
-<li><strong>â–?Both parties signed</strong> â€?Original signatures, not copies</li>
-<li><strong>â–?Legal review completed</strong> â€?Reviewed by lawyer experienced in international trade</li>
+<li><strong>ï¿½?All blanks filled in</strong> ï¿½?No placeholder text remaining</li>
+<li><strong>ï¿½?Dates and timelines consistent</strong></li>
+<li><strong>ï¿½?Dollar amounts match</strong> ï¿½?Invoice, LC, contract all agree</li>
+<li><strong>ï¿½?Incoterms match</strong> ï¿½?Contract, LC, shipping documents all agree</li>
+<li><strong>ï¿½?Both parties signed</strong> ï¿½?Original signatures, not copies</li>
+<li><strong>ï¿½?Legal review completed</strong> ï¿½?Reviewed by lawyer experienced in international trade</li>
 </ul>',
 '["contract-law","trade-contracts","dispute-resolution","governing-law","arbitration","legal-compliance","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -9312,7 +9312,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'Intellectual Property Protection for Halal Brands: Case Study',
 'How Al-Noor Cosmetics, a halal beauty brand, recovered $1.2M in lost revenue by implementing a systematic IP protection strategy across 8 countries and 3 e-commerce platforms.',
 '<h1>Intellectual Property Protection for Halal Brands: Al-Noor Cosmetics Case Study</h1>
-<p>Al-Noor Cosmetics is a <strong>halal beauty brand</strong> based in Dubai, selling across 12 countries. In 2023, they discovered 47 unauthorized sellers using their brand name and packaging on Amazon, Alibaba, and Shopee â€?costing $1.2M in lost revenue. This case study documents their IP protection journey.</p>
+<p>Al-Noor Cosmetics is a <strong>halal beauty brand</strong> based in Dubai, selling across 12 countries. In 2023, they discovered 47 unauthorized sellers using their brand name and packaging on Amazon, Alibaba, and Shopee ï¿½?costing $1.2M in lost revenue. This case study documents their IP protection journey.</p>
 
 <h2>The Challenge</h2>
 <ul>
@@ -9362,10 +9362,10 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>IP protection is an investment, not a cost â€?$42K annual cost recovered $1.2M revenue</li>
-<li>Register trademarks before you need them â€?filing date establishes priority</li>
-<li>Platform enforcement works â€?85% of counterfeiters removed quickly</li>
-<li>Ongoing monitoring is essential â€?new infringers appear constantly</li>
+<li>IP protection is an investment, not a cost ï¿½?$42K annual cost recovered $1.2M revenue</li>
+<li>Register trademarks before you need them ï¿½?filing date establishes priority</li>
+<li>Platform enforcement works ï¿½?85% of counterfeiters removed quickly</li>
+<li>Ongoing monitoring is essential ï¿½?new infringers appear constantly</li>
 </ul>
 
 <h2>How to Apply This</h2>
@@ -9390,87 +9390,87 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>1. HS Code Classification Checklist</h2>
 <ul>
-<li><strong>â–?Identify your product</strong> â€?What is it made of? How is it processed? What is it used for?</li>
-<li><strong>â–?Determine the correct HS chapter</strong> â€?Meat (02), Dairy (04), Confectionery (17/18), Beverages (22), Cosmetics (33)</li>
-<li><strong>â–?Classify at 6-digit level</strong> â€?International standard (e.g., 0201 for fresh beef)</li>
-<li><strong>â–?Classify at national level</strong> â€?Each country adds 2-4 more digits</li>
-<li><strong>â–?Get ruling from customs authority</strong> â€?Binding ruling prevents future disputes</li>
-<li><strong>â–?Document classification rationale</strong> â€?Keep records for audit defense</li>
-<li><strong>â–?Review annually</strong> â€?HS codes are updated every 5 years</li>
+<li><strong>ï¿½?Identify your product</strong> ï¿½?What is it made of? How is it processed? What is it used for?</li>
+<li><strong>ï¿½?Determine the correct HS chapter</strong> ï¿½?Meat (02), Dairy (04), Confectionery (17/18), Beverages (22), Cosmetics (33)</li>
+<li><strong>ï¿½?Classify at 6-digit level</strong> ï¿½?International standard (e.g., 0201 for fresh beef)</li>
+<li><strong>ï¿½?Classify at national level</strong> ï¿½?Each country adds 2-4 more digits</li>
+<li><strong>ï¿½?Get ruling from customs authority</strong> ï¿½?Binding ruling prevents future disputes</li>
+<li><strong>ï¿½?Document classification rationale</strong> ï¿½?Keep records for audit defense</li>
+<li><strong>ï¿½?Review annually</strong> ï¿½?HS codes are updated every 5 years</li>
 </ul>
 
 <h2>2. Preferential Trade Agreement Checklist</h2>
 <ul>
-<li><strong>â–?Check if trade agreement exists</strong> â€?Between your country and destination country</li>
-<li><strong>â–?Verify product eligibility</strong> â€?Not all products qualify under all agreements</li>
-<li><strong>â–?Obtain certificate of origin</strong> â€?Form A (GSP), bilateral agreement certificate</li>
-<li><strong>â–?Meet rules of origin</strong> â€?Sufficient processing or transformation in exporting country</li>
-<li><strong>â–?Submit certificate with customs declaration</strong> â€?Required for preferential rate</li>
-<li><strong>â–?Keep records for 5 years</strong> â€?Customs may audit</li>
+<li><strong>ï¿½?Check if trade agreement exists</strong> ï¿½?Between your country and destination country</li>
+<li><strong>ï¿½?Verify product eligibility</strong> ï¿½?Not all products qualify under all agreements</li>
+<li><strong>ï¿½?Obtain certificate of origin</strong> ï¿½?Form A (GSP), bilateral agreement certificate</li>
+<li><strong>ï¿½?Meet rules of origin</strong> ï¿½?Sufficient processing or transformation in exporting country</li>
+<li><strong>ï¿½?Submit certificate with customs declaration</strong> ï¿½?Required for preferential rate</li>
+<li><strong>ï¿½?Keep records for 5 years</strong> ï¿½?Customs may audit</li>
 </ul>
 
 <h3>Key Agreements for Halal Trade</h3>
 <ul>
-<li><strong>â–?ASEAN Free Trade Area (AFTA)</strong> â€?0-5% tariffs among ASEAN members</li>
-<li><strong>â–?GCC Customs Union</strong> â€?5% common external tariff</li>
-<li><strong>â–?RCEP</strong> â€?Regional Comprehensive Economic Partnership (Asia-Pacific)</li>
-<li><strong>â–?EU-Mercosur</strong> â€?Phased tariff reductions</li>
-<li><strong>â–?USMCA</strong> â€?US-Mexico-Canada</li>
+<li><strong>ï¿½?ASEAN Free Trade Area (AFTA)</strong> ï¿½?0-5% tariffs among ASEAN members</li>
+<li><strong>ï¿½?GCC Customs Union</strong> ï¿½?5% common external tariff</li>
+<li><strong>ï¿½?RCEP</strong> ï¿½?Regional Comprehensive Economic Partnership (Asia-Pacific)</li>
+<li><strong>ï¿½?EU-Mercosur</strong> ï¿½?Phased tariff reductions</li>
+<li><strong>ï¿½?USMCA</strong> ï¿½?US-Mexico-Canada</li>
 </ul>
 
 <h2>3. Duty Mitigation Checklist</h2>
 
 <h3>Foreign Trade Zone (FTZ)</h3>
 <ul>
-<li><strong>â–?Identify nearest FTZ</strong> â€?Check if one exists near your port of entry</li>
-<li><strong>â–?Determine if FTZ beneficial</strong> â€?Higher duty products benefit more</li>
-<li><strong>â–?Apply for FTZ operator license</strong> â€?Or use existing operator</li>
-<li><strong>â–?Import goods into FTZ duty-free</strong> â€?Process, repackage, or store</li>
-<li><strong>â–?Pay duty only when entering domestic market</strong> â€?Or re-export duty-free</li>
+<li><strong>ï¿½?Identify nearest FTZ</strong> ï¿½?Check if one exists near your port of entry</li>
+<li><strong>ï¿½?Determine if FTZ beneficial</strong> ï¿½?Higher duty products benefit more</li>
+<li><strong>ï¿½?Apply for FTZ operator license</strong> ï¿½?Or use existing operator</li>
+<li><strong>ï¿½?Import goods into FTZ duty-free</strong> ï¿½?Process, repackage, or store</li>
+<li><strong>ï¿½?Pay duty only when entering domestic market</strong> ï¿½?Or re-export duty-free</li>
 </ul>
 
 <h3>Bonded Warehousing</h3>
 <ul>
-<li><strong>â–?Identify bonded warehouse options</strong> â€?At or near your port</li>
-<li><strong>â–?Store goods without paying duties</strong> â€?Up to 5 years in most countries</li>
-<li><strong>â–?Pay duty only when withdrawing goods</strong> â€?Manage cash flow</li>
-<li><strong>â–?Use for seasonal inventory</strong> â€?Import before peak, pay duty when selling</li>
+<li><strong>ï¿½?Identify bonded warehouse options</strong> ï¿½?At or near your port</li>
+<li><strong>ï¿½?Store goods without paying duties</strong> ï¿½?Up to 5 years in most countries</li>
+<li><strong>ï¿½?Pay duty only when withdrawing goods</strong> ï¿½?Manage cash flow</li>
+<li><strong>ï¿½?Use for seasonal inventory</strong> ï¿½?Import before peak, pay duty when selling</li>
 </ul>
 
 <h3>Tariff Engineering</h3>
 <ul>
-<li><strong>â–?Review product classification options</strong> â€?Can the product be classified differently?</li>
-<li><strong>â–?Import ingredients separately</strong> â€?vs. as finished product (lower duty)</li>
-<li><strong>â–?Process in FTZ</strong> â€?Change classification through processing</li>
-<li><strong>â–?Document all decisions</strong> â€?Customs may challenge reclassification</li>
+<li><strong>ï¿½?Review product classification options</strong> ï¿½?Can the product be classified differently?</li>
+<li><strong>ï¿½?Import ingredients separately</strong> ï¿½?vs. as finished product (lower duty)</li>
+<li><strong>ï¿½?Process in FTZ</strong> ï¿½?Change classification through processing</li>
+<li><strong>ï¿½?Document all decisions</strong> ï¿½?Customs may challenge reclassification</li>
 </ul>
 
 <h2>4. Customs Clearance Checklist</h2>
 <ul>
-<li><strong>â–?Prepare import documentation</strong> â€?Invoice, packing list, B/L, certificate of origin</li>
-<li><strong>â–?File customs declaration</strong> â€?Accurate, complete, with correct HS codes</li>
-<li><strong>â–?Pay duties and taxes</strong> â€?Calculate before shipping to avoid surprises</li>
-<li><strong>â–?Prepare for customs inspection</strong> â€?Products may be physically inspected</li>
-<li><strong>â–?Obtain release of goods</strong> â€?Track status, clear promptly</li>
-<li><strong>â–?Keep all records</strong> â€?Minimum 5 years in most countries</li>
+<li><strong>ï¿½?Prepare import documentation</strong> ï¿½?Invoice, packing list, B/L, certificate of origin</li>
+<li><strong>ï¿½?File customs declaration</strong> ï¿½?Accurate, complete, with correct HS codes</li>
+<li><strong>ï¿½?Pay duties and taxes</strong> ï¿½?Calculate before shipping to avoid surprises</li>
+<li><strong>ï¿½?Prepare for customs inspection</strong> ï¿½?Products may be physically inspected</li>
+<li><strong>ï¿½?Obtain release of goods</strong> ï¿½?Track status, clear promptly</li>
+<li><strong>ï¿½?Keep all records</strong> ï¿½?Minimum 5 years in most countries</li>
 </ul>
 
 <h2>5. Halal-Specific Tariff Considerations</h2>
 <ul>
-<li><strong>â–?Halal meat may have different rates</strong> â€?Fresh vs. frozen vs. processed</li>
-<li><strong>â–?Some countries exempt halal products</strong> â€?Check destination country policies</li>
-<li><strong>â–?Halal cosmetics may qualify for lower rates</strong> â€?vs. conventional cosmetics in some markets</li>
-<li><strong>â–?Documentation is critical</strong> â€?Without proper halal certificate, preferential rates may be denied</li>
+<li><strong>ï¿½?Halal meat may have different rates</strong> ï¿½?Fresh vs. frozen vs. processed</li>
+<li><strong>ï¿½?Some countries exempt halal products</strong> ï¿½?Check destination country policies</li>
+<li><strong>ï¿½?Halal cosmetics may qualify for lower rates</strong> ï¿½?vs. conventional cosmetics in some markets</li>
+<li><strong>ï¿½?Documentation is critical</strong> ï¿½?Without proper halal certificate, preferential rates may be denied</li>
 </ul>
 
 <h2>6. Final Pre-Shipment Duty Review</h2>
 <ul>
-<li><strong>â–?HS code confirmed by customs authority</strong></li>
-<li><strong>â–?MFN rate and preferential rate both known</strong></li>
-<li><strong>â–?Certificate of origin obtained</strong></li>
-<li><strong>â–?Duty cost included in product pricing</strong></li>
-<li><strong>â–?FTZ or bonded warehouse option evaluated</strong></li>
-<li><strong>â–?All documentation complete and accurate</strong></li>
+<li><strong>ï¿½?HS code confirmed by customs authority</strong></li>
+<li><strong>ï¿½?MFN rate and preferential rate both known</strong></li>
+<li><strong>ï¿½?Certificate of origin obtained</strong></li>
+<li><strong>ï¿½?Duty cost included in product pricing</strong></li>
+<li><strong>ï¿½?FTZ or bonded warehouse option evaluated</strong></li>
+<li><strong>ï¿½?All documentation complete and accurate</strong></li>
 </ul>',
 '["customs-duties","tariffs","hs-codes","trade-agreements","import-duties","duty-mitigation","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -9480,17 +9480,17 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'dispute-resolution-arbitration-halal-trade',
 'legal-compliance',
 'Dispute Resolution & Arbitration in Halal Trade: Checklist & Clause Template',
-'Complete checklist for preventing and resolving halal trade disputes â€?including an arbitration clause template, prevention strategies, and step-by-step dispute resolution process.',
+'Complete checklist for preventing and resolving halal trade disputes ï¿½?including an arbitration clause template, prevention strategies, and step-by-step dispute resolution process.',
 '<h1>Dispute Resolution & Arbitration in Halal Trade: Checklist & Clause Template</h1>
 <p>International trade disputes are inevitable. This checklist helps you <strong>prevent disputes</strong> and provides a <strong>step-by-step resolution process</strong> when they occur.</p>
 
 <h2>1. Dispute Prevention Checklist</h2>
 <ul>
-<li><strong>â–?Clear contracts</strong> â€?Every clause defined, no ambiguity</li>
-<li><strong>â–?Halal requirements explicit</strong> â€?Certifying body, validity, contamination clause</li>
-<li><strong>â–?Quality standards documented</strong> â€?Acceptance criteria, inspection procedures</li>
-<li><strong>â–?Communication protocols defined</strong> â€?Regular check-ins, escalation procedures</li>
-<li><strong>â–?Documentation culture</strong> â€?Keep records of all communications and decisions</li>
+<li><strong>ï¿½?Clear contracts</strong> ï¿½?Every clause defined, no ambiguity</li>
+<li><strong>ï¿½?Halal requirements explicit</strong> ï¿½?Certifying body, validity, contamination clause</li>
+<li><strong>ï¿½?Quality standards documented</strong> ï¿½?Acceptance criteria, inspection procedures</li>
+<li><strong>ï¿½?Communication protocols defined</strong> ï¿½?Regular check-ins, escalation procedures</li>
+<li><strong>ï¿½?Documentation culture</strong> ï¿½?Keep records of all communications and decisions</li>
 </ul>
 
 <h2>2. Arbitration Clause Template</h2>
@@ -9501,49 +9501,49 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h3>Choose the Right Institution</h3>
 <ul>
-<li><strong>â–?SIAC</strong> â€?Asia-Pacific trade, 10-14 months, $3K-$30K+</li>
-<li><strong>â–?ICC</strong> â€?Global trade, 12-15 months, $5K-$50K+</li>
-<li><strong>â–?DIAC</strong> â€?Middle East trade, 8-12 months, $2.5K-$25K+</li>
-<li><strong>â–?LCIA</strong> â€?European trade, 12-16 months, Â£3K-Â£30K+</li>
+<li><strong>ï¿½?SIAC</strong> ï¿½?Asia-Pacific trade, 10-14 months, $3K-$30K+</li>
+<li><strong>ï¿½?ICC</strong> ï¿½?Global trade, 12-15 months, $5K-$50K+</li>
+<li><strong>ï¿½?DIAC</strong> ï¿½?Middle East trade, 8-12 months, $2.5K-$25K+</li>
+<li><strong>ï¿½?LCIA</strong> ï¿½?European trade, 12-16 months, Â£3K-Â£30K+</li>
 </ul>
 
 <h2>3. Dispute Resolution Process Checklist</h2>
 
 <h3>Step 1: Internal Resolution (Day 1-7)</h3>
 <ul>
-<li><strong>â–?Identify the issue clearly</strong> â€?What happened vs. what was contractually required</li>
-<li><strong>â–?Gather documentation</strong> â€?Contract, communications, inspection reports, certificates</li>
-<li><strong>â–?Contact the other party</strong> â€?Written notice of the issue</li>
-<li><strong>â–?Propose a solution</strong> â€?Replacement, refund, credit, or negotiation</li>
-<li><strong>â–?Document everything</strong> â€?All communications in writing</li>
+<li><strong>ï¿½?Identify the issue clearly</strong> ï¿½?What happened vs. what was contractually required</li>
+<li><strong>ï¿½?Gather documentation</strong> ï¿½?Contract, communications, inspection reports, certificates</li>
+<li><strong>ï¿½?Contact the other party</strong> ï¿½?Written notice of the issue</li>
+<li><strong>ï¿½?Propose a solution</strong> ï¿½?Replacement, refund, credit, or negotiation</li>
+<li><strong>ï¿½?Document everything</strong> ï¿½?All communications in writing</li>
 </ul>
 
 <h3>Step 2: Mediation (Day 7-30)</h3>
 <ul>
-<li><strong>â–?Propose mediation</strong> â€?If internal resolution fails</li>
-<li><strong>â–?Select mediator</strong> â€?Neutral third party, preferably with trade expertise</li>
-<li><strong>â–?Prepare position paper</strong> â€?Your case, supporting evidence, proposed resolution</li>
-<li><strong>â–?Attend mediation session</strong> â€?Good faith negotiation</li>
-<li><strong>â–?Document settlement</strong> â€?Written agreement if resolved</li>
+<li><strong>ï¿½?Propose mediation</strong> ï¿½?If internal resolution fails</li>
+<li><strong>ï¿½?Select mediator</strong> ï¿½?Neutral third party, preferably with trade expertise</li>
+<li><strong>ï¿½?Prepare position paper</strong> ï¿½?Your case, supporting evidence, proposed resolution</li>
+<li><strong>ï¿½?Attend mediation session</strong> ï¿½?Good faith negotiation</li>
+<li><strong>ï¿½?Document settlement</strong> ï¿½?Written agreement if resolved</li>
 </ul>
 
 <h3>Step 3: Arbitration (Day 30+)</h3>
 <ul>
-<li><strong>â–?File request for arbitration</strong> â€?With agreed institution (SIAC, ICC, etc.)</li>
-<li><strong>â–?Appoint arbitrator</strong> â€?As per contract terms</li>
-<li><strong>â–?Submit statement of claim</strong> â€?Detailed case with evidence</li>
-<li><strong>â–?Respond to counterclaim</strong> â€?Ifå¯¹æ–¹ files counterclaim</li>
-<li><strong>â–?Attend hearing</strong> â€?Present case, cross-examine witnesses</li>
-<li><strong>â–?Await award</strong> â€?Binding decision by tribunal</li>
-<li><strong>â–?Enforce award</strong> â€?New York Convention (170+ countries)</li>
+<li><strong>ï¿½?File request for arbitration</strong> ï¿½?With agreed institution (SIAC, ICC, etc.)</li>
+<li><strong>ï¿½?Appoint arbitrator</strong> ï¿½?As per contract terms</li>
+<li><strong>ï¿½?Submit statement of claim</strong> ï¿½?Detailed case with evidence</li>
+<li><strong>ï¿½?Respond to counterclaim</strong> ï¿½?Ifå¯¹æ–¹ files counterclaim</li>
+<li><strong>ï¿½?Attend hearing</strong> ï¿½?Present case, cross-examine witnesses</li>
+<li><strong>ï¿½?Await award</strong> ï¿½?Binding decision by tribunal</li>
+<li><strong>ï¿½?Enforce award</strong> ï¿½?New York Convention (170+ countries)</li>
 </ul>
 
 <h2>4. Halal-Specific Disputes Checklist</h2>
 <ul>
-<li><strong>â–?Certification disputes</strong> â€?Verify certificate validity, certifying body recognition</li>
-<li><strong>â–?Contamination claims</strong> â€?Gather logistics records, test results, chain of custody</li>
-<li><strong>â–?Quality disputes</strong> â€?Independent lab testing, compare to contract specifications</li>
-<li><strong>â–?Documentation disputes</strong> â€?Verify certificate authenticity, check issuing body</li>
+<li><strong>ï¿½?Certification disputes</strong> ï¿½?Verify certificate validity, certifying body recognition</li>
+<li><strong>ï¿½?Contamination claims</strong> ï¿½?Gather logistics records, test results, chain of custody</li>
+<li><strong>ï¿½?Quality disputes</strong> ï¿½?Independent lab testing, compare to contract specifications</li>
+<li><strong>ï¿½?Documentation disputes</strong> ï¿½?Verify certificate authenticity, check issuing body</li>
 </ul>
 
 <h2>5. Arbitration Institution Comparison</h2>
@@ -9561,11 +9561,11 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>6. Final Dispute Resolution Review</h2>
 <ul>
-<li><strong>â–?Arbitration clause in all contracts</strong></li>
-<li><strong>â–?Governing law specified</strong></li>
-<li><strong>â–?Dispute escalation process documented</strong></li>
-<li><strong>â–?Legal contacts identified in key markets</strong></li>
-<li><strong>â–?Insurance coverage for legal costs</strong></li>
+<li><strong>ï¿½?Arbitration clause in all contracts</strong></li>
+<li><strong>ï¿½?Governing law specified</strong></li>
+<li><strong>ï¿½?Dispute escalation process documented</strong></li>
+<li><strong>ï¿½?Legal contacts identified in key markets</strong></li>
+<li><strong>ï¿½?Insurance coverage for legal costs</strong></li>
 </ul>',
 '["arbitration","dispute-resolution","icc","siac","legal-compliance","trade-disputes","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -9579,105 +9579,105 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'halal-marketing-strategies-b2b',
 'marketing-branding',
 'Halal Marketing Strategies for B2B: Complete Checklist',
-'Complete B2B halal marketing checklist â€?from certification-first collateral and trade show preparation to digital presence, content calendar, and relationship marketing.',
+'Complete B2B halal marketing checklist ï¿½?from certification-first collateral and trade show preparation to digital presence, content calendar, and relationship marketing.',
 '<h1>Halal Marketing Strategies for B2B: Complete Checklist</h1>
 <p>B2B halal marketing is <strong>not about catchy slogans</strong>. It is about demonstrating compliance, building trust, and providing verifiable proof. This checklist covers every channel and tactic.</p>
 
 <h2>1. Certification-First Marketing Checklist</h2>
 <ul>
-<li><strong>â–?Display certification on website header</strong> â€?Logo and certificate number visible on every page</li>
-<li><strong>â–?Include certification in all proposals</strong> â€?Every sales document leads with certification</li>
-<li><strong>â–?Create certification verification page</strong> â€?Link to certifying body verification portal</li>
-<li><strong>â–?Update certification annually</strong> â€?Never let certification lapse</li>
-<li><strong>â–?Add QR code to packaging</strong> â€?Links to certificate verification page</li>
-<li><strong>â–?Include certification in email signatures</strong> â€?Every employee, every email</li>
+<li><strong>ï¿½?Display certification on website header</strong> ï¿½?Logo and certificate number visible on every page</li>
+<li><strong>ï¿½?Include certification in all proposals</strong> ï¿½?Every sales document leads with certification</li>
+<li><strong>ï¿½?Create certification verification page</strong> ï¿½?Link to certifying body verification portal</li>
+<li><strong>ï¿½?Update certification annually</strong> ï¿½?Never let certification lapse</li>
+<li><strong>ï¿½?Add QR code to packaging</strong> ï¿½?Links to certificate verification page</li>
+<li><strong>ï¿½?Include certification in email signatures</strong> ï¿½?Every employee, every email</li>
 </ul>
 
 <h2>2. Content Marketing Checklist</h2>
 <ul>
-<li><strong>â–?Publish monthly blog articles</strong> â€?Industry insights, product guides, compliance updates</li>
-<li><strong>â–?Create buyer guides</strong> â€?"How to Choose a Halal Supplier" â€?demonstrate expertise</li>
-<li><strong>â–?Develop case studies</strong> â€?Customer success stories with metrics</li>
-<li><strong>â–?Produce educational videos</strong> â€?Factory tours, certification explanations, product demos</li>
-<li><strong>â–?Host quarterly webinars</strong â€?Industry trends, compliance requirements, market insights</li>
-<li><strong>â–?Publish annual industry report</strong> â€?Original research, market data, trends</li>
+<li><strong>ï¿½?Publish monthly blog articles</strong> ï¿½?Industry insights, product guides, compliance updates</li>
+<li><strong>ï¿½?Create buyer guides</strong> ï¿½?"How to Choose a Halal Supplier" ï¿½?demonstrate expertise</li>
+<li><strong>ï¿½?Develop case studies</strong> ï¿½?Customer success stories with metrics</li>
+<li><strong>ï¿½?Produce educational videos</strong> ï¿½?Factory tours, certification explanations, product demos</li>
+<li><strong>ï¿½?Host quarterly webinars</strong ï¿½?Industry trends, compliance requirements, market insights</li>
+<li><strong>ï¿½?Publish annual industry report</strong> ï¿½?Original research, market data, trends</li>
 </ul>
 
 <h2>3. Trade Show Marketing Checklist</h2>
 
 <h3>8-12 Weeks Before</h3>
 <ul>
-<li><strong>â–?Set clear objectives</strong> â€?Leads, meetings, sales targets</li>
-<li><strong>â–?Design professional booth</strong> â€?2m x 3m minimum, certification prominently displayed</li>
-<li><strong>â–?Order promotional materials</strong> â€?Brochures, business cards, product samples</li>
-<li><strong>â–?Train booth staff</strong> â€?Products, pitch, qualification questions</li>
-<li><strong>â–?Book travel and accommodation</strong> â€?Early booking saves costs</li>
+<li><strong>ï¿½?Set clear objectives</strong> ï¿½?Leads, meetings, sales targets</li>
+<li><strong>ï¿½?Design professional booth</strong> ï¿½?2m x 3m minimum, certification prominently displayed</li>
+<li><strong>ï¿½?Order promotional materials</strong> ï¿½?Brochures, business cards, product samples</li>
+<li><strong>ï¿½?Train booth staff</strong> ï¿½?Products, pitch, qualification questions</li>
+<li><strong>ï¿½?Book travel and accommodation</strong> ï¿½?Early booking saves costs</li>
 </ul>
 
 <h3>4-8 Weeks Before</h3>
 <ul>
-<li><strong>â–?Invite existing customers</strong> â€?Personal invitations to current buyers</li>
-<li><strong>â–?Set up meetings with prospects</strong> â€?Pre-scheduled meetings with target buyers</li>
-<li><strong>â–?Prepare product samples</strong> â€?Enough for 200+ visitors</li>
-<li><strong>â–?Create lead capture system</strong> â€?CRM integration, badge scanners</li>
-<li><strong>â–?Schedule social media posts</strong> â€?Pre-show buzz, live updates</li>
+<li><strong>ï¿½?Invite existing customers</strong> ï¿½?Personal invitations to current buyers</li>
+<li><strong>ï¿½?Set up meetings with prospects</strong> ï¿½?Pre-scheduled meetings with target buyers</li>
+<li><strong>ï¿½?Prepare product samples</strong> ï¿½?Enough for 200+ visitors</li>
+<li><strong>ï¿½?Create lead capture system</strong> ï¿½?CRM integration, badge scanners</li>
+<li><strong>ï¿½?Schedule social media posts</strong> ï¿½?Pre-show buzz, live updates</li>
 </ul>
 
 <h3>At the Show</h3>
 <ul>
-<li><strong>â–?Booth always staffed</strong> â€?Rotate shifts, never leave empty</li>
-<li><strong>â–?Certification prominently displayed</strong> â€?Large format, easy to read</li>
-<li><strong>â–?Engage visitors with questions</strong> â€?Ask, listen, qualify quickly</li>
-<li><strong>â–?Offer product samples</strong> â€?Let buyers taste/touch products</li>
-<li><strong>â–?Capture lead information</strong> â€?Business cards, scan badges, note interests</li>
-<li><strong>â–?Attend networking events</strong> â€?Industry parties, dinners</li>
+<li><strong>ï¿½?Booth always staffed</strong> ï¿½?Rotate shifts, never leave empty</li>
+<li><strong>ï¿½?Certification prominently displayed</strong> ï¿½?Large format, easy to read</li>
+<li><strong>ï¿½?Engage visitors with questions</strong> ï¿½?Ask, listen, qualify quickly</li>
+<li><strong>ï¿½?Offer product samples</strong> ï¿½?Let buyers taste/touch products</li>
+<li><strong>ï¿½?Capture lead information</strong> ï¿½?Business cards, scan badges, note interests</li>
+<li><strong>ï¿½?Attend networking events</strong> ï¿½?Industry parties, dinners</li>
 </ul>
 
 <h3>Post-Show Follow-Up</h3>
 <ul>
-<li><strong>â–?Day 1-2: Email all contacts</strong> â€?Personalized follow-up</li>
-<li><strong>â–?Day 3-5: Follow high-priority leads</strong> â€?Phone calls, meeting requests</li>
-<li><strong>â–?Week 2: Send samples</strong> â€?To qualified prospects</li>
-<li><strong>â–?Month 1: Schedule calls</strong> â€?With interested buyers</li>
-<li><strong>â–?Month 2-3: Send proposals</strong> â€?Formal quotes and contracts</li>
+<li><strong>ï¿½?Day 1-2: Email all contacts</strong> ï¿½?Personalized follow-up</li>
+<li><strong>ï¿½?Day 3-5: Follow high-priority leads</strong> ï¿½?Phone calls, meeting requests</li>
+<li><strong>ï¿½?Week 2: Send samples</strong> ï¿½?To qualified prospects</li>
+<li><strong>ï¿½?Month 1: Schedule calls</strong> ï¿½?With interested buyers</li>
+<li><strong>ï¿½?Month 2-3: Send proposals</strong> ï¿½?Formal quotes and contracts</li>
 </ul>
 
 <h2>4. Digital Presence Checklist</h2>
 <ul>
-<li><strong>â–?Professional website</strong> â€?Mobile-responsive, fast loading</li>
-<li><strong>â–?Product catalog with specifications</strong> â€?Complete, accurate, searchable</li>
-<li><strong>â–?Certification verification page</strong> â€?Online verification available</li>
-<li><strong>â–?Contact forms and instant messaging</strong> â€?Easy to reach you</li>
-<li><strong>â–?SEO optimized</strong> â€?Halal trade keywords in titles, meta, content</li>
-<li><strong>â–?LinkedIn company page</strong> â€?Professional presence</li>
-<li><strong>â–?Google Business Profile</strong> â€?If you have a physical location</li>
+<li><strong>ï¿½?Professional website</strong> ï¿½?Mobile-responsive, fast loading</li>
+<li><strong>ï¿½?Product catalog with specifications</strong> ï¿½?Complete, accurate, searchable</li>
+<li><strong>ï¿½?Certification verification page</strong> ï¿½?Online verification available</li>
+<li><strong>ï¿½?Contact forms and instant messaging</strong> ï¿½?Easy to reach you</li>
+<li><strong>ï¿½?SEO optimized</strong> ï¿½?Halal trade keywords in titles, meta, content</li>
+<li><strong>ï¿½?LinkedIn company page</strong> ï¿½?Professional presence</li>
+<li><strong>ï¿½?Google Business Profile</strong> ï¿½?If you have a physical location</li>
 </ul>
 
 <h2>5. Relationship Marketing Checklist</h2>
 <ul>
-<li><strong>â–?Regular communication with buyers</strong> â€?Monthly check-ins, industry updates</li>
-<li><strong>â–?Exclusive offers for loyal customers</strong> â€?Volume discounts, early access</li>
-<li><strong>â–?Joint marketing initiatives</strong> â€?Co-branded content, shared trade shows</li>
-<li><strong>â–?Customer advisory board</strong> â€?Top 5-10 customers, quarterly input</li>
-<li><strong>â–?Annual customer appreciation</strong> â€?Event, gift, or recognition</li>
+<li><strong>ï¿½?Regular communication with buyers</strong> ï¿½?Monthly check-ins, industry updates</li>
+<li><strong>ï¿½?Exclusive offers for loyal customers</strong> ï¿½?Volume discounts, early access</li>
+<li><strong>ï¿½?Joint marketing initiatives</strong> ï¿½?Co-branded content, shared trade shows</li>
+<li><strong>ï¿½?Customer advisory board</strong> ï¿½?Top 5-10 customers, quarterly input</li>
+<li><strong>ï¿½?Annual customer appreciation</strong> ï¿½?Event, gift, or recognition</li>
 </ul>
 
 <h2>6. Content Calendar Template</h2>
 <ul>
-<li><strong>â–?Weekly:</strong> LinkedIn posts (industry insights, product highlights)</li>
-<li><strong>â–?Monthly:</strong> Blog articles, email newsletters</li>
-<li><strong>â–?Quarterly:</strong> Webinars, case studies</li>
-<li><strong>â–?Annually:</strong> Industry report, trade show participation</li>
+<li><strong>ï¿½?Weekly:</strong> LinkedIn posts (industry insights, product highlights)</li>
+<li><strong>ï¿½?Monthly:</strong> Blog articles, email newsletters</li>
+<li><strong>ï¿½?Quarterly:</strong> Webinars, case studies</li>
+<li><strong>ï¿½?Annually:</strong> Industry report, trade show participation</li>
 </ul>
 
 <h2>7. Final Marketing Review</h2>
 <ul>
-<li><strong>â–?Certification displayed everywhere</strong></li>
-<li><strong>â–?Website mobile-responsive and fast</strong></li>
-<li><strong>â–?LinkedIn active with regular posts</strong></li>
-<li><strong>â–?Content calendar for next 12 months</strong></li>
-<li><strong>â–?Trade show budget allocated</strong></li>
-<li><strong>â–?Sales team trained on certification marketing</strong></li>
+<li><strong>ï¿½?Certification displayed everywhere</strong></li>
+<li><strong>ï¿½?Website mobile-responsive and fast</strong></li>
+<li><strong>ï¿½?LinkedIn active with regular posts</strong></li>
+<li><strong>ï¿½?Content calendar for next 12 months</strong></li>
+<li><strong>ï¿½?Trade show budget allocated</strong></li>
+<li><strong>ï¿½?Sales team trained on certification marketing</strong></li>
 </ul>',
 '["b2b-marketing","halal-marketing","trade-shows","content-marketing","digital-marketing","brand-strategy","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -9687,17 +9687,17 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'brand-positioning-halal-market',
 'marketing-branding',
 'Brand Positioning in the Halal Market: Case Study',
-'How GreenHalal, a small organic halal food brand, went from competing on price to owning the "premium organic halal" niche â€?increasing margins 45% and reducing customer acquisition cost 60%.',
+'How GreenHalal, a small organic halal food brand, went from competing on price to owning the "premium organic halal" niche ï¿½?increasing margins 45% and reducing customer acquisition cost 60%.',
 '<h1>Brand Positioning in the Halal Market: GreenHalal Case Study</h1>
-<p>GreenHalal is a <strong>small organic halal food brand</strong> based in Jakarta, Indonesia. In 2023, they were competing on price in a crowded market â€?margins were 12%, customer acquisition cost was high, and they were losing to cheaper competitors. This case study shows how they repositioned to own the "premium organic halal" niche.</p>
+<p>GreenHalal is a <strong>small organic halal food brand</strong> based in Jakarta, Indonesia. In 2023, they were competing on price in a crowded market ï¿½?margins were 12%, customer acquisition cost was high, and they were losing to cheaper competitors. This case study shows how they repositioned to own the "premium organic halal" niche.</p>
 
 <h2>The Challenge</h2>
 <ul>
-<li><strong>Price competition:</strong> Competing with 200+ halal food brands on price â€?race to the bottom</li>
+<li><strong>Price competition:</strong> Competing with 200+ halal food brands on price ï¿½?race to the bottom</li>
 <li><strong>Low margins:</strong> 12% gross margin, barely covering operations</li>
 <li><strong>High customer acquisition cost:</strong> $45 per new customer</li>
-<li><strong>No differentiation:</strong> "We sell halal products" â€?same as everyone else</li>
-<li><strong>Small marketing budget:</strong> $2,000/month â€?could not outspend competitors</li>
+<li><strong>No differentiation:</strong> "We sell halal products" ï¿½?same as everyone else</li>
+<li><strong>Small marketing budget:</strong> $2,000/month ï¿½?could not outspend competitors</li>
 </ul>
 
 <h2>The Solution</h2>
@@ -9707,7 +9707,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li><strong>Target segment:</strong> Health-conscious Muslim families in urban Indonesia</li>
 <li><strong>Value proposition:</strong> "100% organic, fully traceable halal food"</li>
-<li><strong>Price point:</strong> 30% above market average â€?premium positioning</li>
+<li><strong>Price point:</strong> 30% above market average ï¿½?premium positioning</li>
 </ul>
 
 <h3>Step 2: Proof Points</h3>
@@ -9721,7 +9721,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <h3>Step 3: Brand Messaging</h3>
 <ul>
 <li><strong>Positioning statement:</strong> "For health-conscious Muslim families in Southeast Asia, GreenHalal is the halal food brand that guarantees 100% organic, fully traceable halal compliance because every product carries dual JAKIM+organic certification with full supply chain documentation."</li>
-<li><strong>Key message:</strong> "Not just halal â€?halal you can trace."</li>
+<li><strong>Key message:</strong> "Not just halal ï¿½?halal you can trace."</li>
 </ul>
 
 <h3>Step 4: Marketing Execution</h3>
@@ -9736,7 +9736,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li><strong>Margins increased 45%:</strong> From 12% to 17.4% gross margin</li>
 <li><strong>Customer acquisition cost down 60%:</strong> From $45 to $18 per customer</li>
-<li><strong>Premium pricing accepted:</strong> 30% above market average â€?customers willing to pay for traceability</li>
+<li><strong>Premium pricing accepted:</strong> 30% above market average ï¿½?customers willing to pay for traceability</li>
 <li><strong>Revenue growth 38%:</strong> From $800K to $1.1M in 12 months</li>
 <li><strong>Customer retention up 52%:</strong> Repeat purchase rate from 28% to 42%</li>
 <li><strong>Social media engagement up 180%:</strong> Traceability content resonated</li>
@@ -9753,7 +9753,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>How to Apply This</h2>
 <ul>
-<li>Define your target segment â€?who exactly are you serving?</li>
+<li>Define your target segment ï¿½?who exactly are you serving?</li>
 <li>Choose a positioning archetype (Quality, Cost, Innovation, Trust, or Niche)</li>
 <li>Develop proof points for your positioning claims</li>
 <li>Create a positioning statement using the template</li>
@@ -9767,70 +9767,70 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'digital-marketing-halal-businesses',
 'marketing-branding',
 'Digital Marketing for Halal Businesses: Complete Checklist',
-'Complete digital marketing checklist for halal businesses â€?platform strategy (LinkedIn, Google, YouTube, Instagram), SEO, email marketing, content strategy, and budget allocation.',
+'Complete digital marketing checklist for halal businesses ï¿½?platform strategy (LinkedIn, Google, YouTube, Instagram), SEO, email marketing, content strategy, and budget allocation.',
 '<h1>Digital Marketing for Halal Businesses: Complete Checklist</h1>
 <p>Digital marketing offers <strong>global reach at local cost</strong>. This checklist covers every platform, tactic, and metric for halal businesses.</p>
 
 <h2>1. LinkedIn (Primary B2B Platform) Checklist</h2>
 <ul>
-<li><strong>â–?Create company page</strong> â€?Professional logo, banner, complete description</li>
-<li><strong>â–?Optimize personal profiles</strong> â€?CEO and sales team as thought leaders</li>
-<li><strong>â–?Post 3-5 times per week</strong> â€?Industry insights, company updates, product highlights</li>
-<li><strong>â–?Use hashtags</strong> â€?#HalalTrade, #HalalFood, #B2B, #IslamicFinance</li>
-<li><strong>â–?Engage with comments</strong> â€?Respond to every comment within 24 hours</li>
-<li><strong>â–?Join halal industry groups</strong> â€?Participate in discussions</li>
-<li><strong>â–?Consider LinkedIn Ads</strong> â€?$500-$5,000/month for targeted campaigns</li>
+<li><strong>ï¿½?Create company page</strong> ï¿½?Professional logo, banner, complete description</li>
+<li><strong>ï¿½?Optimize personal profiles</strong> ï¿½?CEO and sales team as thought leaders</li>
+<li><strong>ï¿½?Post 3-5 times per week</strong> ï¿½?Industry insights, company updates, product highlights</li>
+<li><strong>ï¿½?Use hashtags</strong> ï¿½?#HalalTrade, #HalalFood, #B2B, #IslamicFinance</li>
+<li><strong>ï¿½?Engage with comments</strong> ï¿½?Respond to every comment within 24 hours</li>
+<li><strong>ï¿½?Join halal industry groups</strong> ï¿½?Participate in discussions</li>
+<li><strong>ï¿½?Consider LinkedIn Ads</strong> ï¿½?$500-$5,000/month for targeted campaigns</li>
 </ul>
 
 <h2>2. Google (Search Marketing) Checklist</h2>
 <ul>
-<li><strong>â–?SEO optimization</strong> â€?Target keywords: "halal supplier," "halal certification," "halal ingredients"</li>
-<li><strong>â–?On-page SEO</strong> â€?Titles, meta descriptions, headers, images optimized</li>
-<li><strong>â–?Google Business Profile</strong> â€?Complete, accurate, with reviews</li>
-<li><strong>â–?Google Ads</strong> â€?Target high-intent search queries, $0.50-$5.00 per click</li>
-<li><strong>â–?Google Analytics</strong> â€?Track all traffic, conversions, behavior</li>
-<li><strong>â–?Search Console</strong> â€?Monitor search performance, fix issues</li>
+<li><strong>ï¿½?SEO optimization</strong> ï¿½?Target keywords: "halal supplier," "halal certification," "halal ingredients"</li>
+<li><strong>ï¿½?On-page SEO</strong> ï¿½?Titles, meta descriptions, headers, images optimized</li>
+<li><strong>ï¿½?Google Business Profile</strong> ï¿½?Complete, accurate, with reviews</li>
+<li><strong>ï¿½?Google Ads</strong> ï¿½?Target high-intent search queries, $0.50-$5.00 per click</li>
+<li><strong>ï¿½?Google Analytics</strong> ï¿½?Track all traffic, conversions, behavior</li>
+<li><strong>ï¿½?Search Console</strong> ï¿½?Monitor search performance, fix issues</li>
 </ul>
 
 <h2>3. YouTube (Video Marketing) Checklist</h2>
 <ul>
-<li><strong>â–?Create YouTube channel</strong> â€?Professional branding, complete description</li>
-<li><strong>â–?Upload 1-2 videos per week</strong> â€?Product tours, factory tours, certification explanations</li>
-<li><strong>â–?Optimize video titles</strong> â€?Include target keywords</li>
-<li><strong>â–?Add descriptions and tags</strong> â€?Detailed, keyword-rich</li>
-<li><strong>â–?Create thumbnails</strong> â€?Professional, branded, clickable</li>
-<li><strong>â–?Consider YouTube Ads</strong> â€?$0.10-$0.30 per view</li>
+<li><strong>ï¿½?Create YouTube channel</strong> ï¿½?Professional branding, complete description</li>
+<li><strong>ï¿½?Upload 1-2 videos per week</strong> ï¿½?Product tours, factory tours, certification explanations</li>
+<li><strong>ï¿½?Optimize video titles</strong> ï¿½?Include target keywords</li>
+<li><strong>ï¿½?Add descriptions and tags</strong> ï¿½?Detailed, keyword-rich</li>
+<li><strong>ï¿½?Create thumbnails</strong> ï¿½?Professional, branded, clickable</li>
+<li><strong>ï¿½?Consider YouTube Ads</strong> ï¿½?$0.10-$0.30 per view</li>
 </ul>
 
 <h2>4. Instagram (Brand Building) Checklist</h2>
 <ul>
-<li><strong>â–?Create business account</strong> â€?Professional profile, contact info</li>
-<li><strong>â–?Post daily</strong> â€?Product photos, behind-the-scenes, customer stories</li>
-<li><strong>â–?Post 5-10 stories daily</strong> â€?Quick updates, polls, Q&A</li>
-<li><strong>â–?Use Reels</strong> â€?Short-form video for reach</li>
-<li><strong>â–?Use hashtags</strong> â€?20-30 relevant hashtags per post</li>
-<li><strong>â–?Consider Instagram Ads</strong> â€?$0.20-$2.00 per click</li>
+<li><strong>ï¿½?Create business account</strong> ï¿½?Professional profile, contact info</li>
+<li><strong>ï¿½?Post daily</strong> ï¿½?Product photos, behind-the-scenes, customer stories</li>
+<li><strong>ï¿½?Post 5-10 stories daily</strong> ï¿½?Quick updates, polls, Q&A</li>
+<li><strong>ï¿½?Use Reels</strong> ï¿½?Short-form video for reach</li>
+<li><strong>ï¿½?Use hashtags</strong> ï¿½?20-30 relevant hashtags per post</li>
+<li><strong>ï¿½?Consider Instagram Ads</strong> ï¿½?$0.20-$2.00 per click</li>
 </ul>
 
 <h2>5. SEO for Halal Trade Checklist</h2>
 <ul>
-<li><strong>â–?Target keywords</strong> â€?"halal [product] supplier," "halal certified [category]"</li>
-<li><strong>â–?On-page optimization</strong> â€?Titles, meta, headers, images, internal links</li>
-<li><strong>â–?Content marketing</strong> â€?Publish regular blog articles on halal topics</li>
-<li><strong>â–?Backlinks</strong> â€?Get listed in halal directories, industry publications</li>
-<li><strong>â–?Technical SEO</strong> â€?Fast loading, mobile-friendly, HTTPS, schema markup</li>
-<li><strong>â–?Local SEO</strong> â€?Google Business Profile, local citations</li>
+<li><strong>ï¿½?Target keywords</strong> ï¿½?"halal [product] supplier," "halal certified [category]"</li>
+<li><strong>ï¿½?On-page optimization</strong> ï¿½?Titles, meta, headers, images, internal links</li>
+<li><strong>ï¿½?Content marketing</strong> ï¿½?Publish regular blog articles on halal topics</li>
+<li><strong>ï¿½?Backlinks</strong> ï¿½?Get listed in halal directories, industry publications</li>
+<li><strong>ï¿½?Technical SEO</strong> ï¿½?Fast loading, mobile-friendly, HTTPS, schema markup</li>
+<li><strong>ï¿½?Local SEO</strong> ï¿½?Google Business Profile, local citations</li>
 </ul>
 
 <h2>6. Email Marketing Checklist</h2>
 <ul>
-<li><strong>â–?Set up email platform</strong> â€?Mailchimp, HubSpot, or ActiveCampaign</li>
-<li><strong>â–?Build email list</strong> â€?Website forms, trade show leads, customer database</li>
-<li><strong>â–?Create newsletter</strong> â€?Monthly industry insights and product updates</li>
-<li><strong>â–?Set up drip campaigns</strong> â€?Automated sequences for new leads</li>
-<li><strong>â–?Segment list</strong> â€?By buyer type, product interest, engagement level</li>
-<li><strong>â–?Track metrics</strong> â€?Open rate, click rate, conversion rate</li>
-<li><strong>â–?Budget:</strong> $0-$500/month depending on list size</li>
+<li><strong>ï¿½?Set up email platform</strong> ï¿½?Mailchimp, HubSpot, or ActiveCampaign</li>
+<li><strong>ï¿½?Build email list</strong> ï¿½?Website forms, trade show leads, customer database</li>
+<li><strong>ï¿½?Create newsletter</strong> ï¿½?Monthly industry insights and product updates</li>
+<li><strong>ï¿½?Set up drip campaigns</strong> ï¿½?Automated sequences for new leads</li>
+<li><strong>ï¿½?Segment list</strong> ï¿½?By buyer type, product interest, engagement level</li>
+<li><strong>ï¿½?Track metrics</strong> ï¿½?Open rate, click rate, conversion rate</li>
+<li><strong>ï¿½?Budget:</strong> $0-$500/month depending on list size</li>
 </ul>
 
 <h2>7. Content Strategy Checklist</h2>
@@ -9848,23 +9848,23 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>8. Budget Allocation Checklist</h2>
 <ul>
-<li><strong>â–?SEO:</strong> 30% of digital marketing budget</li>
-<li><strong>â–?Content creation:</strong> 25%</li>
-<li><strong>â–?Paid advertising:</strong> 25%</li>
-<li><strong>â–?Email marketing:</strong> 10%</li>
-<li><strong>â–?Tools and analytics:</strong> 10%</li>
+<li><strong>ï¿½?SEO:</strong> 30% of digital marketing budget</li>
+<li><strong>ï¿½?Content creation:</strong> 25%</li>
+<li><strong>ï¿½?Paid advertising:</strong> 25%</li>
+<li><strong>ï¿½?Email marketing:</strong> 10%</li>
+<li><strong>ï¿½?Tools and analytics:</strong> 10%</li>
 </ul>
 
 <h2>9. Final Digital Marketing Review</h2>
 <ul>
-<li><strong>â–?LinkedIn active with regular posts</strong></li>
-<li><strong>â–?Website SEO optimized</strong></li>
-<li><strong>â–?Google Business Profile complete</strong></li>
-<li><strong>â–?YouTube channel with regular uploads</strong></li>
-<li><strong>â–?Instagram posting daily</strong></li>
-<li><strong>â–?Email marketing platform set up</strong></li>
-<li><strong>â–?Content calendar for next 3 months</strong></li>
-<li><strong>â–?Budget allocated across channels</strong></li>
+<li><strong>ï¿½?LinkedIn active with regular posts</strong></li>
+<li><strong>ï¿½?Website SEO optimized</strong></li>
+<li><strong>ï¿½?Google Business Profile complete</strong></li>
+<li><strong>ï¿½?YouTube channel with regular uploads</strong></li>
+<li><strong>ï¿½?Instagram posting daily</strong></li>
+<li><strong>ï¿½?Email marketing platform set up</strong></li>
+<li><strong>ï¿½?Content calendar for next 3 months</strong></li>
+<li><strong>ï¿½?Budget allocated across channels</strong></li>
 </ul>',
 '["digital-marketing","seo","linkedin","content-marketing","email-marketing","online-advertising","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -9874,9 +9874,9 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'trade-show-marketing-halal-products',
 'marketing-branding',
 'Trade Show Marketing for Halal Products: Case Study',
-'How Al-Baik Foods generated $2.1M in pipeline from a single MIHAS trade show â€?using a systematic pre-show, at-show, and post-show process that converted 23% of booth visitors into customers.',
+'How Al-Baik Foods generated $2.1M in pipeline from a single MIHAS trade show ï¿½?using a systematic pre-show, at-show, and post-show process that converted 23% of booth visitors into customers.',
 '<h1>Trade Show Marketing for Halal Products: Al-Baik Foods Case Study</h1>
-<p>Al-Baik Foods is a <strong>halal frozen food manufacturer</strong> from Turkey. At MIHAS 2024 in Kuala Lumpur, they generated <strong>$2.1M in sales pipeline</strong> from a single trade show â€?converting 23% of booth visitors into paying customers. This case study documents their systematic approach.</p>
+<p>Al-Baik Foods is a <strong>halal frozen food manufacturer</strong> from Turkey. At MIHAS 2024 in Kuala Lumpur, they generated <strong>$2.1M in sales pipeline</strong> from a single trade show ï¿½?converting 23% of booth visitors into paying customers. This case study documents their systematic approach.</p>
 
 <h2>The Challenge</h2>
 <ul>
@@ -9911,11 +9911,11 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h3>Phase 3: Post-Show (4 Weeks)</h3>
 <ul>
-<li><strong>Day 1-2: Email all 187 contacts</strong> â€?Personalized based on booth conversation</li>
-<li><strong>Day 3-5: Phone calls to 43 qualified leads</strong> â€?Schedule deeper conversations</li>
-<li><strong>Week 2: Send samples to 28 interested buyers</strong> â€?Product evaluation</li>
-<li><strong>Week 3: Schedule calls with 15 buyers</strong> â€?Discuss pricing and terms</li>
-<li><strong>Week 4: Send formal proposals to 8 buyers</strong> â€?Pricing, MOQs, delivery</li>
+<li><strong>Day 1-2: Email all 187 contacts</strong> ï¿½?Personalized based on booth conversation</li>
+<li><strong>Day 3-5: Phone calls to 43 qualified leads</strong> ï¿½?Schedule deeper conversations</li>
+<li><strong>Week 2: Send samples to 28 interested buyers</strong> ï¿½?Product evaluation</li>
+<li><strong>Week 3: Schedule calls with 15 buyers</strong> ï¿½?Discuss pricing and terms</li>
+<li><strong>Week 4: Send formal proposals to 8 buyers</strong> ï¿½?Pricing, MOQs, delivery</li>
 </ul>
 
 <h2>The Results</h2>
@@ -9940,7 +9940,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li>Set clear, measurable objectives for your next trade show</li>
 <li>Train booth staff on products, certifications, and objection handling</li>
-<li>Design certification-forward booth â€?make it visible from 10 meters</li>
+<li>Design certification-forward booth ï¿½?make it visible from 10 meters</li>
 <li>Invite 50+ target buyers before the show</li>
 <li>Implement post-show follow-up process within 48 hours</li>
 </ul>',
@@ -9952,77 +9952,77 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'building-trust-halal-certification-marketing',
 'marketing-branding',
 'Building Trust Through Halal Certification Marketing: Checklist',
-'Complete checklist for leveraging halal certification as a marketing tool â€?display strategy, verification, education, content creation, and trust measurement.',
+'Complete checklist for leveraging halal certification as a marketing tool ï¿½?display strategy, verification, education, content creation, and trust measurement.',
 '<h1>Building Trust Through Halal Certification Marketing: Checklist</h1>
-<p>Your halal certification is not just a compliance requirement â€?it is your <strong>most powerful marketing tool</strong>. This checklist ensures you leverage it fully.</p>
+<p>Your halal certification is not just a compliance requirement ï¿½?it is your <strong>most powerful marketing tool</strong>. This checklist ensures you leverage it fully.</p>
 
 <h2>1. Certification Display Checklist</h2>
 <ul>
-<li><strong>â–?Website header</strong> â€?Logo and certificate number visible on every page</li>
-<li><strong>â–?Product packaging</strong> â€?Front and center, not hidden on back</li>
-<li><strong>â–?Marketing materials</strong> â€?Every brochure, flyer, and presentation</li>
-<li><strong>â–?Trade show booth</strong> â€?Large format display, minimum 1m x 1m</li>
-<li><strong>â–?Email signature</strong> â€?Certification badge in every employee email</li>
-<li><strong>â–?Business cards</strong> â€?Certification logo on card</li>
-<li><strong>â–?Social media profiles</strong> â€?Certification in profile description</li>
-<li><strong>â–?invoices and quotes</strong> â€?Certification reference on all commercial documents</li>
+<li><strong>ï¿½?Website header</strong> ï¿½?Logo and certificate number visible on every page</li>
+<li><strong>ï¿½?Product packaging</strong> ï¿½?Front and center, not hidden on back</li>
+<li><strong>ï¿½?Marketing materials</strong> ï¿½?Every brochure, flyer, and presentation</li>
+<li><strong>ï¿½?Trade show booth</strong> ï¿½?Large format display, minimum 1m x 1m</li>
+<li><strong>ï¿½?Email signature</strong> ï¿½?Certification badge in every employee email</li>
+<li><strong>ï¿½?Business cards</strong> ï¿½?Certification logo on card</li>
+<li><strong>ï¿½?Social media profiles</strong> ï¿½?Certification in profile description</li>
+<li><strong>ï¿½?invoices and quotes</strong> ï¿½?Certification reference on all commercial documents</li>
 </ul>
 
 <h2>2. Certification Verification Checklist</h2>
 <ul>
-<li><strong>â–?Link to certifying body verification page</strong> â€?On your website</li>
-<li><strong>â–?QR code on packaging</strong> â€?Links to certificate verification</li>
-<li><strong>â–?Annual renewal date displayed</strong> â€?So buyers know it is current</li>
-<li><strong>â–?Full certificate available for download</strong> â€?PDF on website</li>
-<li><strong>â–?Certificate number verifiable online</strong> â€?Via certifying body website</li>
+<li><strong>ï¿½?Link to certifying body verification page</strong> ï¿½?On your website</li>
+<li><strong>ï¿½?QR code on packaging</strong> ï¿½?Links to certificate verification</li>
+<li><strong>ï¿½?Annual renewal date displayed</strong> ï¿½?So buyers know it is current</li>
+<li><strong>ï¿½?Full certificate available for download</strong> ï¿½?PDF on website</li>
+<li><strong>ï¿½?Certificate number verifiable online</strong> ï¿½?Via certifying body website</li>
 </ul>
 
 <h2>3. Certification Education Checklist</h2>
 <ul>
-<li><strong>â–?Explain what your certification covers</strong> â€?Products, processes, facility</li>
-<li><strong>â–?Describe the audit process</strong> â€?What was inspected, how often</li>
-<li><strong>â–?Highlight certifying body reputation</strong> â€?JAKIM, MUI, ESMA â€?why they matter</li>
-<li><strong>â–?Compare certifications across countries</strong> â€?Help buyers understand differences</li>
-<li><strong>â–?Address common questions</strong> â€?"What does halal certified mean?" â€?answer proactively</li>
+<li><strong>ï¿½?Explain what your certification covers</strong> ï¿½?Products, processes, facility</li>
+<li><strong>ï¿½?Describe the audit process</strong> ï¿½?What was inspected, how often</li>
+<li><strong>ï¿½?Highlight certifying body reputation</strong> ï¿½?JAKIM, MUI, ESMA ï¿½?why they matter</li>
+<li><strong>ï¿½?Compare certifications across countries</strong> ï¿½?Help buyers understand differences</li>
+<li><strong>ï¿½?Address common questions</strong> ï¿½?"What does halal certified mean?" ï¿½?answer proactively</li>
 </ul>
 
 <h2>4. Certification Content Creation Checklist</h2>
 <ul>
-<li><strong>â–?Blog post:</strong> "What Our JAKIM Certification Means for Our Customers"</li>
-<li><strong>â–?Video:</strong> "Behind the Scenes of Our Halal Certification Audit"</li>
-<li><strong>â–?Infographic:</strong> "Our Halal Supply Chain â€?From Farm to Fork"</li>
-<li><strong>â–?Case study:</strong> "How Certification Helped Us Enter the Saudi Market"</li>
-<li><strong>â–?Social media:</strong> "Certification Day" celebration posts</li>
-<li><strong>â–?FAQ page:</strong> "Halal Certification: Everything You Need to Know"</li>
-<li><strong>â–?Email series:</strong> 3-part certification education series for new leads</li>
+<li><strong>ï¿½?Blog post:</strong> "What Our JAKIM Certification Means for Our Customers"</li>
+<li><strong>ï¿½?Video:</strong> "Behind the Scenes of Our Halal Certification Audit"</li>
+<li><strong>ï¿½?Infographic:</strong> "Our Halal Supply Chain ï¿½?From Farm to Fork"</li>
+<li><strong>ï¿½?Case study:</strong> "How Certification Helped Us Enter the Saudi Market"</li>
+<li><strong>ï¿½?Social media:</strong> "Certification Day" celebration posts</li>
+<li><strong>ï¿½?FAQ page:</strong> "Halal Certification: Everything You Need to Know"</li>
+<li><strong>ï¿½?Email series:</strong> 3-part certification education series for new leads</li>
 </ul>
 
 <h2>5. Trust Signals Beyond Certification Checklist</h2>
 <ul>
-<li><strong>â–?Customer testimonials</strong> â€?Real buyers endorsing your products</li>
-<li><strong>â–?Case studies</strong> â€?Documented success stories with metrics</li>
-<li><strong>â–?Industry awards</strong> â€?Recognition from industry bodies</li>
-<li><strong>â–?Media coverage</strong> â€?Third-party media mentions</li>
-<li><strong>â–?Quality certifications</strong> â€?HACCP, ISO 22000, BRC alongside halal</li>
-<li><strong>â–?Traceability technology</strong> â€?Blockchain, QR codes, IoT monitoring</li>
+<li><strong>ï¿½?Customer testimonials</strong> ï¿½?Real buyers endorsing your products</li>
+<li><strong>ï¿½?Case studies</strong> ï¿½?Documented success stories with metrics</li>
+<li><strong>ï¿½?Industry awards</strong> ï¿½?Recognition from industry bodies</li>
+<li><strong>ï¿½?Media coverage</strong> ï¿½?Third-party media mentions</li>
+<li><strong>ï¿½?Quality certifications</strong> ï¿½?HACCP, ISO 22000, BRC alongside halal</li>
+<li><strong>ï¿½?Traceability technology</strong> ï¿½?Blockchain, QR codes, IoT monitoring</li>
 </ul>
 
 <h2>6. Trust Measurement Checklist</h2>
 <ul>
-<li><strong>â–?Website analytics:</strong> Track certification page visits</li>
-<li><strong>â–?Lead quality:</strong> Are certified leads converting better?</li>
-<li><strong>â–?Price premium:</strong> Can you charge more than uncertified competitors?</li>
-<li><strong>â–?Customer retention:</strong> Are certified customers more loyal?</li>
-<li><strong>â–?Net Promoter Score:</strong> Do certified customers recommend you more?</li>
+<li><strong>ï¿½?Website analytics:</strong> Track certification page visits</li>
+<li><strong>ï¿½?Lead quality:</strong> Are certified leads converting better?</li>
+<li><strong>ï¿½?Price premium:</strong> Can you charge more than uncertified competitors?</li>
+<li><strong>ï¿½?Customer retention:</strong> Are certified customers more loyal?</li>
+<li><strong>ï¿½?Net Promoter Score:</strong> Do certified customers recommend you more?</li>
 </ul>
 
 <h2>7. Final Trust Marketing Review</h2>
 <ul>
-<li><strong>â–?Certification displayed on all touchpoints</strong></li>
-<li><strong>â–?Verification page live on website</strong></li>
-<li><strong>â–?3+ pieces of certification content created</strong></li>
-<li><strong>â–?Sales team trained on certification marketing</strong></li>
-<li><strong>â–?Trust metrics tracked monthly</strong></li>
+<li><strong>ï¿½?Certification displayed on all touchpoints</strong></li>
+<li><strong>ï¿½?Verification page live on website</strong></li>
+<li><strong>ï¿½?3+ pieces of certification content created</strong></li>
+<li><strong>ï¿½?Sales team trained on certification marketing</strong></li>
+<li><strong>ï¿½?Trust metrics tracked monthly</strong></li>
 </ul>',
 '["trust-building","certification-marketing","brand-trust","halal-certification","marketing-strategy","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -10036,73 +10036,73 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'supply-chain-optimization-halal-products',
 'operations-management',
 'Supply Chain Optimization for Halal Products: Complete Checklist',
-'Complete checklist for optimizing halal supply chains â€?covering sourcing, manufacturing, warehousing, transportation, distribution, technology, and cost reduction.',
+'Complete checklist for optimizing halal supply chains ï¿½?covering sourcing, manufacturing, warehousing, transportation, distribution, technology, and cost reduction.',
 '<h1>Supply Chain Optimization for Halal Products: Complete Checklist</h1>
 <p>A halal supply chain is <strong>more complex than a conventional one</strong>. Every touchpoint must maintain halal integrity. This checklist covers every component.</p>
 
 <h2>1. Sourcing Checklist</h2>
 <ul>
-<li><strong>â–?All raw materials halal-certified</strong> â€?No exceptions</li>
-<li><strong>â–?Supplier verification completed</strong> â€?Facility audit, certification check</li>
-<li><strong>â–?Certification documentation on file</strong> â€?Valid, not expired</li>
-<li><strong>â–?Traceability from source to finished product</strong> â€?Full chain documented</li>
-<li><strong>â–?Backup suppliers identified</strong> â€?For critical ingredients</li>
-<li><strong>â–?Supplier scorecard implemented</strong> â€?Quality, delivery, compliance metrics</li>
+<li><strong>ï¿½?All raw materials halal-certified</strong> ï¿½?No exceptions</li>
+<li><strong>ï¿½?Supplier verification completed</strong> ï¿½?Facility audit, certification check</li>
+<li><strong>ï¿½?Certification documentation on file</strong> ï¿½?Valid, not expired</li>
+<li><strong>ï¿½?Traceability from source to finished product</strong> ï¿½?Full chain documented</li>
+<li><strong>ï¿½?Backup suppliers identified</strong> ï¿½?For critical ingredients</li>
+<li><strong>ï¿½?Supplier scorecard implemented</strong> ï¿½?Quality, delivery, compliance metrics</li>
 </ul>
 
 <h2>2. Manufacturing Checklist</h2>
 <ul>
-<li><strong>â–?Dedicated halal production lines</strong> â€?No sharing with non-halal</li>
-<li><strong>â–?Physical separation from non-halal products</strong> â€?Walls, curtains, separate areas</li>
-<li><strong>â–?Cleaning and sanitization protocols</strong> â€?Documented, followed, verified</li>
-<li><strong>â–?Worker training on halal procedures</strong> â€?All staff, regular refreshers</li>
-<li><strong>â–?Halal quality control checkpoints</strong> â€?At receiving, processing, packaging</li>
-<li><strong>â–?Contamination prevention measures</strong> â€?Color coding, dedicated equipment</li>
+<li><strong>ï¿½?Dedicated halal production lines</strong> ï¿½?No sharing with non-halal</li>
+<li><strong>ï¿½?Physical separation from non-halal products</strong> ï¿½?Walls, curtains, separate areas</li>
+<li><strong>ï¿½?Cleaning and sanitization protocols</strong> ï¿½?Documented, followed, verified</li>
+<li><strong>ï¿½?Worker training on halal procedures</strong> ï¿½?All staff, regular refreshers</li>
+<li><strong>ï¿½?Halal quality control checkpoints</strong> ï¿½?At receiving, processing, packaging</li>
+<li><strong>ï¿½?Contamination prevention measures</strong> ï¿½?Color coding, dedicated equipment</li>
 </ul>
 
 <h2>3. Warehousing Checklist</h2>
 <ul>
-<li><strong>â–?Dedicated storage areas for halal products</strong> â€?Clear signage, physical separation</li>
-<li><strong>â–?Proper labeling and identification</strong> â€?Batch numbers, dates, halal marking</li>
-<li><strong>â–?Temperature control for perishables</strong> â€?Cold chain maintained</li>
-<li><strong>â–?FIFO implementation</strong> â€?First-in-first-out for perishables</li>
-<li><strong>â–?Pest control measures</strong> â€?Regular treatment, documentation</li>
-<li><strong>â–?Clean, dedicated equipment</strong> â€?Forklifts, pallets, containers</li>
+<li><strong>ï¿½?Dedicated storage areas for halal products</strong> ï¿½?Clear signage, physical separation</li>
+<li><strong>ï¿½?Proper labeling and identification</strong> ï¿½?Batch numbers, dates, halal marking</li>
+<li><strong>ï¿½?Temperature control for perishables</strong> ï¿½?Cold chain maintained</li>
+<li><strong>ï¿½?FIFO implementation</strong> ï¿½?First-in-first-out for perishables</li>
+<li><strong>ï¿½?Pest control measures</strong> ï¿½?Regular treatment, documentation</li>
+<li><strong>ï¿½?Clean, dedicated equipment</strong> ï¿½?Forklifts, pallets, containers</li>
 </ul>
 
 <h2>4. Transportation Checklist</h2>
 <ul>
-<li><strong>â–?Clean, dedicated vehicles</strong> â€?No transport of non-halal products</li>
-<li><strong>â–?Temperature monitoring</strong> â€?IoT sensors for perishables</li>
-<li><strong>â–?GPS tracking</strong> â€?For traceability and security</li>
-<li><strong>â–?Halal logistics certificate</strong> â€?From certified logistics provider</li>
-<li><strong>â–?Sealed containers</strong> â€?Tamper-evident seals</li>
-<li><strong>â–?Delivery documentation</strong> â€?Complete, accurate, halal-compliant</li>
+<li><strong>ï¿½?Clean, dedicated vehicles</strong> ï¿½?No transport of non-halal products</li>
+<li><strong>ï¿½?Temperature monitoring</strong> ï¿½?IoT sensors for perishables</li>
+<li><strong>ï¿½?GPS tracking</strong> ï¿½?For traceability and security</li>
+<li><strong>ï¿½?Halal logistics certificate</strong> ï¿½?From certified logistics provider</li>
+<li><strong>ï¿½?Sealed containers</strong> ï¿½?Tamper-evident seals</li>
+<li><strong>ï¿½?Delivery documentation</strong> ï¿½?Complete, accurate, halal-compliant</li>
 </ul>
 
 <h2>5. Distribution Checklist</h2>
 <ul>
-<li><strong>â–?Clean, dedicated storage at distribution centers</strong></li>
-<li><strong>â–?Proper handling procedures</strong> â€?Trained staff, documented processes</li>
-<li><strong>â–?Customer verification</strong> â€?Confirm halal requirements before delivery</li>
-<li><strong>â–?Return handling</strong> â€?Separate halal and non-halal returns</li>
+<li><strong>ï¿½?Clean, dedicated storage at distribution centers</strong></li>
+<li><strong>ï¿½?Proper handling procedures</strong> ï¿½?Trained staff, documented processes</li>
+<li><strong>ï¿½?Customer verification</strong> ï¿½?Confirm halal requirements before delivery</li>
+<li><strong>ï¿½?Return handling</strong> ï¿½?Separate halal and non-halal returns</li>
 </ul>
 
 <h2>6. Technology Implementation Checklist</h2>
 <ul>
-<li><strong>â–?ERP system</strong> â€?Inventory management, traceability, reporting</li>
-<li><strong>â–?Blockchain traceability</strong> â€?Immutable record from source to customer</li>
-<li><strong>â–?IoT sensors</strong> â€?Temperature, humidity, location monitoring</li>
-<li><strong>â–?Barcode/RFID</strong> â€?Automated tracking and counting</li>
-<li><strong>â–?Demand forecasting</strong> â€?AI-powered prediction tools</li>
+<li><strong>ï¿½?ERP system</strong> ï¿½?Inventory management, traceability, reporting</li>
+<li><strong>ï¿½?Blockchain traceability</strong> ï¿½?Immutable record from source to customer</li>
+<li><strong>ï¿½?IoT sensors</strong> ï¿½?Temperature, humidity, location monitoring</li>
+<li><strong>ï¿½?Barcode/RFID</strong> ï¿½?Automated tracking and counting</li>
+<li><strong>ï¿½?Demand forecasting</strong> ï¿½?AI-powered prediction tools</li>
 </ul>
 
 <h2>7. Supplier Relationship Checklist</h2>
 <ul>
-<li><strong>â–?Long-term contracts with certified suppliers</strong> â€?Stability and commitment</li>
-<li><strong>â–?Regular audits and quality checks</strong> â€?Scheduled and surprise</li>
-<li><strong>â–?Collaborative forecasting</strong> â€?Share demand data with suppliers</li>
-<li><strong>â–?Joint improvement programs</strong> â€?Work together on quality and efficiency</li>
+<li><strong>ï¿½?Long-term contracts with certified suppliers</strong> ï¿½?Stability and commitment</li>
+<li><strong>ï¿½?Regular audits and quality checks</strong> ï¿½?Scheduled and surprise</li>
+<li><strong>ï¿½?Collaborative forecasting</strong> ï¿½?Share demand data with suppliers</li>
+<li><strong>ï¿½?Joint improvement programs</strong> ï¿½?Work together on quality and efficiency</li>
 </ul>
 
 <h2>8. Cost Reduction Checklist</h2>
@@ -10119,12 +10119,12 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>9. Final Supply Chain Review</h2>
 <ul>
-<li><strong>â–?Full supply chain mapped</strong></li>
-<li><strong>â–?All suppliers halal-certified</strong></li>
-<li><strong>â–?Contamination risks identified and mitigated</strong></li>
-<li><strong>â–?Traceability system implemented</strong></li>
-<li><strong>â–?Logistics providers halal-certified</strong></li>
-<li><strong>â–?Cost reduction opportunities identified</strong></li>
+<li><strong>ï¿½?Full supply chain mapped</strong></li>
+<li><strong>ï¿½?All suppliers halal-certified</strong></li>
+<li><strong>ï¿½?Contamination risks identified and mitigated</strong></li>
+<li><strong>ï¿½?Traceability system implemented</strong></li>
+<li><strong>ï¿½?Logistics providers halal-certified</strong></li>
+<li><strong>ï¿½?Cost reduction opportunities identified</strong></li>
 </ul>',
 '["supply-chain","logistics","halal-integrity","traceability","inventory-management","operations","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -10134,17 +10134,17 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'inventory-management-halal-goods',
 'operations-management',
 'Inventory Management for Halal Goods: Case Study',
-'How FreshHalal, a UK-based halal meat distributor, reduced waste by 38% and stockouts by 72% by implementing FIFO, ABC analysis, and certification tracking â€?without adding headcount.',
+'How FreshHalal, a UK-based halal meat distributor, reduced waste by 38% and stockouts by 72% by implementing FIFO, ABC analysis, and certification tracking ï¿½?without adding headcount.',
 '<h1>Inventory Management for Halal Goods: FreshHalal Case Study</h1>
 <p>FreshHalal is a <strong>halal meat distributor</strong> based in London, UK, supplying 200+ restaurants and retailers. In 2023, they were losing $180K annually to waste and stockouts. This case study shows how they optimized inventory management without adding headcount.</p>
 
 <h2>The Challenge</h2>
 <ul>
-<li><strong>Waste rate: 12%</strong> â€?Perishable halal meat expiring before sale ($180K annual loss)</li>
-<li><strong>Stockout rate: 8%</strong> â€?Lost sales when popular products ran out</li>
-<li><strong>No FIFO system</strong> â€?Products shipped randomly, oldest sometimes sat unsold</li>
-<li><strong>Certification tracking manual</strong> â€?Certificates tracked in spreadsheets, sometimes expired</li>
-<li><strong>Seasonal demand unmanaged</strong> â€?Ramadan demand spikes caused stockouts, post-Ramadan caused excess</li>
+<li><strong>Waste rate: 12%</strong> ï¿½?Perishable halal meat expiring before sale ($180K annual loss)</li>
+<li><strong>Stockout rate: 8%</strong> ï¿½?Lost sales when popular products ran out</li>
+<li><strong>No FIFO system</strong> ï¿½?Products shipped randomly, oldest sometimes sat unsold</li>
+<li><strong>Certification tracking manual</strong> ï¿½?Certificates tracked in spreadsheets, sometimes expired</li>
+<li><strong>Seasonal demand unmanaged</strong> ï¿½?Ramadan demand spikes caused stockouts, post-Ramadan caused excess</li>
 </ul>
 
 <h2>The Solution</h2>
@@ -10153,16 +10153,16 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <h3>Part 1: FIFO Implementation</h3>
 <ul>
 <li><strong>Warehouse reorganization:</strong> Products loaded from back, shipped from front</li>
-<li><strong>Date labeling system:</strong> Color-coded labels by week â€?red (this week), yellow (next week), green (2+ weeks)</li>
+<li><strong>Date labeling system:</strong> Color-coded labels by week ï¿½?red (this week), yellow (next week), green (2+ weeks)</li>
 <li><strong>Pick path optimization:</strong> Warehouse staff pick oldest stock first</li>
 <li><strong>Result:</strong> Waste reduced from 12% to 7.4% within 3 months</li>
 </ul>
 
 <h3>Part 2: ABC Analysis</h3>
 <ul>
-<li><strong>A items (20% of SKUs, 80% of revenue):</strong> Halal chicken breast, lamb mince, beef steaks â€?tight control, daily monitoring</li>
-<li><strong>B items (30% of SKUs, 15% of revenue):</strong> Halal turkey, goat, organ meats â€?weekly review</li>
-<li><strong>C items (50% of SKUs, 5% of revenue):</strong> Specialty items, niche cuts â€?monthly review, lower safety stock</li>
+<li><strong>A items (20% of SKUs, 80% of revenue):</strong> Halal chicken breast, lamb mince, beef steaks ï¿½?tight control, daily monitoring</li>
+<li><strong>B items (30% of SKUs, 15% of revenue):</strong> Halal turkey, goat, organ meats ï¿½?weekly review</li>
+<li><strong>C items (50% of SKUs, 5% of revenue):</strong> Specialty items, niche cuts ï¿½?monthly review, lower safety stock</li>
 <li><strong>Result:</strong> Stockout rate reduced from 8% to 2.2%</li>
 </ul>
 
@@ -10176,8 +10176,8 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>The Results</h2>
 <ul>
-<li><strong>Waste reduced 38%:</strong> From 12% to 7.4% â€?saving $108K annually</li>
-<li><strong>Stockouts reduced 72%:</strong> From 8% to 2.2% â€?capturing $65K in lost sales</li>
+<li><strong>Waste reduced 38%:</strong> From 12% to 7.4% ï¿½?saving $108K annually</li>
+<li><strong>Stockouts reduced 72%:</strong> From 8% to 2.2% ï¿½?capturing $65K in lost sales</li>
 <li><strong>Net savings: $173K annually:</strong> $108K waste + $65K recovered sales</li>
 <li><strong>Zero certification violations:</strong> Automated tracking eliminated manual errors</li>
 <li><strong>Customer satisfaction up 28%:</strong> Reliable availability improved relationships</li>
@@ -10190,17 +10190,17 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li>FIFO is the single most impactful inventory improvement for perishable halal products</li>
 <li>ABC analysis focuses attention on what matters most (A items)</li>
-<li>Certification tracking must be automated â€?manual tracking fails</li>
+<li>Certification tracking must be automated ï¿½?manual tracking fails</li>
 <li>Seasonal demand (Ramadan) requires 4-6 month advance planning</li>
 </ul>
 
 <h2>How to Apply This</h2>
 <ul>
-<li>Implement FIFO â€?reorganize warehouse, add date labels, train staff</li>
-<li>Run ABC analysis on your inventory â€?identify A, B, C items</li>
-<li>Automate certification tracking â€?never let a certificate expire unnoticed</li>
+<li>Implement FIFO ï¿½?reorganize warehouse, add date labels, train staff</li>
+<li>Run ABC analysis on your inventory ï¿½?identify A, B, C items</li>
+<li>Automate certification tracking ï¿½?never let a certificate expire unnoticed</li>
 <li>Build Ramadan demand forecast 6 months ahead</li>
-<li>Track waste and stockout rates weekly â€?measure improvement</li>
+<li>Track waste and stockout rates weekly ï¿½?measure improvement</li>
 </ul>',
 '["inventory-management","fifo","abc-analysis","safety-stock","demand-forecasting","ramadan","case-study"]',
 NULL,'published',0,1788082542,1788082542
@@ -10210,80 +10210,80 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'quality-management-systems-halal-production',
 'operations-management',
 'Quality Management Systems for Halal Production: Complete Checklist',
-'Complete checklist for implementing ISO 22000, HACCP, and BRC quality management systems in halal production â€?including gap analysis, documentation, training, and certification.',
+'Complete checklist for implementing ISO 22000, HACCP, and BRC quality management systems in halal production ï¿½?including gap analysis, documentation, training, and certification.',
 '<h1>Quality Management Systems for Halal Production: Complete Checklist</h1>
 <p>Without a QMS, halal compliance is <strong>accidental, not systematic</strong>. This checklist ensures every product meets halal standards, every time.</p>
 
 <h2>1. Framework Selection Checklist</h2>
 <ul>
-<li><strong>â–?Assess current QMS maturity</strong> â€?Where are you today? Ad-hoc, documented, optimized?</li>
-<li><strong>â–?Choose framework:</strong>
+<li><strong>ï¿½?Assess current QMS maturity</strong> ï¿½?Where are you today? Ad-hoc, documented, optimized?</li>
+<li><strong>ï¿½?Choose framework:</strong>
   <ul>
-  <li>â–?ISO 22000 â€?International food safety standard ($5K-$20K certification)</li>
-  <li>â–?HACCP â€?Systematic hazard control (7 principles, $2K-$10K)</li>
-  <li>â–?BRC â€?British Retail Consortium, required by UK retailers ($3K-$10K)</li>
-  <li>â–?FSSC 22000 â€?Based on ISO 22000, GFSI-recognized</li>
+  <li>ï¿½?ISO 22000 ï¿½?International food safety standard ($5K-$20K certification)</li>
+  <li>ï¿½?HACCP ï¿½?Systematic hazard control (7 principles, $2K-$10K)</li>
+  <li>ï¿½?BRC ï¿½?British Retail Consortium, required by UK retailers ($3K-$10K)</li>
+  <li>ï¿½?FSSC 22000 ï¿½?Based on ISO 22000, GFSI-recognized</li>
   </ul>
 </li>
-<li><strong>â–?Define certification timeline</strong> â€?Typically 6-12 months from start to certification</li>
-<li><strong>â–?Allocate budget</strong> â€?Certification + annual surveillance audits</li>
+<li><strong>ï¿½?Define certification timeline</strong> ï¿½?Typically 6-12 months from start to certification</li>
+<li><strong>ï¿½?Allocate budget</strong> ï¿½?Certification + annual surveillance audits</li>
 </ul>
 
 <h2>2. Gap Analysis Checklist</h2>
 <ul>
-<li><strong>â–?Document current processes</strong> â€?How do you do things today?</li>
-<li><strong>â–?Compare to framework requirements</strong> â€?What is missing?</li>
-<li><strong>â–?Identify gaps</strong> â€?List every gap with severity and priority</li>
-<li><strong>â–?Develop remediation plan</strong> â€?Timeline, resources, responsibilities</li>
-<li><strong>â–?Get management buy-in</strong> â€?Resources and commitment required</li>
+<li><strong>ï¿½?Document current processes</strong> ï¿½?How do you do things today?</li>
+<li><strong>ï¿½?Compare to framework requirements</strong> ï¿½?What is missing?</li>
+<li><strong>ï¿½?Identify gaps</strong> ï¿½?List every gap with severity and priority</li>
+<li><strong>ï¿½?Develop remediation plan</strong> ï¿½?Timeline, resources, responsibilities</li>
+<li><strong>ï¿½?Get management buy-in</strong> ï¿½?Resources and commitment required</li>
 </ul>
 
 <h2>3. Documentation Checklist</h2>
 <ul>
-<li><strong>â–?Quality manual</strong> â€?Overall quality policy and objectives</li>
-<li><strong>â–?Procedures</strong> â€?Step-by-step instructions for all processes</li>
-<li><strong>â–?Work instructions</strong> â€?Detailed task-level instructions</li>
-<li><strong>â–?Records</strong> â€?Evidence of compliance (checklists, logs, reports)</li>
-<li><strong>â–?Hazard analysis</strong> â€?Documented risk assessment</li>
-<li><strong>â–?Halal procedures</strong> â€?Dedicated halal documentation within QMS</li>
-<li><strong>â–?Corrective action procedures</strong> â€?How non-conformances are handled</li>
+<li><strong>ï¿½?Quality manual</strong> ï¿½?Overall quality policy and objectives</li>
+<li><strong>ï¿½?Procedures</strong> ï¿½?Step-by-step instructions for all processes</li>
+<li><strong>ï¿½?Work instructions</strong> ï¿½?Detailed task-level instructions</li>
+<li><strong>ï¿½?Records</strong> ï¿½?Evidence of compliance (checklists, logs, reports)</li>
+<li><strong>ï¿½?Hazard analysis</strong> ï¿½?Documented risk assessment</li>
+<li><strong>ï¿½?Halal procedures</strong> ï¿½?Dedicated halal documentation within QMS</li>
+<li><strong>ï¿½?Corrective action procedures</strong> ï¿½?How non-conformances are handled</li>
 </ul>
 
 <h2>4. Halal Integration Checklist</h2>
 <ul>
-<li><strong>â–?Halal requirements in food safety plan</strong> â€?Not separate, integrated</li>
-<li><strong>â–?Dedicated halal procedures</strong> â€?Within QMS framework</li>
-<li><strong>â–?Halal audit integrated with quality audits</strong> â€?Same schedule, same rigor</li>
-<li><strong>â–?Corrective actions for halal non-conformances</strong> â€?Same process as quality issues</li>
-<li><strong>â–?Halal management representative</strong> â€?Named person responsible</li>
+<li><strong>ï¿½?Halal requirements in food safety plan</strong> ï¿½?Not separate, integrated</li>
+<li><strong>ï¿½?Dedicated halal procedures</strong> ï¿½?Within QMS framework</li>
+<li><strong>ï¿½?Halal audit integrated with quality audits</strong> ï¿½?Same schedule, same rigor</li>
+<li><strong>ï¿½?Corrective actions for halal non-conformances</strong> ï¿½?Same process as quality issues</li>
+<li><strong>ï¿½?Halal management representative</strong> ï¿½?Named person responsible</li>
 </ul>
 
 <h2>5. Training Checklist</h2>
 <ul>
-<li><strong>â–?All staff trained on QMS basics</strong> â€?What it is, why it matters</li>
-<li><strong>â–?Halal handling training</strong> â€?Specific procedures for halal products</li>
-<li><strong>â–?Internal auditor training</strong> â€?How to conduct internal audits</li>
-<li><strong>â–?Documentation training</strong> â€?How to create and maintain records</li>
-<li><strong>â–?Refresher training schedule</strong> â€?Annual or more frequent</li>
+<li><strong>ï¿½?All staff trained on QMS basics</strong> ï¿½?What it is, why it matters</li>
+<li><strong>ï¿½?Halal handling training</strong> ï¿½?Specific procedures for halal products</li>
+<li><strong>ï¿½?Internal auditor training</strong> ï¿½?How to conduct internal audits</li>
+<li><strong>ï¿½?Documentation training</strong> ï¿½?How to create and maintain records</li>
+<li><strong>ï¿½?Refresher training schedule</strong> ï¿½?Annual or more frequent</li>
 </ul>
 
 <h2>6. Internal Audit Checklist</h2>
 <ul>
-<li><strong>â–?Audit schedule defined</strong> â€?At least annual, preferably semi-annual</li>
-<li><strong>â–?Auditor independence</strong> â€?Auditors do not audit their own work</li>
-<li><strong>â–?Audit findings documented</strong> â€?Non-conformances, observations, opportunities</li>
-<li><strong>â–?Corrective actions tracked</strong> â€?Root cause analysis, implementation, verification</li>
-<li><strong>â–?Management review conducted</strong> â€?Senior management reviews audit results</li>
+<li><strong>ï¿½?Audit schedule defined</strong> ï¿½?At least annual, preferably semi-annual</li>
+<li><strong>ï¿½?Auditor independence</strong> ï¿½?Auditors do not audit their own work</li>
+<li><strong>ï¿½?Audit findings documented</strong> ï¿½?Non-conformances, observations, opportunities</li>
+<li><strong>ï¿½?Corrective actions tracked</strong> ï¿½?Root cause analysis, implementation, verification</li>
+<li><strong>ï¿½?Management review conducted</strong> ï¿½?Senior management reviews audit results</li>
 </ul>
 
 <h2>7. Certification Audit Checklist</h2>
 <ul>
-<li><strong>â–?Pre-assessment audit</strong> â€?Dress rehearsal before formal audit</li>
-<li><strong>â–?Stage 1 audit</strong> â€?Documentation review</li>
-<li><strong>â–?Stage 2 audit</strong> â€?On-site implementation review</li>
-<li><strong>â–?Non-conformance closure</strong> â€?Address all findings before certification</li>
-<li><strong>â–?Certification issued</strong> â€?Typically valid for 3 years</li>
-<li><strong>â–?Annual surveillance audits</strong> â€?Required to maintain certification</li>
+<li><strong>ï¿½?Pre-assessment audit</strong> ï¿½?Dress rehearsal before formal audit</li>
+<li><strong>ï¿½?Stage 1 audit</strong> ï¿½?Documentation review</li>
+<li><strong>ï¿½?Stage 2 audit</strong> ï¿½?On-site implementation review</li>
+<li><strong>ï¿½?Non-conformance closure</strong> ï¿½?Address all findings before certification</li>
+<li><strong>ï¿½?Certification issued</strong> ï¿½?Typically valid for 3 years</li>
+<li><strong>ï¿½?Annual surveillance audits</strong> ï¿½?Required to maintain certification</li>
 </ul>
 
 <h2>8. Cost-Benefit Review</h2>
@@ -10300,12 +10300,12 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>9. Final QMS Review</h2>
 <ul>
-<li><strong>â–?Framework selected and gap analysis completed</strong></li>
-<li><strong>â–?All documentation created and approved</strong></li>
-<li><strong>â–?All staff trained</strong></li>
-<li><strong>â–?Internal audit conducted</strong></li>
-<li><strong>â–?Management review completed</strong></li>
-<li><strong>â–?Certification audit scheduled</strong></li>
+<li><strong>ï¿½?Framework selected and gap analysis completed</strong></li>
+<li><strong>ï¿½?All documentation created and approved</strong></li>
+<li><strong>ï¿½?All staff trained</strong></li>
+<li><strong>ï¿½?Internal audit conducted</strong></li>
+<li><strong>ï¿½?Management review completed</strong></li>
+<li><strong>ï¿½?Certification audit scheduled</strong></li>
 </ul>',
 '["quality-management","qms","iso-22000","haccp","brc","food-safety","checklist"]',
 NULL,'published',0,1788082542,1788082542
@@ -10317,11 +10317,11 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'Warehouse Management for Halal Products: Case Study',
 'How HalalFresh Logistics, a Malaysian halal warehouse operator, achieved 99.8% inventory accuracy and zero contamination incidents by implementing halal-specific warehouse management practices.',
 '<h1>Warehouse Management for Halal Products: HalalFresh Logistics Case Study</h1>
-<p>HalalFresh Logistics is a <strong>halal warehouse operator</strong> in Shah Alam, Malaysia, managing 50,000 sq ft of cold storage for halal food products. In 2023, they achieved <strong>99.8% inventory accuracy</strong> and <strong>zero contamination incidents</strong> â€?despite handling products for 45 different halal brands. This case study documents their approach.</p>
+<p>HalalFresh Logistics is a <strong>halal warehouse operator</strong> in Shah Alam, Malaysia, managing 50,000 sq ft of cold storage for halal food products. In 2023, they achieved <strong>99.8% inventory accuracy</strong> and <strong>zero contamination incidents</strong> ï¿½?despite handling products for 45 different halal brands. This case study documents their approach.</p>
 
 <h2>The Challenge</h2>
 <ul>
-<li><strong>Inventory accuracy: 94%</strong> â€?Discrepancies between system and physical stock</li>
+<li><strong>Inventory accuracy: 94%</strong> ï¿½?Discrepancies between system and physical stock</li>
 <li><strong>3 contamination near-misses:</strong> Non-halal products accidentally placed in halal zone</li>
 <li><strong>Temperature excursions:</strong> 12 incidents of temperature going outside safe range</li>
 <li><strong>Manual processes:</strong> Paper-based tracking, prone to errors</li>
@@ -10335,9 +10335,9 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <ul>
 <li><strong>Dedicated halal zone:</strong> 70% of warehouse designated as halal-only</li>
 <li><strong>Physical barriers:</strong> Walls and curtains separating halal from non-halal areas</li>
-<li><strong>Color coding:</strong> Green for halal, red for non-halal â€?floor markings, signage, equipment</li>
+<li><strong>Color coding:</strong> Green for halal, red for non-halal ï¿½?floor markings, signage, equipment</li>
 <li><strong>Separate receiving areas:</strong> Halal and non-halal products received at different docks</li>
-<li><strong>Separate equipment:</strong> Forklifts, pallets, containers â€?dedicated to halal zone</li>
+<li><strong>Separate equipment:</strong> Forklifts, pallets, containers ï¿½?dedicated to halal zone</li>
 </ul>
 
 <h3>2. Technology Implementation</h3>
@@ -10366,11 +10366,11 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>The Results</h2>
 <ul>
-<li><strong>Inventory accuracy: 99.8%:</strong> Up from 94% â€?near-perfect stock visibility</li>
+<li><strong>Inventory accuracy: 99.8%:</strong> Up from 94% ï¿½?near-perfect stock visibility</li>
 <li><strong>Zero contamination incidents:</strong> 12 months with no halal integrity breaches</li>
 <li><strong>Temperature excursions down 92%:</strong> From 12 to 1 incident per year</li>
 <li><strong>Order accuracy: 99.9%:</strong> Customers receive exactly what they ordered</li>
-<li><strong>Client base grew 40%:</strong> From 32 to 45 brands â€?reputation attracted new business</li>
+<li><strong>Client base grew 40%:</strong> From 32 to 45 brands ï¿½?reputation attracted new business</li>
 <li><strong>Insurance premiums reduced 15%:</strong> Better risk profile lowered costs</li>
 <li><strong>Implementation cost: $180K:</strong> WMS + IoT + camera system + warehouse modifications</li>
 <li><strong>ROI: 3.2x in Year 1:</strong> Cost savings + new business revenue</li>
@@ -10378,7 +10378,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h2>Key Takeaways</h2>
 <ul>
-<li>Physical separation is non-negotiable â€?walls and curtains, not just signage</li>
+<li>Physical separation is non-negotiable ï¿½?walls and curtains, not just signage</li>
 <li>Technology (WMS + barcode + IoT) eliminates human error in halal handling</li>
 <li>Color coding (green=halal, red=non-halal) reduces confusion</li>
 <li>Monthly training keeps halal procedures top-of-mind for all staff</li>
@@ -10387,7 +10387,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 <h2>How to Apply This</h2>
 <ul>
 <li>Audit your current warehouse layout for halal separation</li>
-<li>Implement color coding â€?green for halal, red for non-halal</li>
+<li>Implement color coding ï¿½?green for halal, red for non-halal</li>
 <li>Install temperature monitoring in cold storage</li>
 <li>Train all staff on halal handling procedures monthly</li>
 <li>Conduct weekly internal audits of halal compliance</li>
@@ -10400,7 +10400,7 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 'demand-planning-halal-products',
 'operations-management',
 'Demand Planning for Halal Products: Complete Checklist',
-'Complete demand planning checklist for halal products â€?covering Ramadan planning, seasonal forecasting, demand drivers, forecasting methods, and key metrics.',
+'Complete demand planning checklist for halal products ï¿½?covering Ramadan planning, seasonal forecasting, demand drivers, forecasting methods, and key metrics.',
 '<h1>Demand Planning for Halal Products: Complete Checklist</h1>
 <p>Demand planning for halal products is <strong>more complex than for conventional products</strong>. You must account for religious holidays, regional preferences, and certification timing. This checklist covers every step.</p>
 
@@ -10408,85 +10408,117 @@ INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","
 
 <h3>Religious Holidays</h3>
 <ul>
-<li><strong>â–?Ramadan planning</strong> â€?30-50% demand spike for halal food</li>
-<li><strong>â–?Eid al-Fitr</strong> â€?Post-Ramadan celebration spending</li>
-<li><strong>â–?Eid al-Adha</strong> â€?Peak demand for halal meat</li>
-<li><strong>â–?Hajj season</strong> â€?Increased demand in Saudi Arabia</li>
-<li><strong>â–?Islamic New Year</strong> â€?Moderate demand increase</li>
+<li><strong>ï¿½?Ramadan planning</strong> ï¿½?30-50% demand spike for halal food</li>
+<li><strong>ï¿½?Eid al-Fitr</strong> ï¿½?Post-Ramadan celebration spending</li>
+<li><strong>ï¿½?Eid al-Adha</strong> ï¿½?Peak demand for halal meat</li>
+<li><strong>ï¿½?Hajj season</strong> ï¿½?Increased demand in Saudi Arabia</li>
+<li><strong>ï¿½?Islamic New Year</strong> ï¿½?Moderate demand increase</li>
 </ul>
 
 <h3>Regional Preferences</h3>
 <ul>
-<li><strong>â–?Southeast Asia:</strong> Spice-heavy products, instant noodles</li>
-<li><strong>â–?Middle East:</strong> Dates, lamb, Arabic coffee</li>
-<li><strong>â–?Europe:</strong> Premium halal, organic options</li>
-<li><strong>â–?Africa:</strong> Affordable staples, grains</li>
+<li><strong>ï¿½?Southeast Asia:</strong> Spice-heavy products, instant noodles</li>
+<li><strong>ï¿½?Middle East:</strong> Dates, lamb, Arabic coffee</li>
+<li><strong>ï¿½?Europe:</strong> Premium halal, organic options</li>
+<li><strong>ï¿½?Africa:</strong> Affordable staples, grains</li>
 </ul>
 
 <h3>Certification Timing</h3>
 <ul>
-<li><strong>â–?Certification renewals</strong> â€?Affect production capacity</li>
-<li><strong>â–?New product certifications</strong> â€?Take 2-6 months</li>
-<li><strong>â–?Certification audits</strong> â€?May temporarily reduce output</li>
+<li><strong>ï¿½?Certification renewals</strong> ï¿½?Affect production capacity</li>
+<li><strong>ï¿½?New product certifications</strong> ï¿½?Take 2-6 months</li>
+<li><strong>ï¿½?Certification audits</strong> ï¿½?May temporarily reduce output</li>
 </ul>
 
 <h2>2. Historical Data Analysis Checklist</h2>
 <ul>
-<li><strong>â–?Gather 2-3 years of sales data</strong> â€?Minimum for reliable forecasting</li>
-<li><strong>â–?Identify seasonal patterns</strong> â€?Ramadan, Eid, Hajj cycles</li>
-<li><strong>â–?Account for anomalies</strong> â€?COVID, supply disruptions, one-time events</li>
-<li><strong>â–?Segment by product, region, customer</strong> â€?Different patterns for different segments</li>
-<li><strong>â–?Clean data</strong> â€?Remove outliers, fill gaps</li>
+<li><strong>ï¿½?Gather 2-3 years of sales data</strong> ï¿½?Minimum for reliable forecasting</li>
+<li><strong>ï¿½?Identify seasonal patterns</strong> ï¿½?Ramadan, Eid, Hajj cycles</li>
+<li><strong>ï¿½?Account for anomalies</strong> ï¿½?COVID, supply disruptions, one-time events</li>
+<li><strong>ï¿½?Segment by product, region, customer</strong> ï¿½?Different patterns for different segments</li>
+<li><strong>ï¿½?Clean data</strong> ï¿½?Remove outliers, fill gaps</li>
 </ul>
 
 <h2>3. Forecasting Method Selection Checklist</h2>
 <ul>
-<li><strong>â–?Simple Moving Average</strong> â€?For stable demand products</li>
-<li><strong>â–?Exponential Smoothing</strong> â€?For trending data</li>
-<li><strong>â–?Seasonal Decomposition</strong> â€?For products with clear seasonal patterns</li>
-<li><strong>â–?Causal Models</strong> â€?When external factors (holidays, promotions) drive demand</li>
-<li><strong>â–?AI/ML tools</strong> â€?For complex, multi-variable forecasting</li>
+<li><strong>ï¿½?Simple Moving Average</strong> ï¿½?For stable demand products</li>
+<li><strong>ï¿½?Exponential Smoothing</strong> ï¿½?For trending data</li>
+<li><strong>ï¿½?Seasonal Decomposition</strong> ï¿½?For products with clear seasonal patterns</li>
+<li><strong>ï¿½?Causal Models</strong> ï¿½?When external factors (holidays, promotions) drive demand</li>
+<li><strong>ï¿½?AI/ML tools</strong> ï¿½?For complex, multi-variable forecasting</li>
 </ul>
 
 <h2>4. Ramadan Planning Timeline Checklist</h2>
 <ul>
-<li><strong>â–?6 months before:</strong> Start demand forecasting</li>
-<li><strong>â–?4 months before:</strong> Secure raw materials</li>
-<li><strong>â–?3 months before:</strong> Increase production capacity</li>
-<li><strong>â–?2 months before:</strong> Build inventory</li>
-<li><strong>â–?1 month before:</strong> Finalize logistics arrangements</li>
-<li><strong>â–?During Ramadan:</strong> Monitor real-time demand</li>
-<li><strong>â–?Post-Ramadan:</strong> Plan inventory reduction</li>
+<li><strong>ï¿½?6 months before:</strong> Start demand forecasting</li>
+<li><strong>ï¿½?4 months before:</strong> Secure raw materials</li>
+<li><strong>ï¿½?3 months before:</strong> Increase production capacity</li>
+<li><strong>ï¿½?2 months before:</strong> Build inventory</li>
+<li><strong>ï¿½?1 month before:</strong> Finalize logistics arrangements</li>
+<li><strong>ï¿½?During Ramadan:</strong> Monitor real-time demand</li>
+<li><strong>ï¿½?Post-Ramadan:</strong> Plan inventory reduction</li>
 </ul>
 
 <h2>5. Forecasting Tools Checklist</h2>
 <ul>
-<li><strong>â–?Excel/Google Sheets</strong> â€?Simple forecasting for small businesses</li>
-<li><strong>â–?ERP systems</strong> â€?SAP, Oracle â€?integrated demand planning</li>
-<li><strong>â–?Specialized tools</strong> â€?Kinaxis, Blue Yonder â€?advanced forecasting</li>
-<li><strong>â–?AI-powered tools</strong> â€?Machine learning for demand prediction</li>
+<li><strong>ï¿½?Excel/Google Sheets</strong> ï¿½?Simple forecasting for small businesses</li>
+<li><strong>ï¿½?ERP systems</strong> ï¿½?SAP, Oracle ï¿½?integrated demand planning</li>
+<li><strong>ï¿½?Specialized tools</strong> ï¿½?Kinaxis, Blue Yonder ï¿½?advanced forecasting</li>
+<li><strong>ï¿½?AI-powered tools</strong> ï¿½?Machine learning for demand prediction</li>
 </ul>
 
 <h2>6. Key Metrics Checklist</h2>
 <ul>
-<li><strong>â–?Forecast accuracy:</strong> Target >85%</li>
-<li><strong>â–?Stockout rate:</strong> Target <2%</li>
-<li><strong>â–?Inventory turnover:</strong> Target 8-12x per year</li>
-<li><strong>â–?Waste rate:</strong> Target <5%</li>
+<li><strong>ï¿½?Forecast accuracy:</strong> Target >85%</li>
+<li><strong>ï¿½?Stockout rate:</strong> Target <2%</li>
+<li><strong>ï¿½?Inventory turnover:</strong> Target 8-12x per year</li>
+<li><strong>ï¿½?Waste rate:</strong> Target <5%</li>
 </ul>
 
 <h2>7. Final Demand Planning Review</h2>
 <ul>
-<li><strong>â–?Historical data analyzed (2-3 years)</strong></li>
-<li><strong>â–?Seasonal patterns identified</strong></li>
-<li><strong>â–?Ramadan forecast completed 6 months ahead</strong></li>
-<li><strong>â–?Raw materials secured 4 months ahead</strong></li>
-<li><strong>â–?Production capacity increased 3 months ahead</strong></li>
-<li><strong>â–?Inventory built 2 months ahead</strong></li>
-<li><strong>â–?Logistics finalized 1 month ahead</strong></li>
-<li><strong>â–?Real-time monitoring during Ramadan</strong></li>
-<li><strong>â–?Key metrics tracked weekly</strong></li>
+<li><strong>ï¿½?Historical data analyzed (2-3 years)</strong></li>
+<li><strong>ï¿½?Seasonal patterns identified</strong></li>
+<li><strong>ï¿½?Ramadan forecast completed 6 months ahead</strong></li>
+<li><strong>ï¿½?Raw materials secured 4 months ahead</strong></li>
+<li><strong>ï¿½?Production capacity increased 3 months ahead</strong></li>
+<li><strong>ï¿½?Inventory built 2 months ahead</strong></li>
+<li><strong>ï¿½?Logistics finalized 1 month ahead</strong></li>
+<li><strong>ï¿½?Real-time monitoring during Ramadan</strong></li>
+<li><strong>ï¿½?Key metrics tracked weekly</strong></li>
 </ul>',
 '["demand-planning","forecasting","ramadan","seasonal-demand","inventory-optimimization","operations","checklist"]',
 NULL,'published',0,1788082542,1788082542
 );
+
+-- market guides + trade shows (migrated from static TS)
+-- market guides
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('indonesia','Indonesia','ðŸ‡®ðŸ‡©','Southeast Asia','~230 million','~275 million','$220B+ (halal products)','mandatory','October 2024 (F&B)','[{"name":"BPJPH","slug":"bpjph"},{"name":"BPJPH / MUI","slug":"bpjph"}]','["Halal certificate from BPJPH-recognized foreign halal certification body (FHCB)","Certificate must be issued by a body recognized under mutual recognition (MR) with BPJPH","JAKIM-issued certificates accepted under Indonesiaâ€“Malaysia MR arrangement","Product registration via SIHALAL digital platform","Labeling in Bahasa Indonesia with halal logo (segel halal)"]','HAS 23000 (Indonesia), aligned with OIC/SMIIC standards','4 years (no changes in raw materials/process)','IDR 300,000 processing fee (SME-subsidized); regular scheme varies by product','3â€“6 months','["World''s largest Muslim population â€” the single biggest halal consumer market","Law 33/2014 (amended 2023) mandates halal certification for F&B; cosmetics and pharma phasing in next","SMEs receive government subsidies â€” IDR 300,000 flat processing fee","SIHALAL platform digitized the entire application and verification process","AI Halal tool (aihalal.halal.go.id) provides product pre-analysis"]','["Mandatory compliance created a certification rush â€” huge demand for consultants and certifiers","Domestic production cannot meet demand for premium halal imports (dairy, meat, ingredients)","Halal tourism and modest fashion are fast-growing adjacent sectors","E-commerce halal grocery segment growing 20%+ annually"]','["Registration through SIHALAL can be slow without local representation","BPJPH recognition of foreign certifiers is required â€” not all bodies qualify","Import licensing (through BPOM/other agencies) runs parallel to halal registration","Decentralized enforcement at port level can cause inconsistent clearance"]','The world''s largest halal market by population and the regulatory anchor of Southeast Asia. Since October 2024, halal certification is mandatory for all food and beverage products â€” imports included â€” making Indonesia both the biggest opportunity and the most complex compliance destination.',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('malaysia','Malaysia','ðŸ‡²ðŸ‡¾','Southeast Asia','~20 million','~34 million','$80B+ (halal industry ecosystem)','mandatory','Long-established (Trade Descriptions Act 2011)','[{"name":"JAKIM","slug":"jakim"}]','["JAKIM halal certificate or certificate from JAKIM-recognized foreign certification body (FHCB)","JAKIM maintains the reference list of recognized certifiers worldwide","Halal certification mandatory for meat, poultry imports regardless of origin","Import license (AP) required for meat and poultry products","Malay/English labeling with certifier logo"]','MS 1500 (Malaysia), referencing OIC/SMIIC and Codex halal guidelines','2 years (food premises); 1 year (abattoirs); 3 years (logistics/cosmetics/pharma); 5 years for clean 5+ year holders','$2,000â€“5,000+ depending on audit scope and facility','3â€“6 months','["JAKIM certification is the global gold standard â€” accepted in Middle East, ASEAN, most OIC states","Malaysia chairs OIC/SMIIC standardization â€” strong influence on global halal norms","Double certification pathway: JAKIM for domestic, FHCB recognition for foreign suppliers","Halal Industry Master Plan 2030 targets Malaysia as the global halal hub","MIHAS trade show is world''s largest halal exhibition (50,000+ visitors)"]','["Most efficient gateway market â€” JAKIM cert opens doors across OIC","Halal park ecosystem (over 20 dedicated halal industrial parks)","Strong demand for certified ingredients, flavors, and food tech","Islamic finance integration â€” financing options for halal ventures"]','["JAKIM audit wait times can stretch 6+ months","High competition â€” mature market with many certified players","Cost of maintaining annual audits for abattoir/food premise categories","Bahasa Malaysia documentation required for certain categories"]','The gold-standard halal jurisdiction. A JAKIM certificate is the most widely accepted halal credential in international trade, and Malaysia''s regulatory maturity makes it the reference market for halal standards worldwide.',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('uae','United Arab Emirates','ðŸ‡¦ðŸ‡ª','Middle East','~9 million','~11 million','$120B+ (halal trade hub value)','mandatory','2014 (ESMA halal scheme)','[{"name":"MOIAT","slug":"moiat"}]','["UAE halal scheme accreditation (UAE.S 2055-1/2055-2) for meat, poultry, supplements, nutraceuticals","Certificates from ESMA-accredited bodies (JAKIM, MUI, IFANCA accepted under accreditation)","Product must be certified before customs clearance for regulated categories","Arabic labeling required on all food products","Halal National Mark available as an additional trust signal"]','UAE.S 2055-1 (halal food requirements), UAE.S 2055-2 (management systems), GCC-wide recognition','1 year','$3,000â€“8,000 including accreditation and audit','3â€“8 weeks','["Dubai is the re-export hub â€” 60%+ of halal imports are re-exported to GCC/Africa/CIS","UAE Halal National Mark goes beyond basic certification â€” stronger consumer trust signal","ESMA (now MOIAT) accredits certification bodies rather than certifying directly at scale","Gateway to the wider GCC â€” single accreditation unlocks Saudi, Qatar, Kuwait, Bahrain, Oman trade","Gulfood (world''s largest F&B expo) drives annual sourcing cycles"]','["Re-export model means one UAE entry point serves 2B+ consumers across MENA, Africa, CIS","Free zone logistics infrastructure (Jebel Ali) for halal warehousing","Fast-growing halal tourism, hospitality, and airline catering sectors","Dubai''s Halal Cluster in DMCC dedicated to halal businesses"]','["1-year validity means annual renewal cost and audit cycle","Strict import controls at port level â€” rejections common without correct documentation","Animal-origin ingredients in cosmetics/supplements face extra scrutiny","Arabic labeling and documentation requirements add cost"]','The strategic re-export hub of the global halal trade. UAE accreditation unlocks the entire GCC and serves as the distribution gateway to the Middle East, Africa, and CIS markets.',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('saudi-arabia','Saudi Arabia','ðŸ‡¸ðŸ‡¦','Middle East','~32 million','~36 million','$95B+ (domestic halal consumption)','mandatory','2018 (SFDA halal regulation)','[{"name":"SFDA","slug":"sfda"},{"name":"SABER / SASO","slug":"saber"}]','["Halal certificate from SFDA-recognized certification body","Product registration in SFDA e-portal before shipment","Valid Certificate of Conformity (CoC) for food imports","Arabic labeling mandatory","Meat/poultry: Islamic slaughter certificate with government countersignature from origin country"]','SFDA halal regulations; GCC Standardization Organization (GSO) halal standards','1 year (product registration)','$2,800â€“6,000','6â€“12 weeks','["Largest consumer market in the GCC â€” imports 80%+ of its food","SFDA regulates directly â€” no self-certification or voluntary pathway for food","Saudi Halal Expo (Riyadh) is MENA''s largest dedicated halal trade show","Vision 2030 invests in domestic halal production â€” import substitution accelerating","Islamic slaughter certificates for meat require government-to-government countersignature"]','["Massive import dependency creates sustained demand across all food categories","Food security programs actively recruiting foreign suppliers and investors","Halal cosmetics and pharma sectors growing 15%+ annually","Hajj/Umrah pilgrimage food services â€” 10M+ visitors annually"]','["SFDA e-portal registration can be slow without local importer support","Violations carry severe penalties including blacklisting","Shipment-level rejections common if documentation mismatches product","Local distributor requirement for market entry in practice"]','The largest and most import-dependent halal market in the Gulf. SFDA regulation is strict but well-documented â€” compliant suppliers find Saudi Arabia among the most rewarding halal destinations.',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('turkiye','TÃ¼rkiye','ðŸ‡¹ðŸ‡·','Europe','~75 million','~85 million','$60B+ (halal food consumption)','voluntary',NULL,'[{"name":"GIMDES","slug":"gimdes"}]','["Halal certificate from TSE or GIMDES for halal-labeled products (voluntary but commercially expected)","Standard Turkish Food Codex labeling requirements","No blanket halal mandate â€” but halal claims must be backed by valid certification","Meat imports restricted to approved countries and establishments"]','TSE halal standards (OIC/SMIIC 1), aligned with OIC harmonized standards','1â€“3 years depending on certifier and category','$2,000â€“4,000','8â€“16 weeks','["TÃ¼rkiye holds the OIC/SMIIC secretariat â€” the country writes the OIC-wide halal rulebook","World Halal Council general assembly and mutual recognition decisions made at Istanbul''s World Halal Summit","Halal Expo Istanbul draws 50,000+ visitors and 500+ exhibitors each November","Domestic market largely halal by default â€” certification is about export credibility","Bridge position between European production standards and OIC market access"]','["Gateway for European manufacturers targeting OIC markets","Certification accepted across OIC/SMIIC member states","Strong food processing and export infrastructure","Halal tourism sector booming â€” 4M+ Muslim visitors to Istanbul alone"]','["Voluntary regime means market fragmentation â€” some buyers accept TSE, others demand GIMDES or foreign certs","Economic volatility affects pricing and payment reliability","Halal and secular market segments coexist â€” certification messaging must be targeted","Currency fluctuation complicates long-term contracts"]','The standards-setter. TÃ¼rkiye chairs OIC/SMIIC and hosts the World Halal Summit â€” its certification decisions shape mutual recognition for the entire OIC market of 1.9 billion consumers.',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('pakistan','Pakistan','ðŸ‡µðŸ‡°','South Asia','~220 million','~240 million','$70B+ (halal food market)','phasing-in',NULL,'[{"name":"PHA","slug":"pha"}]','["Halal certificate required for meat and derived products","PSQCA conformity for food imports","Import authorization via PSW (Pakistan Single Window)","Urdu or English labeling"]','PS 3733 (Pakistan halal standard), aligned with OIC/SMIIC','1 year','$1,500â€“3,000','8â€“12 weeks','["World''s second-largest Muslim population â€” nearly all consumption is halal by default","Emerging formal certification infrastructure â€” PSQCA halal standard PS 3733 adopted 2018","Major meat exporter (beef to GCC, Vietnam) â€” export-side certification growth strong","Government targeting halal export growth under Trade Policy Framework","Large informal sector â€” formal certification penetration still low"]','["Export-oriented meat certification is a high-growth service niche","Domestic formalization creating first-mover certification demand","Low production costs make Pakistan a competitive halal sourcing base","CPEC corridor links Chinese ingredient suppliers to Gulf markets"]','["Regulatory enforcement capacity still developing","Documentation and customs efficiency below regional peers","Only a handful of recognized halal certifiers â€” bottleneck risk","Buyers often require additional third-party audits beyond local certification"]','A high-potential halal production base and the world''s second-largest Muslim consumer market, where formal halal certification infrastructure is now emerging to match its enormous scale.',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "market_guides" ("slug","country","flag","region","muslim_population","total_population","market_size_usd","mandate_status","mandatory_since","certifying_bodies","import_requirements","standard_basis","certificate_validity","estimated_cost_usd","processing_time","key_insights","opportunities","challenges","summary","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('usa','United States','ðŸ‡ºðŸ‡¸','North America','~4.5 million','~335 million','$20B+ (domestic halal market)','voluntary',NULL,'[{"name":"IFANCA","slug":"ifanca"}]','["FDA registration and Prior Notice for food imports","FSMA compliance (Food Safety Modernization Act)","Halal certification voluntary â€” but required by retailers/consumers for halal-claimed products","No government halal regulation â€” private certifier ecosystem","English labeling with FDA nutrition facts panel"]','Private certifier standards (IFANCA most widely recognized); no federal halal standard','1 year (typical)','$4,000â€“10,000 (annual)','8â€“16 weeks','["1.4 million Muslim-majority households with above-average purchasing power","Halal market growing 15%+ annually â€” faster than general food market","No federal halal law â€” 8+ states have truth-in-halal-labeling statutes","IFANCA is the dominant certifier â€” recognized by JAKIM, MUI, ESMA and most import authorities","Halal mainstreaming: Costco, Walmart, Kroger now stock halal-certified lines"]','["Non-Muslim consumers increasingly buy halal for perceived quality/ethics (halal-adjacent market)","Amazon/retail e-commerce simplifies national distribution","Ethnic food service sector (halal restaurants) expanding beyond metro cores","Export-side: US halal-certified products well-accepted in OIC markets"]','["No unified standard â€” certifier choice affects which export markets open","Annual audit costs are relatively high for SMEs","Halal fraud incidents damaged consumer trust â€” buyers demand reputable certifiers","Fragmented consumer market across metro areas"]','The most commercially mature voluntary halal market, where private certifiers govern a fast-growing $20B sector driven by mainstream retail adoption and a high-income Muslim consumer base.',NULL,NULL,NULL,'active',1788082542,1788082542);
+
+-- trade shows
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('mihas-2026','MIHAS 2026 â€” Malaysia International Halal Showcase','Kuala Lumpur','Malaysia','Asia','2026-09-23','2026-09-26','Malaysia International Trade and Exhibition Centre (MITEC)','https://mihas.my','mega','World''s largest halal trade fair. Hosted by Malaysia''s MITI and organised by MATRADE with JAKIM and HDC. Covers 14 halal industry clusters including food, pharma, Islamic finance, modest fashion, technology, and logistics.','["Food & Beverage","Pharmaceuticals","Islamic Finance","Modest Fashion","Technology","Logistics"]','1,200+','50,000+',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('gulfood-2027','Gulfood 2027 â€” 32nd Edition','Dubai','UAE','Middle East','2027-02-22','2027-02-26','Dubai World Trade Centre','https://gulfood.com','mega','World''s largest food and beverage exhibition. Major halal sourcing hub connecting buyers from Middle East, Africa, and South Asia with global suppliers.','["Food & Beverage","Halal Products","Dairy","Meat","Confectionery"]','5,000+','100,000+',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('halal-expo-istanbul-2026','11th OIC Halal Expo 2026 & World Halal Summit','Istanbul','TÃ¼rkiye','Europe','2026-11-25','2026-11-28','Istanbul Expo Center (Ä°FM)','https://ifm.com.tr','mega','Most politically significant halal industry event. Co-located with World Halal Summit and World Halal Council general assembly. TÃ¼rkiye holds OIC/SMIIC secretariat. Covers mutual recognition agreements between certification bodies globally.','["Certification","Standards","OIC Trade","Food","Cosmetics","Pharmaceuticals"]','500+','50,000+',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('saudi-halal-expo-2026','Saudi International Halal Expo & Summit 2026','Riyadh','Saudi Arabia','Middle East','2026-10-04','2026-10-06','Riyadh International Convention & Exhibition Center (RICEC)','https://saudihalalexp.com','large','MENA region''s largest dedicated halal industry exhibition. Covers food, pharmaceuticals, cosmetics, modest fashion, tourism, and Islamic finance.','["Food","Pharmaceuticals","Cosmetics","Modest Fashion","Islamic Finance"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('halal-expo-canada-2026','Halal Expo Canada 2026','Toronto','Canada','North America','2026-06-15','2026-06-17','Metro Toronto Convention Centre','https://halalexpo.ca','large','North America''s core halal B2B platform. Attracts exhibitors from Malaysia, Turkey, UAE, Pakistan alongside North American producers targeting 1.4 million Muslim-majority households.','["Food & Beverage","B2B Matching","North American Market"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('jakarta-halal-expo-2026','Jakarta Halal Expo & Conference 2026','Tangerang','Indonesia','Asia','2026-08-28','2026-08-30','Indonesia Convention Exhibition (ICE BSD City)','https://jakartahalalexp.com','large','Indonesia''s flagship halal trade event. World''s largest Muslim population market. Covers fashion, halal products, tourism, lifestyle, and Islamic finance.','["Fashion","Halal Products","Tourism","Lifestyle","Islamic Finance"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('mihas-dubai-2026','MIHAS @ Dubai 2026','Dubai','UAE','Middle East','2026-11-16','2026-11-18','Dubai World Trade Centre','https://mihasdubai.com','large','International edition of MIHAS. Showcases 200+ Malaysian halal suppliers to GCC and Middle Eastern buyers.','["Malaysian Products","GCC Market","B2B Matching"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('qatar-halal-expo-2026','Qatar Halal Expo & Conference 2026','Doha','Qatar','Middle East','2026-09-07','2026-09-09','Doha Exhibition and Convention Center (DECC)','https://qatarhalalexp.com','medium','Qatar''s dedicated halal trade platform. Growing market driven by FIFA 2022 legacy infrastructure and Vision 2030.','["Food","Hospitality","Islamic Finance"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('halal-japan-expo-2026','Halal Japan Expo 2026','Tokyo','Japan','Asia','2026-04-15','2026-04-17','Tokyo Big Sight','https://halaljapan.jp','medium','Japan''s halal trade event connecting halal exporters with Japanese importers and retailers. Growing demand for halal products in Japan''s tourism and retail sectors.','["Food","Tourism","Japanese Market"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('halal-expo-nigeria-2026','Halal Expo Nigeria 2026','Lagos','Nigeria','Africa','2026-02-18','2026-02-20','Eko Hotel & Suites','https://halalexponigeria.com','regional','West Africa''s halal trade platform. Nigeria has Africa''s largest Muslim population and growing halal demand.','["Food","Agriculture","West African Market"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('world-halal-summit-2026','World Halal Summit 2026','Istanbul','TÃ¼rkiye','Europe','2026-11-25','2026-11-27','Istanbul Expo Center','https://worldhalalsummit.org','large','Global summit on halal standards, certification, and policy. World Halal Council general assembly determines mutual recognition agreements between certification bodies.','["Certification","Standards","Policy","Mutual Recognition"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('global-halal-summit-2026','Global Halal Summit (GHaS) 2026','Kuala Lumpur','Malaysia','Asia','2026-09-21','2026-09-22','MITEC','https://ghas.my','large','Co-located with MIHAS. Global summit on halal industry trends, standards, and market access.','["Industry Trends","Standards","Market Access"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('anuga-halal-2027','Anuga â€” Anuga Halal Market 2027','Cologne','Germany','Europe','2027-10-09','2027-10-13','Koelnmesse','https://anuga.com','mega','World''s largest food and beverage trade fair with dedicated Halal Market section. 7,000+ exhibitors from 200+ countries.','["Food & Beverage","European Market","Global Sourcing"]','7,000+','150,000+',NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('philippines-halal-expo-2026','Philippines Halal Expo 2026','Manila','Philippines','Asia','2026-11-20','2026-11-22','World Trade Center Manila','https://philippinehalalexp.com','regional','Philippines'' halal trade platform. Growing Southeast Asian halal market with strong Muslim-majority southern regions.','["Food","Halal Certification","ASEAN Market"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('vietnam-halal-expo-2026','Vietnam Halal Expo 2026','Ho Chi Minh City','Vietnam','Asia','2026-11-18','2026-11-20','Saigon Exhibition & Convention Center (SECC)','https://vietnamhalalexp.com','regional','Vietnam''s halal trade event. Emerging halal manufacturing hub targeting ASEAN and OIC markets.','["Manufacturing","ASEAN Market","Export"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('france-halal-expo-2026','France Halal Expo 2026','Paris','France','Europe','2026-11-24','2026-11-26','Paris-Nord Villepinte','https://francehalalexp.com','medium','Europe''s largest halal consumer market event. France has 5+ million Muslim consumers.','["Consumer Products","European Market","Food & Beverage"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('india-halal-expo-2026','India International Halal Expo 2026','New Delhi','India','Asia','2026-02-20','2026-02-22','Pragati Maidan','https://indiahalalexp.com','large','India''s halal trade platform. World''s third-largest Muslim population market with growing halal industry.','["Food","Cosmetics","Pharmaceuticals","Indian Market"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('halfest-malaysia-2026','HALFEST â€” Halal Fiesta Malaysia 2026','Kuala Lumpur','Malaysia','Asia','2026-08-14','2026-08-16','MITEC','https://halfest.my','medium','Malaysia''s consumer halal festival. B2C focused with food tasting, product launches, and consumer engagement.','["Consumer Products","Food","Lifestyle"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('adife-abu-dhabi-2026','Abu Dhabi International Food Exhibition (ADIFE) 2026','Abu Dhabi','UAE','Middle East','2026-12-09','2026-12-11','Abu Dhabi National Exhibition Centre','https://adife.ae','large','Abu Dhabi''s international food exhibition. Major sourcing event for Middle Eastern and North African food markets.','["Food & Beverage","Middle East Market","Halal Sourcing"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);
+INSERT INTO "trade_shows" ("id","name","city","country","region","start_date","end_date","venue","website","scale","description","focus","exhibitors","visitors","meta_title","meta_description","keywords","status","created_at","updated_at") VALUES ('halal-expo-germany-2026','Halal Expo Germany 2026','Frankfurt','Germany','Europe','2026-11-12','2026-11-14','Messe Frankfurt','https://halalexpo-deutschland.de','medium','Central Europe''s halal trade platform. Growing audience of Central European buyers with no prior dedicated halal event.','["European Market","Food","B2B Matching"]',NULL,NULL,NULL,NULL,NULL,'active',1788082542,1788082542);

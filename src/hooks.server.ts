@@ -225,7 +225,6 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 const PUBLIC_PATHS = [
 	'/_app/',
 	'/fonts/',
-	'/images/',
 	'/icons/',
 	'/api/products',
 	'/api/suppliers',

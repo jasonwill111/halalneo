@@ -99,7 +99,7 @@
 	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
-<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+<div class="py-8">
 	{#if provider}
 		<Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }, { label: provider.name ?? 'Provider' }]} />
 
@@ -114,16 +114,16 @@
 					<h1 class="text-sm font-semibold tracking-tight leading-tight">{provider.name}</h1>
 					<p class="mt-0.5 text-[10px] text-muted-foreground">{provider.country} · {typeLabel(provider.type as ProviderType)} · Est. {yearEst}</p>
 					<div class="mt-1 flex flex-wrap gap-1">
-						<Badge variant="secondary" class="gap-0.5 text-[9px]">
-							<Shield class="size-2 text-green-600" />
+						<Badge variant="secondary" class="gap-0.5 text-[10px]">
+							<Shield class="size-2 text-success" />
 							Verified
 						</Badge>
-						<Badge variant="secondary" class="text-[9px]">{typeLabel(provider.type as ProviderType)}</Badge>
+						<Badge variant="secondary" class="text-[10px]">{typeLabel(provider.type as ProviderType)}</Badge>
 					</div>
 					{#if provider.rating}
 						<div class="mt-1 flex items-center gap-1">
 							<span class="text-[10px] text-primary font-medium">{provider.rating}★</span>
-							<span class="text-[9px] text-muted-foreground">(128 reviews)</span>
+							<span class="text-[10px] text-muted-foreground">(128 reviews)</span>
 						</div>
 					{/if}
 				</div>
@@ -156,21 +156,21 @@
 		</div>
 
 		<div class="mb-3 grid grid-cols-2 gap-1 sm:grid-cols-4">
-			<div class="rounded-lg bg-card shadow-sm p-1.5 text-center">
+			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
 				<div class="text-xs font-bold text-primary">{services.length}</div>
-				<div class="text-[8px] text-muted-foreground">Services</div>
+				<div class="text-[10px] text-muted-foreground">Services</div>
 			</div>
-			<div class="rounded-lg bg-card shadow-sm p-1.5 text-center">
+			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
 				<div class="text-xs font-bold text-primary">{provider.rating ?? '–'}{provider.rating ? '★' : ''}</div>
-				<div class="text-[8px] text-muted-foreground">Rating</div>
+				<div class="text-[10px] text-muted-foreground">Rating</div>
 			</div>
-			<div class="rounded-lg bg-card shadow-sm p-1.5 text-center">
+			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
 				<div class="text-xs font-bold text-primary">{provider.country ?? '—'}</div>
-				<div class="text-[8px] text-muted-foreground">Country</div>
+				<div class="text-[10px] text-muted-foreground">Country</div>
 			</div>
-			<div class="rounded-lg bg-card shadow-sm p-1.5 text-center">
+			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
 				<div class="text-xs font-bold text-primary">{yearEst}</div>
-				<div class="text-[8px] text-muted-foreground">Est.</div>
+				<div class="text-[10px] text-muted-foreground">Est.</div>
 			</div>
 		</div>
 
@@ -189,14 +189,14 @@
 			<h2 class="mb-1 text-sm font-semibold">Services Offered</h2>
 			<div class="grid gap-1.5 sm:grid-cols-2">
 				{#each services as svc}
-					<div class="rounded-lg bg-card shadow-sm p-1.5">
+					<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5">
 						<div class="flex items-center gap-1.5">
 							<div class="flex size-6 shrink-0 items-center justify-center rounded-lg {svc.color}">
 								<Shield class="size-3.5" />
 							</div>
 							<div class="min-w-0 flex-1">
 								<h3 class="text-[10px] font-medium truncate">{svc.title}</h3>
-								<p class="text-[9px] text-muted-foreground">{svc.desc}</p>
+								<p class="text-[10px] text-muted-foreground">{svc.desc}</p>
 							</div>
 						</div>
 					</div>
@@ -209,7 +209,7 @@
 				<h2 class="mb-1 text-sm font-semibold">Service Areas</h2>
 				<div class="flex flex-wrap gap-1">
 					{#each serviceAreas as area}
-						<Badge variant="secondary" class="text-[9px]">{typeof area === 'string' ? area : area.name ?? area}</Badge>
+						<Badge variant="secondary" class="text-[10px]">{typeof area === 'string' ? area : area.name ?? area}</Badge>
 					{/each}
 				</div>
 			</div>
@@ -218,7 +218,7 @@
 		{#if (provider as any)?.pricing || (provider as any)?.paymentMethods}
 			<div class="mb-3">
 				<h2 class="mb-1 text-sm font-semibold">Pricing</h2>
-				<div class="rounded-lg bg-card shadow-sm p-1.5">
+				<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5">
 					<dl class="space-y-0.5 text-[10px]">
 						{#if (provider as any).pricing}
 							<div class="flex justify-between py-0.5"><dt class="text-muted-foreground">Pricing</dt><dd class="font-medium">{(provider as any).pricing}</dd></div>
@@ -236,14 +236,14 @@
 				<h2 class="mb-1 text-sm font-semibold">Reviews</h2>
 				<div class="grid gap-1.5 sm:grid-cols-2">
 					{#each (provider as any).reviews as review}
-						<div class="rounded-lg bg-card shadow-sm p-1.5">
+						<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5">
 							<div class="mb-0.5 text-[10px] text-primary">{'★'.repeat(review.stars ?? 5)}{'☆'.repeat(5 - (review.stars ?? 5))}</div>
 							<p class="mb-1 text-[10px] text-muted-foreground italic line-clamp-2">{review.text ?? review.comment ?? ''}</p>
 							<div class="flex items-center gap-1.5">
-								<div class="flex size-6 items-center justify-center rounded-full bg-secondary text-[9px] font-medium">{review.initials ?? (review.name ?? '').split(' ').map((w: string) => w[0]).slice(0, 2).join('')}</div>
+								<div class="flex size-6 items-center justify-center rounded-full bg-secondary text-[10px] font-medium">{review.initials ?? (review.name ?? '').split(' ').map((w: string) => w[0]).slice(0, 2).join('')}</div>
 								<div>
 									<p class="text-[10px] font-medium">{review.name ?? ''}</p>
-									<p class="text-[8px] text-muted-foreground">{review.company ?? ''}</p>
+									<p class="text-[10px] text-muted-foreground">{review.company ?? ''}</p>
 								</div>
 							</div>
 						</div>
@@ -257,15 +257,15 @@
 				<h2 class="mb-1 text-sm font-semibold">Related Service Providers</h2>
 				<div class="grid gap-1.5 sm:grid-cols-2">
 					{#each related as rel}
-						<a href={localizeHref(`/service-providers/${rel.slug}`)} class="rounded-lg bg-card shadow-sm p-1.5 transition-all hover:shadow-md">
+						<a href={localizeHref(`/service-providers/${rel.slug}`)} class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 transition-all hover:shadow-md">
 							<div class="flex items-center gap-1.5">
 								<div class="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-semibold">{initials(rel.name)}</div>
 								<div class="min-w-0 flex-1">
 									<h3 class="text-[10px] font-medium truncate">{rel.name}</h3>
-									<p class="text-[9px] text-muted-foreground">{rel.country} · {rel.rating ?? '–'}★</p>
+									<p class="text-[10px] text-muted-foreground">{rel.country} · {rel.rating ?? '–'}★</p>
 								</div>
-								<Badge variant="secondary" class="shrink-0 gap-0.5 text-[8px]">
-									<Shield class="size-2 text-green-600" />
+								<Badge variant="secondary" class="shrink-0 gap-0.5 text-[10px]">
+									<Shield class="size-2 text-success" />
 									Verified
 								</Badge>
 							</div>

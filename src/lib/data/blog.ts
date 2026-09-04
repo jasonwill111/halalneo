@@ -3,7 +3,7 @@ import type { BlogPost } from './types';
 export const blogPosts: BlogPost[] = [
 	{
 		slug: 'halal-certification-in-2026-what-buyers-need-to-know',
-		featuredImage: '/images/blog-1.jpg',
+		featuredImage: '/api/media/blog-1.jpg',
 		title: 'Halal Certification in 2026: What Buyers Need to Know',
 		excerpt:
 			"Certification schemes are converging on risk-based assurance. Here's how buyers can read certificates that actually hold up in cross-border trade.",
@@ -15,7 +15,7 @@ export const blogPosts: BlogPost[] = [
 	},
 	{
 		slug: 'news-of-dubai-global-village-pushes-ms-1500',
-		featuredImage: '/images/blog-2.jpg',
+		featuredImage: '/api/media/blog-2.jpg',
 		title: 'MS 1500 Update: What Changed for Exporters',
 		excerpt:
 			"The 2019 revision of Malaysia's halal standard has downstream effects on how certificates are scoped for export.",
@@ -27,7 +27,7 @@ export const blogPosts: BlogPost[] = [
 	},
 	{
 		slug: 'how-to-build-a-certification-vault',
-		featuredImage: '/images/blog-3.jpg',
+		featuredImage: '/api/media/blog-3.jpg',
 		title: 'How to Build a Certification Vault for Your Buying Team',
 		excerpt:
 			'A practical workflow for keeping supplier certificates current across renewals, scopes and bodies.',

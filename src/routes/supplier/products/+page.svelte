@@ -48,7 +48,7 @@
 	<Button variant="ghost" size="sm" class="text-[10px]">Pending ({products.filter((p) => p.status === 'pending').length})</Button>
 </div>
 
-<div class="overflow-x-auto rounded-xl bg-card shadow-sm">
+<div class="overflow-x-auto rounded-xl bg-card">
 	{#if products.length === 0}
 		<div class="flex flex-col items-center justify-center py-12 text-center">
 			<p class="text-sm font-medium text-muted-foreground">No products yet</p>

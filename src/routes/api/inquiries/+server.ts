@@ -49,10 +49,18 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
-				const [countResult, rows] = await Promise.all([
-					db.select({ count: sql<number>`count(*)` }).from(inquiries).where(where),
-					db.select().from(inquiries).where(where).limit(limit).offset(offset)
-				]);
+				const [countResult] = await db
+					.select({ count: sql<number>`count(*)` })
+					.from(inquiries)
+					.where(where);
+
+				const rows = await db
+					.select()
+					.from(inquiries)
+					.where(where)
+					.limit(limit)
+					.offset(offset);
+
 				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},
 			{ ...cacheShort() }

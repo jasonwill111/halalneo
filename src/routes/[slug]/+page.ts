@@ -19,10 +19,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			return {
 				seo: {
 					title: data.title ? `${data.title} — HalalNeo` : `${params.slug} — HalalNeo`,
-					description:
-						data.metaDescription ||
-						`HalalNeo — ${params.slug}. Global halal-certified medical device and pharmaceutical solutions.`,
-					ogImage: data.featuredImage || 'https://halalneo.com/og-default.svg',
+				description:
+					data.metaDescription ||
+					`HalalNeo — ${params.slug}. Halal trade intelligence, certification guides, and market entry resources.`,
+					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-default.svg',
 					keywords: data.keywords || []
 				},
 				item: data

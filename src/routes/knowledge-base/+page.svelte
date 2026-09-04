@@ -58,18 +58,28 @@
 	]);
 
 	const sectionImages: Record<string, string> = {
-		'getting-started': '/images/kb-certification.webp',
-		'certification': '/images/kb-certification.webp',
-		'sourcing': '/images/kb-sourcing.webp',
-		'compliance': '/images/kb-compliance.webp',
-		'supply-chain': '/images/kb-supply-chain.webp',
-		'markets': '/images/kb-sourcing.webp',
+		'getting-started': '/api/media/kb-certification.webp',
+		'certification': '/api/media/kb-certification.webp',
+		'sourcing': '/api/media/kb-sourcing.webp',
+		'compliance': '/api/media/kb-compliance.webp',
+		'supply-chain': '/api/media/kb-supply-chain.webp',
+		'markets': '/api/media/kb-sourcing.webp',
 	};
+
+	// Icon tile palette — same order as homepage categoryColors for cross-page consistency
+	const tileColors = [
+		'bg-info/10 text-info',
+		'bg-warn/10 text-warn',
+		'bg-success/10 text-success',
+		'bg-accent-purple/10 text-accent-purple',
+		'bg-accent-rose/10 text-accent-rose',
+		'bg-primary/10 text-primary'
+	];
 </script>
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="space-y-4">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<BookOpen class="size-4"></BookOpen>
@@ -106,11 +116,15 @@
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Explore by Category</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each subForms as form}
-				<a href={localizeHref(form.href)} class="group">
+			{#each subForms as form, i}
+				<a href={localizeHref(form.href)} class="group h-full">
 					<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
 						<CardHeader class="gap-3">
-							<div class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+							<div
+								class="flex size-10 items-center justify-center rounded-lg {tileColors[
+									i % tileColors.length
+								]}"
+							>
 								<form.icon class="size-5" />
 							</div>
 							<div class="space-y-1">
@@ -137,8 +151,8 @@
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each filteredSections as section}
-			<Card hoverable class="overflow-hidden">
+		{#each filteredSections as section, i}
+			<Card hoverable class="h-full overflow-hidden">
 				{#if sectionImages[section.slug]}
 					<div class="aspect-[2/1] overflow-hidden">
 						<img src={sectionImages[section.slug]} alt={section.title} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
@@ -146,7 +160,9 @@
 				{/if}
 				<CardHeader class="gap-3">
 					<div
-						class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+						class="flex size-10 items-center justify-center rounded-lg {tileColors[
+							i % tileColors.length
+						]}"
 					>
 						<Icon name={section.icon} class="size-5"></Icon>
 					</div>
@@ -179,7 +195,7 @@
 		<h2 class="mb-2.5 text-sm font-semibold text-foreground">Popular Articles</h2>
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 			<a href={localizeHref('/knowledge-base/halal-certification/how-to-choose-halal-certification')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
 					<BookOpen class="size-4"></BookOpen>
 				</div>
 				<div class="min-w-0">
@@ -188,7 +204,7 @@
 				</div>
 			</a>
 			<a href={localizeHref('/knowledge-base/halal-certification/understanding-jakim-standards')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warn/10 text-warn">
 					<BookOpen class="size-4"></BookOpen>
 				</div>
 				<div class="min-w-0">
@@ -197,7 +213,7 @@
 				</div>
 			</a>
 			<a href={localizeHref('/knowledge-base/supply-chain/halal-supply-chain-best-practices')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success">
 					<BookOpen class="size-4"></BookOpen>
 				</div>
 				<div class="min-w-0">

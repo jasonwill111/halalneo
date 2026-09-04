@@ -95,7 +95,7 @@
 
 <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
 	{#each plans as plan}
-		<Card class={`relative ${plan.highlight ? 'border-2 border-primary' : ''} p-2.5 space-y-2`}>
+		<Card class={`relative overflow-visible ${plan.highlight ? 'border-2 border-primary' : ''} p-2.5 space-y-2`}>
 			{#if plan.highlight}
 				<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
 					Most popular
@@ -116,7 +116,7 @@
 			>
 				{plan.name === 'Free' ? 'Get Started' : plan.name === 'Enterprise' ? 'Contact Sales' : 'Start Free Trial'}
 			</Button>
-			<ul class="space-y-1 text-[11px]">
+			<ul class="space-y-1 text-xs">
 				{#each plan.features as feature}
 					<li class="flex items-center gap-1.5">
 						{#if feature.included}
@@ -132,7 +132,7 @@
 	{/each}
 </div>
 
-<div class="mt-8 rounded-lg bg-card shadow-sm p-3">
+<div class="mt-6 rounded-lg bg-card p-3">
 	<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 		<div class="space-y-1">
 			<h2 class="text-sm font-semibold">Brand URL Add-on</h2>
@@ -150,7 +150,7 @@
 	</div>
 </div>
 
-<div class="mt-10 max-w-2xl mx-auto">
+<div class="mt-8 max-w-2xl mx-auto">
 	<h2 class="text-sm font-semibold text-center mb-3">FAQ</h2>
 	<div class="space-y-1.5">
 		{#each pricingFaqs as faq}

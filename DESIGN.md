@@ -3,7 +3,7 @@ name: HalalNeo
 description: Halal trade intelligence for buyers and suppliers
 colors:
   certified-green: 'oklch(0.45 0.14 155)'
-  certified-green-dark: 'oklch(0.72 0.14 155)'
+  certified-green-dark: 'oklch(0.75 0.14 155)'
   warm-cream: 'oklch(0.975 0.008 85)'
   pure-white: 'oklch(1 0 0)'
   deep-navy: 'oklch(0.16 0.015 250)'
@@ -15,28 +15,28 @@ colors:
   dark-mode-text: 'oklch(0.93 0.005 250)'
 typography:
   display:
-    fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontFamily: 'Plus Jakarta Sans, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: 'clamp(2.25rem, 5vw, 3.75rem)'
-    fontWeight: 600
+    fontWeight: 700
     lineHeight: 1.1
     letterSpacing: '-0.02em'
   headline:
-    fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontFamily: 'Plus Jakarta Sans, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: '1.875rem'
-    fontWeight: 600
+    fontWeight: 700
     lineHeight: 1.2
   title:
-    fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontFamily: 'Plus Jakarta Sans, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: '1.125rem'
-    fontWeight: 600
+    fontWeight: 700
     lineHeight: 1.3
   body:
-    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontFamily: 'Plus Jakarta Sans, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: '1rem'
     fontWeight: 400
     lineHeight: 1.6
   label:
-    fontFamily: 'Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontFamily: 'Plus Jakarta Sans, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: '0.75rem'
     fontWeight: 500
     lineHeight: 1.3
@@ -112,6 +112,16 @@ Sage-tinted green family — neutrals carry a green cast (hue ~152–155), so no
 - **Sage Mist** (`oklch(0.95 0.01 85)`, `--muted` / `--secondary`): muted fill, secondary buttons, table striping.
 - **Sage Stone** (`oklch(0.50 0.02 55)`, `--muted-foreground`): secondary text, placeholders, captions.
 - **Sage Border** (`oklch(0.94 0.006 85)`, `--border` / `--input`): hairline borders and input strokes.
+
+### Semantic accents
+
+Five muted-role colors for wayfinding, never for large surfaces. Each has a light and dark `--*` value wired via `@theme inline` to `text-*` / `bg-*` utilities. Usage is capped: icon tiles (`bg-*/10`), status badges, stat numerals — ≤3 hues per screen.
+
+- **Info Blue** (`--info`: light `oklch(0.55 0.15 255)` / dark `oklch(0.72 0.14 255)`): tools, links-out, informational badges.
+- **Warn Amber** (`--warn`: light `oklch(0.55 0.15 75)` / dark `oklch(0.75 0.14 80)`): pending states, caution badges.
+- **Success Green** (`--success`: light `oklch(0.5 0.16 150)` / dark `oklch(0.7 0.15 150)`): certified/verified-positive states distinct from primary buttons.
+- **Accent Purple** (`--accent-purple`: light `oklch(0.55 0.18 300)` / dark `oklch(0.72 0.16 300)`): consultants/services, fourth category slot.
+- **Accent Rose** (`--accent-rose`: light `oklch(0.55 0.19 12)` / dark `oklch(0.72 0.16 12)`): editorial/blog, fifth category slot.
 
 ### Named Rules
 

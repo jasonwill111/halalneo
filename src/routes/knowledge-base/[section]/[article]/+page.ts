@@ -17,19 +17,37 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const [res, relatedRes] = await Promise.all([
 			fetch(`/api/knowledge-base/${params.article}`),
-			fetch(`/api/knowledge-base?limit=4`)
+			fetch('/api/knowledge-base?limit=100')
 		]);
 
 		if (res.ok) {
 			const data: KbArticle = await res.json();
-			const tagsParsed = typeof data.tags === 'string' ? JSON.parse(data.tags || '[]') : data.tags ?? [];
+			const tagsParsed =
+				typeof data.tags === 'string' ? JSON.parse(data.tags || '[]') : (data.tags ?? []);
 
-			let related: { slug: string; sectionSlug: string; title: string; summary: string; readTime: string }[] = [];
+			let related: {
+				slug: string;
+				sectionSlug: string;
+				title: string;
+				summary: string;
+				readTime: string;
+			}[] = [];
 			try {
 				if (relatedRes.ok) {
 					const relatedData = await relatedRes.json();
-					related = (relatedData.items ?? [])
-						.filter((a: any) => a.slug !== params.article)
+					const candidates = (relatedData.items ?? []).filter(
+						(a: any) => a.slug !== params.article
+					);
+					const tagSet = new Set(tagsParsed.map((t: string) => t.toLowerCase()));
+					const scoreOf = (a: any) => {
+						const aTags = (
+							typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : (a.tags ?? [])
+						) as string[];
+						return aTags.filter((t: string) => tagSet.has(t.toLowerCase())).length;
+					};
+					related = candidates
+						.toSorted((a: any, b: any) => scoreOf(b) - scoreOf(a))
+						.filter((a: any) => scoreOf(a) > 0)
 						.slice(0, 3)
 						.map((a: any) => ({
 							slug: a.slug,
@@ -38,6 +56,15 @@ export const load: PageLoad = async ({ params, fetch }) => {
 							summary: a.summary ?? '',
 							readTime: a.readTime ?? '5 min read'
 						}));
+					if (related.length === 0) {
+						related = candidates.slice(0, 3).map((a: any) => ({
+							slug: a.slug,
+							sectionSlug: a.section ?? a.sectionSlug ?? '',
+							title: a.title ?? '',
+							summary: a.summary ?? '',
+							readTime: a.readTime ?? '5 min read'
+						}));
+					}
 				}
 			} catch {}
 
@@ -48,8 +75,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					description:
 						data.summary ||
 						`Read about ${data.title || params.article} on HalalNeo — halal certification and compliance guide.`,
-					ogImage: 'https://halalneo.com/og-kb.png',
-					keywords: tagsParsed.length ? tagsParsed : ['halal certification', 'compliance guide', 'trade knowledge']
+					ogImage: 'https://halalneo.com/api/media/og-kb.svg',
+					keywords: tagsParsed.length
+						? tagsParsed
+						: ['halal certification', 'compliance guide', 'trade knowledge']
 				},
 				item: { ...data, tags: tagsParsed },
 				related

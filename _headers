@@ -14,13 +14,8 @@
 /icons/*
 	Cache-Control: public, max-age=31536000, immutable
 
-# Images — long cache
-/images/*
-	Cache-Control: public, max-age=604800, stale-while-revalidate=86400
-
-# OG images
-/og-*.svg
-	Cache-Control: public, max-age=604800
+# Media — served from R2 via /api/media (worker sets immutable cache headers,
+# hooks sets edge policy). No static image rules needed here.
 
 # Auth pages — never cache
 /login

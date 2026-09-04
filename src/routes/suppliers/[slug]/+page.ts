@@ -32,9 +32,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					description:
 						data.description ||
 						`${data.name || params.slug} — halal-certified ${data.businessType || 'supplier'} from ${data.country || 'worldwide'}. View products, certifications, and contact info on HalalNeo.`,
-					ogImage: data.logoInitials
-						? `https://halalneo.com/api/og/supplier/${params.slug}`
-						: 'https://halalneo.com/og-default.svg',
+					ogImage: 'https://halalneo.com/api/media/og-suppliers.svg',
 					keywords: [data.name, 'halal supplier', data.country, data.businessType, 'certified'].filter(Boolean)
 				},
 				item: { ...data, certifications: certificationsParsed },

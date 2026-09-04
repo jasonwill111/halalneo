@@ -318,7 +318,7 @@
 		</div>
 	</div>
 
-	<div class="rounded-xl ring-1 ring-foreground/10">
+	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
 		<Table>
 			<TableHeader>
 				<TableRow class="hover:bg-transparent">

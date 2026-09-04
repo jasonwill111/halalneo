@@ -2,26 +2,26 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Button } from '#lib/components/ui/button/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
 	import ScaleIcon from '@lucide/svelte/icons/scale';
-	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
 
 	let { data } = $props();
 
 	let selectedRegion = $state('all');
 
 	const countryImages: Record<string, string> = {
-		'Malaysia': '/images/market-malaysia.webp',
-		'Indonesia': '/images/market-indonesia.webp',
-		'UAE': '/images/market-uae.webp',
-		'Saudi Arabia': '/images/market-saudi.webp',
-		'Japan': '/images/market-japan.webp',
-		'Turkey': '/images/market-turkey.webp',
-		'India': '/images/market-india.webp',
+		'Malaysia': '/api/media/market-malaysia.webp',
+		'Indonesia': '/api/media/market-indonesia.webp',
+		'United Arab Emirates': '/api/media/market-uae.webp',
+		'Saudi Arabia': '/api/media/market-saudi.webp',
+		'Japan': '/api/media/market-japan.webp',
+		'Türkiye': '/api/media/market-turkey.webp',
+		'India': '/api/media/market-india.webp',
+		'Pakistan': '/api/media/market-pakistan.webp',
+		'United States': '/api/media/market-usa.webp',
 	};
 
 	const regions = ['all', 'Southeast Asia', 'Middle East', 'South Asia', 'Europe', 'North America'];
@@ -29,15 +29,15 @@
 	const mandateStatuses: Record<string, { label: string; class: string }> = {
 		mandatory: {
 			label: 'Mandatory',
-			class: 'bg-red-500/15 text-red-600 dark:text-red-400'
+			class: 'bg-destructive/15 text-destructive'
 		},
 		'phasing-in': {
 			label: 'Phasing In',
-			class: 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+			class: 'bg-warn/15 text-warn'
 		},
 		voluntary: {
 			label: 'Voluntary',
-			class: 'bg-green-500/15 text-green-600 dark:text-green-400'
+			class: 'bg-success/15 text-success'
 		}
 	};
 
@@ -50,20 +50,20 @@
 
 <Breadcrumb items={[{ label: 'Market Guides', href: '/market-guides' }]} />
 
-<section class="space-y-8">
-	<div class="max-w-2xl space-y-2">
-		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-			<GlobeIcon class="size-4"></GlobeIcon>
+<section class="space-y-4">
+	<div class="max-w-2xl space-y-1">
+		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+			<GlobeIcon class="size-3.5"></GlobeIcon>
 			Market Guides
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal markets, country by country</h1>
-		<p class="text-muted-foreground">
+		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Halal markets, country by country</h1>
+		<p class="text-sm text-muted-foreground">
 			Certifiers, import requirements, costs, and opportunities for the world's major halal
 			markets — everything needed to plan market entry.
 		</p>
 	</div>
 
-	<div class="flex flex-wrap gap-1.5">
+	<div class="flex flex-wrap gap-1">
 		{#each regions as region}
 			<button
 				class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors {selectedRegion === region
@@ -76,42 +76,47 @@
 		{/each}
 	</div>
 
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as guide (guide.slug)}
-			<Card class="bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md overflow-hidden">
+			<a href={localizeHref(`/market-guides/${guide.slug}`)} class="group h-full">
+			<Card class="h-full bg-card ring-1 ring-foreground/10 transition-shadow group-hover:shadow-md overflow-hidden">
 				{#if countryImages[guide.country]}
-					<div class="aspect-[2/1] overflow-hidden">
+					<div class="relative -mx-4 -mt-4 aspect-[16/9] overflow-hidden sm:-mx-5 sm:-mt-4">
 						<img src={countryImages[guide.country]} alt={guide.country} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
 					</div>
+				{:else}
+					<div class="flex -mx-4 -mt-4 aspect-[16/9] items-center justify-center bg-muted/50 sm:-mx-5 sm:-mt-4">
+						<GlobeIcon class="size-6 text-muted-foreground/30" />
+					</div>
 				{/if}
-				<CardContent class="space-y-3 p-4">
+				<CardContent class="flex flex-1 flex-col gap-2 p-3 sm:p-4">
 					<div class="flex items-start justify-between gap-2">
-						<div class="space-y-1">
-							<CardTitle class="flex items-center gap-2 text-base">
-								<span class="text-xl">{guide.flag}</span>
+						<div class="space-y-0.5">
+							<CardTitle class="flex items-center gap-1.5 text-sm font-semibold transition-colors group-hover:text-primary">
+								<span class="text-base">{guide.flag}</span>
 								{guide.country}
 							</CardTitle>
-							<p class="text-xs text-muted-foreground">{guide.region}</p>
+							<p class="text-[11px] text-muted-foreground">{guide.region}</p>
 						</div>
 						<span
-							class="rounded-md px-1.5 py-0.5 text-[10px] font-medium {mandateStatuses[guide.mandateStatus]
+							class="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium {mandateStatuses[guide.mandateStatus]
 								.class}"
 						>
 							{mandateStatuses[guide.mandateStatus].label}
 						</span>
 					</div>
 
-					<p class="text-xs leading-relaxed text-muted-foreground line-clamp-3">
+					<p class="line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
 						{guide.summary}
 					</p>
 
-					<div class="grid grid-cols-2 gap-2 text-xs">
-						<div class="flex items-center gap-1.5 text-muted-foreground">
-							<UsersIcon class="size-3.5 shrink-0" />
+					<div class="grid grid-cols-2 gap-1.5 text-[11px]">
+						<div class="flex items-center gap-1 text-foreground/80">
+							<UsersIcon class="size-3 shrink-0" />
 							{guide.muslimPopulation}
 						</div>
-						<div class="flex items-center gap-1.5 text-muted-foreground">
-							<BanknoteIcon class="size-3.5 shrink-0" />
+						<div class="flex items-center gap-1 text-foreground/80">
+							<BanknoteIcon class="size-3 shrink-0" />
 							{guide.marketSizeUsd}
 						</div>
 					</div>
@@ -121,13 +126,9 @@
 							<Badge variant="secondary" class="text-[10px]">{cb.name}</Badge>
 						{/each}
 					</div>
-
-					<Button href={localizeHref(`/market-guides/${guide.slug}`)} variant="outline" size="sm" class="w-full">
-						View Guide
-						<ArrowRightIcon class="size-3" />
-					</Button>
 				</CardContent>
 			</Card>
+			</a>
 		{:else}
 			<div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
 				<p class="text-lg font-medium text-muted-foreground">No market guides found</p>

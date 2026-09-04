@@ -85,3 +85,11 @@ CREATE INDEX IF NOT EXISTS `idx_cb_country` ON `certifying_bodies` (`country`);
 CREATE INDEX IF NOT EXISTS `idx_cb_status` ON `certifying_bodies` (`status`);
 CREATE INDEX IF NOT EXISTS `idx_sp_country` ON `service_providers` (`country`);
 CREATE INDEX IF NOT EXISTS `idx_media_alt` ON `media` (`alt`);
+
+CREATE TABLE IF NOT EXISTS `market_guides` (`slug` text PRIMARY KEY NOT NULL, `country` text NOT NULL, `flag` text DEFAULT '', `region` text DEFAULT '', `muslim_population` text DEFAULT '', `total_population` text DEFAULT '', `market_size_usd` text DEFAULT '', `mandate_status` text DEFAULT '', `mandatory_since` text DEFAULT '', `certifying_bodies` text DEFAULT '[]', `import_requirements` text DEFAULT '[]', `standard_basis` text DEFAULT '', `certificate_validity` text DEFAULT '', `estimated_cost_usd` text DEFAULT '', `processing_time` text DEFAULT '', `key_insights` text DEFAULT '[]', `opportunities` text DEFAULT '[]', `challenges` text DEFAULT '[]', `summary` text DEFAULT '', `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `status` text DEFAULT 'active', `created_at` integer NOT NULL, `updated_at` integer NOT NULL);
+CREATE TABLE IF NOT EXISTS `trade_shows` (`id` text PRIMARY KEY NOT NULL, `name` text NOT NULL, `city` text DEFAULT '', `country` text DEFAULT '', `region` text DEFAULT '', `start_date` text DEFAULT '', `end_date` text DEFAULT '', `venue` text DEFAULT '', `website` text DEFAULT '', `scale` text DEFAULT '', `description` text DEFAULT '', `focus` text DEFAULT '[]', `exhibitors` integer, `visitors` integer, `meta_title` text DEFAULT '', `meta_description` text DEFAULT '', `keywords` text DEFAULT '', `status` text DEFAULT 'active', `created_at` integer NOT NULL, `updated_at` integer NOT NULL);
+CREATE INDEX IF NOT EXISTS "idx_mg_country" ON `market_guides` ("country");
+CREATE INDEX IF NOT EXISTS "idx_mg_status" ON `market_guides` ("status");
+CREATE INDEX IF NOT EXISTS "idx_ts_country" ON `trade_shows` ("country");
+CREATE INDEX IF NOT EXISTS "idx_ts_status" ON `trade_shows` ("status");
+CREATE INDEX IF NOT EXISTS "idx_ts_start_date" ON `trade_shows` ("start_date");

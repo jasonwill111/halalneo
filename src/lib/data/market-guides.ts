@@ -33,7 +33,7 @@ export const marketGuides: MarketGuide[] = [
 		mandatorySince: 'October 2024 (F&B)',
 		certifyingBodies: [
 			{ name: 'BPJPH', slug: 'bpjph' },
-			{ name: 'LPPOM MUI', slug: 'lppom-mui' }
+			{ name: 'BPJPH / MUI', slug: 'bpjph' }
 		],
 		importRequirements: [
 			'Halal certificate from BPJPH-recognized foreign halal certification body (FHCB)',
@@ -123,7 +123,7 @@ export const marketGuides: MarketGuide[] = [
 		mandateStatus: 'mandatory',
 		mandatorySince: '2014 (ESMA halal scheme)',
 		certifyingBodies: [
-			{ name: 'ESMA / MOIAT', slug: 'esma' }
+			{ name: 'MOIAT', slug: 'moiat' }
 		],
 		importRequirements: [
 			'UAE halal scheme accreditation (UAE.S 2055-1/2055-2) for meat, poultry, supplements, nutraceuticals',
@@ -169,7 +169,7 @@ export const marketGuides: MarketGuide[] = [
 		mandatorySince: '2018 (SFDA halal regulation)',
 		certifyingBodies: [
 			{ name: 'SFDA', slug: 'sfda' },
-			{ name: 'GAC', slug: 'gac' }
+			{ name: 'SABER / SASO', slug: 'saber' }
 		],
 		importRequirements: [
 			'Halal certificate from SFDA-recognized certification body',
@@ -215,7 +215,7 @@ export const marketGuides: MarketGuide[] = [
 		mandatorySince: null,
 		certifyingBodies: [
 			{ name: 'GIMDES', slug: 'gimdes' },
-			{ name: 'SMIIC (HQ)', slug: 'smiic' }
+			
 		],
 		importRequirements: [
 			'Halal certificate from TSE or GIMDES for halal-labeled products (voluntary but commercially expected)',
@@ -259,8 +259,8 @@ export const marketGuides: MarketGuide[] = [
 		mandateStatus: 'phasing-in',
 		mandatorySince: null,
 		certifyingBodies: [
-			{ name: 'PSQCA', slug: 'psqca' },
-			{ name: 'HSA (Halal Standards Authority)', slug: 'hsa' }
+			
+			{ name: 'PHA', slug: 'pha' }
 		],
 		importRequirements: [
 			'Halal certificate required for meat and derived products',
@@ -305,8 +305,8 @@ export const marketGuides: MarketGuide[] = [
 		mandatorySince: null,
 		certifyingBodies: [
 			{ name: 'IFANCA', slug: 'ifanca' },
-			{ name: 'HFSAA', slug: 'hfsaa' },
-			{ name: 'Halal Watch World', slug: 'halal-watch' }
+			
+			
 		],
 		importRequirements: [
 			'FDA registration and Prior Notice for food imports',

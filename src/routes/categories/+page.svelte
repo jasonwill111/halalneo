@@ -23,9 +23,19 @@
 				)
 			: data.categories ?? []
 	);
+
+	// Icon tile palette — same order as homepage categoryColors for cross-page consistency
+	const tileColors = [
+		'bg-info/10 text-info',
+		'bg-warn/10 text-warn',
+		'bg-success/10 text-success',
+		'bg-accent-purple/10 text-accent-purple',
+		'bg-accent-rose/10 text-accent-rose',
+		'bg-primary/10 text-primary'
+	];
 </script>
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Product categories</h1>
 		<p class="text-muted-foreground">
@@ -60,12 +70,14 @@
 		</div>
 	{:else}
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each filteredCategories as category}
+			{#each filteredCategories as category, i}
 				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
 				<Card hoverable>
 					<CardHeader class="gap-3">
 						<div
-							class="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+							class="flex size-10 items-center justify-center rounded-lg {tileColors[
+								i % tileColors.length
+							]}"
 						>
 							<Icon name={category.icon} class="size-5"></Icon>
 						</div>

@@ -8,7 +8,7 @@ export const load: PageLoad = () => {
 			title: 'Contact Us —HalalNeo',
 			description:
 				'Get in touch with HalalNeo for partnerships, listing inquiries, certification support, or general questions.',
-			ogImage: 'https://halalneo.com/og-contact.png',
+			ogImage: 'https://halalneo.com/api/media/og-contact.svg',
 			keywords: ['contact HalalNeo', 'partnership inquiries', 'halal certification support', 'B2B contact']
 		}
 	};

@@ -28,7 +28,6 @@ const staticRoutes = [
 	'/products',
 	'/knowledge-base',
 	'/glossary',
-	'/search',
 	'/verify',
 	'/trade-shows',
 	'/market-guides',
@@ -164,7 +163,7 @@ export const GET: RequestHandler = async (event) => {
 				{ ttl: 3600, staleWhileRevalidate: 3600 }
 			);
 			for (const body of certifyingBodies.items) {
-				addEntry(`/certifying-bodies/${body.slug}`, body.updatedAt, 'monthly', '0.6');
+				addEntry(`/certifying-bodies/${body.id}`, body.updatedAt, 'monthly', '0.6');
 			}
 
 			const landingPages = await cachedQuery(

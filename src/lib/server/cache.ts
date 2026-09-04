@@ -40,7 +40,14 @@ export async function cachedQuery<T>(
 
 	const cacheRequest = new Request(key);
 
-	const cached = await cache.match(cacheRequest);
+	// NOTE: Cache API can reject synthetic (non-zone) keys in workerd.
+	// A failed match must fall through to the live query, never throw.
+	let cached: Response | undefined;
+	try {
+		cached = await cache.match(cacheRequest);
+	} catch {
+		cached = undefined;
+	}
 	if (cached) {
 		const data = (await cached.json()) as T;
 		return data;

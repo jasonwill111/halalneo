@@ -98,7 +98,7 @@
 
 <Breadcrumb items={[{ label: 'Contact', href: '/contact' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Contact HalalNeo</h1>
 		<p class="text-muted-foreground">

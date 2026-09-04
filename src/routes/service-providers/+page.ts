@@ -8,10 +8,10 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Halal Service Providers —HalalNeo',
+			title: 'Halal Service Providers — HalalNeo',
 			description:
 				'Find halal-certified service providers —certification consultants, logistics partners, finance, and compliance experts.',
-			ogImage: 'https://halalneo.com/og-services.png',
+			ogImage: 'https://halalneo.com/api/media/og-services.svg',
 			keywords: ['halal service providers', 'certification consultants', 'halal logistics', 'compliance experts']
 		},
 		providers

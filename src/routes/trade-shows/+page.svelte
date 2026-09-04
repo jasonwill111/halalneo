@@ -91,9 +91,9 @@
 
 	const scaleColors: Record<string, string> = {
 		mega: 'bg-primary/15 text-primary',
-		large: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+		large: 'bg-info/15 text-info',
 		medium: 'bg-muted text-muted-foreground',
-		regional: 'bg-orange-500/15 text-orange-600 dark:text-orange-400'
+		regional: 'bg-accent-rose/15 text-accent-rose'
 	};
 
 	const regionIcons: Record<string, string> = {
@@ -114,7 +114,7 @@
 
 <Breadcrumb items={[{ label: 'Trade Shows', href: '/trade-shows' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<CalendarIcon class="size-4"></CalendarIcon>
@@ -168,8 +168,8 @@
 				{@const ongoing = isOngoing(show.startDate, show.endDate)}
 				{@const upcoming = isUpcoming(show.startDate)}
 				{@const past = isPast(show.endDate)}
-				<Card class="bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md {past ? 'opacity-60' : ''}">
-					<CardContent class="space-y-3 p-4">
+				<Card class="flex flex-col bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md {past ? 'opacity-50' : ''}">
+					<CardContent class="flex flex-1 flex-col gap-2.5 p-3 sm:p-4">
 						<div class="flex items-start justify-between gap-2">
 							<div class="space-y-1">
 								<CardTitle class="text-base leading-snug">{show.name}</CardTitle>
@@ -194,32 +194,27 @@
 							{/if}
 						</div>
 
-						<div class="flex items-center gap-3 text-xs text-muted-foreground">
-							<div class="flex items-center gap-1">
-								<CalendarDaysIcon class="size-3.5" />
+						<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+							<span class="flex items-center gap-1.5">
+								<CalendarDaysIcon class="size-3.5 shrink-0" />
 								{formatDateRange(show.startDate, show.endDate)}
-							</div>
-							<span class="rounded-md px-1.5 py-0.5 text-[10px] font-medium {scaleColors[show.scale]}">
+							</span>
+							<span class="rounded-full px-1.5 py-0.5 text-[10px] font-medium {scaleColors[show.scale]}">
 								{show.scale}
 							</span>
+							{#if show.exhibitors}
+								<span>· {show.exhibitors} exhibitors</span>
+							{/if}
+							{#if show.visitors}
+								<span>· {show.visitors} visitors</span>
+							{/if}
 						</div>
 
-						{#if show.exhibitors || show.visitors}
-							<div class="flex gap-3 text-xs text-muted-foreground">
-								{#if show.exhibitors}
-									<span>{show.exhibitors} exhibitors</span>
-								{/if}
-								{#if show.visitors}
-									<span>{show.visitors} visitors</span>
-								{/if}
-							</div>
-						{/if}
-
-						<div class="flex items-center gap-2 pt-1">
+						<div class="mt-auto flex items-center gap-2 pt-1">
 							{#if ongoing}
-								<Badge class="bg-green-500/15 text-green-600 dark:text-green-400">Happening Now</Badge>
+								<Badge class="bg-success/15 text-success">Happening Now</Badge>
 							{:else if upcoming}
-								<Badge class="bg-blue-500/15 text-blue-600 dark:text-blue-400">Upcoming</Badge>
+								<Badge class="bg-info/15 text-info">Upcoming</Badge>
 							{:else if past}
 								<Badge variant="secondary">Past</Badge>
 							{/if}

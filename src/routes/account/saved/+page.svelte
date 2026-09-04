@@ -3,7 +3,7 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import Box from '@lucide/svelte/icons/box';
 	import { getFavorites, toggleFavorite } from '#lib/favorites.js';
-	import { products } from '#lib/data/products.js';
+	import { onMount } from 'svelte';
 
 	interface SavedItem {
 		type: 'product' | 'supplier';
@@ -17,15 +17,24 @@
 
 	// Reactive favorites list — re-reads from localStorage when modified
 	let favorites = $state<string[]>([]);
+	// Product catalogue from D1 (cached API) — resolves saved slugs to display data.
+	// $state.raw: only ever reassigned, never deep-mutated (reads use .find).
+	let catalog = $state.raw<any[]>([]);
 
-	$effect(() => {
+	onMount(async () => {
 		favorites = getFavorites();
+		try {
+			const res = await fetch('/api/products?limit=100');
+			if (res.ok) catalog = ((await res.json()).items ?? []);
+		} catch {
+			catalog = [];
+		}
 	});
 
 	const savedItems = $derived.by(() => {
 		const items: SavedItem[] = [];
 		for (const slug of favorites) {
-			const product = products.find((p) => p.slug === slug);
+			const product = catalog.find((p) => p.slug === slug);
 			if (product) {
 				const priceDisplay = product.priceMin
 					? `$${product.priceMin}${product.priceMax ? ` - $${product.priceMax}` : ''}${product.priceUnit ? ` / ${product.priceUnit}` : ''}`
@@ -68,19 +77,19 @@
 	</div>
 
 	{#if filtered.length === 0}
-		<div class="rounded-xl bg-card p-8 text-center shadow-sm">
+		<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
 			<Box class="mx-auto size-8 text-muted-foreground/30"></Box>
 			<p class="mt-2 text-[11px] text-muted-foreground">No saved items yet.</p>
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 			{#each filtered as item (item.slug)}
-				<a href={item.href} class="group rounded-xl bg-card p-2 shadow-sm transition-all hover:shadow-md">
+				<a href={item.href} class="group rounded-xl bg-card p-2 ring-1 ring-foreground/10 transition-all hover:shadow-md">
 					<div class="mb-1 h-16 rounded bg-muted flex items-center justify-center text-muted-foreground/30">
 						<Box class="size-6"></Box>
 					</div>
 					<div class="flex items-center gap-0.5">
-						<Badge variant="secondary" class="px-1 text-[8px]">{item.badge}</Badge>
+						<Badge variant="secondary" class="px-1 text-[10px]">{item.badge}</Badge>
 					</div>
 					<h3 class="mb-0.5 mt-1 text-[10px] font-medium line-clamp-2 group-hover:text-primary transition-colors">{item.name}</h3>
 					{#if item.price}
@@ -89,7 +98,7 @@
 						</div>
 					{/if}
 				<p class="mt-0.5 text-[9px] text-muted-foreground">{item.subtitle}</p>
-				<Button variant="ghost" size="sm" class="mt-0.5 h-auto p-0 text-[8px] text-muted-foreground hover:underline" onclick={(e) => { e.preventDefault(); removeFavorite(item.slug); }}>Remove</Button>
+				<Button variant="ghost" size="sm" class="mt-0.5 h-auto p-0 text-[10px] text-muted-foreground hover:underline" onclick={(e) => { e.preventDefault(); removeFavorite(item.slug); }}>Remove</Button>
 				</a>
 			{/each}
 		</div>

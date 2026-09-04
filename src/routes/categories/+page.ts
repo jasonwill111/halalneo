@@ -16,10 +16,10 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Product Categories —HalalNeo',
+			title: 'Product Categories — HalalNeo',
 			description:
-				'Browse halal-certified product categories —food, cosmetics, pharmaceuticals, medical devices, textiles and more.',
-			ogImage: 'https://halalneo.com/og-categories.png',
+				'Browse halal-certified product categories —food, beverages, cosmetics, nutritional supplements and more.',
+			ogImage: 'https://halalneo.com/api/media/og-categories.svg',
 			keywords: ['halal product categories', 'certified product types', 'halal food', 'halal cosmetics']
 		},
 		categories,

@@ -133,15 +133,15 @@ Format your response as:
 	</div>
 
 	{#if error}
-		<div class="rounded-lg border border-red-500/20 bg-red-500/5 p-4 text-sm text-red-600 dark:text-red-400">
+		<div class="rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
 			{error}
 		</div>
 	{/if}
 
 	{#if result}
-		<Card class="bg-card shadow-sm">
+		<Card class="bg-card">
 			<CardContent class="p-5">
-				<div class="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">{result}</div>
+				<div class="overflow-x-auto"><div class="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">{result}</div></div>
 			</CardContent>
 		</Card>
 	{/if}

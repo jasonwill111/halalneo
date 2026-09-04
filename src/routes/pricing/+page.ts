@@ -5,6 +5,6 @@ export const load = () => ({
 		title: 'Pricing — HalalNeo',
 		description:
 			'Simple, transparent pricing for HalalNeo. Start free and grow with plans for product listings, AI tools, analytics, and priority support.',
-		ogImage: 'https://halalneo.com/og-default.svg'
+		ogImage: 'https://halalneo.com/api/media/og-default.svg'
 	}
 });

@@ -591,7 +591,20 @@ export async function getSuppliersByCertifyingBody(
 	db: Db,
 	bodyId: string,
 	request?: Request
-): Promise<{ suppliers: typeof schema.suppliers.$inferSelect[]; certificationTypes: string[] }> {
+): Promise<{
+	suppliers: Array<{
+		slug: string;
+		name: string;
+		country: string;
+		businessType: 'manufacturer' | 'wholesaler' | 'trader';
+		isBrand: boolean | null;
+		status: 'active' | 'pending' | 'suspended' | null;
+		logoInitials: string | null;
+		description: string | null;
+		certifications: string | null;
+	}>;
+	certificationTypes: string[];
+}> {
 	const queryFn = async () => {
 		// Only select the columns needed — avoids pulling large text columns
 		// (description, certifications JSON is required for matching).
@@ -884,7 +897,7 @@ export async function getKbListItems(
 					title: schema.knowledgeBase.title,
 					section: schema.knowledgeBase.section,
 					status: schema.knowledgeBase.status,
-					excerpt: schema.knowledgeBase.excerpt
+					excerpt: schema.knowledgeBase.summary
 				})
 				.from(schema.knowledgeBase)
 				.where(where)

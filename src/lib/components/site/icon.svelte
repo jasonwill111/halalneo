@@ -12,6 +12,9 @@
 	import Package from '@lucide/svelte/icons/package';
 	import Globe from '@lucide/svelte/icons/globe';
 	import SearchCheck from '@lucide/svelte/icons/search-check';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import Briefcase from '@lucide/svelte/icons/briefcase';
+	import Newspaper from '@lucide/svelte/icons/newspaper';
 
 	const icons = {
 		UtensilsCrossed,
@@ -26,7 +29,10 @@
 		Truck,
 		Package,
 		Globe,
-		SearchCheck
+		SearchCheck,
+		Calendar,
+		Briefcase,
+		Newspaper
 	} as const;
 
 	let { name, class: className = 'size-4' }: { name: string; class?: string } = $props();

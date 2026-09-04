@@ -27,10 +27,12 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 
 				const where = conditions.length ? and(...conditions) : undefined;
 
-				const [countResult, rows] = await Promise.all([
-					db.select({ count: sql<number>`count(*)` }).from(suppliers).where(where),
-					db.select().from(suppliers).where(where).limit(limit).offset(offset)
-				]);
+				const [countResult] = await db
+					.select({ count: sql<number>`count(*)` })
+					.from(suppliers)
+					.where(where);
+
+				const rows = await db.select().from(suppliers).where(where).limit(limit).offset(offset);
 
 				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},

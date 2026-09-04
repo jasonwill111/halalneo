@@ -6,7 +6,7 @@ export const load: PageServerLoad = async () => {
 			title: 'Halal Ingredient Checker — AI-Powered Analysis',
 			description:
 				'Paste any ingredient list and get instant AI-powered halal, haram, or mashbooh verdicts. Free halal ingredient analysis tool.',
-			ogImage: 'https://halalneo.com/og-default.svg'
+			ogImage: 'https://halalneo.com/api/media/og-default.svg'
 		}
 	};
 };

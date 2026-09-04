@@ -38,15 +38,15 @@
 	}
 </script>
 
-<div class="mx-auto flex w-full max-w-7xl flex-1 gap-4 px-5 pb-24 pt-3 sm:px-6 sm:pb-10">
+<div class="mx-auto flex w-full max-w-7xl flex-1 gap-4 px-4 pb-24 pt-3 sm:px-6 sm:pb-10">
 	<!-- Desktop sidebar -->
 	<aside class="hidden w-60 shrink-0 lg:block">
-		<div class="sticky top-20 space-y-0.5 rounded-2xl bg-card p-1.5 shadow-sm">
+		<div class="sticky top-20 space-y-0.5 rounded-xl bg-card p-1.5 ring-1 ring-foreground/10">
 			<div class="mb-1 flex items-center gap-2.5 border-b border-border px-2.5 pb-2 pt-1">
 				<div class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-xs font-bold text-primary">{supplierInitials}</div>
 				<div class="min-w-0">
 					<p class="truncate text-[11px] font-semibold">{supplierName}</p>
-					<p class="text-[9px] text-muted-foreground">Premium Supplier</p>
+					<p class="text-[10px] text-muted-foreground">Premium Supplier</p>
 				</div>
 			</div>
 			{#each nav as item}
@@ -59,7 +59,7 @@
 				</a>
 			{/each}
 			<div class="my-0.5 border-t border-border"></div>
-			<Button variant="ghost" size="sm" class="w-full justify-start gap-2.5 text-[11px] text-red-500">
+			<Button variant="ghost" size="sm" class="w-full justify-start gap-2.5 text-[11px] text-destructive">
 				<LogOut class="size-3.5"></LogOut>
 				Sign Out
 			</Button>
@@ -80,7 +80,7 @@
 					<div class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-xs font-bold text-primary">{supplierInitials}</div>
 					<div class="min-w-0">
 						<p class="truncate text-[11px] font-semibold">{supplierName}</p>
-						<p class="text-[9px] text-muted-foreground">Premium Supplier</p>
+						<p class="text-[10px] text-muted-foreground">Premium Supplier</p>
 					</div>
 				</div>
 					<nav class="space-y-0.5 px-3 py-3">

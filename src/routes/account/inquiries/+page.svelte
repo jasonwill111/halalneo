@@ -21,13 +21,13 @@
 	);
 
 	function statusColor(status: string): string {
-		if (status === 'Active') return 'border-l-green-500 bg-green-500/10 text-green-600';
+		if (status === 'Active') return 'border-l-success bg-success/10 text-success';
 		if (status === 'Pending') return 'border-l-primary bg-primary/10 text-primary';
 		return 'border-l-muted bg-muted/30 text-muted-foreground';
 	}
 
 	function badgeColor(status: string): string {
-		return status === 'Active' ? 'bg-green-500/10 text-green-600' : status === 'Pending' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground';
+		return status === 'Active' ? 'bg-success/10 text-success' : status === 'Pending' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground';
 	}
 </script>
 
@@ -66,14 +66,14 @@
 	</div>
 
 	{#if filtered.length === 0}
-		<div class="rounded-xl bg-card p-6 text-center shadow-sm">
+		<div class="rounded-xl bg-card p-6 text-center ring-1 ring-foreground/10">
 			<Package class="mx-auto size-6 text-muted-foreground/30"></Package>
 			<p class="mt-2 text-[11px] text-muted-foreground">No inquiries in this status.</p>
 		</div>
 	{:else}
 		<div class="space-y-1.5">
 			{#each filtered as item}
-				<div class={`group rounded-xl bg-card border-l-2 p-2 shadow-sm transition-all hover:border-primary/20 hover:shadow-md ${statusColor(item.status).split(' ')[0]}`}>
+				<div class={`group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-all hover:border-primary/20 hover:shadow-md ${statusColor(item.status).split(' ')[0]}`}>
 					<div class="flex items-start gap-2">
 						<div class={`flex size-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold ${statusColor(item.status).split(' ').slice(1).join(' ')}`}>
 							<Package class="size-4"></Package>
@@ -82,21 +82,21 @@
 							<div class="flex items-start justify-between gap-2">
 								<div>
 									<h3 class="text-[11px] font-semibold text-foreground group-hover:text-primary transition-colors">{item.title}</h3>
-									<p class="mt-0 text-[9px] text-muted-foreground">To: {item.to}</p>
+									<p class="mt-0 text-[10px] text-muted-foreground">To: {item.to}</p>
 								</div>
-								<Badge variant="secondary" class={`px-1.5 py-0.5 text-[8px] ${badgeColor(item.status)}`}>
+								<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] ${badgeColor(item.status)}`}>
 									<span class="size-1 rounded-full bg-current"></span>
 									{item.status}
 								</Badge>
 							</div>
 							<p class="mt-1 text-[10px] text-muted-foreground line-clamp-2">{item.message}</p>
 							<div class="mt-1.5 flex items-center gap-2">
-								<span class="text-[8px] text-muted-foreground">Sent {item.time}</span>
-								<Button variant="ghost" size="sm" class="inline-flex h-5 items-center gap-0.5 text-[9px] font-medium text-primary">
+								<span class="text-[10px] text-muted-foreground">Sent {item.time}</span>
+								<Button variant="ghost" size="sm" class="inline-flex h-5 items-center gap-0.5 text-[10px] font-medium text-primary">
 									<MessageCircle class="size-2.5"></MessageCircle>
 									Quick Reply
 								</Button>
-								<Button variant="ghost" size="sm" class="inline-flex h-5 items-center gap-0.5 text-[9px] font-medium text-muted-foreground">
+								<Button variant="ghost" size="sm" class="inline-flex h-5 items-center gap-0.5 text-[10px] font-medium text-muted-foreground">
 									View
 									<ChevronRight class="size-2.5"></ChevronRight>
 								</Button>

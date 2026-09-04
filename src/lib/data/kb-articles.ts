@@ -7258,7 +7258,7 @@ Establish relationships with certification bodies to expedite verification when 
 		`
 	},
 	{
-		section: 'quality-assurance',
+		section: 'due-diligence',
 		slug: 'qa-overview',
 		title: 'Quality Assurance in Halal Product Trade',
 		summary: 'Comprehensive guide to establishing quality assurance frameworks that satisfy both halal integrity and international trade standards.',
@@ -7339,7 +7339,7 @@ Integrating halal requirements into these existing frameworks avoids duplication
 		`
 	},
 	{
-		section: 'quality-assurance',
+		section: 'due-diligence',
 		slug: 'haccp-halal',
 		title: 'HACCP Integration with Halal Standards',
 		summary: 'How to merge HACCP food safety principles with halal requirements into a single, auditable system.',
@@ -7449,7 +7449,7 @@ Integrated systems require integrated documentation. Avoid separate HACCP and ha
 		`
 	},
 	{
-		section: 'quality-assurance',
+		section: 'due-diligence',
 		slug: 'iso-22000-halal',
 		title: 'ISO 22000 & Halal Food Safety Management',
 		summary: 'Mapping ISO 22000:2018 requirements to halal food safety management for streamlined certification.',
@@ -7546,7 +7546,7 @@ For organizations seeking both ISO 22000 certification and halal certification:
 		`
 	},
 	{
-		section: 'quality-assurance',
+		section: 'due-diligence',
 		slug: 'product-testing',
 		title: 'Product Testing Requirements for Halal Goods',
 		summary: 'Essential testing protocols for halal products covering ingredient verification, contamination screening, and shelf-life stability.',
@@ -7653,7 +7653,7 @@ Set conservative action limits based on your facility's risk assessment. Example
 		`
 	},
 	{
-		section: 'food-safety',
+		section: 'due-diligence',
 		slug: 'food-safety-systems',
 		title: 'Food Safety Systems for Halal Producers',
 		summary: 'Selecting and implementing food safety management systems that satisfy both halal certification and global regulatory requirements.',
@@ -7762,7 +7762,7 @@ Prerequisite programs (PRPs) form the foundation upon which HACCP and halal cont
 		`
 	},
 	{
-		section: 'food-safety',
+		section: 'due-diligence',
 		slug: 'allergen-management',
 		title: 'Allergen Management in Halal Food Production',
 		summary: 'Controlling allergen risks in halal facilities where ingredient complexity and cross-contamination threats are heightened.',
@@ -7864,7 +7864,7 @@ When a product is reformulated for halal compliance (e.g., replacing pork gelati
 		`
 	},
 	{
-		section: 'food-safety',
+		section: 'due-diligence',
 		slug: 'contamination-prevention',
 		title: 'Contamination Prevention in Halal Facilities',
 		summary: 'Strategies for preventing physical, chemical, and biological contamination while maintaining halal integrity throughout production.',
@@ -7981,7 +7981,7 @@ Divide the facility into zones based on risk level:
 		`
 	},
 	{
-		section: 'food-safety',
+		section: 'due-diligence',
 		slug: 'recall-management',
 		title: 'Product Recall Procedures for Halal Products',
 		summary: 'Designing and executing product recalls that address both food safety urgency and halal certification body notification requirements.',
@@ -8086,7 +8086,7 @@ A product recall for halal products involves more stakeholders and faster timeli
 		`
 	},
 	{
-		section: 'market-intelligence',
+		section: 'country-market-guides',
 		slug: 'halal-market-overview',
 		title: 'Global Halal Market Size & Growth Trends',
 		summary: 'Data-driven overview of the global halal market including size, growth projections, regional distribution, and key drivers.',
@@ -8174,7 +8174,7 @@ The global halal market has grown from a niche segment into one of the fastest-e
 		`
 	},
 	{
-		section: 'market-intelligence',
+		section: 'country-market-guides',
 		slug: 'consumer-preferences',
 		title: 'Halal Consumer Preferences by Region',
 		summary: 'Understanding how halal consumer expectations, purchasing behavior, and trust factors vary across major markets.',
@@ -8271,7 +8271,7 @@ Regardless of region, certain trust factors consistently influence halal consume
 		`
 	},
 	{
-		section: 'market-intelligence',
+		section: 'country-market-guides',
 		slug: 'competitive-analysis',
 		title: 'Competitive Analysis in Halal Markets',
 		summary: 'Framework for analyzing competitors in halal food trade, identifying positioning opportunities, and building sustainable competitive advantages.',
@@ -8393,7 +8393,7 @@ Based on your competitive analysis, identify your positioning options:
 		`
 	},
 	{
-		section: 'market-intelligence',
+		section: 'country-market-guides',
 		slug: 'demand-forecasting',
 		title: 'Demand Forecasting for Halal Products',
 		summary: 'Methods and models for predicting halal product demand across export markets, incorporating seasonal, cultural, and regulatory factors.',
@@ -8509,7 +8509,7 @@ Demand forecasting for halal products requires accounting for factors that conve
 		`
 	},
 	{
-		section: 'sustainability',
+		section: 'logistics',
 		slug: 'sustainable-halal',
 		title: 'Sustainability in Halal Supply Chains',
 		summary: 'Integrating environmental sustainability with halal supply chain management for long-term resilience and market access.',
@@ -8617,7 +8617,7 @@ Complementary to halal certification:
 		`
 	},
 	{
-		section: 'sustainability',
+		section: 'logistics',
 		slug: 'environmental-compliance',
 		title: 'Environmental Compliance for Halal Exporters',
 		summary: 'Navigating environmental regulations across halal export markets, from waste management to emissions reporting.',
@@ -8740,7 +8740,7 @@ Key reduction strategies:
 		`
 	},
 	{
-		section: 'sustainability',
+		section: 'logistics',
 		slug: 'ethical-supply-chain',
 		title: 'Ethical Supply Chain Management',
 		summary: 'Building halal supply chains that uphold ethical standards in labor practices, animal welfare, fair trade, and community impact.',
@@ -8858,7 +8858,7 @@ Many halal raw materials (spices, tropical fruits, small-scale livestock) come f
 		`
 	},
 	{
-		section: 'sustainability',
+		section: 'logistics',
 		slug: 'carbon-footprint',
 		title: 'Carbon Footprint Reduction in Halal Trade',
 		summary: 'Measuring, managing, and reducing carbon emissions across halal supply chains while maintaining certification integrity.',
@@ -8973,7 +8973,7 @@ The largest category for most food companies, including:
 		`
 	},
 	{
-		section: 'technology',
+		section: 'logistics',
 		slug: 'blockchain-halal',
 		title: 'Blockchain for Halal Supply Chain Traceability',
 		summary: 'How blockchain technology enables transparent, tamper-proof traceability in halal supply chains from farm to consumer.',
@@ -9011,7 +9011,7 @@ For halal trade, blockchain addresses the fundamental trust problem: how can a c
 		`
 	},
 	{
-		section: 'technology',
+		section: 'logistics',
 		slug: 'ai-quality-control',
 		title: 'AI-Powered Quality Control in Halal Production',
 		summary: 'Leveraging artificial intelligence for automated halal quality inspection, defect detection, and compliance verification.',
@@ -9137,7 +9137,7 @@ Traditional halal quality control relies on human inspection, manual sampling, a
 		`
 	},
 	{
-		section: 'technology',
+		section: 'logistics',
 		slug: 'iot-monitoring',
 		title: 'IoT Monitoring for Halal Logistics',
 		summary: 'Deploying Internet of Things sensors and platforms to monitor halal product conditions throughout the supply chain.',
@@ -9186,7 +9186,7 @@ IoT monitoring provides real-time, continuous visibility into product conditions
 		`
 	},
 	{
-		section: 'technology',
+		section: 'logistics',
 		slug: 'digital-certificates',
 		title: 'Digital Halal Certificates & Verification',
 		summary: 'Transitioning from paper-based to digital halal certificates with real-time verification, reducing fraud and streamlining trade.',

@@ -14,6 +14,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
 	import MobileTab from '#lib/components/mobile-tab.svelte';
+	import BackToTop from '#lib/components/site/back-to-top.svelte';
 	import {
 		NavigationMenuRoot,
 		NavigationMenuItem,
@@ -41,8 +42,10 @@
 			`${path === '/' ? 'Home' : path.split('/').pop()?.replace(/-/g, ' ')} — ${siteName}`;
 		const description = page.data?.seo?.description ?? defaultDescription;
 		const canonical = localizeUrl(`${baseUrl}${path}`).toString();
-		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/og-default.svg`;
-		const robots = page.data?.seo?.robots ?? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/api/media/og-default.svg`;
+		const robots =
+			page.data?.seo?.robots ??
+			'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 		return { title, description, canonical, ogImage, path, robots };
 	});
 
@@ -56,19 +59,10 @@
 		url: siteUrl,
 		logo: `${siteUrl}/favicon.svg`,
 		description: defaultDescription,
-		sameAs: [
-			'https://twitter.com/halalneo',
-			'https://www.linkedin.com/company/halalneo',
-			'https://www.facebook.com/halalneo'
-		],
 		contactPoint: {
 			'@type': 'ContactPoint',
 			contactType: 'customer service',
-			email: 'hello@halalneo.com'
-		},
-		address: {
-			'@type': 'PostalAddress',
-			addressCountry: 'US'
+			email: 'support@halalneo.com'
 		}
 	};
 
@@ -136,13 +130,23 @@
 	<meta property="og:image:alt" content={seo.title} />
 	<meta property="og:locale" content="en" />
 	{#each supportedLocales as locale}
-		<link rel="alternate" hreflang={locale} href={localizeUrl(`${baseUrl}${seo.path}`, { locale }).toString()} />
+		<link
+			rel="alternate"
+			hreflang={locale}
+			href={localizeUrl(`${baseUrl}${seo.path}`, { locale }).toString()}
+		/>
 	{/each}
-	<link rel="alternate" hreflang="x-default" href={localizeUrl(`${baseUrl}${seo.path}`, { locale: 'en' }).toString()} />
-	<meta name="geo.region" content="US" />
-	<meta name="geo.placename" content="United States" />
-	<meta name="geo.position" content="38.8951;-77.0364" />
-	<meta name="ICBM" content="38.8951, -77.0364" />
+	<link
+		rel="alternate"
+		hreflang="x-default"
+		href={localizeUrl(`${baseUrl}${seo.path}`, { locale: 'en' }).toString()}
+	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="HalalNeo — Halal Trade Blog"
+		href={`${baseUrl}/rss.xml`}
+	/>
 	<meta name="robots" content={seo.robots} />
 	<meta name="format-detection" content="telephone=no" />
 	<meta name="twitter:card" content="summary_large_image" />
@@ -163,7 +167,7 @@
 		{@render children()}
 	{:else}
 		<header
-			class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-transform duration-300 supports-[backdrop-filter]:bg-background/60 max-md:transition-transform max-md:duration-300 {headerHidden
+			class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-transform duration-300 supports-[backdrop-filter]:bg-background/90 max-md:transition-transform max-md:duration-300 {headerHidden
 				? 'max-md:-translate-y-full'
 				: 'max-md:translate-y-0'}"
 		>
@@ -174,64 +178,67 @@
 					href={localizeHref('/')}
 					class="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
 				>
-					<img src={favicon} alt="HalalNeo" class="size-7" width="28" height="28" loading="eager" decoding="async" />
+					<img
+						src={favicon}
+						alt="HalalNeo"
+						class="size-7"
+						width="28"
+						height="28"
+						loading="eager"
+						decoding="async"
+					/>
 					<span class="text-lg font-bold tracking-tight text-primary">HalalNeo</span>
 				</a>
 
-			<NavigationMenuRoot viewport={false} class="hidden lg:flex lg:justify-start">
-				<NavigationMenuList>
-					{#each primaryNav as item (item.href)}
-						<NavigationMenuItem>
-							<NavigationMenuLink
-								href={localizeHref(item.href)}
-								class={cn(
-									navigationMenuTriggerStyle(),
-									isActive(deLocalizeUrl(page.url.href).pathname, item.href) && 'bg-muted'
-								)}
-							>
-								{item.label}
-							</NavigationMenuLink>
-						</NavigationMenuItem>
-					{/each}
-					{#each navGroups as group}
-						<NavigationMenuItem>
-							<NavigationMenuTrigger
-								class={cn(
-									isGroupActive(deLocalizeUrl(page.url.href).pathname, group.items) && 'bg-muted'
-								)}
-							>
-								{group.label}
-							</NavigationMenuTrigger>
-							<NavigationMenuContent>
-								<div class="grid w-[280px] gap-1 p-2">
-									{#each group.items as item (item.href)}
-										<NavigationMenuLink
-											href={localizeHref(item.href)}
-											class={cn(
-												'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted',
-												isActive(deLocalizeUrl(page.url.href).pathname, item.href) && 'bg-muted'
-											)}
-										>
-											<item.icon class="size-4 shrink-0 text-muted-foreground" />
-											{item.label}
-										</NavigationMenuLink>
-									{/each}
-								</div>
-							</NavigationMenuContent>
-						</NavigationMenuItem>
-					{/each}
-				</NavigationMenuList>
-		</NavigationMenuRoot>
+				<NavigationMenuRoot viewport={false} class="hidden lg:flex lg:justify-start">
+					<NavigationMenuList>
+						{#each primaryNav as item (item.href)}
+							<NavigationMenuItem>
+								<NavigationMenuLink
+									href={localizeHref(item.href)}
+									class={cn(
+										navigationMenuTriggerStyle(),
+										isActive(deLocalizeUrl(page.url.href).pathname, item.href) && 'bg-muted'
+									)}
+								>
+									{item.label}
+								</NavigationMenuLink>
+							</NavigationMenuItem>
+						{/each}
+						{#each navGroups as group}
+							<NavigationMenuItem>
+								<NavigationMenuTrigger
+									class={cn(
+										isGroupActive(deLocalizeUrl(page.url.href).pathname, group.items) && 'bg-muted'
+									)}
+								>
+									{group.label}
+								</NavigationMenuTrigger>
+								<NavigationMenuContent>
+									<div class="grid w-[280px] gap-1 p-2">
+										{#each group.items as item (item.href)}
+											<NavigationMenuLink
+												href={localizeHref(item.href)}
+												class={cn(
+													'flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted',
+													isActive(deLocalizeUrl(page.url.href).pathname, item.href) && 'bg-muted'
+												)}
+											>
+												<item.icon class="size-4 shrink-0 text-muted-foreground" />
+												{item.label}
+											</NavigationMenuLink>
+										{/each}
+									</div>
+								</NavigationMenuContent>
+							</NavigationMenuItem>
+						{/each}
+					</NavigationMenuList>
+				</NavigationMenuRoot>
 
 				<div class="flex items-center gap-1">
-				<Button
-					href={localizeHref('/search')}
-					variant="ghost"
-					size="icon"
-					aria-label="Search"
-				>
-					<SearchIcon class="size-4" />
-				</Button>
+					<Button href={localizeHref('/search')} variant="ghost" size="icon" aria-label="Search">
+						<SearchIcon class="size-4" />
+					</Button>
 					<Button
 						variant="ghost"
 						size="icon"
@@ -275,14 +282,20 @@
 								</Button>
 							{/snippet}
 						</SheetTrigger>
-						<SheetContent side="right" class="w-72 overflow-y-auto">
+						<SheetContent side="right" class="w-3/4 overflow-y-auto sm:max-w-sm">
 							<div class="flex flex-col gap-4 px-2 pt-6">
 								<!-- Primary -->
 								<div class="flex flex-col gap-1">
-									<p class="px-3 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">Browse</p>
+									<p
+										class="px-3 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+									>
+										Browse
+									</p>
 									<Button
 										href={localizeHref('/')}
-										variant={isActive(deLocalizeUrl(page.url.href).pathname, '/') ? 'secondary' : 'ghost'}
+										variant={isActive(deLocalizeUrl(page.url.href).pathname, '/')
+											? 'secondary'
+											: 'ghost'}
 										class="justify-start"
 									>
 										Home
@@ -290,7 +303,9 @@
 									{#each primaryNav as item}
 										<Button
 											href={localizeHref(item.href)}
-											variant={isActive(deLocalizeUrl(page.url.href).pathname, item.href) ? 'secondary' : 'ghost'}
+											variant={isActive(deLocalizeUrl(page.url.href).pathname, item.href)
+												? 'secondary'
+												: 'ghost'}
 											class="justify-start"
 										>
 											{item.label}
@@ -300,11 +315,17 @@
 								<!-- Groups -->
 								{#each navGroups as group}
 									<div class="flex flex-col gap-1">
-										<p class="px-3 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">{group.label}</p>
+										<p
+											class="px-3 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+										>
+											{group.label}
+										</p>
 										{#each group.items as item}
 											<Button
 												href={localizeHref(item.href)}
-												variant={isActive(deLocalizeUrl(page.url.href).pathname, item.href) ? 'secondary' : 'ghost'}
+												variant={isActive(deLocalizeUrl(page.url.href).pathname, item.href)
+													? 'secondary'
+													: 'ghost'}
 												class="justify-start"
 											>
 												<item.icon class="size-4 text-muted-foreground" />
@@ -328,17 +349,25 @@
 			</div>
 		</header>
 
-		<main class="mx-auto w-full max-w-7xl flex-1 px-4 pt-3 pb-12 sm:px-6 sm:pt-4 sm:pb-8">
+		<main class="mx-auto w-full max-w-7xl flex-1 space-y-6 px-4 pt-3 pb-12 sm:px-6 sm:pt-4 sm:space-y-8 sm:pb-8">
 			{@render children()}
 		</main>
 
 		<footer class="border-t border-border/50 bg-muted/30">
-			<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-				<div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
+			<div class="mx-auto max-w-7xl px-4 pt-3 pb-16 sm:px-6 sm:pt-6 sm:pb-6">
+				<div class="hidden grid-cols-2 gap-6 sm:grid sm:grid-cols-3 lg:grid-cols-6">
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
 						<a href={localizeHref('/')} class="flex items-center gap-2">
-							<img src={favicon} alt="HalalNeo" class="size-5" width="20" height="20" loading="lazy" decoding="async" />
+							<img
+								src={favicon}
+								alt="HalalNeo"
+								class="size-5"
+								width="20"
+								height="20"
+								loading="lazy"
+								decoding="async"
+							/>
 							<span class="text-sm font-bold text-primary">{siteName}</span>
 						</a>
 						<p class="max-w-xs text-xs leading-relaxed text-muted-foreground">
@@ -361,7 +390,11 @@
 								</li>
 							{/each}
 							<li>
-								<a href={localizeHref('/search')} class="text-xs text-muted-foreground transition-colors hover:text-foreground">Search</a>
+								<a
+									href={localizeHref('/search')}
+									class="text-xs text-muted-foreground transition-colors hover:text-foreground"
+									>Search</a
+								>
 							</li>
 						</ul>
 					</nav>
@@ -384,22 +417,15 @@
 						</nav>
 					{/each}
 				</div>
-				<div class="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border/50 pt-4 sm:flex-row">
-					<p class="text-[10px] text-muted-foreground sm:text-xs">
-						© {new Date().getFullYear()}
-						{siteName}
-					</p>
-					<nav class="flex items-center gap-3" aria-label="Footer utility">
-						<a href={localizeHref('/about')} class="text-[10px] text-muted-foreground hover:text-foreground sm:text-xs">About</a>
-						<a href={localizeHref('/contact')} class="text-[10px] text-muted-foreground hover:text-foreground sm:text-xs">Contact</a>
-						<a href={localizeHref('/faq')} class="text-[10px] text-muted-foreground hover:text-foreground sm:text-xs">FAQ</a>
-						<a href={localizeHref('/privacy')} class="text-[10px] text-muted-foreground hover:text-foreground sm:text-xs">Privacy Policy</a>
-						<a href={localizeHref('/terms')} class="text-[10px] text-muted-foreground hover:text-foreground sm:text-xs">Terms of Service</a>
-					</nav>
-				</div>
+			<div class="mt-3 flex items-center justify-center border-t border-border/50 pt-3 sm:justify-between sm:mt-6 sm:pt-4">
+				<p class="text-[10px] text-muted-foreground sm:text-xs">
+					© {new Date().getFullYear()} HalalNeo. All rights reserved.
+				</p>
+			</div>
 			</div>
 		</footer>
 
 		<MobileTab />
 	{/if}
+	<BackToTop />
 </div>

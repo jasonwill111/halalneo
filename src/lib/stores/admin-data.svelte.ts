@@ -117,8 +117,8 @@ function readSettings(): SiteSettings {
 	const defaults: SiteSettings = {
 		siteName: 'HalalNeo',
 		tagline: 'Halal trade intelligence for buyers and suppliers',
-		supportEmail: 'support@halalneo.example',
-		contactEmail: 'hello@halalneo.example',
+		supportEmail: 'support@halalneo.com',
+		contactEmail: 'support@halalneo.com',
 		enableDemoNotice: true,
 		enableMaintenanceMode: false
 	};

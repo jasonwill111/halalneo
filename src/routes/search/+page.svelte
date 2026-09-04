@@ -2,13 +2,14 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
 	import {
-		Card,
-		CardContent,
-		CardTitle,
-		CardDescription
-	} from '#lib/components/ui/card/index.js';
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
+	import { Card, CardContent, CardTitle, CardDescription } from '#lib/components/ui/card/index.js';
+	import { Sheet, SheetContent, SheetHeader, SheetTitle } from '#lib/components/ui/sheet/index.js';
 	import {
 		Empty,
 		EmptyMedia,
@@ -25,9 +26,9 @@
 	let { data } = $props();
 	let query = $state('');
 
-	let articles = $state<any[]>([]);
-	let suppliers = $state<any[]>([]);
-	let products = $state<any[]>([]);
+	let articles = $state.raw<any[]>([]);
+	let suppliers = $state.raw<any[]>([]);
+	let products = $state.raw<any[]>([]);
 	let loaded = $state(false);
 	let loading = $state(false);
 
@@ -40,18 +41,27 @@
 				fetch('/api/suppliers?limit=100'),
 				fetch('/api/products?limit=100')
 			]);
-			articles = (articlesRes.ok ? (await articlesRes.json()).items ?? [] : []).map((a: any) => ({
+			articles = (articlesRes.ok ? ((await articlesRes.json()).items ?? []) : []).map((a: any) => ({
 				...a,
-				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
+				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : (a.tags ?? [])
 			}));
-			suppliers = (suppliersRes.ok ? (await suppliersRes.json()).items ?? [] : []).map((s: any) => ({
-				...s,
-				certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
-				mainMarkets: typeof s.mainMarkets === 'string' ? JSON.parse(s.mainMarkets || '[]') : s.mainMarkets ?? []
-			}));
-			products = (productsRes.ok ? (await productsRes.json()).items ?? [] : []).map((p: any) => ({
+			suppliers = (suppliersRes.ok ? ((await suppliersRes.json()).items ?? []) : []).map(
+				(s: any) => ({
+					...s,
+					certifications:
+						typeof s.certifications === 'string'
+							? JSON.parse(s.certifications || '[]')
+							: (s.certifications ?? []),
+					mainMarkets:
+						typeof s.mainMarkets === 'string'
+							? JSON.parse(s.mainMarkets || '[]')
+							: (s.mainMarkets ?? [])
+				})
+			);
+			products = (productsRes.ok ? ((await productsRes.json()).items ?? []) : []).map((p: any) => ({
 				...p,
-				features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? []
+				features:
+					typeof p.features === 'string' ? JSON.parse(p.features || '[]') : (p.features ?? [])
 			}));
 			loaded = true;
 		} finally {
@@ -67,11 +77,7 @@
 
 	const allResults = $derived.by(() => {
 		const q = query.trim().toLowerCase();
-		if (!q) return [];
-		if (!loaded) {
-			loadSearchData();
-			return [];
-		}
+		if (!q || !loaded) return [];
 
 		// Helper: check if a product matches price range filters
 		function matchesPriceRange(p: any, ranges: Set<string>): boolean {
@@ -95,10 +101,13 @@
 			for (const c of certs) {
 				const cLower = c.toLowerCase();
 				if (status.toLowerCase().includes(cLower)) return true;
-				if (itemCerts.some((ic: any) => {
-					const name = typeof ic === 'string' ? ic : (ic.name ?? ic.bodyName ?? '');
-					return name.toLowerCase().includes(cLower);
-				})) return true;
+				if (
+					itemCerts.some((ic: any) => {
+						const name = typeof ic === 'string' ? ic : (ic.name ?? ic.bodyName ?? '');
+						return name.toLowerCase().includes(cLower);
+					})
+				)
+					return true;
 			}
 			return false;
 		}
@@ -108,9 +117,9 @@
 		// Category mapping: UI label → possible categorySlug values
 		const categoryMap: Record<string, string[]> = {
 			'Food & Beverage': ['food-beverage', 'food', 'beverage'],
-			'Cosmetics': ['cosmetics', 'cosmetic'],
-			'Pharmaceuticals': ['pharmaceuticals', 'pharmaceutical'],
-			'Ingredients': ['ingredients', 'ingredient']
+			Cosmetics: ['cosmetics', 'cosmetic'],
+			Pharmaceuticals: ['pharmaceuticals', 'pharmaceutical'],
+			Ingredients: ['ingredients', 'ingredient']
 		};
 
 		for (const a of articles) {
@@ -192,16 +201,13 @@
 
 	const totalPages = $derived(Math.max(1, Math.ceil(resultCount / PAGE_SIZE)));
 
-	const paginatedResults = $derived(() => {
-		const start = (currentPage - 1) * PAGE_SIZE;
-		return allResults.slice(start, start + PAGE_SIZE);
-	});
+	const paginatedResults = $derived(
+		allResults.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+	);
 
-	// Reset to page 1 when query changes
+	// Load catalog on first search (deriveds must stay pure — no fetching inside)
 	$effect(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		query;
-		currentPage = 1;
+		if (query.trim() && !loaded && !loading) loadSearchData();
 	});
 
 	function toggleSet<T>(set: Set<T>, val: T): Set<T> {
@@ -214,10 +220,10 @@
 	function getSection(section: string) {
 		const sections: Record<string, { title: string }> = {
 			'getting-started': { title: 'Getting Started' },
-			'certification': { title: 'Certification' },
-			'sourcing': { title: 'Sourcing' },
-			'compliance': { title: 'Compliance' },
-			'markets': { title: 'Markets' }
+			certification: { title: 'Certification' },
+			sourcing: { title: 'Sourcing' },
+			compliance: { title: 'Compliance' },
+			markets: { title: 'Markets' }
 		};
 		return sections[section];
 	}
@@ -225,14 +231,21 @@
 
 <svelte:head>
 	<title>Search — HalalNeo</title>
-	<meta name="description" content="Search for halal products, suppliers, and market intelligence." />
+	<meta
+		name="description"
+		content="Search for halal products, suppliers, and market intelligence."
+	/>
 </svelte:head>
 
-<div class="border-b border-border bg-card/50 -mx-4 sm:-mx-6 px-4 sm:px-6">
+<div class="-mx-4 border-b border-border bg-card/50 px-4 sm:-mx-6 sm:px-6">
 	<div class="mx-auto flex h-12 w-full max-w-7xl items-center gap-2">
 		<SearchIcon class="size-4 shrink-0 text-muted-foreground" />
 		<input
-			bind:value={query}
+			value={query}
+			oninput={(e) => {
+				query = e.currentTarget.value;
+				currentPage = 1;
+			}}
 			type="text"
 			placeholder="Search products, suppliers, articles..."
 			class="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
@@ -244,87 +257,142 @@
 <div class="mx-auto max-w-7xl">
 	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-1 text-[10px] text-muted-foreground">
-			<a href={localizeHref('/')} class="hover:text-foreground transition-colors">Home</a>
-			<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-			<span class="text-foreground font-medium">Search results</span>
+			<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
+			<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+				><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg
+			>
+			<span class="font-medium text-foreground">Search results</span>
 		</div>
-		<p class="text-xs text-muted-foreground">Showing <span class="font-medium text-foreground">{resultCount}</span> results{#if query.trim()} for "<span class="font-medium text-foreground">{query.trim()}</span>"{/if}</p>
+		<p class="text-xs text-muted-foreground">
+			Showing <span class="font-medium text-foreground">{resultCount}</span>
+			results{#if query.trim()}
+				for "<span class="font-medium text-foreground">{query.trim()}</span>"{/if}
+		</p>
 	</div>
 
 	<div class="flex gap-5">
-		<aside class="hidden w-52 shrink-0 lg:block">
-			<div class="sticky top-20 space-y-4">
+		{#snippet filterPanel()}
 				<div>
 					<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
 					<div class="space-y-1">
 						{#each categories as cat}
-							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
-								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedCategories.has(cat)} onchange={() => selectedCategories = toggleSet(selectedCategories, cat)}>
+							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+								<input
+									type="checkbox"
+									class="size-3 rounded border-border accent-primary"
+									checked={selectedCategories.has(cat)}
+									onchange={() => (selectedCategories = toggleSet(selectedCategories, cat))}
+								/>
 								{cat}
 							</label>
 						{/each}
 					</div>
-					<Button variant="ghost" size="sm" class="mt-1 h-auto p-0 text-[10px] text-primary hover:underline">Show more</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						class="mt-1 h-auto p-0 text-[10px] text-primary hover:underline">Show more</Button
+					>
 				</div>
 
-				<hr class="border-border">
+				<hr class="border-border" />
 
 				<div>
 					<h3 class="mb-1.5 text-xs font-semibold">Price Range</h3>
 					<div class="space-y-1">
 						{#each priceRanges as pr}
-							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
-								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedPrices.has(pr)} onchange={() => selectedPrices = toggleSet(selectedPrices, pr)}>
+							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+								<input
+									type="checkbox"
+									class="size-3 rounded border-border accent-primary"
+									checked={selectedPrices.has(pr)}
+									onchange={() => (selectedPrices = toggleSet(selectedPrices, pr))}
+								/>
 								{pr}
 							</label>
 						{/each}
 					</div>
 				</div>
 
-				<hr class="border-border">
+				<hr class="border-border" />
 
 				<div>
 					<h3 class="mb-1.5 text-xs font-semibold">Supplier Location</h3>
 					<div class="space-y-1">
 						{#each supplierLocations as loc}
-							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
-								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedLocations.has(loc)} onchange={() => selectedLocations = toggleSet(selectedLocations, loc)}>
+							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+								<input
+									type="checkbox"
+									class="size-3 rounded border-border accent-primary"
+									checked={selectedLocations.has(loc)}
+									onchange={() => (selectedLocations = toggleSet(selectedLocations, loc))}
+								/>
 								{loc}
 							</label>
 						{/each}
 					</div>
 				</div>
 
-				<hr class="border-border">
+				<hr class="border-border" />
 
 				<div>
 					<h3 class="mb-1.5 text-xs font-semibold">Halal Certification</h3>
 					<div class="space-y-1">
 						{#each certifications as cert}
-							<label class="flex items-center gap-1.5 text-xs cursor-pointer">
-								<input type="checkbox" class="size-3 rounded border-border accent-primary" checked={selectedCerts.has(cert)} onchange={() => selectedCerts = toggleSet(selectedCerts, cert)}>
+							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+								<input
+									type="checkbox"
+									class="size-3 rounded border-border accent-primary"
+									checked={selectedCerts.has(cert)}
+									onchange={() => (selectedCerts = toggleSet(selectedCerts, cert))}
+								/>
 								{cert}
 							</label>
 						{/each}
 					</div>
 				</div>
 
-				<Button variant="outline" class="w-full text-xs" onclick={() => { selectedCategories = new Set(); selectedPrices = new Set(); selectedLocations = new Set(); selectedCerts = new Set(); }}>Clear all filters</Button>
+				<Button
+					variant="outline"
+					class="w-full text-xs"
+					onclick={() => {
+						selectedCategories = new Set();
+						selectedPrices = new Set();
+						selectedLocations = new Set();
+						selectedCerts = new Set();
+				}}>Clear all filters</Button
+			>
+		{/snippet}
+		<aside class="hidden w-52 shrink-0 lg:block">
+			<div class="sticky top-20 space-y-4">
+				{@render filterPanel()}
 			</div>
 		</aside>
+		<Sheet bind:open={showMobileFilters}>
+			<SheetContent side="left" class="w-[85vw] overflow-y-auto sm:max-w-xs">
+				<SheetHeader>
+					<SheetTitle>Filters</SheetTitle>
+				</SheetHeader>
+				<div class="space-y-4">
+					{@render filterPanel()}
+				</div>
+			</SheetContent>
+		</Sheet>
 
-		<div class="flex-1 min-w-0">
+		<div class="min-w-0 flex-1">
 			<div class="mb-3 flex items-center justify-between gap-2">
-				<Button variant="outline" size="sm" class="lg:hidden gap-1.5 text-xs" onclick={() => showMobileFilters = !showMobileFilters}>
+				<Button
+					variant="outline"
+					size="sm"
+					class="gap-1.5 text-xs lg:hidden"
+					onclick={() => (showMobileFilters = !showMobileFilters)}
+				>
 					<SlidersHorizontal class="size-3.5" />
 					Filters
 				</Button>
 				<div class="flex items-center gap-2">
-					<span class="text-[10px] text-muted-foreground hidden sm:inline">Sort by:</span>
+					<span class="hidden text-[10px] text-muted-foreground sm:inline">Sort by:</span>
 					<Select type="single" bind:value={sortBy}>
-						<SelectTrigger class="h-7 w-[140px] text-[10px]">
-							Relevance
-						</SelectTrigger>
+						<SelectTrigger class="h-7 w-[140px] text-[10px]">Relevance</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="relevance">Relevance</SelectItem>
 							<SelectItem value="price-asc">Price: Low to High</SelectItem>
@@ -340,56 +408,100 @@
 				<Empty>
 					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
 					<EmptyTitle>Start typing to search</EmptyTitle>
-					<EmptyDescription>Search across {(data.articles ?? []).length} articles, {(data.glossary ?? []).length} glossary terms, {(data.suppliers ?? []).length} suppliers and {(data.products ?? []).length} products.</EmptyDescription>
+					<EmptyDescription
+						>Search across {(data.articles ?? []).length} articles, {(data.glossary ?? []).length} glossary
+						terms, {(data.suppliers ?? []).length} suppliers and {(data.products ?? []).length} products.</EmptyDescription
+					>
 				</Empty>
 			{:else if resultCount === 0}
 				<Empty>
 					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
 					<EmptyTitle>No results</EmptyTitle>
-					<EmptyDescription>Nothing matched "{query.trim()}" — Try a different term.</EmptyDescription>
+					<EmptyDescription
+						>Nothing matched "{query.trim()}" — Try a different term.</EmptyDescription
+					>
 				</Empty>
 			{:else}
-				<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-					{#each paginatedResults() as result}
+				<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
+					{#each paginatedResults as result (result.kind + ':' + (result.slug ?? result.term))}
 						{#if result.kind === 'sku'}
-							<a href={localizeHref(`/products/${result.slug}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
-								<div class="mb-2 aspect-square rounded-md bg-muted relative">
-									<span class="absolute top-1.5 left-1.5 inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-medium text-primary">JAKIM</span>
+							<a
+								href={localizeHref(`/products/${result.slug}`)}
+								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+							>
+								<div class="relative mb-2 aspect-square rounded-md bg-muted">
+									<span
+										class="absolute top-1.5 left-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground"
+										>JAKIM</span
+									>
 								</div>
-								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.name}</h3>
-								<p class="mt-0.5 text-[10px] text-muted-foreground">{result.description ?? 'Halal product'}</p>
+								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.name}</h3>
+								<p class="mt-0.5 text-[10px] text-muted-foreground">
+									{result.description ?? 'Halal product'}
+								</p>
 								<div class="mt-1 flex items-center gap-1">
-									<Star class="size-3 fill-amber-500 text-amber-500" />
+									<Star class="size-3 fill-warn text-warn" />
 									<span class="text-[10px] font-medium">4.8</span>
 								</div>
-								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">View details</span>
+								<span
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									>View details</span
+								>
 							</a>
 						{:else if result.kind === 'supplier'}
-							<a href={localizeHref(`/suppliers/${result.slug}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
-								<div class="mb-2 aspect-square rounded-md bg-muted relative flex items-center justify-center">
+							<a
+								href={localizeHref(`/suppliers/${result.slug}`)}
+								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+							>
+								<div
+									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
+								>
 									<Store class="size-8 text-muted-foreground/40" />
 								</div>
-								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.name}</h3>
+								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.name}</h3>
 								<p class="mt-0.5 text-[10px] text-muted-foreground">Supplier · {result.country}</p>
-								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">View details</span>
+								<span
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									>View details</span
+								>
 							</a>
 						{:else if result.kind === 'article'}
-							<a href={localizeHref(`/knowledge-base/${result.section}/${result.slug}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
-								<div class="mb-2 aspect-square rounded-md bg-muted relative flex items-center justify-center">
+							<a
+								href={localizeHref(`/knowledge-base/${result.section}/${result.slug}`)}
+								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+							>
+								<div
+									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
+								>
 									<FileText class="size-8 text-muted-foreground/40" />
 								</div>
-								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.title}</h3>
-								<p class="mt-0.5 text-[10px] text-muted-foreground line-clamp-2">{result.summary}</p>
-								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">Read article</span>
+								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.title}</h3>
+								<p class="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">
+									{result.summary}
+								</p>
+								<span
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									>Read article</span
+								>
 							</a>
 						{:else}
-							<a href={localizeHref(`/glossary#term-${result.term[0].toUpperCase()}`)} class="block rounded-lg border border-border bg-card p-2.5 transition-all hover:shadow-md">
-								<div class="mb-2 aspect-square rounded-md bg-muted relative flex items-center justify-center">
+							<a
+								href={localizeHref(`/glossary#term-${result.term[0].toUpperCase()}`)}
+								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+							>
+								<div
+									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
+								>
 									<BookText class="size-8 text-muted-foreground/40" />
 								</div>
-								<h3 class="text-xs font-medium leading-snug line-clamp-2">{result.term}</h3>
-								<p class="mt-0.5 text-[10px] text-muted-foreground line-clamp-2">{result.definition}</p>
-								<span class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium hover:bg-accent transition-colors">View term</span>
+								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.term}</h3>
+								<p class="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">
+									{result.definition}
+								</p>
+								<span
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									>View term</span
+								>
 							</a>
 						{/if}
 					{/each}
@@ -402,9 +514,16 @@
 							size="icon"
 							class="size-7"
 							disabled={currentPage === 1}
-							onclick={() => currentPage = Math.max(1, currentPage - 1)}
+							onclick={() => (currentPage = Math.max(1, currentPage - 1))}
 						>
-							<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+							<svg
+								class="size-3"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+								><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg
+							>
 						</Button>
 						{#each Array.from({ length: totalPages }, (_, i) => i + 1) as page}
 							{#if page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)}
@@ -412,10 +531,13 @@
 									variant={page === currentPage ? 'default' : 'outline'}
 									size="icon"
 									class="size-7"
-									onclick={() => currentPage = page}
-								>{page}</Button>
+									onclick={() => (currentPage = page)}>{page}</Button
+								>
 							{:else if page === currentPage - 2 || page === currentPage + 2}
-								<span class="size-7 flex items-center justify-center text-[10px] text-muted-foreground">...</span>
+								<span
+									class="flex size-7 items-center justify-center text-[10px] text-muted-foreground"
+									>...</span
+								>
 							{/if}
 						{/each}
 						<Button
@@ -423,9 +545,16 @@
 							size="icon"
 							class="size-7"
 							disabled={currentPage === totalPages}
-							onclick={() => currentPage = Math.min(totalPages, currentPage + 1)}
+							onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
 						>
-							<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+							<svg
+								class="size-3"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+								><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg
+							>
 						</Button>
 					</div>
 				{/if}
@@ -433,3 +562,4 @@
 		</div>
 	</div>
 </div>
+

@@ -8,26 +8,19 @@
 
 	let { data } = $props();
 
+	// Categories come from D1 via the page loader (same source as the API).
+	// Category hero images are static art mapped by canonical slug.
 	const catImages: Record<string, string> = {
-		'food-beverage': '/images/cat-food-beverages.webp',
-		'cosmetics': '/images/cat-cosmetics.webp',
-		'supplements': '/images/cat-supplements.webp',
-		'meat-poultry': '/images/cat-meat-poultry.webp',
-		'dairy-eggs': '/images/cat-dairy-eggs.webp',
-		'confectionery': '/images/cat-confectionery.webp',
-		'beverages': '/images/cat-beverages.webp',
+		'food-beverages': '/api/media/cat-food-beverages.webp',
+		'cosmetics-personal-care': '/api/media/cat-cosmetics.webp',
+		'nutritional-supplements': '/api/media/cat-supplements.webp',
+		'meat-poultry': '/api/media/cat-meat-poultry.webp',
+		'dairy-eggs': '/api/media/cat-dairy-eggs.webp',
+		'confectionery-snacks': '/api/media/cat-confectionery.webp',
+		'beverages': '/api/media/cat-beverages.webp'
 	};
 
-	const productCategories = [
-		{ name: 'Meat & Poultry', description: 'Halal-certified beef, chicken, lamb, and processed meat products' },
-		{ name: 'Dairy & Eggs', description: 'Milk, cheese, yogurt, and egg products from certified sources' },
-		{ name: 'Food & Beverages', description: 'Packaged foods, snacks, condiments, and non-alcoholic beverages' },
-		{ name: 'Grains & Cereals', description: 'Rice, wheat, flour, oats, and cereal products' },
-		{ name: 'Confectionery', description: 'Chocolate, candy, gum, and sweet products' },
-		{ name: 'Cosmetics & Personal Care', description: 'Halal-certified skincare, makeup, and personal hygiene products' },
-		{ name: 'Pharmaceutical', description: 'Medicines and health supplements meeting halal requirements' },
-		{ name: 'Ingredients & Additives', description: 'Emulsifiers, stabilisers, flavourings, and food-grade additives' }
-	];
+	const productCategories = $derived((data.categories ?? []) as { slug: string; name: string; description: string }[]);
 
 	const markets = [
 		{ region: 'ASEAN', countries: 'Malaysia, Indonesia, Singapore, Thailand, Philippines' },
@@ -41,7 +34,7 @@
 
 <Breadcrumb items={[{ label: 'Products', href: '/products' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product catalogue</h1>
 		<p class="text-muted-foreground">

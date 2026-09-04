@@ -18,7 +18,7 @@
 	})}</script>`}
 </svelte:head>
 
-<div class="container mx-auto max-w-7xl px-4 py-8">
+<div class="py-8">
 	{#if data.item}
 		<header class="mb-8 space-y-2">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.name}</h1>

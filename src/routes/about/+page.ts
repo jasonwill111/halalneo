@@ -23,7 +23,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'About HalalNeo —Global Halal Trade Intelligence',
 			description:
 				'Learn about HalalNeo —connecting halal-certified manufacturers with international B2B buyers. Your trusted platform for halal trade intelligence.',
-			ogImage: 'https://halalneo.com/og-about.png',
+			ogImage: 'https://halalneo.com/api/media/og-about.svg',
 			keywords: ['about HalalNeo', 'halal trade platform', 'B2B marketplace', 'halal certification']
 		},
 		stats: {

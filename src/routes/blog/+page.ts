@@ -12,10 +12,10 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Halal Trade Blog —HalalNeo',
+			title: 'Halal Trade Blog — HalalNeo',
 			description:
-				'Industry insights, market reports, and updates on halal trade, certification, and medical device compliance.',
-			ogImage: 'https://halalneo.com/og-blog.png',
+				'Industry insights, market reports, and updates on halal trade, certification, and sourcing.',
+			ogImage: 'https://halalneo.com/api/media/og-blog.svg',
 			keywords: ['halal blog', 'halal trade news', 'certification updates', 'market reports']
 		},
 		posts: postsParsed

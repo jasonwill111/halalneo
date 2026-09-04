@@ -14,11 +14,12 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Search —HalalNeo',
+			title: 'Search — HalalNeo',
 			description:
 				'Search halal products, suppliers, certification bodies, and knowledge base articles.',
-			ogImage: 'https://halalneo.com/og-search.png',
-			keywords: ['halal search', 'find suppliers', 'halal products', 'certification lookup']
+			ogImage: 'https://halalneo.com/api/media/og-search.svg',
+			keywords: ['halal search', 'find suppliers', 'halal products', 'certification lookup'],
+			robots: 'noindex, follow'
 		},
 		glossary
 	};

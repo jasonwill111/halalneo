@@ -27,11 +27,13 @@ import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 		'Ingredients & Additives',
 		'Packaging & Logistics'
 	];
+
+	const shieldColors = ['text-info', 'text-warn', 'text-success'];
 </script>
 
 <Breadcrumb items={[{ label: 'Suppliers', href: '/suppliers' }]} />
 
-<section class="space-y-8">
+<section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Supplier directory</h1>
 		<p class="text-muted-foreground">
@@ -58,10 +60,10 @@ import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 			<p class="text-xs text-muted-foreground">Suppliers on HalalNeo carry certificates from these recognised bodies.</p>
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-			{#each certBodies as body}
+			{#each certBodies as body, i}
 				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
 					<div class="flex items-center gap-2 mb-2">
-						<ShieldCheck class="size-4 text-primary" />
+						<ShieldCheck class="size-4 {shieldColors[i % shieldColors.length]}" />
 						<span class="text-sm font-semibold">{body.name}</span>
 					</div>
 					<p class="text-xs text-muted-foreground">{body.country}</p>

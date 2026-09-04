@@ -1,5 +1,5 @@
 -- New Knowledge Base Articles: 4 Missing Sections (20 articles)
--- Sections: financial-banking, legal-compliance, marketing-branding, operations-management
+-- Sections mapped to canonical: financial-banking/marketing-branding -> trade-sourcing, legal-compliance -> due-diligence, operations-management -> logistics
 -- 10 Checklists + 10 Case Studies
 
 -- ============================================================
@@ -8,7 +8,7 @@
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'islamic-trade-finance-fundamentals',
-'financial-banking',
+'trade-sourcing',
 'Islamic Trade Finance Fundamentals: Al-Rahman Foods Case Study',
 'A case study on how Al-Rahman Foods, a mid-size Malaysian halal exporter, transitioned from conventional financing to Islamic trade finance and reduced financing costs by 18% while expanding into 3 new markets.',
 '<h1>Islamic Trade Finance Fundamentals: Al-Rahman Foods Case Study</h1>
@@ -77,7 +77,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'letter-of-credit-halal-trade',
-'financial-banking',
+'trade-sourcing',
 'Letter of Credit for Halal Trade: PureHalal Trading Case Study',
 'How PureHalal Trading, a Dubai-based halal cosmetics distributor, structured Sharia-compliant LCs to eliminate $340K in annual dispute losses and accelerate payment cycles from 45 to 12 days.',
 '<h1>Letter of Credit for Halal Trade: PureHalal Trading Case Study</h1>
@@ -138,7 +138,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'sukuk-islamic-bonds-trade-expansion',
-'financial-banking',
+'trade-sourcing',
 'Sukuk for Trade Expansion: NutraHalal Industries Case Study',
 'How NutraHalal Industries, an Indonesian halal pharmaceutical company, raised $25M through Sukuk al-Ijarah to fund a new production facility — and why conventional bonds were not an option.',
 '<h1>Sukuk for Trade Expansion: NutraHalal Industries Case Study</h1>
@@ -206,7 +206,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'payment-gateways-halal-ecommerce',
-'financial-banking',
+'trade-sourcing',
 'Payment Gateways for Halal E-Commerce: HalalCart Case Study',
 'How HalalCart, a UK-based halal grocery e-commerce platform, increased checkout conversion by 27% by switching to Sharia-compliant payment gateways and adding Islamic banking options.',
 '<h1>Payment Gateways for Halal E-Commerce: HalalCart Case Study</h1>
@@ -285,7 +285,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'currency-hedging-cross-border-halal-trade',
-'financial-banking',
+'trade-sourcing',
 'Currency Hedging for Cross-Border Halal Trade: GlobalHalal Corp Case Study',
 'How GlobalHalal Corp, a US-based halal food distributor, protected $12M in annual cross-border revenue from currency fluctuations using Sharia-compliant forward contracts — saving $890K in potential losses.',
 '<h1>Currency Hedging for Cross-Border Halal Trade: GlobalHalal Corp Case Study</h1>
@@ -369,7 +369,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'import-export-regulations-halal-products',
-'legal-compliance',
+'due-diligence',
 'Import/Export Regulations for Halal Products: Complete Checklist',
 'A comprehensive checklist for halal product import/export compliance — covering product registration, labeling, certificates, and country-specific regulations across 5 major markets.',
 '<h1>Import/Export Regulations for Halal Products: Complete Checklist</h1>
@@ -490,7 +490,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'contract-law-international-halal-trade',
-'legal-compliance',
+'due-diligence',
 'Contract Law in International Halal Trade: Complete Checklist',
 'Essential checklist for drafting enforceable halal trade contracts — covering product specs, payment terms, delivery, quality assurance, halal compliance, IP protection, and dispute resolution.',
 '<h1>Contract Law in International Halal Trade: Complete Checklist</h1>
@@ -608,7 +608,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'intellectual-property-protection-halal-brands',
-'legal-compliance',
+'due-diligence',
 'Intellectual Property Protection for Halal Brands: Case Study',
 'How Al-Noor Cosmetics, a halal beauty brand, recovered $1.2M in lost revenue by implementing a systematic IP protection strategy across 8 countries and 3 e-commerce platforms.',
 '<h1>Intellectual Property Protection for Halal Brands: Al-Noor Cosmetics Case Study</h1>
@@ -682,7 +682,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'customs-duties-tariffs-halal-goods',
-'legal-compliance',
+'due-diligence',
 'Customs Duties & Tariffs for Halal Goods: Complete Checklist',
 'Complete checklist for classifying halal products, claiming preferential tariffs, and reducing duty costs through FTZ, bonded warehousing, and tariff engineering.',
 '<h1>Customs Duties & Tariffs for Halal Goods: Complete Checklist</h1>
@@ -778,7 +778,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'dispute-resolution-arbitration-halal-trade',
-'legal-compliance',
+'due-diligence',
 'Dispute Resolution & Arbitration in Halal Trade: Checklist & Clause Template',
 'Complete checklist for preventing and resolving halal trade disputes — including an arbitration clause template, prevention strategies, and step-by-step dispute resolution process.',
 '<h1>Dispute Resolution & Arbitration in Halal Trade: Checklist & Clause Template</h1>
@@ -877,7 +877,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'halal-marketing-strategies-b2b',
-'marketing-branding',
+'trade-sourcing',
 'Halal Marketing Strategies for B2B: Complete Checklist',
 'Complete B2B halal marketing checklist — from certification-first collateral and trade show preparation to digital presence, content calendar, and relationship marketing.',
 '<h1>Halal Marketing Strategies for B2B: Complete Checklist</h1>
@@ -985,7 +985,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'brand-positioning-halal-market',
-'marketing-branding',
+'trade-sourcing',
 'Brand Positioning in the Halal Market: Case Study',
 'How GreenHalal, a small organic halal food brand, went from competing on price to owning the "premium organic halal" niche — increasing margins 45% and reducing customer acquisition cost 60%.',
 '<h1>Brand Positioning in the Halal Market: GreenHalal Case Study</h1>
@@ -1065,7 +1065,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'digital-marketing-halal-businesses',
-'marketing-branding',
+'trade-sourcing',
 'Digital Marketing for Halal Businesses: Complete Checklist',
 'Complete digital marketing checklist for halal businesses — platform strategy (LinkedIn, Google, YouTube, Instagram), SEO, email marketing, content strategy, and budget allocation.',
 '<h1>Digital Marketing for Halal Businesses: Complete Checklist</h1>
@@ -1172,7 +1172,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'trade-show-marketing-halal-products',
-'marketing-branding',
+'trade-sourcing',
 'Trade Show Marketing for Halal Products: Case Study',
 'How Al-Baik Foods generated $2.1M in pipeline from a single MIHAS trade show — using a systematic pre-show, at-show, and post-show process that converted 23% of booth visitors into customers.',
 '<h1>Trade Show Marketing for Halal Products: Al-Baik Foods Case Study</h1>
@@ -1250,7 +1250,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'building-trust-halal-certification-marketing',
-'marketing-branding',
+'trade-sourcing',
 'Building Trust Through Halal Certification Marketing: Checklist',
 'Complete checklist for leveraging halal certification as a marketing tool — display strategy, verification, education, content creation, and trust measurement.',
 '<h1>Building Trust Through Halal Certification Marketing: Checklist</h1>
@@ -1334,7 +1334,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'supply-chain-optimization-halal-products',
-'operations-management',
+'logistics',
 'Supply Chain Optimization for Halal Products: Complete Checklist',
 'Complete checklist for optimizing halal supply chains — covering sourcing, manufacturing, warehousing, transportation, distribution, technology, and cost reduction.',
 '<h1>Supply Chain Optimization for Halal Products: Complete Checklist</h1>
@@ -1432,7 +1432,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'inventory-management-halal-goods',
-'operations-management',
+'logistics',
 'Inventory Management for Halal Goods: Case Study',
 'How FreshHalal, a UK-based halal meat distributor, reduced waste by 38% and stockouts by 72% by implementing FIFO, ABC analysis, and certification tracking — without adding headcount.',
 '<h1>Inventory Management for Halal Goods: FreshHalal Case Study</h1>
@@ -1508,7 +1508,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'quality-management-systems-halal-production',
-'operations-management',
+'logistics',
 'Quality Management Systems for Halal Production: Complete Checklist',
 'Complete checklist for implementing ISO 22000, HACCP, and BRC quality management systems in halal production — including gap analysis, documentation, training, and certification.',
 '<h1>Quality Management Systems for Halal Production: Complete Checklist</h1>
@@ -1613,7 +1613,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'warehouse-management-halal-products',
-'operations-management',
+'logistics',
 'Warehouse Management for Halal Products: Case Study',
 'How HalalFresh Logistics, a Malaysian halal warehouse operator, achieved 99.8% inventory accuracy and zero contamination incidents by implementing halal-specific warehouse management practices.',
 '<h1>Warehouse Management for Halal Products: HalalFresh Logistics Case Study</h1>
@@ -1698,7 +1698,7 @@ NULL,'published',0,1788082542,1788082542
 
 INSERT INTO "knowledge_base" ("slug","section","title","summary","body","tags","author","status","views","created_at","updated_at") VALUES (
 'demand-planning-halal-products',
-'operations-management',
+'logistics',
 'Demand Planning for Halal Products: Complete Checklist',
 'Complete demand planning checklist for halal products — covering Ramadan planning, seasonal forecasting, demand drivers, forecasting methods, and key metrics.',
 '<h1>Demand Planning for Halal Products: Complete Checklist</h1>

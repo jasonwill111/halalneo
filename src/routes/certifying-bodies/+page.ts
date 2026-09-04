@@ -8,10 +8,10 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	return {
 		seo: {
-			title: 'Halal Certifying Bodies —HalalNeo',
+			title: 'Halal Certifying Bodies — HalalNeo',
 			description:
 				'Browse recognized halal certifying bodies worldwide —JAKIM, BPJPH, MUIS, SFDA, and more. Find accredited certifiers for your market.',
-			ogImage: 'https://halalneo.com/og-certifiers.png',
+			ogImage: 'https://halalneo.com/api/media/og-certifiers.svg',
 			keywords: ['halal certifying bodies', 'JAKIM', 'BPJPH', 'accredited certifiers', 'halal accreditation']
 		},
 		certifiers
