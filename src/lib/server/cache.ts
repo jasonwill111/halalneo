@@ -27,12 +27,25 @@ export async function cachedQuery<T>(
 	const { ttl = 300, staleWhileRevalidate = 60, cacheKey } = options;
 	const rawKey = cacheKey ?? (typeof request === 'string' ? request : request.url);
 
-	// Cache API keys must be fully-qualified URLs — normalize plain string keys
-	let key = rawKey;
+	// Cache keys: strip host + query string. Path-only keys match the
+	// invalidateCache('/api/products') call site pattern, so writes actually
+	// invalidate reads. Endpoints with query-driven cache entries pass an
+	// explicit `cacheKey` (e.g. /api/verify?q=halal).
+	let key: string;
+	if (cacheKey) {
+		key = rawKey;
+	} else {
+		try {
+			const u = new URL(rawKey);
+			key = u.pathname;
+		} catch {
+			key = rawKey;
+		}
+	}
 	try {
-		new URL(rawKey);
+		new URL(key);
 	} catch {
-		key = `https://cache.halalneo.internal/${encodeURIComponent(rawKey)}`;
+		key = `https://cache.halalneo.internal${key.startsWith('/') ? '' : '/'}${key}`;
 	}
 
 	const cache = await getDefaultCache();
@@ -95,11 +108,20 @@ export async function invalidateCache(...urls: string[]): Promise<void> {
 	if (!cache) return;
 	await Promise.all(
 		urls.map((url) => {
+			// Match the path-only key scheme used by cachedQuery (without cacheKey).
 			let key = url;
+			if (!key.startsWith('/')) {
+				try {
+					const u = new URL(url);
+					key = u.pathname;
+				} catch {
+					// keep as-is
+				}
+			}
 			try {
-				new URL(url);
+				new URL(key);
 			} catch {
-				key = `https://cache.halalneo.internal/${encodeURIComponent(url)}`;
+				key = `https://cache.halalneo.internal${key.startsWith('/') ? '' : '/'}${key}`;
 			}
 			return cache.delete(new Request(key));
 		})
