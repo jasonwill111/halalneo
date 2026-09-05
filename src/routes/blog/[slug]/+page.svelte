@@ -5,6 +5,7 @@
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import { sanitizeHtml } from '#lib/sanitize.js';
 
 	let { data } = $props();
@@ -147,21 +148,9 @@
 			</div>
 
 			<Card>
-				<CardContent class="flex items-center justify-between p-4">
-					<p class="text-sm text-muted-foreground">Found this helpful?</p>
-					<div class="flex gap-2">
-						<Button variant="outline" size="sm">Share</Button>
-						<Button variant="outline" size="sm">Bookmark</Button>
-						<Button
-							variant="outline"
-							size="sm"
-							href="https://twitter.com/intent/tweet?text={encodeURIComponent(
-								data.item.title ?? ''
-							)}&url={encodeURIComponent('https://halalneo.com/blog/' + data.slug)}"
-							target="_blank"
-							rel="noopener">Twitter</Button
-						>
-					</div>
+				<CardContent class="space-y-3 p-4">
+					<p class="text-sm text-muted-foreground">Found this helpful? Share it with your network.</p>
+					<ShareButtons title={data.item.title ?? ''} text={data.item.excerpt ?? ''} />
 				</CardContent>
 			</Card>
 

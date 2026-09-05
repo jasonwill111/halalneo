@@ -4,10 +4,8 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import { sanitizeHtml } from '#lib/sanitize.js';
-	import Share2 from '@lucide/svelte/icons/share-2';
-	import Bookmark from '@lucide/svelte/icons/bookmark';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
 
 	let { data } = $props();
 
@@ -169,17 +167,9 @@
 					{/each}
 				</div>
 
-				<div
-					class="flex items-center justify-between rounded-xl border border-border bg-muted/40 px-4 py-3"
-				>
-					<span class="text-sm text-muted-foreground">Found this helpful?</span>
-					<div class="flex items-center gap-2">
-						<Button variant="outline" size="sm"><Share2 class="mr-1 size-3.5" /> Share</Button>
-						<Button variant="outline" size="sm"><Bookmark class="mr-1 size-3.5" /> Bookmark</Button>
-						<Button variant="outline" size="sm"
-							><ExternalLink class="mr-1 size-3.5" /> Copy Link</Button
-						>
-					</div>
+				<div class="space-y-3 rounded-xl border border-border bg-muted/40 p-4">
+					<span class="text-sm text-muted-foreground">Found this helpful? Share it with your network.</span>
+					<ShareButtons title={data.item.title ?? ''} text={data.item.summary ?? ''} />
 				</div>
 
 				{#if related.length > 0}

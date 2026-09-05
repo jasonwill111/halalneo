@@ -135,7 +135,7 @@
 						class="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/30"
 					></div>
 					<div class="absolute inset-0 flex items-center">
-						<div class="max-w-xl px-4 sm:px-10">
+						<div class="max-w-xl px-4 pb-6 sm:px-10 sm:pb-0">
 							{#if i === 0}
 								<h1
 									class="text-base leading-tight font-bold tracking-tight whitespace-pre-line sm:text-2xl sm:text-4xl lg:text-5xl"

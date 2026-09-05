@@ -29,40 +29,39 @@
 	let articles = $state.raw<any[]>([]);
 	let suppliers = $state.raw<any[]>([]);
 	let products = $state.raw<any[]>([]);
+	let terms = $state.raw<any[]>([]);
 	let loaded = $state(false);
 	let loading = $state(false);
 
-	async function loadSearchData() {
-		if (loaded || loading) return;
+	// Server-side federated search (debounced). Replaces the old pattern of
+	// fetching 250 full rows once and filtering in-browser. The server returns
+	// projected columns only (≤55 rows); facet filters below still apply.
+	async function searchServer() {
+		const needle = query.trim();
+		if (!needle || loading) return;
 		loading = true;
 		try {
-			const [articlesRes, suppliersRes, productsRes] = await Promise.all([
-				fetch('/api/knowledge-base?limit=50'),
-				fetch('/api/suppliers?limit=100'),
-				fetch('/api/products?limit=100')
-			]);
-			articles = (articlesRes.ok ? ((((await articlesRes.json()) as any)).items ?? []) : []).map((a: any) => ({
+			const res = await fetch(`/api/search?q=${encodeURIComponent(needle)}`);
+			if (!res.ok) return;
+			const data = (await res.json()) as any;
+			articles = (data.articles ?? []).map((a: any) => ({
 				...a,
 				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : (a.tags ?? [])
 			}));
-			suppliers = (suppliersRes.ok ? ((((await suppliersRes.json()) as any)).items ?? []) : []).map(
-				(s: any) => ({
-					...s,
-					certifications:
-						typeof s.certifications === 'string'
-							? JSON.parse(s.certifications || '[]')
-							: (s.certifications ?? []),
-					mainMarkets:
-						typeof s.mainMarkets === 'string'
-							? JSON.parse(s.mainMarkets || '[]')
-							: (s.mainMarkets ?? [])
-				})
-			);
-			products = (productsRes.ok ? ((((await productsRes.json()) as any)).items ?? []) : []).map((p: any) => ({
+			suppliers = (data.suppliers ?? []).map((s: any) => ({
+				...s,
+				certifications:
+					typeof s.certifications === 'string'
+						? JSON.parse(s.certifications || '[]')
+						: (s.certifications ?? []),
+				mainMarkets: []
+			}));
+			products = (data.products ?? []).map((p: any) => ({
 				...p,
 				features:
 					typeof p.features === 'string' ? JSON.parse(p.features || '[]') : (p.features ?? [])
 			}));
+			terms = data.terms ?? [];
 			loaded = true;
 		} finally {
 			loading = false;
@@ -137,7 +136,7 @@
 				});
 			}
 		}
-		for (const t of data.glossary ?? []) {
+		for (const t of terms) {
 			if (t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q)) {
 				results.push({ kind: 'term', term: t.term, definition: t.definition });
 			}
@@ -205,9 +204,21 @@
 		allResults.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 	);
 
-	// Load catalog on first search (deriveds must stay pure — no fetching inside)
+	// Debounced server search — deriveds stay pure (no fetching inside).
+	// Clearing `loaded` on each keystroke hides stale results while typing.
+	let searchTimer: ReturnType<typeof setTimeout> | undefined;
 	$effect(() => {
-		if (query.trim() && !loaded && !loading) loadSearchData();
+		const needle = query.trim();
+		clearTimeout(searchTimer);
+		if (!needle) {
+			loaded = false;
+			return;
+		}
+		loaded = false;
+		searchTimer = setTimeout(() => {
+			searchServer();
+		}, 300);
+		return () => clearTimeout(searchTimer);
 	});
 
 	function toggleSet<T>(set: Set<T>, val: T): Set<T> {
