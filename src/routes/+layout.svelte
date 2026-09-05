@@ -42,7 +42,7 @@
 			`${path === '/' ? 'Home' : path.split('/').pop()?.replace(/-/g, ' ')} — ${siteName}`;
 		const description = page.data?.seo?.description ?? defaultDescription;
 		const canonical = localizeUrl(`${baseUrl}${path}`).toString();
-		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/api/media/og-default.svg`;
+		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/api/media/og-default.png`;
 		const robots =
 			page.data?.seo?.robots ??
 			'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';

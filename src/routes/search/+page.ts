@@ -17,7 +17,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Search — HalalNeo',
 			description:
 				'Search halal products, suppliers, certification bodies, and knowledge base articles.',
-			ogImage: 'https://halalneo.com/api/media/og-search.svg',
+			ogImage: 'https://halalneo.com/api/media/og-search.png',
 			keywords: ['halal search', 'find suppliers', 'halal products', 'certification lookup'],
 			robots: 'noindex, follow'
 		},

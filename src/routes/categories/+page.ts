@@ -19,7 +19,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Product Categories — HalalNeo',
 			description:
 				'Browse halal-certified product categories —food, beverages, cosmetics, nutritional supplements and more.',
-			ogImage: 'https://halalneo.com/api/media/og-categories.svg',
+			ogImage: 'https://halalneo.com/api/media/og-categories.png',
 			keywords: ['halal product categories', 'certified product types', 'halal food', 'halal cosmetics']
 		},
 		categories,

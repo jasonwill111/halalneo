@@ -9,7 +9,7 @@
 	const item = $derived(data.item);
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.svg`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 	const pageTitle = $derived(seo.title ?? `${item?.title ?? 'Page'} — HalalNeo`);
 	const pageDescription = $derived(seo.description ?? '');
 	const pageUrl = $derived(`${baseUrl}${page.url.pathname}`);

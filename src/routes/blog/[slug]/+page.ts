@@ -58,7 +58,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				description:
 					data.excerpt || data.metaDescription ||
 					`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
-					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-blog.svg',
+					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-blog.png',
 					keywords: data.keywords || ['halal blog', 'certification insights', 'trade news']
 				},
 				item,

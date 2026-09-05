@@ -73,7 +73,7 @@
 	const item = $derived(data.item);
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.svg`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 
 	const breadcrumbs = $derived.by(() => {
 		const items = [
@@ -158,6 +158,20 @@
 	<meta name="description" content={seo.description ?? item?.shortDescription ?? ''} />
 	{#if productSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(productSchema)}</script>`}
+	{/if}
+	{#if faqs.length > 0}
+		{@html `<script type="application/ld+json">${JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'FAQPage',
+			mainEntity: faqs.map((f: any) => ({
+				'@type': 'Question',
+				name: typeof f === 'string' ? f : (f.question ?? ''),
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: typeof f === 'string' ? '' : (f.answer ?? '')
+				}
+			}))
+		})}</script>`}
 	{/if}
 	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>

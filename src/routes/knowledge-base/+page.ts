@@ -37,7 +37,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Halal Certification Knowledge Base — HalalNeo',
 			description:
 				'Comprehensive guides on halal certification, compliance, trade sourcing, logistics, and market access.',
-			ogImage: 'https://halalneo.com/api/media/og-kb.svg',
+			ogImage: 'https://halalneo.com/api/media/og-kb.png',
 			keywords: ['halal certification guide', 'halal compliance', 'trade sourcing', 'halal logistics']
 		},
 		articles,

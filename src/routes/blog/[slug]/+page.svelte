@@ -22,7 +22,7 @@
 	const readTime = $derived((data.item as any)?.readTime as string | undefined);
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.svg`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 
 	const blogSchema = $derived(
 		item
@@ -43,7 +43,7 @@
 					publisher: {
 						'@type': 'Organization',
 						name: 'HalalNeo',
-						logo: { '@type': 'ImageObject', url: `${baseUrl}/api/media/og-default.svg` }
+						logo: { '@type': 'ImageObject', url: `${baseUrl}/api/media/og-default.png` }
 					}
 				}
 			: null

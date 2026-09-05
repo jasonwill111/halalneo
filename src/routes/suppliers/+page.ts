@@ -43,7 +43,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Halal-Certified Suppliers — HalalNeo',
 			description:
 				'Discover halal-certified suppliers and manufacturers from Southeast Asia to the Gulf. Verified B2B partners for global trade.',
-			ogImage: 'https://halalneo.com/api/media/og-suppliers.svg',
+			ogImage: 'https://halalneo.com/api/media/og-suppliers.png',
 			keywords: ['halal suppliers', 'certified manufacturers', 'B2B suppliers', 'halal trade partners']
 		},
 		suppliers,

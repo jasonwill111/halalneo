@@ -33,7 +33,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			description:
 				body?.description ||
 				`${body?.name || params.slug} — recognized halal certifying body. Details, standards, and contact information on HalalNeo.`,
-			ogImage: 'https://halalneo.com/api/media/og-certifiers.svg',
+			ogImage: 'https://halalneo.com/api/media/og-certifiers.png',
 			keywords: [body?.name, 'halal certifier', body?.country, 'accreditation'].filter(Boolean)
 		},
 		item: body,

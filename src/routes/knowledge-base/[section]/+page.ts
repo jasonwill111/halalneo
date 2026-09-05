@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				seo: {
 					title: `${sectionTitle} — HalalNeo Knowledge Base`,
 					description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
-					ogImage: 'https://halalneo.com/api/media/og-kb.svg',
+					ogImage: 'https://halalneo.com/api/media/og-kb.png',
 					keywords: [sectionTitle, 'halal knowledge base', 'certification guide', 'compliance']
 				},
 				item: {
@@ -38,7 +38,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `${sectionTitle} — HalalNeo Knowledge Base`,
 			description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
-			ogImage: 'https://halalneo.com/api/media/og-kb.svg'
+			ogImage: 'https://halalneo.com/api/media/og-kb.png'
 		},
 		item: null
 	};

@@ -34,7 +34,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Halal Trade Blog — HalalNeo',
 			description:
 				'Industry insights, market reports, and updates on halal trade, certification, and sourcing.',
-			ogImage: 'https://halalneo.com/api/media/og-blog.svg',
+			ogImage: 'https://halalneo.com/api/media/og-blog.png',
 			keywords: ['halal blog', 'halal trade news', 'certification updates', 'market reports']
 		},
 		posts: postsParsed,

@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `Halal Market Guide: ${guide.country} — Certifiers, Requirements & Costs`,
 			description: (guide.summary || '').slice(0, 155),
-			ogImage: 'https://halalneo.com/api/media/og-default.svg'
+			ogImage: 'https://halalneo.com/api/media/og-default.png'
 		}
 	};
 };

@@ -30,7 +30,7 @@
 	});
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.svg`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 
 	const breadcrumbSchema = $derived({
 		'@context': 'https://schema.org',
@@ -75,7 +75,7 @@
 					publisher: {
 						'@type': 'Organization',
 						name: 'HalalNeo',
-						logo: { '@type': 'ImageObject', url: `${baseUrl}/api/media/og-default.svg` }
+						logo: { '@type': 'ImageObject', url: `${baseUrl}/api/media/og-default.png` }
 					}
 				}
 			: null

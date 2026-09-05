@@ -26,7 +26,7 @@ export const load: PageLoad = async ({ fetch }) => {
 					title: 'Halal Trade Glossary — HalalNeo',
 					description:
 						'80+ professional terms covering halal certification, packaging, trade, finance, logistics and regulation — explained for B2B buyers and suppliers.',
-					ogImage: 'https://halalneo.com/api/media/og-default.svg',
+					ogImage: 'https://halalneo.com/api/media/og-default.png',
 					keywords: [
 						'halal glossary',
 						'certification terms',
@@ -45,7 +45,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Halal Trade Glossary — HalalNeo',
 			description:
 				'80+ professional terms covering halal certification, packaging, trade, finance, logistics and regulation — explained for B2B buyers and suppliers.',
-			ogImage: 'https://halalneo.com/api/media/og-default.svg',
+			ogImage: 'https://halalneo.com/api/media/og-default.png',
 			keywords: ['halal glossary', 'certification terms', 'trade definitions']
 		},
 		terms: []
