@@ -11,6 +11,7 @@
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import { sanitizeHtml } from '#lib/sanitize.js';
+	import { marked } from 'marked';
 
 	let { data } = $props();
 
@@ -41,6 +42,16 @@
 			.replace(/<[^>]*>/g, ' ')
 			.replace(/\s+/g, ' ')
 			.trim();
+
+	// Blog bodies may be plain text or Markdown (never raw HTML needing passthrough).
+	const renderedContent = $derived.by(() => {
+		const raw = String(item?.content ?? '');
+		if (!raw) return '';
+		const html = /<\s*(p|h[12]|ul|ol|blockquote)[\s>]/i.test(raw)
+			? raw
+			: (marked.parse(raw, { async: false }) as string);
+		return sanitizeHtml(html);
+	});
 
 	const blogSchema = $derived(
 		item
@@ -142,7 +153,7 @@
 			{/if}
 
 			<div class="prose max-w-none prose-neutral dark:prose-invert overflow-hidden">
-				{@html sanitizeHtml(data.item.content)}
+				{@html renderedContent}
 			</div>
 
 			<div class="flex flex-wrap gap-2 border-t border-border pt-6">

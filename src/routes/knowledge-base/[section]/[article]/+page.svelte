@@ -7,6 +7,8 @@
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { sanitizeHtml } from '#lib/sanitize.js';
+	import { marked } from 'marked';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
 
@@ -16,9 +18,37 @@
 
 	let activeId = $state('');
 
+	function slugifyHeading(text: string): string {
+		return text
+			.toLowerCase()
+			.trim()
+			.replace(/<[^>]*>/g, '')
+			.replace(/[^a-z0-9\u4e00-\u9fa5\s-]/g, '')
+			.replace(/\s+/g, '-')
+			.replace(/-+/g, '-')
+			.replace(/^-+|-+$/g, '');
+	}
+
+	// Bodies are stored as Markdown in D1 (some legacy rows are raw HTML).
+	// Convert Markdown -> HTML, ensure every h2 has an id for the TOC.
+	const renderedBody = $derived.by(() => {
+		const raw = (item?.body ?? item?.content ?? '') as string;
+		if (!raw) return '';
+		let html: string;
+		if (/<\s*h[12][\s>]/i.test(raw)) {
+			html = raw;
+		} else {
+			html = marked.parse(raw, { async: false }) as string;
+		}
+		html = html.replace(/<h2>([^<]+)<\/h2>/g, (_, t: string) => {
+			const id = slugifyHeading(t);
+			return id ? `<h2 id="${id}">${t}</h2>` : `<h2>${t}</h2>`;
+		});
+		return sanitizeHtml(html);
+	});
+
 	const tocItems = $derived.by(() => {
-		if (!item?.body) return [];
-		const matches = item.body.match(/<h2[^>]*id="([^"]*)"[^>]*>([^<]+)<\/h2>/g) ?? [];
+		const matches = renderedBody.match(/<h2[^>]*id="([^"]*)"[^>]*>([^<]+)<\/h2>/g) ?? [];
 		return matches
 			.map((m: string) => {
 				const idMatch = m.match(/id="([^"]*)"/);
@@ -26,6 +56,24 @@
 				return { id: idMatch?.[1] ?? '', text: textMatch?.[1]?.trim() ?? '' };
 			})
 			.filter((t: { id: string; text: string }) => t.id && t.text);
+	});
+
+	let articleEl: HTMLElement | undefined = $state();
+
+	onMount(() => {
+		if (!articleEl) return;
+		const headings = articleEl.querySelectorAll('h2[id]');
+		if (headings.length === 0) return;
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) activeId = entry.target.id;
+				}
+			},
+			{ rootMargin: '-20% 0px -70% 0px' }
+		);
+		headings.forEach((h) => observer.observe(h));
+		return () => observer.disconnect();
 	});
 
 	const baseUrl = 'https://halalneo.com';
@@ -143,19 +191,19 @@
 				</div>
 			</aside>
 
-			<article class="min-w-0 flex-1 space-y-6">
-				<header class="space-y-4">
-					<div class="flex flex-wrap items-center gap-2">
-						<Badge variant="secondary">{data.item.sectionName}</Badge>
-						<Badge variant="outline">{data.item.readTime}</Badge>
-					</div>
-					<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
-					<p class="text-lg text-muted-foreground">{data.item.summary}</p>
-				</header>
-
-				<div class="prose max-w-none prose-neutral dark:prose-invert overflow-hidden">
-					{@html sanitizeHtml((data.item.body ?? data.item.content ?? '') as string)}
+		<article class="min-w-0 flex-1 space-y-6" bind:this={articleEl}>
+			<header class="space-y-4">
+				<div class="flex flex-wrap items-center gap-2">
+					<Badge variant="secondary">{data.item.sectionName}</Badge>
+					<Badge variant="outline">{data.item.readTime}</Badge>
 				</div>
+				<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
+				<p class="text-lg text-muted-foreground">{data.item.summary}</p>
+			</header>
+
+			<div class="prose max-w-none prose-neutral dark:prose-invert overflow-hidden [&_*]:scroll-mt-24">
+				{@html renderedBody}
+			</div>
 
 				<div class="flex flex-wrap gap-2 border-t border-border pt-6">
 					{#each data.item.tags ?? [] as tag}
