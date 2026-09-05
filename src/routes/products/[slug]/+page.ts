@@ -7,6 +7,12 @@ interface ProductItem {
 	shortDescription?: string;
 	description?: string;
 	image?: string;
+	images?: any;
+	videos?: any;
+	features?: any;
+	faqs?: any;
+	resources?: any;
+	specifications?: any;
 	category?: string;
 	categorySlug?: string;
 	supplierSlug?: string;
@@ -14,6 +20,11 @@ interface ProductItem {
 	priceMin?: number | string | null;
 	priceMax?: number | string | null;
 	priceUnit?: string | null;
+	moq?: string | null;
+	units?: string | null;
+	originCountry?: string | null;
+	certStatus?: string | null;
+	status?: string | null;
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
@@ -23,7 +34,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			fetch('/api/products?limit=50')
 		]);
 		if (res.ok) {
-			const data: ProductItem = await res.json();
+			const data: ProductItem = (await res.json()) as any;
 			const parsed = {
 				...data,
 				features:
@@ -44,7 +55,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 						? JSON.parse(data.resources || '[]')
 						: (data.resources ?? [])
 			};
-			const allProducts = relatedRes.ok ? ((await relatedRes.json()).items ?? []) : [];
+			const allProducts = relatedRes.ok ? (((await relatedRes.json()) as { items?: any[] }).items ?? []) : [];
 			const relatedProducts = allProducts
 				.filter(
 					(p: any) => p.slug !== params.slug && p.categorySlug === (parsed as any).categorySlug
@@ -61,6 +72,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 						Boolean
 					)
 				},
+				slug: params.slug,
 				item: parsed,
 				relatedProducts
 			};

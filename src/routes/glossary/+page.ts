@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ fetch }) => {
 	try {
 		const res = await fetch('/api/pages?category=glossary&limit=200');
 		if (res.ok) {
-			const data: PagesResponse = await res.json();
+			const data: PagesResponse = (await res.json()) as any;
 			const terms = (data.items ?? []).map((p: any) => ({
 				term: p.title,
 				definition: p.body ?? p.excerpt ?? '',

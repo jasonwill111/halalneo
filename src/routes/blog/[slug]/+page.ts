@@ -22,9 +22,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		]);
 
 		if (res.ok) {
-			const data: BlogPost = await res.json();
+			const data: BlogPost = (await res.json()) as any;
 			const tagsParsed = typeof data.tags === 'string' ? JSON.parse(data.tags || '[]') : data.tags ?? [];
-			const relatedData = relatedRes.ok ? await relatedRes.json() : { items: [] };
+			const relatedData = relatedRes.ok ? ((await relatedRes.json()) as any) : { items: [] };
 			const relatedPosts = relatedData.items ?? [];
 			const related = relatedPosts
 				.filter((p: any) => p.slug !== params.slug)

@@ -5,7 +5,7 @@
 		deleteItem,
 		resetCollection
 	} from '#lib/stores/admin-data.svelte.js';
-	import type { KbArticle, SectionSlug } from '#lib/data/types.js';
+	import type { KbArticle, KnowledgeSection } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
@@ -48,7 +48,7 @@
 	let seoExpanded = $state(false);
 
 	type ArticleForm = {
-		section: SectionSlug;
+		section: KnowledgeSection;
 		slug: string;
 		title: string;
 		summary: string;
@@ -83,7 +83,7 @@
 		);
 	});
 
-	function sectionName(s: SectionSlug): string {
+	function sectionName(s: KnowledgeSection): string {
 		return adminData.kbSections.find((sec) => sec.slug === s)?.title ?? s;
 	}
 
@@ -165,7 +165,7 @@
 		aiLoading = true;
 		await new Promise((r) => setTimeout(r, 800));
 		const section = adminData.kbSections.find((s) => s.slug === form.section);
-		const sectionName = section?.name ?? form.section;
+		const sectionName = section?.title ?? form.section;
 		form.body = `## ${form.title}\n\nThis article covers ${form.title.toLowerCase()} in the context of ${sectionName}.\n\n### Overview\n\n${form.summary || 'A comprehensive guide to help buyers and suppliers navigate halal compliance.'}\n\n### Key Points\n\n- Understanding the fundamentals of ${form.title.toLowerCase()}\n- Practical steps for compliance\n- Common challenges and how to overcome them\n\n### Detailed Guide\n\n[Write detailed content here]\n\n### Best Practices\n\n1. Always verify certification status\n2. Keep documentation up to date\n3. Work with recognized certifying bodies\n\n### References\n\n- HalalNeo Knowledge Base\n- Relevant certification body guidelines`;
 		aiLoading = false;
 	}

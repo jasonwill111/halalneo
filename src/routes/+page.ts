@@ -11,11 +11,11 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/knowledge-base?limit=50')
 	]);
 
-	const productsData = productsRes.ok ? await productsRes.json() : { items: [], total: 0 };
-	const suppliersData = suppliersRes.ok ? await suppliersRes.json() : { items: [], total: 0 };
-	const categories = categoriesRes.ok ? (await categoriesRes.json()).items ?? [] : [];
-	const kbSections = kbSectionsRes.ok ? (await kbSectionsRes.json()).items ?? [] : [];
-	const kbArticles = (kbArticlesRes.ok ? (await kbArticlesRes.json()).items ?? [] : []).map((a: any) => ({
+	const productsData = productsRes.ok ? ((await productsRes.json()) as any) : { items: [], total: 0 };
+	const suppliersData = suppliersRes.ok ? ((await suppliersRes.json()) as any) : { items: [], total: 0 };
+	const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
+	const kbSections = kbSectionsRes.ok ? ((await kbSectionsRes.json()) as { items?: any[] }).items ?? [] : [];
+	const kbArticles = (kbArticlesRes.ok ? ((await kbArticlesRes.json()) as { items?: any[] }).items ?? [] : []).map((a: any) => ({
 		...a,
 		tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
 	}));

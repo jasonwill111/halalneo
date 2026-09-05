@@ -20,7 +20,7 @@
 				price: p.priceRange,
 				moq: p.moq,
 				cert: p.certStatus === 'certified' ? 'Certified' : p.certStatus === 'pending' ? 'Pending' : 'N/A',
-				status: p.status ?? 'active',
+				status: (p.status ?? 'active') as 'active' | 'pending',
 				views: p.views ?? 0
 			}))
 	);

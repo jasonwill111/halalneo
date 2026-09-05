@@ -57,7 +57,7 @@
 				})
 			});
 			if (!res.ok) {
-				const data = await res.json().catch(() => ({}));
+				const data = ((await res.json()) as any).catch(() => ({}));
 				throw new Error(data.error || 'Failed to send message');
 			}
 			sent = true;

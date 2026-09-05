@@ -28,6 +28,7 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import {
 		Select,
+		SelectGroup,
 		SelectContent,
 		SelectItem,
 		SelectTrigger
@@ -355,11 +356,11 @@
 					<Select bind:value={form.scale} type="single">
 						<SelectTrigger class="w-full">{form.scale}</SelectTrigger>
 						<SelectContent>
-							<Select.Group>
+							<SelectGroup>
 								{#each scaleOptions as sc (sc)}
 									<SelectItem value={sc}>{sc}</SelectItem>
 								{/each}
-							</Select.Group>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>
@@ -384,11 +385,11 @@
 							{form.region || 'Select region'}
 						</SelectTrigger>
 						<SelectContent>
-							<Select.Group>
+							<SelectGroup>
 								{#each regionOptions as r (r)}
 									<SelectItem value={r}>{r}</SelectItem>
 								{/each}
-							</Select.Group>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>
@@ -397,11 +398,11 @@
 					<Select bind:value={form.status} type="single">
 						<SelectTrigger class="w-full">{form.status}</SelectTrigger>
 						<SelectContent>
-							<Select.Group>
+							<SelectGroup>
 								<SelectItem value="active">active</SelectItem>
 								<SelectItem value="draft">draft</SelectItem>
 								<SelectItem value="archived">archived</SelectItem>
-							</Select.Group>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>

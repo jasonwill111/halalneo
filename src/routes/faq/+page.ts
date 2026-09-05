@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ fetch }) => {
 	try {
 		const res = await fetch('/api/pages?type=faq&limit=50');
 		if (res.ok) {
-			const data: PagesResponse = await res.json();
+			const data: PagesResponse = (await res.json()) as any;
 			return {
 				seo: {
 					title: 'Frequently Asked Questions — HalalNeo',

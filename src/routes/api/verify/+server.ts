@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url, platform }) => {
 		// Query string matters for verify results — explicit cacheKey keeps
 		// `?q=halal` separate from `?q=beef`. Path-only key would merge them.
 		const data = await cachedQuery(
-			url,
+			url.toString(),
 			async () => {
 				const [supplierRows, productRows] = await Promise.all([
 					db

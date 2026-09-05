@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	const db = getDbFromPlatform(platform);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+	const body = (((await request.json()) as any).catch(() => null)) as Record<string, unknown> | null;
 	if (!body?.slug || !body?.name || !body?.country || !body?.businessType) {
 		return json({ error: 'slug, name, country, businessType are required' }, { status: 400 });
 	}

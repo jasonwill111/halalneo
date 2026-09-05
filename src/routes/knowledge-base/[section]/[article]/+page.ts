@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		]);
 
 		if (res.ok) {
-			const data: KbArticle = await res.json();
+			const data: KbArticle = (await res.json()) as any;
 			const tagsParsed =
 				typeof data.tags === 'string' ? JSON.parse(data.tags || '[]') : (data.tags ?? []);
 
@@ -34,7 +34,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			}[] = [];
 			try {
 				if (relatedRes.ok) {
-					const relatedData = await relatedRes.json();
+					const relatedData = (await relatedRes.json()) as any;
 					const candidates = (relatedData.items ?? []).filter(
 						(a: any) => a.slug !== params.article
 					);
@@ -70,6 +70,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 			return {
 				slug: params.article,
+				section: params.section,
+				article: params.article,
 				seo: {
 					title: data.title ? `${data.title} — HalalNeo` : `${params.article} — HalalNeo`,
 					description:

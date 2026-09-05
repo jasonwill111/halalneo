@@ -6,7 +6,9 @@ import { createAuth } from '#lib/server/auth.js';
 declare global {
 	namespace App {
 		interface Platform {
-			env: Env;
+			// AGNES_API_KEY is provisioned via `wrangler secret` (not in
+			// wrangler.jsonc, so absent from generated worker-configuration.d.ts)
+			env: Env & { AGNES_API_KEY?: string };
 			ctx: ExecutionContext;
 			caches: CacheStorage;
 			cf?: IncomingRequestCfProperties;

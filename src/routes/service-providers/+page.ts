@@ -4,7 +4,7 @@ export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('/api/service-providers?limit=100');
-	const providers = res.ok ? (await res.json()).items ?? [] : [];
+	const providers = res.ok ? ((await res.json()) as { items?: any[] }).items ?? [] : [];
 
 	return {
 		seo: {

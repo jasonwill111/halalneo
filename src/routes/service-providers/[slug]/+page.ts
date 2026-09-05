@@ -21,9 +21,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const res = await fetch(`/api/service-providers/${params.slug}`);
 		if (res.ok) {
-			const data: ProviderItem = await res.json();
+			const data: ProviderItem = (await res.json()) as any;
 			const relatedRes = await fetch(`/api/service-providers?type=${data.type}&limit=5`);
-			const relatedData = relatedRes.ok ? await relatedRes.json() : { items: [] };
+			const relatedData = relatedRes.ok ? ((await relatedRes.json()) as any) : { items: [] };
 			const related = (relatedData.items ?? []).filter((p: ProviderItem) => p.slug !== params.slug).slice(0, 4);
 			return {
 				seo: {

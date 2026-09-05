@@ -10,10 +10,10 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/certifying-bodies?limit=100')
 	]);
 
-	const suppliers = suppliersRes.ok ? (await suppliersRes.json()).items ?? [] : [];
-	const products = productsRes.ok ? (await productsRes.json()).items ?? [] : [];
-	const kbSections = kbRes.ok ? (await kbRes.json()).items ?? [] : [];
-	const certifiers = certifiersRes.ok ? (await certifiersRes.json()).items ?? [] : [];
+	const suppliers = suppliersRes.ok ? ((await suppliersRes.json()) as { items?: any[] }).items ?? [] : [];
+	const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
+	const kbSections = kbRes.ok ? ((await kbRes.json()) as { items?: any[] }).items ?? [] : [];
+	const certifiers = certifiersRes.ok ? ((await certifiersRes.json()) as { items?: any[] }).items ?? [] : [];
 
 	const supplierCount = suppliers.filter((s: any) => s.status === 'active').length;
 	const marketCountries = [...new Set(suppliers.map((s: any) => s.country))].length;

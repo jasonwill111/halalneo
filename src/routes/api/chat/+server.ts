@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
 	}
 
 	try {
-		const body = await request.json().catch(() => null);
+		const body = (await request.json().catch(() => null)) as any;
 		if (!body || !Array.isArray(body.messages)) {
 			return json({ error: 'Invalid request: messages array required' }, { status: 400 });
 		}
@@ -30,7 +30,9 @@ export const POST: RequestHandler = async ({ request, locals, platform }) => {
 			params
 		});
 
-		return createUIMessageStreamResponse({ stream });
+		// @mastra/ai-sdk v1 stream chunks vs ai package UIMessageChunk types
+		// drifted; the wire protocol is compatible — cast at the boundary.
+		return createUIMessageStreamResponse({ stream: stream as any });
 	} catch {
 		return json({ error: 'Service temporarily unavailable' }, { status: 500 });
 	}

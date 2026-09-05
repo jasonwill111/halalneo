@@ -13,8 +13,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 	}
 
 	const guide: any = await guideRes.json();
-	const allGuides: any[] = allGuidesRes.ok ? ((await allGuidesRes.json()).items ?? []) : [];
-	const allCertifiers: any[] = certifiersRes.ok ? ((await certifiersRes.json()).items ?? []) : [];
+	const allGuides: any[] = allGuidesRes.ok ? ((((await allGuidesRes.json()) as any)).items ?? []) : [];
+	const allCertifiers: any[] = certifiersRes.ok ? ((((await certifiersRes.json()) as any)).items ?? []) : [];
 	const certifierIds = new Set(allCertifiers.map((c: any) => c.id));
 
 	return {

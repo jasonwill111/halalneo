@@ -41,11 +41,11 @@
 				fetch('/api/suppliers?limit=100'),
 				fetch('/api/products?limit=100')
 			]);
-			articles = (articlesRes.ok ? ((await articlesRes.json()).items ?? []) : []).map((a: any) => ({
+			articles = (articlesRes.ok ? ((((await articlesRes.json()) as any)).items ?? []) : []).map((a: any) => ({
 				...a,
 				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : (a.tags ?? [])
 			}));
-			suppliers = (suppliersRes.ok ? ((await suppliersRes.json()).items ?? []) : []).map(
+			suppliers = (suppliersRes.ok ? ((((await suppliersRes.json()) as any)).items ?? []) : []).map(
 				(s: any) => ({
 					...s,
 					certifications:
@@ -58,7 +58,7 @@
 							: (s.mainMarkets ?? [])
 				})
 			);
-			products = (productsRes.ok ? ((await productsRes.json()).items ?? []) : []).map((p: any) => ({
+			products = (productsRes.ok ? ((((await productsRes.json()) as any)).items ?? []) : []).map((p: any) => ({
 				...p,
 				features:
 					typeof p.features === 'string' ? JSON.parse(p.features || '[]') : (p.features ?? [])
@@ -409,8 +409,7 @@
 					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
 					<EmptyTitle>Start typing to search</EmptyTitle>
 					<EmptyDescription
-						>Search across {(data.articles ?? []).length} articles, {(data.glossary ?? []).length} glossary
-						terms, {(data.suppliers ?? []).length} suppliers and {(data.products ?? []).length} products.</EmptyDescription
+						>Search across {(data.glossary ?? []).length} glossary terms, plus live supplier, product and article indexes.</EmptyDescription
 					>
 				</Empty>
 			{:else if resultCount === 0}
@@ -423,7 +422,7 @@
 				</Empty>
 			{:else}
 				<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
-					{#each paginatedResults as result (result.kind + ':' + (result.slug ?? result.term))}
+					{#each paginatedResults as result (result.kind + ':' + (result.kind === 'term' ? result.term : result.slug))}
 						{#if result.kind === 'sku'}
 							<a
 								href={localizeHref(`/products/${result.slug}`)}

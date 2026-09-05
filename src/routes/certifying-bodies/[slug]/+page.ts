@@ -14,12 +14,12 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		fetch('/api/market-guides?limit=50')
 	]);
 
-	const body = bodyRes.ok ? await bodyRes.json() : null;
-	const supplierData = suppliersRes.ok
-		? await suppliersRes.json()
+	const body: any = bodyRes.ok ? await bodyRes.json() : null;
+	const supplierData: any = suppliersRes.ok
+		? ((await suppliersRes.json()) as any)
 		: { suppliers: [], certificationTypes: [] };
-	const categories = categoriesRes.ok ? ((await categoriesRes.json()).items ?? []) : [];
-	const allGuides = guidesRes.ok ? ((await guidesRes.json()).items ?? []) : [];
+	const categories = categoriesRes.ok ? (((await categoriesRes.json()) as { items?: any[] }).items ?? []) : [];
+	const allGuides = guidesRes.ok ? (((await guidesRes.json()) as { items?: any[] }).items ?? []) : [];
 	const bodyId = body?.id ?? params.slug;
 	const relatedGuides = allGuides.filter(
 		(g: any) =>

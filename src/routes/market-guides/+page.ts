@@ -4,7 +4,7 @@ export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('/api/market-guides?limit=50');
-	const data: { items?: any[]; total?: number } = res.ok ? await res.json() : { items: [], total: 0 };
+	const data: { items?: any[]; total?: number } = res.ok ? ((await res.json()) as any) : { items: [], total: 0 };
 
 	return {
 		guides: (data.items ?? []) as any[],

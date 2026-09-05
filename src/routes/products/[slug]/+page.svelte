@@ -59,7 +59,7 @@
 				inquiryMessage = '';
 				inquiryEmail = '';
 			} else {
-				const errBody = await res.json();
+				const errBody = ((await res.json()) as any);
 				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
 			}
 		} catch {
@@ -206,7 +206,7 @@
 							width="512"
 							height="512"
 							onerror={(e) => {
-								e.currentTarget.style.display = 'none';
+								(e.currentTarget as HTMLElement).style.display = 'none';
 							}}
 						/>
 					{:else}

@@ -13,9 +13,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		if (!catRes.ok) throw error(404, 'Category not found');
 
-		const category = await catRes.json();
-		const products = productsRes.ok ? ((await productsRes.json()).items ?? []) : [];
-		const allArticles = kbRes.ok ? ((await kbRes.json()).items ?? []) : [];
+		const category = (await catRes.json()) as any;
+		const products = productsRes.ok ? (((await productsRes.json()) as { items?: any[] }).items ?? []) : [];
+		const allArticles = kbRes.ok ? (((await kbRes.json()) as { items?: any[] }).items ?? []) : [];
 		const catName = (category.name ?? params.slug).toLowerCase();
 		const relatedArticles = allArticles
 			.filter((a: any) => {
@@ -39,6 +39,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				ogImage: 'https://halalneo.com/api/media/og-default.png',
 				keywords: [category.name, 'halal products', 'halal certification']
 			},
+			slug: params.slug,
 			category,
 			products,
 			relatedArticles

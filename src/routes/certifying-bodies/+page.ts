@@ -4,7 +4,7 @@ export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('/api/certifying-bodies?limit=100');
-	const certifiers = res.ok ? (await res.json()).items ?? [] : [];
+	const certifiers = res.ok ? ((await res.json()) as { items?: any[] }).items ?? [] : [];
 
 	return {
 		seo: {

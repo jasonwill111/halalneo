@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/pages?category=glossary&limit=50')
 	]);
 
-	const glossary = (glossaryRes.ok ? (await glossaryRes.json()).items ?? [] : []).map((p: any) => ({
+	const glossary = (glossaryRes.ok ? ((await glossaryRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
 		term: p.title,
 		definition: p.body ?? p.excerpt ?? ''
 	}));

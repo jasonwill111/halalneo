@@ -8,8 +8,8 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/products?limit=100')
 	]);
 
-	const categories = categoriesRes.ok ? (await categoriesRes.json()).items ?? [] : [];
-	const products = (productsRes.ok ? (await productsRes.json()).items ?? [] : []).map((p: any) => ({
+	const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
+	const products = (productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
 		...p,
 		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
 	}));

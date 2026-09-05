@@ -11,17 +11,17 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/categories')
 	]);
 
-	const products = (productsRes.ok ? (await productsRes.json()).items ?? [] : []).map((p: any) => ({
+	const products = (productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
 		...p,
 		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
 		images: typeof p.images === 'string' ? JSON.parse(p.images || '[]') : p.images ?? [],
 	}));
-	const suppliers = (suppliersRes.ok ? (await suppliersRes.json()).items ?? [] : []).map((s: any) => ({
+	const suppliers = (suppliersRes.ok ? ((await suppliersRes.json()) as { items?: any[] }).items ?? [] : []).map((s: any) => ({
 		...s,
 		certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
 		mainMarkets: typeof s.mainMarkets === 'string' ? JSON.parse(s.mainMarkets || '[]') : s.mainMarkets ?? []
 	}));
-	const categories = categoriesRes.ok ? (await categoriesRes.json()).items ?? [] : [];
+	const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
 
 	const itemList = {
 		'@context': 'https://schema.org',

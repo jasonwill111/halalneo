@@ -116,7 +116,7 @@
 					width="1200"
 					height="600"
 					onerror={(e) => {
-						e.currentTarget.style.display = 'none';
+						(e.currentTarget as HTMLElement).style.display = 'none';
 					}}
 				/>
 			{:else}

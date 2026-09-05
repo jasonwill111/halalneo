@@ -25,7 +25,7 @@
 		favorites = getFavorites();
 		try {
 			const res = await fetch('/api/products?limit=100');
-			if (res.ok) catalog = ((await res.json()).items ?? []);
+			if (res.ok) catalog = ((((await res.json()) as any)).items ?? []);
 		} catch {
 			catalog = [];
 		}

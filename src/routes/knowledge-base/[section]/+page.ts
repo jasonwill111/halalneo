@@ -3,6 +3,7 @@ import type { PageLoad } from './$types';
 export const prerender = false;
 
 interface KbSectionResponse {
+	items?: unknown[];
 	articles?: unknown[];
 }
 
@@ -12,7 +13,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const res = await fetch(`/api/knowledge-base?section=${params.section}&limit=50`);
 		if (res.ok) {
-			const data: KbSectionResponse = await res.json();
+			const data: KbSectionResponse = (await res.json()) as any;
 			const articles = (data.items ?? data.articles ?? []).map((a: any) => ({
 				...a,
 				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
@@ -27,6 +28,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				item: {
 					slug: params.section,
 					name: sectionTitle,
+					description: `Explore ${sectionTitle.toLowerCase()} articles and guides on halal certification and compliance.`,
 					articleCount: articles.length,
 					articles
 				}

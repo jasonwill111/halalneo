@@ -28,6 +28,7 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import {
 		Select,
+		SelectGroup,
 		SelectContent,
 		SelectItem,
 		SelectTrigger
@@ -341,11 +342,11 @@
 							{typeLabels[form.type]}
 						</SelectTrigger>
 						<SelectContent>
-							<Select.Group>
+							<SelectGroup>
 								{#each Object.entries(typeLabels) as [value, label] (value)}
 									<SelectItem {value}>{label}</SelectItem>
 								{/each}
-							</Select.Group>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>
@@ -354,11 +355,11 @@
 					<Select bind:value={form.status} type="single">
 						<SelectTrigger class="w-full">{form.status}</SelectTrigger>
 						<SelectContent>
-							<Select.Group>
+							<SelectGroup>
 								<SelectItem value="active">active</SelectItem>
 								<SelectItem value="pending">pending</SelectItem>
 								<SelectItem value="suspended">suspended</SelectItem>
-							</Select.Group>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>

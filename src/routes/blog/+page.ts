@@ -6,7 +6,7 @@ export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('/api/pages?type=blog&limit=20');
-	const posts = res.ok ? (await res.json()).items ?? [] : [];
+	const posts = res.ok ? ((await res.json()) as { items?: any[] }).items ?? [] : [];
 	const postsParsed = posts.map((p: any) => ({
 		...p,
 		tags: typeof p.tags === 'string' ? JSON.parse(p.tags || '[]') : p.tags ?? [],

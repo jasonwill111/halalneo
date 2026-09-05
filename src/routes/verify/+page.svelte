@@ -42,7 +42,7 @@
 		searched = true;
 		try {
 			const res = await fetch(`/api/verify?q=${encodeURIComponent(query.trim())}`);
-			const json = await res.json();
+			const json = ((await res.json()) as any);
 			results = json.results ?? [];
 		} catch {
 			results = [];

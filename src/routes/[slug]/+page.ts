@@ -15,7 +15,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const res = await fetch(`/api/pages/${params.slug}`);
 		if (res.ok) {
-			const data: PageItem = await res.json();
+			const data: PageItem = (await res.json()) as any;
 			return {
 				seo: {
 					title: data.title ? `${data.title} — HalalNeo` : `${params.slug} — HalalNeo`,

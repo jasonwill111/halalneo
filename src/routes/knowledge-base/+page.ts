@@ -17,20 +17,20 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/pages?category=glossary&limit=1')
 	]);
 
-	const articles = (articlesRes.ok ? (await articlesRes.json()).items ?? [] : []).map((a: any) => ({
+	const articles = (articlesRes.ok ? ((await articlesRes.json()) as { items?: any[] }).items ?? [] : []).map((a: any) => ({
 		...a,
 		tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
 	}));
-	const rawSections = sectionsRes.ok ? (await sectionsRes.json()).items ?? [] : [];
+	const rawSections = sectionsRes.ok ? ((await sectionsRes.json()) as { items?: any[] }).items ?? [] : [];
 	const sections = rawSections.map((s: any) => ({
 		slug: s.section,
 		...sectionMeta[s.section],
 		count: s.count
 	})).filter((s: any) => s.title);
 
-	const marketGuidesCount = marketGuidesRes.ok ? (await marketGuidesRes.json()).total ?? 0 : 0;
-	const tradeShowsCount = tradeShowsRes.ok ? (await tradeShowsRes.json()).total ?? 0 : 0;
-	const glossaryCount = glossaryRes.ok ? (await glossaryRes.json()).total ?? 0 : 0;
+	const marketGuidesCount = marketGuidesRes.ok ? ((await marketGuidesRes.json()) as { total?: number }).total ?? 0 : 0;
+	const tradeShowsCount = tradeShowsRes.ok ? ((await tradeShowsRes.json()) as { total?: number }).total ?? 0 : 0;
+	const glossaryCount = glossaryRes.ok ? ((await glossaryRes.json()) as { total?: number }).total ?? 0 : 0;
 
 	return {
 		seo: {

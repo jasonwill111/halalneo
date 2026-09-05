@@ -55,7 +55,7 @@ export const PUT: RequestHandler = async ({ request, platform }) => {
 	const db = getDbFromPlatform(platform);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+	const body = (((await request.json()) as any).catch(() => null)) as Record<string, unknown> | null;
 	if (!body?.key || body.value === undefined) {
 		return json({ error: 'key and value are required' }, { status: 400 });
 	}

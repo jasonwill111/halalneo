@@ -28,6 +28,7 @@
 	let saved = $state(false);
 
 	function toggleSave() {
+		if (!data.item?.slug) return;
 		const favorites = JSON.parse(localStorage.getItem('saved_suppliers') || '[]');
 		const idx = favorites.indexOf(data.item.slug);
 		if (idx > -1) {
@@ -78,7 +79,7 @@
 				inquiryMessage = '';
 				inquiryEmail = '';
 			} else {
-				const errBody = await res.json();
+				const errBody = ((await res.json()) as any);
 				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
 			}
 		} catch {
@@ -135,7 +136,7 @@
 			try {
 				arr = JSON.parse(raw);
 			} catch {
-				return [{ name: raw, country: '', standard: '', expiry: '', status: 'certified' }];
+				return [{ name: raw, bodyId: '', country: '', standard: '', expiry: '', status: 'certified' }];
 			}
 		} else {
 			arr = raw;
@@ -190,7 +191,7 @@
 				width="1200"
 				height="640"
 				onerror={(e) => {
-					e.currentTarget.style.display = 'none';
+					(e.currentTarget as HTMLElement).style.display = 'none';
 				}}
 			/>
 		{:else}

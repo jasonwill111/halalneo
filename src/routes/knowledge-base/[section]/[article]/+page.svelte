@@ -155,7 +155,7 @@
 				</header>
 
 				<div class="prose max-w-none prose-neutral dark:prose-invert overflow-hidden">
-					{@html sanitizeHtml(data.item.body ?? data.item.content)}
+					{@html sanitizeHtml((data.item.body ?? data.item.content ?? '') as string)}
 				</div>
 
 				<div class="flex flex-wrap gap-2 border-t border-border pt-6">

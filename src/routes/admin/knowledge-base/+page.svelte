@@ -135,7 +135,7 @@
 		</div>
 	</div>
 
-	<Tabs value={activeTab} onValueChange={(v) => activeTab = v}>
+	<Tabs value={activeTab} onValueChange={(v) => (activeTab = v as 'articles' | 'sections')}>
 		<TabsList>
 			<TabsTrigger value="articles">Articles <span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">{totalArticles}</span></TabsTrigger>
 			<TabsTrigger value="sections">Sections <span class="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{sections.length}</span></TabsTrigger>

@@ -25,6 +25,7 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import {
 		Select,
+		SelectGroup,
 		SelectContent,
 		SelectItem,
 		SelectTrigger
@@ -203,13 +204,13 @@
 					>
 						<SelectTrigger class="w-full capitalize">{selectedInquiry.status}</SelectTrigger>
 						<SelectContent>
-							<Select.Group>
+							<SelectGroup>
 								<SelectItem value="active">active</SelectItem>
 								<SelectItem value="pending">pending</SelectItem>
 								<SelectItem value="in-progress">in-progress</SelectItem>
 								<SelectItem value="closed">closed</SelectItem>
 								<SelectItem value="flagged">flagged</SelectItem>
-							</Select.Group>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>

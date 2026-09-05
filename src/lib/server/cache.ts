@@ -62,7 +62,7 @@ export async function cachedQuery<T>(
 		cached = undefined;
 	}
 	if (cached) {
-		const data = (await cached.json()) as T;
+		const data = (((await cached.json()) as any)) as T;
 		return data;
 	}
 

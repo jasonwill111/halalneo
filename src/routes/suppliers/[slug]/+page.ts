@@ -3,12 +3,21 @@ import type { EntryGenerator, PageLoad } from './$types';
 export const entries: EntryGenerator = () => [];
 
 interface SupplierItem {
+	slug?: string;
 	name?: string;
 	description?: string;
 	businessType?: string;
 	country?: string;
 	logoInitials?: string;
-	certifications?: string[];
+	coverImage?: string;
+	mainMarkets?: any;
+	website?: string;
+	email?: string;
+	phone?: string;
+	status?: string;
+	isBrand?: boolean;
+	rating?: number | null;
+	certifications?: any;
 	yearEstablished?: number;
 	employeeCount?: string;
 	products?: unknown[];
@@ -22,9 +31,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		]);
 
 		if (res.ok) {
-			const data: SupplierItem = await res.json();
+			const data: SupplierItem = (await res.json()) as any;
 			const certificationsParsed = typeof data.certifications === 'string' ? JSON.parse(data.certifications || '[]') : data.certifications ?? [];
-			const products = productsRes.ok ? (await productsRes.json()).items ?? [] : [];
+			const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
 			return {
 				slug: params.slug,
 				seo: {

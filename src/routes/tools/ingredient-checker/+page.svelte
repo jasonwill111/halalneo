@@ -72,7 +72,7 @@ Format your response as:
 					]
 				})
 			});
-			const json = await res.json();
+			const json = ((await res.json()) as any);
 			result = json.text ?? json.error ?? 'No response received.';
 		} catch (e) {
 			error = 'Failed to analyze ingredients. Please try again.';

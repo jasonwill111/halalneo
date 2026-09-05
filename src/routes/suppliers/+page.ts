@@ -10,12 +10,12 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/products?limit=100')
 	]);
 
-	const suppliers = (suppliersRes.ok ? (await suppliersRes.json()).items ?? [] : []).map((s: any) => ({
+	const suppliers = (suppliersRes.ok ? ((await suppliersRes.json()) as { items?: any[] }).items ?? [] : []).map((s: any) => ({
 		...s,
 		certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
 		mainMarkets: typeof s.mainMarkets === 'string' ? JSON.parse(s.mainMarkets || '[]') : s.mainMarkets ?? []
 	}));
-	const products = (productsRes.ok ? (await productsRes.json()).items ?? [] : []).map((p: any) => ({
+	const products = (productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
 		...p,
 		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
 	}));
