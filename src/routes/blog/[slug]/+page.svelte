@@ -96,7 +96,8 @@
 					src={data.item.image}
 					alt={data.item.title}
 					class="aspect-[2/1] w-full rounded-xl object-cover"
-					loading="lazy"
+					loading="eager"
+					fetchpriority="high"
 					decoding="async"
 					width="1200"
 					height="600"
@@ -111,7 +112,8 @@
 							src={blogImages[0]}
 							alt={data.item.title}
 							class="h-full w-full object-cover"
-							loading="lazy"
+							loading="eager"
+							fetchpriority="high"
 							decoding="async"
 							width="1200"
 							height="600"

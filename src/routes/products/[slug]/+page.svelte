@@ -180,7 +180,8 @@
 							src={item.image}
 							alt={item.name}
 							class="h-full w-full rounded-xl object-cover"
-							loading="lazy"
+							loading="eager"
+							fetchpriority="high"
 							decoding="async"
 							width="512"
 							height="512"

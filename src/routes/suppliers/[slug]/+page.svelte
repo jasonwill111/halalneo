@@ -181,7 +181,8 @@
 				src={item.coverImage}
 				alt={`${item.name} cover image`}
 				class="h-full w-full object-cover"
-				loading="lazy"
+				loading="eager"
+				fetchpriority="high"
 				decoding="async"
 				width="1200"
 				height="640"

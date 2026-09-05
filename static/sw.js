@@ -1,11 +1,12 @@
 const CACHE_NAME = 'halalneo-v1';
+// Precache only versioned static assets (hashed by the build) — never
+// the HTML root `/`, which would serve stale SSR responses.
 const STATIC_ASSETS = [
-	'/',
 	'/manifest.json',
 	'/icons/icon-192.svg',
 	'/icons/icon-512.svg',
-	'/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2',
-	'/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext.woff2',
+	'/fonts/space-grotesk/space-grotesk-latin.woff2',
+	'/fonts/space-grotesk/space-grotesk-latin-ext.woff2',
 	'/fonts/almarai/almarai-400.woff2',
 	'/fonts/almarai/almarai-700.woff2'
 ];

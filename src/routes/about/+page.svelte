@@ -36,7 +36,7 @@
 	</div>
 
 	<div class="relative overflow-hidden rounded-xl">
-		<img src="/api/media/about-hero.webp" alt="Global halal trade" class="aspect-[3/1] w-full object-cover" loading="lazy" decoding="async" width="1200" height="400" />
+		<img src="/api/media/about-hero.webp" alt="Global halal trade" class="aspect-[3/1] w-full object-cover" loading="eager" fetchpriority="high" decoding="async" width="1200" height="400" />
 		<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 	</div>
 

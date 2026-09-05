@@ -96,7 +96,8 @@
 				src={countryImages[guide.country]}
 				alt={guide.country}
 				class="aspect-[5/2] w-full object-cover"
-				loading="lazy"
+				loading="eager"
+				fetchpriority="high"
 				decoding="async"
 				width="1200"
 				height="480"
