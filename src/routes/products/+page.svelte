@@ -34,6 +34,10 @@
 
 <Breadcrumb items={[{ label: 'Products', href: '/products' }]} />
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList)}</script>`}
+</svelte:head>
+
 <section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product catalogue</h1>

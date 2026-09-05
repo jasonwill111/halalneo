@@ -1,5 +1,7 @@
 import type { PageLoad } from './$types';
 
+const BASE_URL = 'https://halalneo.com';
+
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
@@ -18,6 +20,24 @@ export const load: PageLoad = async ({ fetch }) => {
 		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
 	}));
 
+	const itemList = {
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		name: 'Halal-Certified Suppliers',
+		description:
+			'Directory of halal-certified B2B suppliers and manufacturers from major halal markets.',
+		itemListElement: suppliers.slice(0, 20).map((s: any, i: number) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			item: {
+				'@type': 'Organization',
+				name: s.name,
+				url: `${BASE_URL}/suppliers/${s.slug}`,
+				address: { '@type': 'PostalAddress', addressCountry: s.country }
+			}
+		}))
+	};
+
 	return {
 		seo: {
 			title: 'Halal-Certified Suppliers — HalalNeo',
@@ -27,6 +47,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal suppliers', 'certified manufacturers', 'B2B suppliers', 'halal trade partners']
 		},
 		suppliers,
-		products
+		products,
+		itemList
 	};
 };

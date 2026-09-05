@@ -26,6 +26,10 @@
 
 <Breadcrumb items={[{ label: 'Blog', href: '/blog' }]} />
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList)}</script>`}
+</svelte:head>
+
 <section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">

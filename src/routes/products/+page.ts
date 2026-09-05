@@ -1,5 +1,7 @@
 import type { PageLoad } from './$types';
 
+const BASE_URL = 'https://halalneo.com';
+
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
@@ -21,6 +23,27 @@ export const load: PageLoad = async ({ fetch }) => {
 	}));
 	const categories = categoriesRes.ok ? (await categoriesRes.json()).items ?? [] : [];
 
+	const itemList = {
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		name: 'Halal-Certified Products',
+		description:
+			'Browse halal-certified products from verified suppliers across major halal markets.',
+		itemListElement: products.slice(0, 20).map((p: any, i: number) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			item: {
+				'@type': 'Product',
+				name: p.name,
+				url: `${BASE_URL}/products/${p.slug}`,
+				category: p.categorySlug,
+				offers: p.priceMin
+					? { '@type': 'Offer', priceCurrency: 'USD', price: p.priceMin }
+					: undefined
+			}
+		}))
+	};
+
 	return {
 		seo: {
 			title: 'Halal-Certified Products — HalalNeo',
@@ -31,6 +54,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		},
 		products,
 		suppliers,
-		categories
+		categories,
+		itemList
 	};
 };
