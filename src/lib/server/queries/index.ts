@@ -891,9 +891,9 @@ export async function getKbListItems(
 	request?: Request
 ): Promise<PaginatedResult<KbListItem>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, section } = opts;
+		const { limit = 20, offset = 0, search, section, status } = opts;
 
-		const conditions = [eq(schema.knowledgeBase.status, 'published')];
+		const conditions = [eq(schema.knowledgeBase.status, status ?? 'published')];
 		if (search) conditions.push(like(schema.knowledgeBase.title, `%${search}%`));
 		if (section) conditions.push(eq(schema.knowledgeBase.section, section));
 

@@ -31,6 +31,7 @@ export interface SupplierQueryOptions extends PaginationOptions, SearchOptions {
 
 export interface KbQueryOptions extends PaginationOptions, SearchOptions {
 	section?: KnowledgeSection;
+	status?: string;
 }
 
 export interface BlogQueryOptions extends PaginationOptions, SearchOptions {
