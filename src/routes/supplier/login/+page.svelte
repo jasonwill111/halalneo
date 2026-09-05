@@ -3,6 +3,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Label } from '#lib/components/ui/field/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import Building2 from '@lucide/svelte/icons/building-2';
 	import Mail from '@lucide/svelte/icons/mail';
@@ -44,7 +45,7 @@
 					</div>
 				</div>
 				<div class="flex items-center gap-2">
-					<input type="checkbox" id="remember" class="size-3.5 rounded border border-border" />
+					<Checkbox id="remember" />
 					<label for="remember" class="text-[10px] text-muted-foreground">Remember me</label>
 				</div>
 				<Button type="submit" class="relative w-full">Sign in</Button>

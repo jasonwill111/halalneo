@@ -46,7 +46,7 @@
 	</div>
 </div>
 
-<div class="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+<div class="mb-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
 	{#each stats as s}
 		<Card class="p-3">
 			<CardContent class="p-0">

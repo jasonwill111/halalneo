@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Card, CardContent } from '#lib/components/ui/card/index.js';
-	import ClipboardList from '@lucide/svelte/icons/clipboard-list';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import { adminData } from '#lib/stores/admin-data.svelte.js';
 
 	// TODO: Replace with authenticated user's supplier slug from session/load function
@@ -36,7 +35,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="rounded-xl bg-card p-3 shadow-sm">
+<Card class="p-3 shadow-sm">
 	<div class="mb-2 flex items-center justify-between">
 		<h2 class="text-sm font-bold">Orders</h2>
 		<Button variant="ghost" size="sm" class="text-[10px]">Filter</Button>
@@ -50,7 +49,7 @@
 			</div>
 		{:else}
 			{#each orders as order}
-				<div class="rounded-lg bg-muted/40 px-2.5 py-2">
+				<Card class="bg-muted/40 px-2.5 py-2">
 					<div class="flex items-center justify-between">
 						<div>
 							<p class="text-[11px] font-semibold">{order.id}</p>
@@ -68,8 +67,8 @@
 							<Button variant="ghost" size="sm" class="h-5 text-[10px] text-primary">View details</Button>
 						</div>
 					</div>
-				</div>
+				</Card>
 			{/each}
 		{/if}
 	</div>
-</div>
+</Card>
