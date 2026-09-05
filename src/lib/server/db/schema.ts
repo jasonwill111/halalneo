@@ -309,6 +309,7 @@ export const productsNameIdx = index('idx_products_name').on(products.name);
 export const suppliersStatusIdx = index('idx_suppliers_status').on(suppliers.status);
 export const suppliersCountryIdx = index('idx_suppliers_country').on(suppliers.country);
 export const suppliersNameIdx = index('idx_suppliers_name').on(suppliers.name);
+export const suppliersBusinessTypeIdx = index('idx_suppliers_business_type').on(suppliers.businessType);
 
 // Pages
 export const pagesTypeIdx = index('idx_pages_type').on(pages.type);
@@ -323,10 +324,19 @@ export const kbStatusIdx = index('idx_kb_status').on(knowledgeBase.status);
 // Service Providers
 export const spTypeIdx = index('idx_sp_type').on(serviceProviders.type);
 export const spStatusIdx = index('idx_sp_status').on(serviceProviders.status);
+export const spCountryIdx = index('idx_sp_country').on(serviceProviders.country);
+
+// Certifying Bodies (filters by country + status — index both)
+export const cbCountryIdx = index('idx_cb_country').on(certifyingBodies.country);
+export const cbStatusIdx = index('idx_cb_status').on(certifyingBodies.status);
+
+// Categories (parentSlug filter on hierarchical listing)
+export const categoriesParentIdx = index('idx_categories_parent').on(categories.parentSlug);
 
 // Inquiries
 export const inquiriesStatusIdx = index('idx_inquiries_status').on(inquiries.status);
 export const inquiriesBuyerIdx = index('idx_inquiries_buyer').on(inquiries.buyerSlug);
+export const inquiriesSupplierIdx = index('idx_inquiries_supplier').on(inquiries.supplierSlug);
 
 // Media
 export const mediaKeyIdx = index('idx_media_key').on(media.key);

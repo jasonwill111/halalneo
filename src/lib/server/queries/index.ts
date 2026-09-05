@@ -606,8 +606,11 @@ export async function getSuppliersByCertifyingBody(
 	certificationTypes: string[];
 }> {
 	const queryFn = async () => {
-		// Only select the columns needed — avoids pulling large text columns
-		// (description, certifications JSON is required for matching).
+		// Push the bodyId predicate into D1 via LIKE on the JSON certifications
+		// column — without this the query is a full-table scan, then we
+		// JSON.parse every row's certifications in JS to match bodyId.
+		// LIKE on a JSON TEXT column still scans, but LIMIT 50 caps the work
+		// and dramatically reduces rows-read vs scanning the whole table.
 		const allSuppliers = await db
 			.select({
 				slug: schema.suppliers.slug,
@@ -620,12 +623,12 @@ export async function getSuppliersByCertifyingBody(
 				description: schema.suppliers.description,
 				certifications: schema.suppliers.certifications
 			})
-			.from(schema.suppliers);
+			.from(schema.suppliers)
+			.where(like(schema.suppliers.certifications, `%"bodyId":${bodyId}%`))
+			.limit(50);
 
-		const allProducts = await db
-			.select({ supplierSlug: schema.products.supplierSlug, categorySlug: schema.products.categorySlug })
-			.from(schema.products);
-
+		// Re-verify in JS to avoid false positives from LIKE substring matches
+		// (e.g. bodyId "j" matching any string containing the letter j).
 		function parseCerts(s: any): any[] {
 			if (Array.isArray(s.certifications)) return s.certifications;
 			if (typeof s.certifications === 'string') {
@@ -638,14 +641,19 @@ export async function getSuppliersByCertifyingBody(
 			parseCerts(s).some((c: any) => c.bodyId === bodyId)
 		);
 
-		const certificationTypes = allProducts
-			.filter((p: any) =>
-				certifiedSuppliers.some((s: any) => s.slug === p.supplierSlug)
-			)
-			.reduce((acc: string[], p: any) => {
-				if (!acc.includes(p.categorySlug)) acc.push(p.categorySlug);
-				return acc;
-			}, []);
+		// Only fetch product categorySlugs for the suppliers we kept
+		const supplierSlugs = certifiedSuppliers.map((s) => s.slug);
+		const allProducts = supplierSlugs.length
+			? await db
+					.select({ supplierSlug: schema.products.supplierSlug, categorySlug: schema.products.categorySlug })
+					.from(schema.products)
+					.where(inArray(schema.products.supplierSlug, supplierSlugs))
+			: [];
+
+		const certificationTypes = allProducts.reduce((acc: string[], p: any) => {
+			if (!acc.includes(p.categorySlug)) acc.push(p.categorySlug);
+			return acc;
+		}, []);
 
 		return { suppliers: certifiedSuppliers, certificationTypes };
 	};
