@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { suppliers } from '#lib/server/db/schema.js';
-import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium } from '#lib/server/cache.js';
+import { getSupplierListItems } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
 export const GET: RequestHandler = async ({ platform, url }) => {
@@ -11,30 +11,22 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
+		// List view: project only the columns the UI needs (8 cols, not all 22).
+		// Drops certifications/main_markets/cover_image/website/email/phone/etc.
+		// from D1 rows-read + cache payload.
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
-				const { limit, offset, search } = parseQuery(url);
-				const status = url.searchParams.get('status') || undefined;
-				const businessType = url.searchParams.get('businessType') || undefined;
-				const country = url.searchParams.get('country') || undefined;
-
-				const conditions = [];
-				if (search) conditions.push(like(suppliers.name, `%${search}%`));
-				if (status) conditions.push(eq(suppliers.status, status as 'active' | 'pending' | 'suspended'));
-				if (businessType) conditions.push(eq(suppliers.businessType, businessType as 'manufacturer' | 'wholesaler' | 'trader'));
-				if (country) conditions.push(eq(suppliers.country, country));
-
-				const where = conditions.length ? and(...conditions) : undefined;
-
-				const [countResult] = await db
-					.select({ count: sql<number>`count(*)` })
-					.from(suppliers)
-					.where(where);
-
-				const rows = await db.select().from(suppliers).where(where).limit(limit).offset(offset);
-
-				return { items: rows, total: countResult?.count ?? 0, limit, offset };
+				const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
+				const offset = Number(url.searchParams.get('offset')) || 0;
+				return getSupplierListItems(db, {
+					limit,
+					offset,
+					search: url.searchParams.get('search') || undefined,
+					status: url.searchParams.get('status') || undefined,
+					country: url.searchParams.get('country') || undefined,
+					businessType: url.searchParams.get('businessType') || undefined
+				});
 			},
 			{ ...cacheMedium() }
 		);

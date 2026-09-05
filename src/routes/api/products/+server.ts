@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { products } from '#lib/server/db/schema.js';
-import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium } from '#lib/server/cache.js';
+import { getProductListItems, getProducts } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
 export const GET: RequestHandler = async ({ platform, url }) => {
@@ -11,35 +11,26 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
+		// List view: project only the columns the UI needs (10 cols, not all 24).
+		// Drops description/features/specifications/faqs/resources/images/videos
+		// and other heavy TEXT/JSON fields from D1 rows-read + cache payload.
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
-				const { limit, offset, search } = parseQuery(url);
-				const status = url.searchParams.get('status') || undefined;
-				const categorySlug = url.searchParams.get('categorySlug') || undefined;
-				const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
-
-				const conditions = [];
-				if (search) conditions.push(like(products.name, `%${search}%`));
-				if (status) conditions.push(eq(products.status, status as 'active' | 'draft' | 'archived'));
-				if (categorySlug) conditions.push(eq(products.categorySlug, categorySlug));
-				if (supplierSlug) conditions.push(eq(products.supplierSlug, supplierSlug));
-
-				const where = conditions.length ? and(...conditions) : undefined;
-
-				const [countResult] = await db
-					.select({ count: sql<number>`count(*)` })
-					.from(products)
-					.where(where);
-
-				const rows = await db
-					.select()
-					.from(products)
-					.where(where)
-					.limit(limit)
-					.offset(offset);
-
-				return { items: rows, total: countResult?.count ?? 0, limit, offset };
+				const { limit, offset, search } = (() => {
+					const n = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
+					const o = Number(url.searchParams.get('offset')) || 0;
+					return { limit: n, offset: o, search: url.searchParams.get('search') || undefined };
+				})();
+				return getProductListItems(db, {
+					limit,
+					offset,
+					search,
+					categorySlug: url.searchParams.get('categorySlug') || undefined,
+					supplierSlug: url.searchParams.get('supplierSlug') || undefined,
+					certStatus: url.searchParams.get('certStatus') || undefined,
+					status: url.searchParams.get('status') || undefined
+				});
 			},
 			{ ...cacheMedium() }
 		);

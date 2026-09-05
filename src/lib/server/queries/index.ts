@@ -751,11 +751,12 @@ export async function getProductListItems(
 	request?: Request
 ): Promise<PaginatedResult<ProductListItem>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, categorySlug, certStatus, status } = opts;
+		const { limit = 20, offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
 
 		const conditions = [];
 		if (search) conditions.push(like(schema.products.name, `%${search}%`));
 		if (categorySlug) conditions.push(eq(schema.products.categorySlug, categorySlug));
+		if (supplierSlug) conditions.push(eq(schema.products.supplierSlug, supplierSlug));
 		if (certStatus) conditions.push(eq(schema.products.certStatus, certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable'));
 		if (status) conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
 
@@ -819,12 +820,13 @@ export async function getSupplierListItems(
 	request?: Request
 ): Promise<PaginatedResult<SupplierListItem>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, status, country } = opts;
+		const { limit = 20, offset = 0, search, status, country, businessType } = opts;
 
 		const conditions = [];
 		if (search) conditions.push(like(schema.suppliers.name, `%${search}%`));
 		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended'));
 		if (country) conditions.push(eq(schema.suppliers.country, country));
+		if (businessType) conditions.push(eq(schema.suppliers.businessType, businessType as 'manufacturer' | 'wholesaler' | 'trader'));
 
 		const where = buildConditions(conditions);
 

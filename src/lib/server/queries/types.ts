@@ -18,6 +18,7 @@ export interface PaginatedResult<T> {
 
 export interface ProductQueryOptions extends PaginationOptions, SearchOptions {
 	categorySlug?: string;
+	supplierSlug?: string;
 	certStatus?: string;
 	status?: string;
 }
@@ -25,6 +26,7 @@ export interface ProductQueryOptions extends PaginationOptions, SearchOptions {
 export interface SupplierQueryOptions extends PaginationOptions, SearchOptions {
 	status?: string;
 	country?: string;
+	businessType?: string;
 }
 
 export interface KbQueryOptions extends PaginationOptions, SearchOptions {

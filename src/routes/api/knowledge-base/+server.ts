@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { knowledgeBase } from '#lib/server/db/schema.js';
-import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium } from '#lib/server/cache.js';
+import { getKbListItems } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
 export const GET: RequestHandler = async ({ platform, url }) => {
@@ -11,33 +11,20 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
+		// List view: project only 5 cols (slug/title/section/status/excerpt).
+		// Drops body (HTML) and tags (JSON) from D1 rows-read + cache payload.
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
-				const { limit, offset, search } = parseQuery(url);
-				const section = url.searchParams.get('section') || undefined;
-				const status = url.searchParams.get('status') || undefined;
-
-				const conditions = [];
-				if (search) conditions.push(like(knowledgeBase.title, `%${search}%`));
-				if (section) conditions.push(eq(knowledgeBase.section, section as any));
-				if (status) conditions.push(eq(knowledgeBase.status, status as 'published' | 'draft' | 'archived'));
-
-				const where = conditions.length ? and(...conditions) : undefined;
-
-				const [countResult] = await db
-					.select({ count: sql<number>`count(*)` })
-					.from(knowledgeBase)
-					.where(where);
-
-				const rows = await db
-					.select()
-					.from(knowledgeBase)
-					.where(where)
-					.limit(limit)
-					.offset(offset);
-
-				return { items: rows, total: countResult?.count ?? 0, limit, offset };
+				const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
+				const offset = Number(url.searchParams.get('offset')) || 0;
+				return getKbListItems(db, {
+					limit,
+					offset,
+					search: url.searchParams.get('search') || undefined,
+					section: (url.searchParams.get('section') as any) || undefined,
+					status: url.searchParams.get('status') || undefined
+				});
 			},
 			{ ...cacheMedium() }
 		);
