@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import CalculatorIcon from '@lucide/svelte/icons/calculator';
 	import ClockIcon from '@lucide/svelte/icons/clock';
@@ -102,9 +102,9 @@
 	let selectedCategory = $state('food');
 	let selectedSize = $state('small');
 
-	const certifier = $derived(certifiers.find((c) => c.id === selectedCertifier)!);
-	const category = $derived(categories.find((c) => c.id === selectedCategory)!);
-	const size = $derived(companySizes.find((s) => s.id === selectedSize)!);
+	const certifier = $derived(certifiers.find((c) => c.id === selectedCertifier) ?? certifiers[0]);
+	const category = $derived(categories.find((c) => c.id === selectedCategory) ?? categories[0]);
+	const size = $derived(companySizes.find((s) => s.id === selectedSize) ?? companySizes[0]);
 
 	const estimatedCost = $derived(
 		Math.round(certifier.baseFeeUsd * category.multiplier * size.multiplier)
@@ -140,54 +140,57 @@
 		<div class="space-y-6">
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="certifier-label">Certifying Body</span>
-				<div class="grid gap-2 sm:grid-cols-2">
+				<ToggleGroup
+					type="single"
+					bind:value={selectedCertifier}
+					variant="outline"
+					spacing={2}
+					class="grid w-full gap-2 sm:grid-cols-2"
+					aria-labelledby="certifier-label"
+				>
 					{#each certifiers as c}
-						<button
-							class="rounded-md border border-border p-3 text-left text-sm transition-colors {selectedCertifier ===
-							c.id
-								? 'border-primary bg-primary/5'
-								: 'hover:bg-muted'}"
-							onclick={() => (selectedCertifier = c.id)}
-						>
-							<div class="font-medium">{c.name}</div>
-							<div class="text-xs text-muted-foreground">{c.country}</div>
-						</button>
+						<ToggleGroup.Item value={c.id} class="h-auto flex-col items-start gap-0.5 p-3 text-left">
+							<span class="font-medium">{c.name}</span>
+							<span class="text-xs text-muted-foreground">{c.country}</span>
+						</ToggleGroup.Item>
 					{/each}
-				</div>
+				</ToggleGroup>
 			</div>
 
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="category-label">Product Category</span>
-				<div class="grid gap-2 sm:grid-cols-2">
+				<ToggleGroup
+					type="single"
+					bind:value={selectedCategory}
+					variant="outline"
+					spacing={2}
+					class="grid w-full gap-2 sm:grid-cols-2"
+					aria-labelledby="category-label"
+				>
 					{#each categories as cat}
-						<button
-							class="rounded-md border border-border p-3 text-left text-sm transition-colors {selectedCategory ===
-							cat.id
-								? 'border-primary bg-primary/5'
-								: 'hover:bg-muted'}"
-							onclick={() => (selectedCategory = cat.id)}
-						>
+						<ToggleGroup.Item value={cat.id} class="h-auto justify-start p-3 text-left text-sm">
 							{cat.name}
-						</button>
+						</ToggleGroup.Item>
 					{/each}
-				</div>
+				</ToggleGroup>
 			</div>
 
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="size-label">Company Size</span>
-				<div class="grid gap-2 sm:grid-cols-2">
+				<ToggleGroup
+					type="single"
+					bind:value={selectedSize}
+					variant="outline"
+					spacing={2}
+					class="grid w-full gap-2 sm:grid-cols-2"
+					aria-labelledby="size-label"
+				>
 					{#each companySizes as s}
-						<button
-							class="rounded-md border border-border p-3 text-left text-sm transition-colors {selectedSize ===
-							s.id
-								? 'border-primary bg-primary/5'
-								: 'hover:bg-muted'}"
-							onclick={() => (selectedSize = s.id)}
-						>
+						<ToggleGroup.Item value={s.id} class="h-auto justify-start p-3 text-left text-sm">
 							{s.name}
-						</button>
+						</ToggleGroup.Item>
 					{/each}
-				</div>
+				</ToggleGroup>
 			</div>
 		</div>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import BookText from '@lucide/svelte/icons/book-text';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
@@ -71,12 +72,9 @@
 
 	<nav class="flex flex-wrap gap-1.5" aria-label="Glossary index">
 		{#each letters as letter}
-			<a
-				href="#term-{letter}"
-				class="flex size-8 items-center justify-center rounded-lg text-sm font-medium text-muted-foreground transition-all outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-			>
+			<Button href="#term-{letter}" variant="ghost" size="icon" class="size-8">
 				{letter}
-			</a>
+			</Button>
 		{/each}
 	</nav>
 
@@ -84,7 +82,7 @@
 		{#each letters as letter}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
-				<div class="grid gap-3 sm:grid-cols-2">
+				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 					{#each grouped[letter] as term}
 						<Card>
 							<CardContent class="space-y-1 pt-4">

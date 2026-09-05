@@ -2,22 +2,13 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import {
-		Card,
-		CardContent,
-		CardHeader,
-		CardTitle
-	} from '#lib/components/ui/card/index.js';
-	import Star from '@lucide/svelte/icons/star';
+	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import Phone from '@lucide/svelte/icons/phone';
 	import Mail from '@lucide/svelte/icons/mail';
-	import Globe from '@lucide/svelte/icons/globe';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import Shield from '@lucide/svelte/icons/shield';
-	import MapPin from '@lucide/svelte/icons/map-pin';
-	import Send from '@lucide/svelte/icons/send';
-	import Users from '@lucide/svelte/icons/users';
-	import ClipboardList from '@lucide/svelte/icons/clipboard-list';
+	import Star from '@lucide/svelte/icons/star';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
 	let { data } = $props();
@@ -122,56 +113,45 @@
 					</div>
 					{#if provider.rating}
 						<div class="mt-1 flex items-center gap-1">
-							<span class="text-[10px] text-primary font-medium">{provider.rating}★</span>
+							<Star class="size-2.5 fill-warn text-warn" />
+							<span class="text-[10px] text-primary font-medium">{provider.rating}</span>
 							<span class="text-[10px] text-muted-foreground">(128 reviews)</span>
 						</div>
 					{/if}
 				</div>
 			</div>
-			<div class="mt-2 flex gap-1">
-				{#if provider.whatsapp}
-					<a href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}" class="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-md border border-border px-2 text-[10px] font-medium hover:bg-accent transition-colors" target="_blank" rel="noopener">
-						<MessageCircle class="size-2.5" />
-						WhatsApp
-					</a>
-				{/if}
-				{#if provider.line}
-					<a href="https://line.me/ti/p/{provider.line}" class="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-md border border-border px-2 text-[10px] font-medium hover:bg-accent transition-colors" target="_blank" rel="noopener">
-						Line
-					</a>
-				{/if}
-				{#if provider.email}
-					<a href="mailto:{provider.email}" class="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-md border border-border px-2 text-[10px] font-medium hover:bg-accent transition-colors">
-						<Mail class="size-2.5" />
-						Email
-					</a>
-				{/if}
-				{#if provider.phone}
-					<a href="tel:{provider.phone}" class="inline-flex h-7 flex-1 items-center justify-center gap-1 rounded-md border border-border px-2 text-[10px] font-medium hover:bg-accent transition-colors">
-						<Phone class="size-2.5" />
-						Phone
-					</a>
-				{/if}
+		<div class="mt-2 flex gap-1">
+			{#if provider.whatsapp}
+				<Button href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]" target="_blank" rel="noopener">
+					<MessageCircle class="size-2.5" />
+					WhatsApp
+				</Button>
+			{/if}
+			{#if provider.line}
+				<Button href="https://line.me/ti/p/{provider.line}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]" target="_blank" rel="noopener">
+					Line
+				</Button>
+			{/if}
+			{#if provider.email}
+				<Button href="mailto:{provider.email}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]">
+					<Mail class="size-2.5" />
+					Email
+				</Button>
+			{/if}
+			{#if provider.phone}
+				<Button href="tel:{provider.phone}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]">
+					<Phone class="size-2.5" />
+					Phone
+				</Button>
+			{/if}
 			</div>
 		</div>
 
 		<div class="mb-3 grid grid-cols-2 gap-1 sm:grid-cols-4">
-			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
-				<div class="text-xs font-bold text-primary">{services.length}</div>
-				<div class="text-[10px] text-muted-foreground">Services</div>
-			</div>
-			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
-				<div class="text-xs font-bold text-primary">{provider.rating ?? '–'}{provider.rating ? '★' : ''}</div>
-				<div class="text-[10px] text-muted-foreground">Rating</div>
-			</div>
-			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
-				<div class="text-xs font-bold text-primary">{provider.country ?? '—'}</div>
-				<div class="text-[10px] text-muted-foreground">Country</div>
-			</div>
-			<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 text-center">
-				<div class="text-xs font-bold text-primary">{yearEst}</div>
-				<div class="text-[10px] text-muted-foreground">Est.</div>
-			</div>
+			<StatTile value={services.length} label="Services" tone="primary" />
+			<StatTile value={provider.rating ?? '–'} label="Rating" tone="warn" />
+			<StatTile value={provider.country ?? '—'} label="Country" tone="info" />
+			<StatTile value={yearEst} label="Est." tone="success" />
 		</div>
 
 		<div class="mb-4">
@@ -237,10 +217,16 @@
 				<div class="grid gap-1.5 sm:grid-cols-2">
 					{#each (provider as any).reviews as review}
 						<div class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5">
-							<div class="mb-0.5 text-[10px] text-primary">{'★'.repeat(review.stars ?? 5)}{'☆'.repeat(5 - (review.stars ?? 5))}</div>
+							<div class="mb-0.5 flex items-center gap-0.5">
+								{#each Array(5) as _, i}
+									<Star class="size-2.5 {(review.stars ?? 5) > i ? 'fill-warn text-warn' : 'text-muted-foreground/30'}" />
+								{/each}
+							</div>
 							<p class="mb-1 text-[10px] text-muted-foreground italic line-clamp-2">{review.text ?? review.comment ?? ''}</p>
 							<div class="flex items-center gap-1.5">
-								<div class="flex size-6 items-center justify-center rounded-full bg-secondary text-[10px] font-medium">{review.initials ?? (review.name ?? '').split(' ').map((w: string) => w[0]).slice(0, 2).join('')}</div>
+								<Avatar class="size-6">
+									<AvatarFallback class="text-[10px]">{review.initials ?? (review.name ?? '').split(' ').map((w: string) => w[0]).slice(0, 2).join('')}</AvatarFallback>
+								</Avatar>
 								<div>
 									<p class="text-[10px] font-medium">{review.name ?? ''}</p>
 									<p class="text-[10px] text-muted-foreground">{review.company ?? ''}</p>

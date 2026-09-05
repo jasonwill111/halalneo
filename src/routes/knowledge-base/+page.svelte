@@ -17,6 +17,7 @@
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import BookMarkedIcon from '@lucide/svelte/icons/book-marked';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 
 	let { data } = $props();
@@ -66,15 +67,8 @@
 		'markets': '/api/media/kb-sourcing.webp',
 	};
 
-	// Icon tile palette — same order as homepage categoryColors for cross-page consistency
-	const tileColors = [
-		'bg-info/10 text-info',
-		'bg-warn/10 text-warn',
-		'bg-success/10 text-success',
-		'bg-accent-purple/10 text-accent-purple',
-		'bg-accent-rose/10 text-accent-rose',
-		'bg-primary/10 text-primary'
-	];
+	// Icon tile palette — shared with homepage/categories/certifiers for cross-page consistency
+	const tileColors = TILE_COLORS;
 </script>
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />

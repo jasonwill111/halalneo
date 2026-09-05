@@ -2,9 +2,9 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
-import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
 	let { data } = $props();
 
@@ -65,14 +65,14 @@ import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 			{#each certBodies as body, i}
-				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
+				<Card class="p-4">
 					<div class="flex items-center gap-2 mb-2">
 						<ShieldCheck class="size-4 {shieldColors[i % shieldColors.length]}" />
 						<span class="text-sm font-semibold">{body.name}</span>
 					</div>
 					<p class="text-xs text-muted-foreground">{body.country}</p>
 					<p class="text-xs text-muted-foreground">Standard: {body.standard}</p>
-				</div>
+				</Card>
 			{/each}
 		</div>
 	</div>
@@ -85,10 +85,10 @@ import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each businessTypes as type}
-				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
+				<Card class="p-4">
 					<h3 class="text-sm font-medium">{type}</h3>
 					<p class="mt-1 text-xs text-muted-foreground">Coming soon</p>
-				</div>
+				</Card>
 			{/each}
 		</div>
 	</div>

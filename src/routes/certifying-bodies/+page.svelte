@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
 		Card,
@@ -9,6 +8,9 @@
 	} from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+	import { getRegion } from '#lib/utils/region.js';
 
 	let { data } = $props();
 
@@ -23,24 +25,6 @@
 		{ label: 'Americas', value: 'Americas' },
 		{ label: 'Oceania', value: 'Oceania' }
 	] as const;
-
-	function getRegion(country: string): string {
-		const map: Record<string, string> = {
-			Malaysia: 'Southeast Asia',
-			Indonesia: 'Southeast Asia',
-			Thailand: 'Southeast Asia',
-			'Saudi Arabia': 'Middle East',
-			UAE: 'Middle East',
-			Turkey: 'Middle East',
-			Pakistan: 'South Asia',
-			Singapore: 'Southeast Asia',
-			'United Kingdom': 'Europe',
-			'United States': 'Americas',
-			'South Africa': 'Africa',
-			Australia: 'Oceania'
-		};
-		return map[country] ?? 'Other';
-	}
 
 	let query = $state('');
 	let selectedRegion = $state('');
@@ -58,15 +42,8 @@
 		})
 	);
 
-	// Initials tile palette — same order as homepage categoryColors for cross-page consistency
-	const tileColors = [
-		'bg-info/10 text-info',
-		'bg-warn/10 text-warn',
-		'bg-success/10 text-success',
-		'bg-accent-purple/10 text-accent-purple',
-		'bg-accent-rose/10 text-accent-rose',
-		'bg-primary/10 text-primary'
-	];
+	// Initials tile palette — shared with homepage/categories/KB for cross-page consistency
+	const tileColors = TILE_COLORS;
 </script>
 
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
@@ -85,17 +62,11 @@
 		</div>
 	</div>
 
-	<div class="flex flex-wrap gap-2">
-		{#each regions as region}
-			<Button
-				variant={selectedRegion === region.value ? 'default' : 'outline'}
-				size="sm"
-				onclick={() => (selectedRegion = region.value)}
-			>
-				{region.label}
-			</Button>
-		{/each}
-	</div>
+	<FilterPills
+		options={regions.map((r) => ({ value: r.value, label: r.label }))}
+		bind:value={selectedRegion}
+		ariaLabel="Filter certifying bodies by region"
+	/>
 
 	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
 		{#each filtered as body, i}

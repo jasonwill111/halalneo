@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
 		Select,
@@ -7,6 +6,7 @@
 		SelectItem,
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
+	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Package from '@lucide/svelte/icons/package';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
@@ -53,29 +53,11 @@
 	{#if products.length > 0}
 		<!-- Filter bar -->
 		<div class="mb-6 flex flex-wrap items-center gap-2">
-			<div class="flex gap-1.5">
-				<Button
-					variant={certFilter === 'all' ? 'default' : 'outline'}
-					size="sm"
-					onclick={() => (certFilter = 'all')}
-				>
-					All
-				</Button>
-				<Button
-					variant={certFilter === 'certified' ? 'default' : 'outline'}
-					size="sm"
-					onclick={() => (certFilter = 'certified')}
-				>
-					Certified
-				</Button>
-				<Button
-					variant={certFilter === 'pending' ? 'default' : 'outline'}
-					size="sm"
-					onclick={() => (certFilter = 'pending')}
-				>
-					Pending
-				</Button>
-			</div>
+			<ToggleGroup type="single" bind:value={certFilter} size="sm" variant="outline" aria-label="Filter by certification status">
+				<ToggleGroup.Item value="all">All</ToggleGroup.Item>
+				<ToggleGroup.Item value="certified">Certified</ToggleGroup.Item>
+				<ToggleGroup.Item value="pending">Pending</ToggleGroup.Item>
+			</ToggleGroup>
 
 			{#if countries.length > 0}
 				<Select type="single" bind:value={countryFilter}>

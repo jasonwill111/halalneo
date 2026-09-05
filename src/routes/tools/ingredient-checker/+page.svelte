@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
 	import CheckCircleIcon from '@lucide/svelte/icons/circle-check';
@@ -103,21 +104,23 @@ Format your response as:
 	</div>
 
 	<div class="space-y-3">
-		<textarea
-			class="min-h-[120px] w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+		<Textarea
+			class="min-h-[120px]"
 			placeholder="Paste ingredient list here... (e.g., Water, Sugar, Cocoa Butter, Milk Powder, Soy Lecithin)"
 			bind:value={ingredientInput}
-		></textarea>
-		<div class="flex items-center justify-between">
+		/>
+		<div class="flex flex-wrap items-center justify-between gap-2">
 			<p class="text-xs text-muted-foreground">Or try an example:</p>
-			<div class="flex gap-1.5">
-				{#each exampleLists as ex}
-					<button
-						class="rounded-md bg-muted px-2 py-1 text-[10px] text-muted-foreground transition-colors hover:bg-muted/80"
+			<div class="flex flex-wrap gap-1.5">
+				{#each exampleLists as ex, i}
+					<Button
+						variant="outline"
+						size="sm"
+						class="h-7 text-[10px]"
 						onclick={() => (ingredientInput = ex)}
 					>
-						Example {exampleLists.indexOf(ex) + 1}
-					</button>
+						Example {i + 1}
+					</Button>
 				{/each}
 			</div>
 		</div>
@@ -133,9 +136,9 @@ Format your response as:
 	</div>
 
 	{#if error}
-		<div class="rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
-			{error}
-		</div>
+		<Alert variant="destructive">
+			<AlertDescription>{error}</AlertDescription>
+		</Alert>
 	{/if}
 
 	{#if result}

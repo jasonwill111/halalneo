@@ -12,6 +12,8 @@
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 
 	let { data } = $props();
 	let search = $state('');
@@ -24,15 +26,8 @@
 			: data.categories ?? []
 	);
 
-	// Icon tile palette — same order as homepage categoryColors for cross-page consistency
-	const tileColors = [
-		'bg-info/10 text-info',
-		'bg-warn/10 text-warn',
-		'bg-success/10 text-success',
-		'bg-accent-purple/10 text-accent-purple',
-		'bg-accent-rose/10 text-accent-rose',
-		'bg-primary/10 text-primary'
-	];
+	// Icon tile palette — shared with homepage/certifiers/KB for cross-page consistency
+	const tileColors = TILE_COLORS;
 </script>
 
 <section class="space-y-6">
@@ -112,7 +107,7 @@
 		<h2 class="mb-2 text-sm font-semibold text-foreground">Popular Subcategories</h2>
 		<div class="flex flex-wrap gap-1.5">
 			{#each ['Halal Cosmetics', 'Pharmaceutical API', 'Organic Food', 'Modest Fashion', 'Medical Devices', 'Nutraceuticals', 'Halal Tourism', 'Halal Finance'] as sub}
-				<span class="rounded-full ring-1 ring-foreground/10 bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-primary hover:ring-primary/30">{sub}</span>
+				<Badge variant="secondary" class="font-medium transition-colors hover:text-primary">{sub}</Badge>
 			{/each}
 		</div>
 	</div>

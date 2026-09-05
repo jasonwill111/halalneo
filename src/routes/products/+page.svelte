@@ -2,7 +2,7 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import Package from '@lucide/svelte/icons/package';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
@@ -66,21 +66,21 @@
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 			{#each productCategories as cat}
-				<article class="rounded-xl ring-1 ring-foreground/10 bg-card overflow-hidden">
+				<Card class="overflow-hidden p-0">
 					{#if catImages[cat.slug]}
 						<div class="aspect-[4/3] overflow-hidden">
 							<img src={catImages[cat.slug]} alt={cat.name} class="h-full w-full object-cover" loading="lazy" decoding="async" width="400" height="300" />
 						</div>
 					{:else}
-						<div class="p-4">
+						<div class="p-4 pb-0">
 							<Package class="size-5 text-primary mb-2" />
 						</div>
 					{/if}
-					<div class="p-4">
+					<CardContent class="p-4">
 						<h3 class="text-sm font-medium">{cat.name}</h3>
 						<p class="mt-1 text-xs text-muted-foreground line-clamp-2">{cat.description}</p>
-					</div>
-				</article>
+					</CardContent>
+				</Card>
 			{/each}
 		</div>
 
@@ -92,10 +92,10 @@
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each markets as market}
-				<article class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
+				<Card class="p-4">
 					<h3 class="text-sm font-semibold">{market.region}</h3>
 					<p class="mt-1 text-xs text-muted-foreground">{market.countries}</p>
-				</article>
+				</Card>
 			{/each}
 		</div>
 	</div>

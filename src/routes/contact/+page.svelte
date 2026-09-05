@@ -10,7 +10,6 @@
 		CardHeader,
 		CardTitle
 	} from '#lib/components/ui/card/index.js';
-	import { Separator } from '#lib/components/ui/separator/index.js';
 	import Mail from '@lucide/svelte/icons/mail';
 	import MapPin from '@lucide/svelte/icons/map-pin';
 	import Clock from '@lucide/svelte/icons/clock';
@@ -57,8 +56,13 @@
 				})
 			});
 			if (!res.ok) {
-				const data = ((await res.json()) as any).catch(() => ({}));
-				throw new Error(data.error || 'Failed to send message');
+				let errBody: any = {};
+				try {
+					errBody = (await res.json()) as any;
+				} catch {
+					errBody = {};
+				}
+				throw new Error(errBody.error || 'Failed to send message');
 			}
 			sent = true;
 		} catch (e: any) {

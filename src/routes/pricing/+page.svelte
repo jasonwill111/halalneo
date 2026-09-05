@@ -1,8 +1,17 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
+	import {
+		Accordion,
+		AccordionContent,
+		AccordionItem,
+		AccordionTrigger
+	} from '#lib/components/ui/accordion/index.js';
+	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
 	import Check from '@lucide/svelte/icons/check';
 	import X from '@lucide/svelte/icons/x';
+
+	let billing = $state('monthly');
 
 	const plans = [
 		{
@@ -87,8 +96,10 @@
 
 <div class="flex justify-center mb-4">
 	<div class="inline-flex items-center gap-1.5">
-		<Button variant="secondary" size="sm" class="h-8 px-3 text-xs">Monthly</Button>
-		<Button variant="ghost" size="sm" class="h-8 px-3 text-xs">Annual</Button>
+		<ToggleGroup type="single" bind:value={billing} size="sm" variant="outline" aria-label="Billing period">
+			<ToggleGroup.Item value="monthly">Monthly</ToggleGroup.Item>
+			<ToggleGroup.Item value="annual">Annual</ToggleGroup.Item>
+		</ToggleGroup>
 		<span class="ml-1 text-[10px] text-muted-foreground">Save 20%</span>
 	</div>
 </div>
@@ -152,12 +163,12 @@
 
 <div class="mt-8 max-w-2xl mx-auto">
 	<h2 class="text-sm font-semibold text-center mb-3">FAQ</h2>
-	<div class="space-y-1.5">
-		{#each pricingFaqs as faq}
-			<Card class="p-2.5">
-				<h3 class="text-xs font-medium">{faq.q}</h3>
-				<p class="mt-1 text-[11px] text-muted-foreground">{faq.a}</p>
-			</Card>
+	<Accordion type="single">
+		{#each pricingFaqs as faq, i}
+			<AccordionItem value={`faq-${i}`}>
+				<AccordionTrigger class="text-xs">{faq.q}</AccordionTrigger>
+				<AccordionContent class="text-[11px]">{faq.a}</AccordionContent>
+			</AccordionItem>
 		{/each}
-	</div>
+	</Accordion>
 </div>

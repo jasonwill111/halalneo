@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
@@ -70,10 +69,10 @@
 	<form onsubmit={handleSearch} class="flex gap-2">
 		<div class="relative flex-1">
 			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-			<input
+			<Input
 				type="search"
 				placeholder="Search certificates, brands, products..."
-				class="h-8 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+				class="pl-9"
 				bind:value={query}
 			/>
 		</div>
@@ -90,13 +89,15 @@
 		<h2 class="text-sm font-medium text-muted-foreground">Supported certifiers</h2>
 		<div class="flex flex-wrap gap-2">
 			{#each certifiers as c}
-				<button
-					class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors {c.color} cursor-pointer hover:opacity-80"
+				<Button
+					variant="outline"
+					size="sm"
+					class={`h-7 border-transparent px-2.5 text-xs font-medium hover:opacity-80 ${c.color}`}
 					onclick={() => { query = c.name; }}
 				>
 					{c.name}
 					<span class="ml-1 opacity-60">{c.country}</span>
-				</button>
+				</Button>
 			{/each}
 		</div>
 	</div>
