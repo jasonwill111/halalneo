@@ -155,7 +155,7 @@
 			<Card hoverable class="h-full overflow-hidden">
 				{#if sectionImages[section.slug]}
 					<div class="aspect-[2/1] overflow-hidden">
-						<img src={sectionImages[section.slug]} alt={section.title} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
+						<img src={sectionImages[section.slug]} srcset={`${sectionImages[section.slug]}?w=480 480w, ${sectionImages[section.slug]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={section.title} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
 					</div>
 				{/if}
 				<CardHeader class="gap-3">

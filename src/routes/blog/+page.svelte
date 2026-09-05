@@ -64,7 +64,7 @@
 				<Card class="overflow-hidden">
 					<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
 						<div class="aspect-[2/1] overflow-hidden bg-muted">
-							<img src={post.featuredImage || blogImages[idx % blogImages.length]} alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="300" />
+							<img src={post.featuredImage || blogImages[idx % blogImages.length]} srcset={`${post.featuredImage || blogImages[idx % blogImages.length]}?w=480 480w, ${post.featuredImage || blogImages[idx % blogImages.length]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="300" />
 						</div>
 						<CardContent class="space-y-2 pt-3">
 							<div class="flex items-center gap-2 text-xs text-muted-foreground">

@@ -6,7 +6,16 @@ import { media } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 
 // ==================== GET: Serve media by key ====================
-export const GET: RequestHandler = async ({ params, platform, request }) => {
+// Supports `?w=480|768|1200` for responsive variants (Cloudflare Images
+// transform). SVG sources are served as-is (no raster transform).
+// Each variant URL is immutable-cacheable (width is part of the key).
+const RESPONSIVE_WIDTHS = new Set([480, 768, 1200]);
+
+function uint8ToStream(data: Uint8Array): ReadableStream<Uint8Array> {
+	return new Response(new Blob([data as unknown as BlobPart])).body as ReadableStream<Uint8Array>;
+}
+
+export const GET: RequestHandler = async ({ params, platform, request, url }) => {
 	const key = params.key;
 	if (!key) {
 		return json({ error: 'Missing key' }, { status: 400 });
@@ -22,6 +31,31 @@ export const GET: RequestHandler = async ({ params, platform, request }) => {
 		const object = await r2.get(fullKey);
 		if (!object) {
 			return json({ error: 'Not found' }, { status: 404 });
+		}
+
+		const contentType = object.httpMetadata?.contentType ?? '';
+		const askedWidth = Number(url.searchParams.get('w'));
+		const width = RESPONSIVE_WIDTHS.has(askedWidth) ? askedWidth : null;
+		const images = platform?.env?.IMAGES as ImagesBinding | undefined;
+
+		// Responsive variant: transform raster sources, serve as WebP.
+		if (width && images && !contentType.includes('svg')) {
+			try {
+				const input = new Uint8Array(await object.arrayBuffer());
+				const result = await images
+					.input(uint8ToStream(input))
+					.transform({ width })
+					.output({ format: 'image/webp', quality: 80 });
+				const outBytes = new Uint8Array(await new Response(result.image()).arrayBuffer());
+				const headers = new Headers();
+				headers.set('Content-Type', 'image/webp');
+				headers.set('Content-Length', String(outBytes.length));
+				headers.set('ETag', `"${fullKey}-w${width}"`);
+				headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+				return new Response(outBytes, { headers });
+			} catch {
+				// Fall through to original on transform failure
+			}
 		}
 
 		const headers = new Headers();

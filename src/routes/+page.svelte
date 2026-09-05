@@ -74,7 +74,14 @@
 </script>
 
 <svelte:head>
-	<link rel="preload" as="image" href={slides[0].image} fetchpriority="high" />
+	<link
+		rel="preload"
+		as="image"
+		href={slides[0].image}
+		imagesrcset={`${slides[0].image}?w=768 768w, ${slides[0].image} 1200w`}
+		imagesizes="100vw"
+		fetchpriority="high"
+	/>
 	{@html `<script type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'WebSite',
@@ -113,6 +120,8 @@
 				>
 					<img
 						src={slide.image}
+						srcset={`${slide.image}?w=768 768w, ${slide.image} 1200w`}
+						sizes="100vw"
 						alt={slide.title.replace(/\n/g, ' ')}
 						class="absolute inset-0 h-full w-full object-cover"
 						aria-hidden="true"
