@@ -15,16 +15,6 @@
 	type Faq = { q: string; a: string };
 	let search = $state('');
 
-	const filteredFaqs = $derived(
-		search.trim()
-			? faqs.filter(
-					(f) =>
-						f.q.toLowerCase().includes(search.toLowerCase()) ||
-						f.a.toLowerCase().includes(search.toLowerCase())
-				)
-			: faqs
-	);
-
 	const faqs: Faq[] = [
 		{
 			q: "What makes a supplier 'verified'?",
@@ -60,18 +50,17 @@
 		}
 	];
 
-	const faqSchema = {
-		'@context': 'https://schema.org',
-		'@type': 'FAQPage',
-		mainEntity: faqs.map((faq) => ({
-			'@type': 'Question',
-			name: faq.q,
-			acceptedAnswer: {
-				'@type': 'Answer',
-				text: faq.a
-			}
-		}))
-	};
+	const filteredFaqs = $derived(
+		search.trim()
+			? faqs.filter(
+					(f) =>
+						f.q.toLowerCase().includes(search.toLowerCase()) ||
+						f.a.toLowerCase().includes(search.toLowerCase())
+				)
+			: faqs
+	);
+
+	// Single source of truth: the inline svelte:head block below renders the FAQPage schema.
 </script>
 
 <svelte:head>

@@ -39,8 +39,8 @@ export function createBlogGeneratorTool(apiKey: string) {
 			tags: z.array(z.string()),
 			category: z.string()
 		}),
-		execute: async ({ context }) => {
-			const { topic, style = 'informative', wordCount = 1000 } = context;
+		execute: async (inputData: { topic: string; style?: 'informative' | 'tutorial' | 'analysis' | 'news'; wordCount?: number }) => {
+			const { topic, style = 'informative', wordCount = 1000 } = inputData;
 
 			const systemPrompt = `You are a halal trade content writer for HalalNeo, a global halal marketplace platform.
 
@@ -107,7 +107,9 @@ Rules:
 				};
 			}
 
-			const data = await response.json();
+			const data = (await response.json()) as {
+				choices?: Array<{ message?: { content?: string } }>;
+			};
 			const content = data.choices?.[0]?.message?.content || '';
 
 			let parsed;

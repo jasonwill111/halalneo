@@ -5,8 +5,15 @@ export const entries: EntryGenerator = () => [];
 interface ProductItem {
 	name?: string;
 	shortDescription?: string;
+	description?: string;
 	image?: string;
 	category?: string;
+	categorySlug?: string;
+	supplierSlug?: string;
+	slug?: string;
+	priceMin?: number | string | null;
+	priceMax?: number | string | null;
+	priceUnit?: string | null;
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {

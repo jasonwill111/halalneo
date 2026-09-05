@@ -1,12 +1,11 @@
 import { Agent } from '@mastra/core/agent';
-import type { OpenAICompatibleConfig } from '@mastra/core';
+import { createOpenAI } from '@ai-sdk/openai';
 
 export function createHalalAgent(apiKey: string) {
-	const config: OpenAICompatibleConfig = {
-		id: 'agnes/agnes-2.5-flash',
-		url: 'https://apihub.agnes-ai.com/v1',
+	const agnes = createOpenAI({
+		baseURL: 'https://apihub.agnes-ai.com/v1',
 		apiKey
-	};
+	});
 
 	return new Agent({
 		id: 'halal-agent',
@@ -20,6 +19,6 @@ STRICT RULES:
 4. Never discuss other AI models, chatbots, or competitors.
 5. Always recommend verifying with official certification bodies for authoritative answers.
 6. Be concise, professional, and actionable.`,
-		model: config
+		model: agnes('agnes/agnes-2.5-flash')
 	});
 }
