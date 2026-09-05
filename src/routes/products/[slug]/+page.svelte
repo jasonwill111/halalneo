@@ -139,14 +139,17 @@
 					url: `${baseUrl}/products/${item.slug}`,
 					brand: { '@type': 'Brand', name: item.supplierSlug ?? '' },
 					category: item.categorySlug ?? '',
-					offers: {
-						'@type': 'Offer',
-						url: `${baseUrl}/products/${item.slug}`,
-						availability: 'https://schema.org/InStock',
-						itemCondition: 'https://schema.org/NewCondition',
-						priceCurrency: 'USD',
-						price: item.priceMin ?? '0'
-					},
+					...(item.priceMin
+						? {
+								offers: {
+									'@type': 'Offer',
+									url: `${baseUrl}/products/${item.slug}`,
+									itemCondition: 'https://schema.org/NewCondition',
+									priceCurrency: 'USD',
+									price: item.priceMin
+								}
+							}
+						: {}),
 					manufacturer: { '@type': 'Organization', name: item.supplierSlug ?? '' }
 				}
 			: null
