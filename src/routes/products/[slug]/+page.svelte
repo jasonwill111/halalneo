@@ -5,6 +5,8 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Separator } from '#lib/components/ui/separator/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { Tabs, TabsList, TabsTrigger, TabsContent } from '#lib/components/ui/tabs/index.js';
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
 	import {
 		Dialog,
@@ -14,10 +16,10 @@
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
+	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import Send from '@lucide/svelte/icons/send';
 	import Heart from '@lucide/svelte/icons/heart';
-	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
@@ -281,52 +283,26 @@
 					</div>
 				</div>
 
-				<!-- Share -->
-				<div class="flex items-center gap-2">
-					<span class="text-xs text-muted-foreground">Share:</span>
-					<a
-						href="https://www.facebook.com/sharer/sharer.php?u={encodeURIComponent(page.url.href)}"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Button variant="outline" size="icon" class="size-8 rounded-full text-[10px]">f</Button>
-					</a>
-					<a
-						href="https://www.linkedin.com/sharing/share-offsite/?url={encodeURIComponent(
-							page.url.href
-						)}"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Button variant="outline" size="icon" class="size-8 rounded-full text-[10px]">in</Button
-						>
-					</a>
-					<a
-						href="https://twitter.com/intent/tweet?url={encodeURIComponent(page.url.href)}"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Button variant="outline" size="icon" class="size-8 rounded-full text-[10px]">X</Button>
-					</a>
-				</div>
+		<!-- Share -->
+		<div class="flex items-center gap-2">
+			<span class="text-xs text-muted-foreground">Share:</span>
+			<ShareButtons title={item.name ?? 'HalalNeo product'} text={item.shortDescription ?? ''} />
+		</div>
 			</div>
 		</div>
 
 		<Separator class="my-6"></Separator>
 
 		<!-- Tabs -->
-		<div class="flex gap-4 overflow-x-auto border-b border-border">
-			{#each ['description', 'specs', 'certifications', 'faq', 'resources'] as tab}
-				<Button
-					variant="ghost"
-					size="sm"
-					onclick={() => (activeTab = tab)}
-					class={`rounded-none border-b-2 pb-3 text-sm font-medium whitespace-nowrap ${activeTab === tab ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-				>
-					{tab === 'faq' ? 'FAQ' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-				</Button>
-			{/each}
-		</div>
+		<Tabs bind:value={activeTab} class="w-full">
+			<TabsList variant="line" class="w-full justify-start">
+				<TabsTrigger value="description">Description</TabsTrigger>
+				<TabsTrigger value="specs">Specs</TabsTrigger>
+				<TabsTrigger value="certifications">Certifications</TabsTrigger>
+				<TabsTrigger value="faq">FAQ</TabsTrigger>
+				<TabsTrigger value="resources">Resources</TabsTrigger>
+			</TabsList>
+		</Tabs>
 
 		<!-- Tab Content -->
 		<div class="flex flex-col gap-6 lg:grid lg:grid-cols-3 lg:gap-8">
@@ -528,12 +504,11 @@
 			</Field>
 			<Field>
 				<FieldLabel>Message</FieldLabel>
-				<textarea
+				<Textarea
 					bind:value={inquiryMessage}
 					placeholder="I'm interested in..."
 					rows={4}
-					class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-				></textarea>
+				/>
 			</Field>
 			<DialogFooter>
 				<Button

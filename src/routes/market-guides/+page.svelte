@@ -3,6 +3,10 @@
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
+	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
+	import { cn } from '#lib/utils.js';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
@@ -12,34 +16,17 @@
 
 	let selectedRegion = $state('all');
 
-	const countryImages: Record<string, string> = {
-		'Malaysia': '/api/media/market-malaysia.webp',
-		'Indonesia': '/api/media/market-indonesia.webp',
-		'United Arab Emirates': '/api/media/market-uae.webp',
-		'Saudi Arabia': '/api/media/market-saudi.webp',
-		'Japan': '/api/media/market-japan.webp',
-		'Türkiye': '/api/media/market-turkey.webp',
-		'India': '/api/media/market-india.webp',
-		'Pakistan': '/api/media/market-pakistan.webp',
-		'United States': '/api/media/market-usa.webp',
-	};
+	const countryImages = COUNTRY_IMAGES;
 
 	const regions = ['all', 'Southeast Asia', 'Middle East', 'South Asia', 'Europe', 'North America'];
 
-	const mandateStatuses: Record<string, { label: string; class: string }> = {
-		mandatory: {
-			label: 'Mandatory',
-			class: 'bg-destructive/15 text-destructive'
-		},
-		'phasing-in': {
-			label: 'Phasing In',
-			class: 'bg-warn/15 text-warn'
-		},
-		voluntary: {
-			label: 'Voluntary',
-			class: 'bg-success/15 text-success'
-		}
-	};
+	const regionOptions = $derived(
+		regions.map((r) => ({
+			value: r,
+			label: r === 'all' ? 'All Regions' : r,
+			count: r === 'all' ? data.guides.length : data.guides.filter((g: any) => g.region === r).length
+		}))
+	);
 
 	const filtered = $derived(
 		selectedRegion === 'all'
@@ -63,18 +50,11 @@
 		</p>
 	</div>
 
-	<div class="flex flex-wrap gap-1">
-		{#each regions as region}
-			<button
-				class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors {selectedRegion === region
-					? 'bg-primary text-primary-foreground'
-					: 'bg-muted text-muted-foreground hover:bg-muted/80'}"
-				onclick={() => (selectedRegion = region)}
-			>
-				{region === 'all' ? 'All Regions' : region}
-			</button>
-		{/each}
-	</div>
+	<FilterPills
+		options={regionOptions}
+		bind:value={selectedRegion}
+		ariaLabel="Filter market guides by region"
+	/>
 
 	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as guide (guide.slug)}
@@ -100,10 +80,12 @@
 							<p class="text-[11px] text-muted-foreground">{guide.region}</p>
 						</div>
 						<span
-							class="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium {mandateStatuses[guide.mandateStatus]
-								.class}"
+							class={cn(
+								'shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium',
+								MANDATE_STATUSES[guide.mandateStatus as MandateStatus]?.tone
+							)}
 						>
-							{mandateStatuses[guide.mandateStatus].label}
+							{MANDATE_STATUSES[guide.mandateStatus as MandateStatus]?.label}
 						</span>
 					</div>
 

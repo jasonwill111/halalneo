@@ -4,10 +4,10 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
-	import UsersIcon from '@lucide/svelte/icons/users';
-	import BanknoteIcon from '@lucide/svelte/icons/banknote';
-	import ClockIcon from '@lucide/svelte/icons/clock';
-	import CalendarCheckIcon from '@lucide/svelte/icons/calendar-check';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
+	import { cn } from '#lib/utils.js';
+	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
 	import FileCheckIcon from '@lucide/svelte/icons/file-check';
 	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 	import ShieldAlertIcon from '@lucide/svelte/icons/shield-alert';
@@ -17,34 +17,9 @@
 	let { data } = $props();
 	const guide = $derived(data.guide);
 
-	const countryImages: Record<string, string> = {
-		Malaysia: '/api/media/market-malaysia.webp',
-		Indonesia: '/api/media/market-indonesia.webp',
-		'United Arab Emirates': '/api/media/market-uae.webp',
-		'Saudi Arabia': '/api/media/market-saudi.webp',
-		Japan: '/api/media/market-japan.webp',
-		Türkiye: '/api/media/market-turkey.webp',
-		India: '/api/media/market-india.webp',
-		Pakistan: '/api/media/market-pakistan.webp',
-		'United States': '/api/media/market-usa.webp'
-	};
+	const countryImages = COUNTRY_IMAGES;
 
-	const mandateStatuses: Record<string, { label: string; class: string }> = {
-		mandatory: {
-			label: 'Mandatory',
-			class: 'bg-destructive/15 text-destructive'
-		},
-		'phasing-in': {
-			label: 'Phasing In',
-			class: 'bg-warn/15 text-warn'
-		},
-		voluntary: {
-			label: 'Voluntary',
-			class: 'bg-success/15 text-success'
-		}
-	};
-
-	const status = $derived(mandateStatuses[guide.mandateStatus]);
+	const status = $derived(MANDATE_STATUSES[guide.mandateStatus as MandateStatus]);
 
 	const relatedGuides = $derived(
 		(data.allGuides ?? [])
@@ -117,42 +92,18 @@
 			</div>
 		</div>
 		<div class="flex flex-wrap items-center gap-2">
-			<span class="rounded-full px-2 py-0.5 text-xs font-medium {status.class}">
-				{status.label}{guide.mandatorySince ? ` — ${guide.mandatorySince}` : ''}
+			<span class={cn('rounded-full px-2 py-0.5 text-xs font-medium', status?.tone)}>
+				{status?.label}{guide.mandatorySince ? ` — ${guide.mandatorySince}` : ''}
 			</span>
 		</div>
 		<p class="text-base leading-relaxed text-foreground">{guide.summary}</p>
 	</div>
 
-	<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-		<Card class="bg-card">
-			<CardContent class="p-4 text-center">
-				<UsersIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
-				<p class="text-sm font-semibold">{guide.muslimPopulation}</p>
-				<p class="text-[10px] text-muted-foreground">Muslim population</p>
-			</CardContent>
-		</Card>
-		<Card class="bg-card">
-			<CardContent class="p-4 text-center">
-				<BanknoteIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
-				<p class="text-sm font-semibold">{guide.marketSizeUsd}</p>
-				<p class="text-[10px] text-muted-foreground">Market size</p>
-			</CardContent>
-		</Card>
-		<Card class="bg-card">
-			<CardContent class="p-4 text-center">
-				<ClockIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
-				<p class="text-sm font-semibold">{guide.processingTime}</p>
-				<p class="text-[10px] text-muted-foreground">Processing time</p>
-			</CardContent>
-		</Card>
-		<Card class="bg-card">
-			<CardContent class="p-4 text-center">
-				<CalendarCheckIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
-				<p class="text-sm font-semibold">{guide.certificateValidity}</p>
-				<p class="text-[10px] text-muted-foreground">Certificate validity</p>
-			</CardContent>
-		</Card>
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+		<StatTile value={guide.muslimPopulation} label="Muslim population" tone="info" />
+		<StatTile value={guide.marketSizeUsd} label="Market size" tone="success" />
+		<StatTile value={guide.processingTime} label="Processing time" tone="warn" />
+		<StatTile value={guide.certificateValidity} label="Certificate validity" tone="accent-purple" />
 	</div>
 
 	<div class="grid gap-4 lg:grid-cols-2">

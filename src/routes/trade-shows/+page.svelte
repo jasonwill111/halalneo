@@ -3,12 +3,13 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import { cn } from '#lib/utils.js';
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
-	import FilterIcon from '@lucide/svelte/icons/filter';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
 
@@ -137,22 +138,11 @@
 				bind:value={search}
 			/>
 		</div>
-		<div class="flex items-center gap-2">
-			<FilterIcon class="size-4 text-muted-foreground" />
-			<div class="flex gap-1 overflow-x-auto">
-				{#each regions as region}
-					<button
-						class="rounded-md px-2.5 py-1 text-xs font-medium transition-colors {selectedRegion ===
-						region
-							? 'bg-primary text-primary-foreground'
-							: 'bg-muted text-muted-foreground hover:bg-muted/80'}"
-						onclick={() => (selectedRegion = region)}
-					>
-						{region === 'all' ? 'All Regions' : region}
-					</button>
-				{/each}
-			</div>
-		</div>
+		<FilterPills
+			options={regions.map((r) => ({ value: r, label: r === 'all' ? 'All Regions' : r }))}
+			bind:value={selectedRegion}
+			ariaLabel="Filter trade shows by region"
+		/>
 	</div>
 
 	{#if filtered.length === 0}
@@ -199,7 +189,7 @@
 								<CalendarDaysIcon class="size-3.5 shrink-0" />
 								{formatDateRange(show.startDate, show.endDate)}
 							</span>
-							<span class="rounded-full px-1.5 py-0.5 text-[10px] font-medium {scaleColors[show.scale]}">
+							<span class={cn('rounded-full px-1.5 py-0.5 text-[10px] font-medium', scaleColors[show.scale])}>
 								{show.scale}
 							</span>
 							{#if show.exhibitors}

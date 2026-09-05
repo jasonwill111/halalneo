@@ -12,6 +12,7 @@
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
 	import MailIcon from '@lucide/svelte/icons/mail';
 	import LockIcon from '@lucide/svelte/icons/lock';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
 	let email = $state('');
 	let password = $state('');
@@ -73,7 +74,7 @@
 				</Field>
 
 				<div class="flex items-center gap-2">
-					<Checkbox bind:checked={rememberMe} />
+					<Checkbox bind:checked={rememberMe} id="remember" />
 					<label for="remember" class="text-xs text-muted-foreground">Remember me</label>
 				</div>
 
@@ -84,18 +85,7 @@
 				<Button type="submit" class="w-full" onclick={submit}>
 					<span class="inline-flex items-center gap-2">
 						Sign In
-						<svg
-							class="size-3.5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-							><path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M13 7l5 5m0 0l-5 5m5-5H6"
-							/></svg
-						>
+						<ArrowRight class="size-3.5" />
 					</span>
 				</Button>
 			</form>

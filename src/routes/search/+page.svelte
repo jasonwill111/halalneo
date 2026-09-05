@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import {
 		Select,
 		SelectContent,
 		SelectItem,
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
-	import { Card, CardContent, CardTitle, CardDescription } from '#lib/components/ui/card/index.js';
 	import { Sheet, SheetContent, SheetHeader, SheetTitle } from '#lib/components/ui/sheet/index.js';
 	import {
 		Empty,
@@ -22,6 +22,8 @@
 	import Store from '@lucide/svelte/icons/store';
 	import Star from '@lucide/svelte/icons/star';
 	import SlidersHorizontal from '@lucide/svelte/icons/sliders-horizontal';
+	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	let { data } = $props();
 	let query = $state('');
@@ -251,7 +253,7 @@
 <div class="-mx-4 border-b border-border bg-card/50 px-4 sm:-mx-6 sm:px-6">
 	<div class="mx-auto flex h-12 w-full max-w-7xl items-center gap-2">
 		<SearchIcon class="size-4 shrink-0 text-muted-foreground" />
-		<input
+		<Input
 			value={query}
 			oninput={(e) => {
 				query = e.currentTarget.value;
@@ -259,7 +261,7 @@
 			}}
 			type="text"
 			placeholder="Search products, suppliers, articles..."
-			class="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+			class="h-8 flex-1 border-transparent bg-transparent text-sm shadow-none focus-visible:border-transparent focus-visible:ring-0"
 		/>
 		<Button size="sm" class="h-8 text-xs">Search</Button>
 	</div>
@@ -269,9 +271,7 @@
 	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-1 text-[10px] text-muted-foreground">
 			<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
-			<svg class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-				><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg
-			>
+			<ChevronRight class="size-3" />
 			<span class="font-medium text-foreground">Search results</span>
 		</div>
 		<p class="text-xs text-muted-foreground">
@@ -282,97 +282,89 @@
 	</div>
 
 	<div class="flex gap-5">
-		{#snippet filterPanel()}
-				<div>
-					<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
-					<div class="space-y-1">
-						{#each categories as cat}
-							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
-								<input
-									type="checkbox"
-									class="size-3 rounded border-border accent-primary"
-									checked={selectedCategories.has(cat)}
-									onchange={() => (selectedCategories = toggleSet(selectedCategories, cat))}
-								/>
-								{cat}
-							</label>
-						{/each}
-					</div>
-					<Button
-						variant="ghost"
-						size="sm"
-						class="mt-1 h-auto p-0 text-[10px] text-primary hover:underline">Show more</Button
-					>
+	{#snippet filterPanel()}
+			<div>
+				<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
+				<div class="space-y-1">
+					{#each categories as cat}
+						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+							<Checkbox
+								checked={selectedCategories.has(cat)}
+								onCheckedChange={() => (selectedCategories = toggleSet(selectedCategories, cat))}
+							/>
+							{cat}
+						</label>
+					{/each}
 				</div>
-
-				<hr class="border-border" />
-
-				<div>
-					<h3 class="mb-1.5 text-xs font-semibold">Price Range</h3>
-					<div class="space-y-1">
-						{#each priceRanges as pr}
-							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
-								<input
-									type="checkbox"
-									class="size-3 rounded border-border accent-primary"
-									checked={selectedPrices.has(pr)}
-									onchange={() => (selectedPrices = toggleSet(selectedPrices, pr))}
-								/>
-								{pr}
-							</label>
-						{/each}
-					</div>
-				</div>
-
-				<hr class="border-border" />
-
-				<div>
-					<h3 class="mb-1.5 text-xs font-semibold">Supplier Location</h3>
-					<div class="space-y-1">
-						{#each supplierLocations as loc}
-							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
-								<input
-									type="checkbox"
-									class="size-3 rounded border-border accent-primary"
-									checked={selectedLocations.has(loc)}
-									onchange={() => (selectedLocations = toggleSet(selectedLocations, loc))}
-								/>
-								{loc}
-							</label>
-						{/each}
-					</div>
-				</div>
-
-				<hr class="border-border" />
-
-				<div>
-					<h3 class="mb-1.5 text-xs font-semibold">Halal Certification</h3>
-					<div class="space-y-1">
-						{#each certifications as cert}
-							<label class="flex cursor-pointer items-center gap-1.5 text-xs">
-								<input
-									type="checkbox"
-									class="size-3 rounded border-border accent-primary"
-									checked={selectedCerts.has(cert)}
-									onchange={() => (selectedCerts = toggleSet(selectedCerts, cert))}
-								/>
-								{cert}
-							</label>
-						{/each}
-					</div>
-				</div>
-
 				<Button
-					variant="outline"
-					class="w-full text-xs"
-					onclick={() => {
-						selectedCategories = new Set();
-						selectedPrices = new Set();
-						selectedLocations = new Set();
-						selectedCerts = new Set();
-				}}>Clear all filters</Button
-			>
-		{/snippet}
+					variant="ghost"
+					size="sm"
+					class="mt-1 h-auto p-0 text-[10px] text-primary hover:underline">Show more</Button
+				>
+			</div>
+
+			<hr class="border-border" />
+
+			<div>
+				<h3 class="mb-1.5 text-xs font-semibold">Price Range</h3>
+				<div class="space-y-1">
+					{#each priceRanges as pr}
+						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+							<Checkbox
+								checked={selectedPrices.has(pr)}
+								onCheckedChange={() => (selectedPrices = toggleSet(selectedPrices, pr))}
+							/>
+							{pr}
+						</label>
+					{/each}
+				</div>
+			</div>
+
+			<hr class="border-border" />
+
+			<div>
+				<h3 class="mb-1.5 text-xs font-semibold">Supplier Location</h3>
+				<div class="space-y-1">
+					{#each supplierLocations as loc}
+						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+							<Checkbox
+								checked={selectedLocations.has(loc)}
+								onCheckedChange={() => (selectedLocations = toggleSet(selectedLocations, loc))}
+							/>
+							{loc}
+						</label>
+					{/each}
+				</div>
+			</div>
+
+			<hr class="border-border" />
+
+			<div>
+				<h3 class="mb-1.5 text-xs font-semibold">Halal Certification</h3>
+				<div class="space-y-1">
+					{#each certifications as cert}
+						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
+							<Checkbox
+								checked={selectedCerts.has(cert)}
+								onCheckedChange={() => (selectedCerts = toggleSet(selectedCerts, cert))}
+							/>
+							{cert}
+						</label>
+					{/each}
+				</div>
+			</div>
+
+			<Button
+				variant="outline"
+				class="w-full text-xs"
+				onclick={() => {
+					selectedCategories = new Set();
+					selectedPrices = new Set();
+					selectedLocations = new Set();
+					selectedCerts = new Set();
+			}}>Clear all filters</Button
+		>
+	{/snippet}
 		<aside class="hidden w-52 shrink-0 lg:block">
 			<div class="sticky top-20 space-y-4">
 				{@render filterPanel()}
@@ -517,24 +509,17 @@
 					{/each}
 				</div>
 
-				{#if totalPages > 1}
-					<div class="mt-5 flex items-center justify-center gap-1">
-						<Button
-							variant="outline"
-							size="icon"
-							class="size-7"
-							disabled={currentPage === 1}
-							onclick={() => (currentPage = Math.max(1, currentPage - 1))}
-						>
-							<svg
-								class="size-3"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-								><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg
-							>
-						</Button>
+			{#if totalPages > 1}
+				<div class="mt-5 flex items-center justify-center gap-1">
+					<Button
+						variant="outline"
+						size="icon"
+						class="size-7"
+						disabled={currentPage === 1}
+						onclick={() => (currentPage = Math.max(1, currentPage - 1))}
+					>
+						<ChevronLeft class="size-3" />
+					</Button>
 						{#each Array.from({ length: totalPages }, (_, i) => i + 1) as page}
 							{#if page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)}
 								<Button
@@ -550,22 +535,15 @@
 								>
 							{/if}
 						{/each}
-						<Button
-							variant="outline"
-							size="icon"
-							class="size-7"
-							disabled={currentPage === totalPages}
-							onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
-						>
-							<svg
-								class="size-3"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-								><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg
-							>
-						</Button>
+					<Button
+						variant="outline"
+						size="icon"
+						class="size-7"
+						disabled={currentPage === totalPages}
+						onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
+					>
+						<ChevronRight class="size-3" />
+					</Button>
 					</div>
 				{/if}
 			{/if}

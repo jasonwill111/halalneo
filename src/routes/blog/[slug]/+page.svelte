@@ -6,6 +6,10 @@
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
+	import ShoppingCart from '@lucide/svelte/icons/shopping-cart';
+	import Store from '@lucide/svelte/icons/store';
+	import BookOpen from '@lucide/svelte/icons/book-open';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import { sanitizeHtml } from '#lib/sanitize.js';
 
 	let { data } = $props();
@@ -193,87 +197,30 @@
 			<div class="mt-8 border-t border-border pt-6">
 				<h2 class="mb-4 text-xl font-semibold tracking-tight">Explore Related Resources</h2>
 				<div class="grid gap-4 sm:grid-cols-3">
-					<a
-						href={localizeHref('/products')}
-						class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
-					>
-						<div class="mb-2">
-							<svg
-								class="size-5 text-primary/60 transition-colors group-hover:text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								viewBox="0 0 24 24"
-								><path
-									d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-								/></svg
-							>
-						</div>
-						<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-							Browse Halal Products
-						</h3>
-						<p class="mt-1 text-xs text-muted-foreground">
-							Explore our catalog of certified halal products.
-						</p>
-						<span
-							class="mt-2 inline-block text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
-							>Browse Products &rarr;</span
+					{#each [
+						{ href: '/products', title: 'Browse Halal Products', desc: 'Explore our catalog of certified halal products.', cta: 'Browse Products', icon: ShoppingCart },
+						{ href: '/suppliers', title: 'Find Certified Suppliers', desc: 'Connect with verified halal-certified suppliers.', cta: 'Find Suppliers', icon: Store },
+						{ href: '/knowledge-base', title: 'Read Knowledge Base', desc: 'Guides, certifications, and halal compliance insights.', cta: 'Read Articles', icon: BookOpen }
+					] as item (item.href)}
+						<a
+							href={localizeHref(item.href)}
+							class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
 						>
-					</a>
-					<a
-						href={localizeHref('/suppliers')}
-						class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
-					>
-						<div class="mb-2">
-							<svg
-								class="size-5 text-primary/60 transition-colors group-hover:text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								viewBox="0 0 24 24"
-								><path
-									d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"
-								/></svg
+							<div class="mb-2">
+								<item.icon class="size-5 text-primary/60 transition-colors group-hover:text-primary" />
+							</div>
+							<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
+								{item.title}
+							</h3>
+							<p class="mt-1 text-xs text-muted-foreground">{item.desc}</p>
+							<span
+								class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
 							>
-						</div>
-						<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-							Find Certified Suppliers
-						</h3>
-						<p class="mt-1 text-xs text-muted-foreground">
-							Connect with verified halal-certified suppliers.
-						</p>
-						<span
-							class="mt-2 inline-block text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
-							>Find Suppliers &rarr;</span
-						>
-					</a>
-					<a
-						href={localizeHref('/knowledge-base')}
-						class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
-					>
-						<div class="mb-2">
-							<svg
-								class="size-5 text-primary/60 transition-colors group-hover:text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								viewBox="0 0 24 24"
-								><path
-									d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-								/></svg
-							>
-						</div>
-						<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-							Read Knowledge Base
-						</h3>
-						<p class="mt-1 text-xs text-muted-foreground">
-							Guides, certifications, and halal compliance insights.
-						</p>
-						<span
-							class="mt-2 inline-block text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
-							>Read Articles &rarr;</span
-						>
-					</a>
+								{item.cta}
+								<ArrowRight class="size-3" />
+							</span>
+						</a>
+					{/each}
 				</div>
 			</div>
 		</article>

@@ -12,6 +12,9 @@
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import Star from '@lucide/svelte/icons/star';
 	import Eye from '@lucide/svelte/icons/eye';
+	import X from '@lucide/svelte/icons/x';
+	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	let { data } = $props();
 
@@ -208,18 +211,7 @@
 							onclick={() => toggleType(type)}
 							aria-label="Remove {typeLabel(type)} filter"
 						>
-							<svg
-								class="size-3"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2.5"
-								><path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M6 18L18 6M6 6l12 12"
-								/></svg
-							>
+							<X class="size-3" />
 						</Button>
 					</span>
 				{/each}
@@ -253,14 +245,8 @@
 									{provider.name}
 								</h3>
 								{#if provider.rating && provider.rating >= 4.7}
-									<svg class="size-4 shrink-0 text-primary" fill="currentColor" viewBox="0 0 20 20"
-										><path
-											fill-rule="evenodd"
-											d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812z"
-											clip-rule="evenodd"
-										/></svg
-									>
-								{/if}
+								<Star class="size-4 shrink-0 fill-primary text-primary" />
+							{/if}
 							</div>
 							<p class="truncate text-xs text-muted-foreground">{provider.country}</p>
 						</div>
@@ -365,9 +351,7 @@
 					disabled={currentPage === 1}
 					onclick={() => (currentPage = Math.max(1, currentPage - 1))}
 				>
-					<svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-						><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg
-					>
+					<ChevronLeft class="size-4" />
 				</Button>
 				{#each Array(totalPages) as _, i}
 					{@const page = i + 1}
@@ -389,9 +373,7 @@
 					disabled={currentPage === totalPages}
 					onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
 				>
-					<svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-						><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg
-					>
+					<ChevronRight class="size-4" />
 				</Button>
 			</div>
 		{/if}

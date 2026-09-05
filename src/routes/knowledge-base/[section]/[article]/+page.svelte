@@ -5,6 +5,7 @@
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
+	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { sanitizeHtml } from '#lib/sanitize.js';
 
 	let { data } = $props();
@@ -200,92 +201,16 @@
 					</Button>
 				</footer>
 
-				<div class="mt-8 border-t border-border pt-6">
-					<h2 class="mb-4 text-xl font-semibold tracking-tight">Explore More</h2>
-					<div class="grid gap-4 sm:grid-cols-3">
-						<a
-							href={localizeHref('/certifying-bodies')}
-							class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
-						>
-							<div class="mb-2">
-								<svg
-									class="size-5 text-primary/60 transition-colors group-hover:text-primary"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									viewBox="0 0 24 24"
-									><path
-										d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
-									/></svg
-								>
-							</div>
-							<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-								Halal Certifying Bodies
-							</h3>
-							<p class="mt-1 text-xs text-muted-foreground">
-								Browse accredited halal certification organizations worldwide.
-							</p>
-							<span
-								class="mt-2 inline-block text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
-								>View Bodies &rarr;</span
-							>
-						</a>
-						<a
-							href={localizeHref('/market-guides')}
-							class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
-						>
-							<div class="mb-2">
-								<svg
-									class="size-5 text-primary/60 transition-colors group-hover:text-primary"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									viewBox="0 0 24 24"
-									><path
-										d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-									/></svg
-								>
-							</div>
-							<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-								Market Guides
-							</h3>
-							<p class="mt-1 text-xs text-muted-foreground">
-								Regional halal market insights and compliance guides.
-							</p>
-							<span
-								class="mt-2 inline-block text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
-								>Read Guides &rarr;</span
-							>
-						</a>
-						<a
-							href={localizeHref('/tools/ingredient-checker')}
-							class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
-						>
-							<div class="mb-2">
-								<svg
-									class="size-5 text-primary/60 transition-colors group-hover:text-primary"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									viewBox="0 0 24 24"
-									><path
-										d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
-									/></svg
-								>
-							</div>
-							<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-								AI Ingredient Checker
-							</h3>
-							<p class="mt-1 text-xs text-muted-foreground">
-								Verify if ingredients are halal with our AI-powered tool.
-							</p>
-							<span
-								class="mt-2 inline-block text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
-								>Check Ingredients &rarr;</span
-							>
-						</a>
-					</div>
-				</div>
+			<div class="mt-8 border-t border-border pt-6">
+				<RelatedLinks
+					title="Explore More"
+					items={[
+						{ label: 'Halal Certifying Bodies', description: 'Browse accredited halal certification organizations worldwide.', href: '/certifying-bodies' },
+						{ label: 'Market Guides', description: 'Regional halal market insights and compliance guides.', href: '/market-guides' },
+						{ label: 'AI Ingredient Checker', description: 'Verify if ingredients are halal with our AI-powered tool.', href: '/tools/ingredient-checker' }
+					]}
+				/>
+			</div>
 			</article>
 		</div>
 	{:else}

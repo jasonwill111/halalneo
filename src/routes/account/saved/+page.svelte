@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Tabs, TabsList, TabsTrigger } from '#lib/components/ui/tabs/index.js';
 	import Box from '@lucide/svelte/icons/box';
 	import { getFavorites, toggleFavorite } from '#lib/favorites.js';
 	import { onMount } from 'svelte';
@@ -59,6 +60,8 @@
 	}
 
 	let tab = $state('products');
+	const productCount = $derived(savedItems.filter((i) => i.type === 'product').length);
+	const supplierCount = $derived(savedItems.filter((i) => i.type === 'supplier').length);
 	const filtered = $derived(tab === 'products' ? savedItems.filter((i) => i.type === 'product') : savedItems.filter((i) => i.type === 'supplier'));
 </script>
 
@@ -67,14 +70,12 @@
 </svelte:head>
 
 <div class="flex-1">
-	<div class="mb-2 flex gap-1">
-		<Button variant="ghost" size="sm" onclick={() => (tab = 'products')} class={`rounded-lg px-2 py-0.5 text-[11px] font-medium ${tab === 'products' ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
-			Products ({savedItems.filter((i) => i.type === 'product').length})
-		</Button>
-		<Button variant="ghost" size="sm" onclick={() => (tab = 'suppliers')} class={`rounded-lg px-2 py-0.5 text-[11px] font-medium ${tab === 'suppliers' ? 'bg-primary/10 text-primary' : 'text-muted-foreground'}`}>
-			Suppliers ({savedItems.filter((i) => i.type === 'supplier').length})
-		</Button>
-	</div>
+	<Tabs bind:value={tab} class="mb-3">
+		<TabsList variant="line">
+			<TabsTrigger value="products">Products <span class="ml-1 opacity-70">({productCount})</span></TabsTrigger>
+			<TabsTrigger value="suppliers">Suppliers <span class="ml-1 opacity-70">({supplierCount})</span></TabsTrigger>
+		</TabsList>
+	</Tabs>
 
 	{#if filtered.length === 0}
 		<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
@@ -82,24 +83,32 @@
 			<p class="mt-2 text-[11px] text-muted-foreground">No saved items yet.</p>
 		</div>
 	{:else}
-		<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as item (item.slug)}
-				<a href={item.href} class="group rounded-xl bg-card p-2 ring-1 ring-foreground/10 transition-all hover:shadow-md">
-					<div class="mb-1 h-16 rounded bg-muted flex items-center justify-center text-muted-foreground/30">
-						<Box class="size-6"></Box>
-					</div>
-					<div class="flex items-center gap-0.5">
-						<Badge variant="secondary" class="px-1 text-[10px]">{item.badge}</Badge>
-					</div>
-					<h3 class="mb-0.5 mt-1 text-[10px] font-medium line-clamp-2 group-hover:text-primary transition-colors">{item.name}</h3>
-					{#if item.price}
-						<div class="flex items-baseline gap-0.5">
-							<span class="text-[10px] font-bold text-primary">{item.price}</span>
+				<article class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md">
+					<a href={item.href} class="block">
+						<div class="mb-2 flex h-20 items-center justify-center rounded-md bg-muted text-muted-foreground/30">
+							<Box class="size-6"></Box>
 						</div>
-					{/if}
-				<p class="mt-0.5 text-[9px] text-muted-foreground">{item.subtitle}</p>
-				<Button variant="ghost" size="sm" class="mt-0.5 h-auto p-0 text-[10px] text-muted-foreground hover:underline" onclick={(e) => { e.preventDefault(); removeFavorite(item.slug); }}>Remove</Button>
-				</a>
+						<Badge variant="secondary" class="px-1.5 text-[10px]">{item.badge}</Badge>
+						<h3 class="mt-1.5 line-clamp-2 text-xs font-medium transition-colors group-hover:text-primary">{item.name}</h3>
+						{#if item.price}
+							<p class="mt-1 text-xs font-bold text-primary">{item.price}</p>
+						{/if}
+						<p class="mt-0.5 line-clamp-1 text-[10px] text-muted-foreground">{item.subtitle}</p>
+					</a>
+					<Button
+						variant="ghost"
+						size="sm"
+						class="absolute top-2 right-2 h-6 px-1.5 text-[10px] text-muted-foreground opacity-0 transition-opacity hover:bg-transparent hover:text-destructive group-hover:opacity-100"
+						onclick={(e) => {
+							e.preventDefault();
+							removeFavorite(item.slug);
+						}}
+					>
+						Remove
+					</Button>
+				</article>
 			{/each}
 		</div>
 	{/if}

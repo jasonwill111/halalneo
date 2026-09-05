@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
+	import { cn } from '#lib/utils.js';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import Package from '@lucide/svelte/icons/package';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -16,14 +17,28 @@
 	const statusTabs = ['All', 'Active', 'Pending', 'Closed'];
 	let activeTab = $state('All');
 
+	const statusOptions = $derived(
+		statusTabs.map((s) => ({
+			value: s,
+			label: s,
+			count: s === 'All' ? inquiries.length : inquiries.filter((i) => i.status === s).length
+		}))
+	);
+
 	const filtered = $derived(
 		activeTab === 'All' ? inquiries : inquiries.filter((i) => i.status === activeTab)
 	);
 
-	function statusColor(status: string): string {
-		if (status === 'Active') return 'border-l-success bg-success/10 text-success';
-		if (status === 'Pending') return 'border-l-primary bg-primary/10 text-primary';
-		return 'border-l-muted bg-muted/30 text-muted-foreground';
+	function statusBorder(status: string): string {
+		if (status === 'Active') return 'border-l-success';
+		if (status === 'Pending') return 'border-l-primary';
+		return 'border-l-muted';
+	}
+
+	function statusIconBg(status: string): string {
+		if (status === 'Active') return 'bg-success/10 text-success';
+		if (status === 'Pending') return 'bg-primary/10 text-primary';
+		return 'bg-muted text-muted-foreground';
 	}
 
 	function badgeColor(status: string): string {
@@ -36,33 +51,19 @@
 </svelte:head>
 
 <div class="flex-1 min-w-0">
-	<div class="flex items-center justify-between mb-2">
+	<div class="mb-2 flex items-center justify-between">
 		<div>
 			<h2 class="text-sm font-bold text-foreground">My Inquiries</h2>
 			<p class="text-[10px] text-muted-foreground">{inquiries.length} total inquiries</p>
 		</div>
-		<Select type="single">
-			<SelectTrigger class="h-7 w-[100px] text-[10px]">
-				All Status
-			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="all">All Status</SelectItem>
-				<SelectItem value="active">Active</SelectItem>
-				<SelectItem value="pending">Pending</SelectItem>
-				<SelectItem value="closed">Closed</SelectItem>
-			</SelectContent>
-		</Select>
 	</div>
 
-	<div class="mb-2 flex gap-1">
-		{#each statusTabs as tab}
-			<button
-				onclick={() => (activeTab = tab)}
-				class={`rounded-full px-2 py-0.5 text-[10px] font-medium transition-colors ${activeTab === tab ? 'bg-primary text-primary-foreground' : 'border border-border bg-card text-muted-foreground hover:bg-accent'}`}
-			>
-				{tab} ({tab === 'All' ? inquiries.length : inquiries.filter((i) => i.status === tab).length})
-			</button>
-		{/each}
+	<div class="mb-2">
+		<FilterPills
+			options={statusOptions}
+			bind:value={activeTab}
+			ariaLabel="Filter inquiries by status"
+		/>
 	</div>
 
 	{#if filtered.length === 0}
@@ -73,9 +74,9 @@
 	{:else}
 		<div class="space-y-1.5">
 			{#each filtered as item}
-				<div class={`group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-all hover:border-primary/20 hover:shadow-md ${statusColor(item.status).split(' ')[0]}`}>
+				<div class={cn('group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-all hover:border-primary/20 hover:shadow-md', statusBorder(item.status))}>
 					<div class="flex items-start gap-2">
-						<div class={`flex size-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold ${statusColor(item.status).split(' ').slice(1).join(' ')}`}>
+						<div class={cn('flex size-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold', statusIconBg(item.status))}>
 							<Package class="size-4"></Package>
 						</div>
 						<div class="min-w-0 flex-1">
