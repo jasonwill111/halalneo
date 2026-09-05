@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
 import { marketGuides as dbMarketGuides } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
-import { cachedQuery, cacheMedium } from '#lib/server/cache.js';
+import { cachedQuery, cacheMedium, invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 import { marketGuides as staticMarketGuides } from '#lib/data/market-guides.js';
 
@@ -85,6 +85,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 			updatedAt: now
 		} as any;
 		const [row] = await db.insert(dbMarketGuides).values(values).returning();
+		await invalidateCache('/api/market-guides');
 		return json(row, { status: 201 });
 	} catch (e: any) {
 		if (e?.message?.includes('UNIQUE constraint')) {

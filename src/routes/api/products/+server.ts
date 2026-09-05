@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { products } from '#lib/server/db/schema.js';
-import { cachedQuery, cacheMedium } from '#lib/server/cache.js';
+import { cachedQuery, cacheMedium, invalidateCache } from '#lib/server/cache.js';
 import { getProductListItems, getProducts } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
@@ -57,6 +57,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 
 	try {
 		const [row] = await db.insert(products).values(body as any).returning();
+		await invalidateCache('/api/products');
 		return json(row, { status: 201 });
 	} catch (e: any) {
 		if (e?.message?.includes('UNIQUE constraint')) {
