@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Icon from '#lib/components/site/icon.svelte';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import { reveal } from '#lib/actions/reveal.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -11,25 +12,23 @@
 		CardTitle,
 		CardDescription
 	} from '#lib/components/ui/card/index.js';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import Search from '@lucide/svelte/icons/search';
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 	import Calculator from '@lucide/svelte/icons/calculator';
+	import Globe from '@lucide/svelte/icons/globe';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import Briefcase from '@lucide/svelte/icons/briefcase';
+	import Newspaper from '@lucide/svelte/icons/newspaper';
 	import SectionHead from '#lib/components/site/section-head.svelte';
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
 
-	const categoryColors = [
-		'bg-info/10 text-info',
-		'bg-warn/10 text-warn',
-		'bg-success/10 text-success',
-		'bg-accent-purple/10 text-accent-purple',
-		'bg-accent-rose/10 text-accent-rose',
-		'bg-primary/10 text-primary'
-	];
+	const categoryColors = TILE_COLORS;
 
 	const slides = [
 		{
@@ -195,30 +194,10 @@
 
 <!-- STATS -->
 <section class="flex gap-1 sm:gap-2 lg:grid lg:grid-cols-4">
-	<div
-		class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:px-3 sm:py-3"
-	>
-		<div class="text-base font-bold text-info sm:text-2xl">{data.stats.kbSections}</div>
-		<div class="truncate text-[10px] text-muted-foreground sm:text-xs">KB sections</div>
-	</div>
-	<div
-		class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:px-3 sm:py-3"
-	>
-		<div class="text-base font-bold text-warn sm:text-2xl">{data.stats.glossaryTerms}</div>
-		<div class="truncate text-[10px] text-muted-foreground sm:text-xs">Glossary</div>
-	</div>
-	<div
-		class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:px-3 sm:py-3"
-	>
-		<div class="text-base font-bold text-success sm:text-2xl">14+</div>
-		<div class="truncate text-[10px] text-muted-foreground sm:text-xs">Certifiers</div>
-	</div>
-	<div
-		class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:px-3 sm:py-3"
-	>
-		<div class="text-base font-bold text-accent-purple sm:text-2xl">7</div>
-		<div class="truncate text-[10px] text-muted-foreground sm:text-xs">Guides</div>
-	</div>
+	<StatTile value={data.stats.kbSections} label="KB sections" tone="info" />
+	<StatTile value={data.stats.glossaryTerms} label="Glossary" tone="warn" />
+	<StatTile value="14+" label="Certifiers" tone="success" />
+	<StatTile value="7" label="Guides" tone="accent-purple" />
 </section>
 
 <!-- TOOLS -->
@@ -378,74 +357,29 @@
 		description="Market guides, trade shows, consultants and insights."
 	/>
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-		<a
-			href={localizeHref('/market-guides')}
-			class="group flex items-center gap-2.5 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
-		>
-			<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
-				<Icon name="globe" class="size-4.5" />
-			</div>
-			<div class="min-w-0">
-				<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Market guides
-				</h3>
-				<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
-					Country-by-country entry requirements
-				</p>
-			</div>
-		</a>
-		<a
-			href={localizeHref('/trade-shows')}
-			class="group flex items-center gap-2.5 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
-		>
-			<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-warn/10 text-warn">
-				<Icon name="calendar" class="size-4.5" />
-			</div>
-			<div class="min-w-0">
-				<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Trade shows
-				</h3>
-				<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
-					Global halal exhibitions & events
-				</p>
-			</div>
-		</a>
-		<a
-			href={localizeHref('/service-providers')}
-			class="group flex items-center gap-2.5 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
-		>
-			<div
-				class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent-purple/10 text-accent-purple"
+		{#each [
+			{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' },
+			{ href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' },
+			{ href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'accent-purple' },
+			{ href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'accent-rose' }
+		] as item (item.href)}
+			<a
+				href={localizeHref(item.href)}
+				class="group flex items-center gap-2.5 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
 			>
-				<Icon name="briefcase" class="size-4.5" />
-			</div>
-			<div class="min-w-0">
-				<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Service providers
-				</h3>
-				<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
-					Certification consultants & labs
-				</p>
-			</div>
-		</a>
-		<a
-			href={localizeHref('/blog')}
-			class="group flex items-center gap-2.5 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
-		>
-			<div
-				class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent-rose/10 text-accent-rose"
-			>
-				<Icon name="newspaper" class="size-4.5" />
-			</div>
-			<div class="min-w-0">
-				<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Blog
-				</h3>
-				<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
-					Industry insights & announcements
-				</p>
-			</div>
-		</a>
+				<div class={`flex size-9 shrink-0 items-center justify-center rounded-lg bg-${item.tone}/10 text-${item.tone}`}>
+					<item.icon class="size-4.5" />
+				</div>
+				<div class="min-w-0">
+					<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+						{item.label}
+					</h3>
+					<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
+						{item.desc}
+					</p>
+				</div>
+			</a>
+		{/each}
 	</div>
 </section>
 

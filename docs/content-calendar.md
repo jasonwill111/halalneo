@@ -55,15 +55,13 @@ Every news post doubles as a backlink outreach hook (see week notes).
 1. Every post cross-links ≥1 market guide + ≥1 certifying body (internal link graph).
 2. Every post gets 3–5 tags from the controlled list; new tags need glossary entry.
 3. News posts publish within 72h of the regulatory event; analysis posts anytime.
-4. After publish: share via on-page ShareButtons, submit URL to GSC + Bing
-   Webmaster (manual — needs owner account), post to LinkedIn company page.
+4. After publish: share via on-page ShareButtons, submit URL to GSC
+   (manual — needs owner account), post to LinkedIn company page.
 5. Glossary +1 term per week minimum, drawn from that week's post vocabulary.
 
 ## Backlink operations (owner — requires human accounts)
 
 - [ ] Google Search Console: verify domain, submit sitemap.xml, request indexing on new posts
-- [ ] Bing Webmaster Tools: same
-- [ ] Product Hunt / Crunchbase / startup directories: list HalalNeo (one-time)
 - [ ] HARO / journalist queries on halal trade: respond as HalalNeo Editorial (ongoing)
 - [ ] Guest post swaps with certification consultants (each news post = pitch asset)
 - [ ] Wikipedia: cite market-guide data on halal certification pages where eligible (editor review, no spam)
