@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		adminData,
-		upsertItem,
-		deleteItem
-	} from '#lib/stores/admin-data.svelte.js';
+	import { adminData, upsertItem, deleteItem } from '#lib/stores/admin-data.svelte.js';
 	import type { Page } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -38,6 +34,7 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -82,11 +79,7 @@
 	const filtered = $derived.by(() => {
 		if (!search.trim()) return pages;
 		const q = search.toLowerCase();
-		return pages.filter(
-			(p) =>
-				p.title.toLowerCase().includes(q) ||
-				p.slug.includes(q)
-		);
+		return pages.filter((p) => p.title.toLowerCase().includes(q) || p.slug.includes(q));
 	});
 
 	function slugify(s: string): string {
@@ -172,8 +165,14 @@
 		const points = form.keyPoints || 'quality products, competitive pricing, reliable delivery';
 		const cta = form.cta || 'Get Started Today';
 		const region = form.targetRegion || 'global';
-		form.excerpt = form.excerpt || `${form.title} — tailored for ${audience} in the ${region} market.`;
-		form.body = `## ${form.title}\n\n### Hero Section\n\n**Headline:** ${form.title}\n**Subheadline:** ${form.excerpt}\n**CTA:** ${cta}\n\n---\n\n### Key Benefits\n\n${points.split(',').map((p: string) => `- **${p.trim()}** — Why this matters for ${audience}`).join('\n')}\n\n---\n\n### Why Choose Us\n\n[Expand on unique value proposition for ${region} market]\n\n---\n\n### How It Works\n\n1. **Step One** — [Describe first step]\n2. **Step Two** — [Describe second step]\n3. **Step Three** — [Describe third step]\n\n---\n\n### Testimonials\n\n> "[Add customer quote for ${region} market]"\n> — Customer Name, Company\n\n---\n\n### FAQ\n\n**Q: [Common question for ${audience}?]**\nA: [Answer addressing the concern]\n\n**Q: [Another question?]**\nA: [Answer]\n\n---\n\n### ${cta}\n\n[Final CTA section with contact/registration link]\n\n---\n\n*Target Region: ${region} | Audience: ${audience}*`;
+		form.excerpt =
+			form.excerpt || `${form.title} — tailored for ${audience} in the ${region} market.`;
+		form.body = `## ${form.title}\n\n### Hero Section\n\n**Headline:** ${form.title}\n**Subheadline:** ${form.excerpt}\n**CTA:** ${cta}\n\n---\n\n### Key Benefits\n\n${points
+			.split(',')
+			.map((p: string) => `- **${p.trim()}** — Why this matters for ${audience}`)
+			.join(
+				'\n'
+			)}\n\n---\n\n### Why Choose Us\n\n[Expand on unique value proposition for ${region} market]\n\n---\n\n### How It Works\n\n1. **Step One** — [Describe first step]\n2. **Step Two** — [Describe second step]\n3. **Step Three** — [Describe third step]\n\n---\n\n### Testimonials\n\n> "[Add customer quote for ${region} market]"\n> — Customer Name, Company\n\n---\n\n### FAQ\n\n**Q: [Common question for ${audience}?]**\nA: [Answer addressing the concern]\n\n**Q: [Another question?]**\nA: [Answer]\n\n---\n\n### ${cta}\n\n[Final CTA section with contact/registration link]\n\n---\n\n*Target Region: ${region} | Audience: ${audience}*`;
 		aiLoading = false;
 	}
 </script>
@@ -187,9 +186,7 @@
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
 			<h1 class="text-3xl font-semibold tracking-tight">Pages</h1>
-			<p class="max-w-2xl text-sm text-muted-foreground">
-				Manage landing pages and blog content.
-			</p>
+			<p class="max-w-2xl text-sm text-muted-foreground">Manage landing pages and blog content.</p>
 		</div>
 		<Button variant="default" size="sm" onclick={openCreate}>
 			<Plus class="size-4"></Plus>
@@ -198,23 +195,22 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search pages..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Pages</p>
-			<p class="text-xl font-bold">{pages.length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Published</p>
-			<p class="text-xl font-bold">{pages.length > 0 ? Math.round((published / pages.length) * 100) : 0}%</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Views</p>
-			<p class="text-xl font-bold">{pages.reduce((sum, p) => sum + (p.views ?? 0), 0).toLocaleString()}</p>
-		</div>
+	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<StatTile value={pages.length} label="Total Pages" />
+		<StatTile
+			value={`${pages.length > 0 ? Math.round((published / pages.length) * 100) : 0}%`}
+			label="Published"
+		/>
+		<StatTile
+			value={pages.reduce((sum, p) => sum + (p.views ?? 0), 0).toLocaleString()}
+			label="Total Views"
+		/>
 	</div>
 
 	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
@@ -239,12 +235,21 @@
 						</TableCell>
 						<TableCell>{typeLabel(p.type)}</TableCell>
 						<TableCell>
-							<Badge variant={p.status === 'published' ? 'default' : 'secondary'} class="capitalize text-[10px]">{p.status}</Badge>
+							<Badge
+								variant={p.status === 'published' ? 'default' : 'secondary'}
+								class="text-[10px] capitalize">{p.status}</Badge
+							>
 						</TableCell>
 						<TableCell class="text-muted-foreground">{(p.views ?? 0).toLocaleString()}</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
-								<Button variant="ghost" size="icon" aria-label="Edit" class="size-8" onclick={() => openEdit(p)}>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="Edit"
+									class="size-8"
+									onclick={() => openEdit(p)}
+								>
 									<Pencil class="size-3.5"></Pencil>
 								</Button>
 								<Button
@@ -275,9 +280,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit page' : 'New page'}</DialogTitle>
-			<DialogDescription>
-				Create or update a page in the site.
-			</DialogDescription>
+			<DialogDescription>Create or update a page in the site.</DialogDescription>
 		</DialogHeader>
 
 		<div class="flex flex-col gap-4">
@@ -328,8 +331,10 @@
 			</Field.Field>
 
 			{#if form.type === 'landing'}
-				<div class="rounded-lg border border-dashed border-border p-4 space-y-3">
-					<p class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Landing Page Settings</p>
+				<div class="space-y-3 rounded-lg border border-dashed border-border p-4">
+					<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+						Landing Page Settings
+					</p>
 					<div class="grid grid-cols-2 gap-3">
 						<Field.Field>
 							<Field.FieldLabel>Target Audience</Field.FieldLabel>
@@ -337,12 +342,18 @@
 						</Field.Field>
 						<Field.Field>
 							<Field.FieldLabel>Target Region</Field.FieldLabel>
-							<Input bind:value={form.targetRegion} placeholder="e.g. Middle East, Southeast Asia" />
+							<Input
+								bind:value={form.targetRegion}
+								placeholder="e.g. Middle East, Southeast Asia"
+							/>
 						</Field.Field>
 					</div>
 					<Field.Field>
 						<Field.FieldLabel>Key Selling Points</Field.FieldLabel>
-						<Input bind:value={form.keyPoints} placeholder="Comma separated: quality, certification, delivery" />
+						<Input
+							bind:value={form.keyPoints}
+							placeholder="Comma separated: quality, certification, delivery"
+						/>
 					</Field.Field>
 					<Field.Field>
 						<Field.FieldLabel>Call to Action</Field.FieldLabel>
@@ -355,7 +366,13 @@
 				<div class="flex items-center justify-between">
 					<Field.FieldLabel>Body</Field.FieldLabel>
 					{#if form.type === 'landing'}
-						<Button variant="outline" size="sm" type="button" onclick={generateLandingPage} disabled={aiLoading || !form.title.trim()}>
+						<Button
+							variant="outline"
+							size="sm"
+							type="button"
+							onclick={generateLandingPage}
+							disabled={aiLoading || !form.title.trim()}
+						>
 							<Sparkles class="size-3.5" />
 							{aiLoading ? 'Generating...' : 'Generate Landing Page'}
 						</Button>

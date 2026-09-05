@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		adminData,
-		upsertItem,
-		deleteItem
-	} from '#lib/stores/admin-data.svelte.js';
+	import { adminData, upsertItem, deleteItem } from '#lib/stores/admin-data.svelte.js';
 	import type { MarketGuide } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -37,8 +33,8 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -300,23 +296,19 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search guides..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Guides</p>
-			<p class="text-xl font-bold">{guides.length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Active</p>
-			<p class="text-xl font-bold">{guides.filter((g) => g.status === 'active').length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Mandatory Markets</p>
-			<p class="text-xl font-bold">{guides.filter((g) => g.mandateStatus === 'mandatory').length}</p>
-		</div>
+	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<StatTile value={guides.length} label="Total Guides" />
+		<StatTile value={guides.filter((g) => g.status === 'active').length} label="Active" />
+		<StatTile
+			value={guides.filter((g) => g.mandateStatus === 'mandatory').length}
+			label="Mandatory Markets"
+		/>
 	</div>
 
 	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
@@ -344,11 +336,21 @@
 						<TableCell class="capitalize">{g.mandateStatus ?? '—'}</TableCell>
 						<TableCell>{g.marketSizeUsd ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(g.status ?? 'active')}`}>{g.status ?? 'active'}</Badge>
+							<Badge
+								variant="secondary"
+								class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(g.status ?? 'active')}`}
+								>{g.status ?? 'active'}</Badge
+							>
 						</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
-								<Button variant="ghost" size="icon" aria-label="Edit" class="size-8" onclick={() => openEdit(g)}>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="Edit"
+									class="size-8"
+									onclick={() => openEdit(g)}
+								>
 									<Pencil class="size-3.5"></Pencil>
 								</Button>
 								<Button
@@ -379,9 +381,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit market guide' : 'New market guide'}</DialogTitle>
-			<DialogDescription>
-				Create or update a country market guide.
-			</DialogDescription>
+			<DialogDescription>Create or update a country market guide.</DialogDescription>
 		</DialogHeader>
 
 		<div class="flex flex-col gap-4">
@@ -453,152 +453,120 @@
 			</Field.Field>
 
 			<!-- ===================== MARKET DATA (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (marketExpanded = !marketExpanded)}
-			>
-				{#if marketExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Market Data
-			</button>
-
-			{#if marketExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Muslim Population</Field.FieldLabel>
-							<Input bind:value={form.muslimPopulation} placeholder="~230 million" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Total Population</Field.FieldLabel>
-							<Input bind:value={form.totalPopulation} placeholder="~275 million" />
-						</Field.Field>
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Market Size (USD)</Field.FieldLabel>
-							<Input bind:value={form.marketSizeUsd} placeholder="$220B+" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Mandatory Since</Field.FieldLabel>
-							<Input bind:value={form.mandatorySince} placeholder="October 2024" />
-						</Field.Field>
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Estimated Cost (USD)</Field.FieldLabel>
-							<Input bind:value={form.estimatedCostUsd} placeholder="$500–$2,000" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Processing Time</Field.FieldLabel>
-							<Input bind:value={form.processingTime} placeholder="3–6 months" />
-						</Field.Field>
-					</div>
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Certificate Validity</Field.FieldLabel>
-							<Input bind:value={form.certificateValidity} placeholder="4 years" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Standard Basis</Field.FieldLabel>
-							<Input bind:value={form.standardBasis} placeholder="HAS 23000" />
-						</Field.Field>
-					</div>
+			<CollapsibleSection title="Market Data" bind:open={marketExpanded}>
+				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
-						<Field.FieldLabel>Certifying Bodies (JSON)</Field.FieldLabel>
-						<Textarea bind:value={form.certifyingBodiesJson} rows={3} placeholder={'[{"slug":"bpjph","name":"BPJPH"}]'} />
+						<Field.FieldLabel>Muslim Population</Field.FieldLabel>
+						<Input bind:value={form.muslimPopulation} placeholder="~230 million" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Total Population</Field.FieldLabel>
+						<Input bind:value={form.totalPopulation} placeholder="~275 million" />
 					</Field.Field>
 				</div>
-			{/if}
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>Market Size (USD)</Field.FieldLabel>
+						<Input bind:value={form.marketSizeUsd} placeholder="$220B+" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Mandatory Since</Field.FieldLabel>
+						<Input bind:value={form.mandatorySince} placeholder="October 2024" />
+					</Field.Field>
+				</div>
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>Estimated Cost (USD)</Field.FieldLabel>
+						<Input bind:value={form.estimatedCostUsd} placeholder="$500–$2,000" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Processing Time</Field.FieldLabel>
+						<Input bind:value={form.processingTime} placeholder="3–6 months" />
+					</Field.Field>
+				</div>
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>Certificate Validity</Field.FieldLabel>
+						<Input bind:value={form.certificateValidity} placeholder="4 years" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Standard Basis</Field.FieldLabel>
+						<Input bind:value={form.standardBasis} placeholder="HAS 23000" />
+					</Field.Field>
+				</div>
+				<Field.Field>
+					<Field.FieldLabel>Certifying Bodies (JSON)</Field.FieldLabel>
+					<Textarea
+						bind:value={form.certifyingBodiesJson}
+						rows={3}
+						placeholder={'[{"slug":"bpjph","name":"BPJPH"}]'}
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 
 			<!-- ===================== REQUIREMENTS (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (requirementsExpanded = !requirementsExpanded)}
-			>
-				{#if requirementsExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Import Requirements
-			</button>
-
-			{#if requirementsExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Import Requirements (comma-separated)</Field.FieldLabel>
-						<Textarea bind:value={form.importRequirements} rows={3} placeholder="Halal certificate, Labeling in local language, ..." />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="Import Requirements" bind:open={requirementsExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Import Requirements (comma-separated)</Field.FieldLabel>
+					<Textarea
+						bind:value={form.importRequirements}
+						rows={3}
+						placeholder="Halal certificate, Labeling in local language, ..."
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 
 			<!-- ===================== INSIGHTS (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (insightsExpanded = !insightsExpanded)}
-			>
-				{#if insightsExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Insights, Opportunities & Challenges
-			</button>
-
-			{#if insightsExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Key Insights (comma-separated)</Field.FieldLabel>
-						<Textarea bind:value={form.keyInsights} rows={2} placeholder="Largest Muslim population, ..." />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Opportunities (comma-separated)</Field.FieldLabel>
-						<Textarea bind:value={form.opportunities} rows={2} placeholder="Growing middle class, ..." />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Challenges (comma-separated)</Field.FieldLabel>
-						<Textarea bind:value={form.challenges} rows={2} placeholder="Complex regulations, ..." />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="Insights, Opportunities & Challenges" bind:open={insightsExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Key Insights (comma-separated)</Field.FieldLabel>
+					<Textarea
+						bind:value={form.keyInsights}
+						rows={2}
+						placeholder="Largest Muslim population, ..."
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Opportunities (comma-separated)</Field.FieldLabel>
+					<Textarea
+						bind:value={form.opportunities}
+						rows={2}
+						placeholder="Growing middle class, ..."
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Challenges (comma-separated)</Field.FieldLabel>
+					<Textarea bind:value={form.challenges} rows={2} placeholder="Complex regulations, ..." />
+				</Field.Field>
+			</CollapsibleSection>
 
 			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (seoExpanded = !seoExpanded)}
-			>
-				{#if seoExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				SEO & Metadata
-			</button>
-
-			{#if seoExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Meta Title</Field.FieldLabel>
-						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Meta Description</Field.FieldLabel>
-						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Keywords</Field.FieldLabel>
-						<Input bind:value={form.keywords} placeholder="Comma separated: halal, indonesia, certification" />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="SEO & Metadata" bind:open={seoExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Meta Title</Field.FieldLabel>
+					<Input
+						bind:value={form.metaTitle}
+						maxlength={60}
+						placeholder="SEO page title (max 60 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Meta Description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.metaDescription}
+						maxlength={160}
+						rows={2}
+						placeholder="SEO description (max 160 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Keywords</Field.FieldLabel>
+					<Input
+						bind:value={form.keywords}
+						placeholder="Comma separated: halal, indonesia, certification"
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 		</div>
 
 		{#if formError}

@@ -38,6 +38,7 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -67,12 +68,8 @@
 		status: 'draft'
 	});
 
-	const blogPosts = $derived(
-		(adminData.pages ?? []).filter((p) => p.type === 'blog')
-	);
-	const published = $derived(
-		blogPosts.filter((p) => p.status === 'published').length
-	);
+	const blogPosts = $derived((adminData.pages ?? []).filter((p) => p.type === 'blog'));
+	const published = $derived(blogPosts.filter((p) => p.status === 'published').length);
 
 	const filtered = $derived.by(() => {
 		if (!search.trim()) return blogPosts;
@@ -190,25 +187,16 @@
 		</div>
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Posts</p>
-			<p class="text-xl font-bold">{blogPosts.length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Published</p>
-			<p class="text-xl font-bold">
-				{blogPosts.length > 0
-					? Math.round((published / blogPosts.length) * 100)
-					: 0}%
-			</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Views</p>
-			<p class="text-xl font-bold">
-				{blogPosts.reduce((sum, p) => sum + (p.views ?? 0), 0).toLocaleString()}
-			</p>
-		</div>
+	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<StatTile value={blogPosts.length} label="Total Posts" />
+		<StatTile
+			value={`${blogPosts.length > 0 ? Math.round((published / blogPosts.length) * 100) : 0}%`}
+			label="Published"
+		/>
+		<StatTile
+			value={blogPosts.reduce((sum, p) => sum + (p.views ?? 0), 0).toLocaleString()}
+			label="Total Views"
+		/>
 	</div>
 
 	<div class="relative max-w-sm">
@@ -239,9 +227,7 @@
 								<p class="truncate text-xs text-muted-foreground">{p.slug}</p>
 							</div>
 						</TableCell>
-						<TableCell class="text-sm text-muted-foreground"
-							>{p.author ?? '—'}</TableCell
-						>
+						<TableCell class="text-sm text-muted-foreground">{p.author ?? '—'}</TableCell>
 						<TableCell>
 							<div class="flex flex-wrap gap-1">
 								{#each (p.tags ?? []).slice(0, 3) as tag (tag)}
@@ -250,14 +236,21 @@
 							</div>
 						</TableCell>
 						<TableCell>
-							<Badge variant={p.status === 'published' ? 'default' : 'secondary'} class="capitalize text-[10px]">{p.status}</Badge>
+							<Badge
+								variant={p.status === 'published' ? 'default' : 'secondary'}
+								class="text-[10px] capitalize">{p.status}</Badge
+							>
 						</TableCell>
-						<TableCell class="text-muted-foreground"
-							>{(p.views ?? 0).toLocaleString()}</TableCell
-						>
+						<TableCell class="text-muted-foreground">{(p.views ?? 0).toLocaleString()}</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
-								<Button variant="ghost" size="icon" aria-label="Edit" class="size-8" onclick={() => openEdit(p)}>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="Edit"
+									class="size-8"
+									onclick={() => openEdit(p)}
+								>
 									<Pencil class="size-3.5"></Pencil>
 								</Button>
 								<Button
@@ -331,7 +324,13 @@
 			<Field.Field>
 				<div class="flex items-center justify-between">
 					<Field.FieldLabel>Body</Field.FieldLabel>
-					<Button variant="outline" size="sm" type="button" onclick={generateBlogBody} disabled={aiLoading || !form.title.trim()}>
+					<Button
+						variant="outline"
+						size="sm"
+						type="button"
+						onclick={generateBlogBody}
+						disabled={aiLoading || !form.title.trim()}
+					>
 						<Sparkles class="size-3.5" />
 						{aiLoading ? 'Generating...' : 'Generate with AI'}
 					</Button>
@@ -345,7 +344,9 @@
 		</div>
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create blog post'}</Button>
+			<Button variant="default" onclick={save}
+				>{editing ? 'Save changes' : 'Create blog post'}</Button
+			>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

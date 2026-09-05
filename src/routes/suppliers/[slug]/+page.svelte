@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import {
 		Dialog,
 		DialogContent,
@@ -17,35 +19,25 @@
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import Send from '@lucide/svelte/icons/send';
 	import Heart from '@lucide/svelte/icons/heart';
-	import Share2 from '@lucide/svelte/icons/share-2';
 	import Star from '@lucide/svelte/icons/star';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
+	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
 
 	let { data } = $props();
 
-	// Save/favorite state
+	// Save/favorite state — uses shared favorites util (same store as products)
 	let saved = $state(false);
 
 	function toggleSave() {
 		if (!data.item?.slug) return;
-		const favorites = JSON.parse(localStorage.getItem('saved_suppliers') || '[]');
-		const idx = favorites.indexOf(data.item.slug);
-		if (idx > -1) {
-			favorites.splice(idx, 1);
-			saved = false;
-		} else {
-			favorites.push(data.item.slug);
-			saved = true;
-		}
-		localStorage.setItem('saved_suppliers', JSON.stringify(favorites));
+		saved = toggleFavorite(data.item.slug);
 	}
 
 	// Initialize saved state from localStorage
 	$effect(() => {
 		if (data.item?.slug) {
-			const favorites = JSON.parse(localStorage.getItem('saved_suppliers') || '[]');
-			saved = favorites.includes(data.item.slug);
+			saved = isFavorite(data.item.slug);
 		}
 	});
 
@@ -248,10 +240,6 @@
 				<Heart class="size-2.5" fill={saved ? 'currentColor' : 'none'}></Heart>
 				{saved ? 'Saved' : 'Save'}
 			</Button>
-			<Button variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]">
-				<Share2 class="size-2.5"></Share2>
-				Share
-			</Button>
 			<Button
 				size="sm"
 				class="h-7 flex-[2] text-[10px]"
@@ -265,26 +253,18 @@
 			</Button>
 		</div>
 
+		<!-- Share -->
+		<div class="mb-3 flex flex-wrap items-center gap-2">
+			<span class="text-[10px] text-muted-foreground">Share:</span>
+			<ShareButtons title={item.name ?? 'HalalNeo supplier'} text={item.description ?? ''} />
+		</div>
+
 		<!-- Stats row -->
-		<div class="mb-3 grid grid-cols-4 gap-1">
-			<div class="rounded-xl bg-card p-1.5 text-center ring-1 ring-foreground/10">
-				<div class="text-xs font-bold text-primary">{products.length}</div>
-				<div class="text-[10px] text-muted-foreground">Products</div>
-			</div>
-			<div class="rounded-xl bg-card p-1.5 text-center ring-1 ring-foreground/10">
-				<div class="text-xs font-bold text-primary">
-					{item.rating ?? 'N/A'}{item.rating ? '★' : ''}
-				</div>
-				<div class="text-[10px] text-muted-foreground">Rating</div>
-			</div>
-			<div class="rounded-xl bg-card p-1.5 text-center ring-1 ring-foreground/10">
-				<div class="text-xs font-bold text-primary">{item.mainMarkets?.length ?? '—'}</div>
-				<div class="text-[10px] text-muted-foreground">Markets</div>
-			</div>
-			<div class="rounded-xl bg-card p-1.5 text-center ring-1 ring-foreground/10">
-				<div class="text-xs font-bold text-primary">{item.yearEstablished ?? '—'}</div>
-				<div class="text-[10px] text-muted-foreground">Est.</div>
-			</div>
+		<div class="mb-3 grid grid-cols-2 gap-1 sm:grid-cols-4">
+			<StatTile value={products.length} label="Products" tone="primary" />
+			<StatTile value={item.rating ? `${item.rating}` : 'N/A'} label="Rating" tone="warn" />
+			<StatTile value={item.mainMarkets?.length ?? '—'} label="Markets" tone="info" />
+			<StatTile value={item.yearEstablished ?? '—'} label="Est." tone="success" />
 		</div>
 
 		<!-- About -->
@@ -412,15 +392,14 @@
 				<FieldLabel>Subject</FieldLabel>
 				<Input type="text" bind:value={inquirySubject} placeholder="Inquiry about products..." />
 			</Field>
-			<Field>
-				<FieldLabel>Message</FieldLabel>
-				<textarea
-					bind:value={inquiryMessage}
-					placeholder="I'm interested in..."
-					rows={4}
-					class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-				></textarea>
-			</Field>
+		<Field>
+			<FieldLabel>Message</FieldLabel>
+			<Textarea
+				bind:value={inquiryMessage}
+				placeholder="I'm interested in..."
+				rows={4}
+			/>
+		</Field>
 			<DialogFooter>
 				<Button
 					type="submit"

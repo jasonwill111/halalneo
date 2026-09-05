@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { deleteItem, adminData } from '#lib/stores/admin-data.svelte.js';
+	import { deleteItem } from '#lib/stores/admin-data.svelte.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { Tabs, TabsList, TabsTrigger, TabsContent } from '#lib/components/ui/tabs/index.js';
+	import { Tabs, TabsList, TabsTrigger } from '#lib/components/ui/tabs/index.js';
 	import {
 		Table,
 		TableBody,
@@ -17,7 +17,6 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import Eye from '@lucide/svelte/icons/eye';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import FolderOpen from '@lucide/svelte/icons/folder-open';
 	import BookOpen from '@lucide/svelte/icons/book-open';
@@ -95,14 +94,16 @@
 	</div>
 
 	{#if error}
-		<div class="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+		<div
+			class="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"
+		>
 			{error}
 		</div>
 	{/if}
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<div class="flex items-center justify-between mb-1">
+			<div class="mb-1 flex items-center justify-between">
 				<span class="text-[10px] text-muted-foreground">Total Articles</span>
 				<FileText class="size-4 text-muted-foreground"></FileText>
 			</div>
@@ -110,7 +111,7 @@
 			<div class="text-[10px] text-success">{publishedCount} published</div>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<div class="flex items-center justify-between mb-1">
+			<div class="mb-1 flex items-center justify-between">
 				<span class="text-[10px] text-muted-foreground">Sections</span>
 				<FolderOpen class="size-4 text-muted-foreground"></FolderOpen>
 			</div>
@@ -118,7 +119,7 @@
 			<div class="text-[10px] text-muted-foreground">active sections</div>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<div class="flex items-center justify-between mb-1">
+			<div class="mb-1 flex items-center justify-between">
 				<span class="text-[10px] text-muted-foreground">Drafts</span>
 				<BookOpen class="size-4 text-muted-foreground"></BookOpen>
 			</div>
@@ -126,7 +127,7 @@
 			<div class="text-[10px] text-muted-foreground">unpublished</div>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<div class="flex items-center justify-between mb-1">
+			<div class="mb-1 flex items-center justify-between">
 				<span class="text-[10px] text-muted-foreground">Total Views</span>
 				<BarChart3 class="size-4 text-muted-foreground"></BarChart3>
 			</div>
@@ -137,15 +138,27 @@
 
 	<Tabs value={activeTab} onValueChange={(v) => (activeTab = v as 'articles' | 'sections')}>
 		<TabsList>
-			<TabsTrigger value="articles">Articles <span class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary">{totalArticles}</span></TabsTrigger>
-			<TabsTrigger value="sections">Sections <span class="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{sections.length}</span></TabsTrigger>
+			<TabsTrigger value="articles"
+				>Articles <span
+					class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary"
+					>{totalArticles}</span
+				></TabsTrigger
+			>
+			<TabsTrigger value="sections"
+				>Sections <span
+					class="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
+					>{sections.length}</span
+				></TabsTrigger
+			>
 		</TabsList>
 	</Tabs>
 
 	{#if activeTab === 'articles'}
 		<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 			<div class="relative flex-1 sm:max-w-xs">
-				<Search class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></Search>
+				<Search
+					class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+				></Search>
 				<Input bind:value={search} placeholder="Search articles..." class="pl-8 text-[11px]" />
 			</div>
 		</div>
@@ -171,7 +184,11 @@
 							</TableCell>
 							<TableCell>
 								{#if article.section}
-									<span class="inline-flex rounded-md px-1.5 py-0.5 text-[10px] font-medium {sectionColor(article.section)}">
+									<span
+										class="inline-flex rounded-md px-1.5 py-0.5 text-[10px] font-medium {sectionColor(
+											article.section
+										)}"
+									>
 										{formatSection(article.section)}
 									</span>
 								{:else}
@@ -185,7 +202,7 @@
 										: article.status === 'draft'
 											? 'secondary'
 											: 'outline'}
-									class="capitalize text-[10px]"
+									class="text-[10px] capitalize"
 								>
 									{article.status ?? 'unknown'}
 								</Badge>
@@ -226,18 +243,20 @@
 	{:else}
 		<div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
 			{#each sections as section (section)}
-				<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 hover:shadow-md transition-shadow">
-					<div class="flex items-start justify-between mb-2">
+				<div
+					class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-shadow hover:shadow-md"
+				>
+					<div class="mb-2 flex items-start justify-between">
 						<div class="flex size-8 items-center justify-center rounded-lg {sectionColor(section)}">
 							<BookOpen class="size-4"></BookOpen>
 						</div>
 					</div>
 					<h3 class="text-[11px] font-semibold">{formatSection(section)}</h3>
-					<p class="text-[10px] text-muted-foreground mb-2">
+					<p class="mb-2 text-[10px] text-muted-foreground">
 						{articles.filter((a: any) => a.section === section).length} articles
 					</p>
 					<div class="flex items-center gap-2">
-						<span class="text-[10px] text-success font-medium">Active</span>
+						<span class="text-[10px] font-medium text-success">Active</span>
 					</div>
 				</div>
 			{/each}

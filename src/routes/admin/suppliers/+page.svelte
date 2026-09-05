@@ -40,8 +40,7 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -279,7 +278,10 @@
 			employeeCount: form.employeeCount.trim() || undefined,
 			productionCapacity: form.productionCapacity.trim() || undefined,
 			mainMarkets: form.mainMarkets
-				? form.mainMarkets.split(',').map((s) => s.trim()).filter(Boolean)
+				? form.mainMarkets
+						.split(',')
+						.map((s) => s.trim())
+						.filter(Boolean)
 				: undefined,
 			metaTitle: form.metaTitle.trim() || undefined,
 			metaDescription: form.metaDescription.trim() || undefined,
@@ -312,7 +314,7 @@
 				Reset to seed
 			</Button>
 			<Button variant="default" onclick={openCreate}>
-				<Plus data-icon="inline-start" />
+				<Plus class="size-4" />
 				New supplier
 			</Button>
 		</div>
@@ -353,9 +355,7 @@
 								</div>
 							</div>
 						</TableCell>
-						<TableCell
-							>{businessTypeLabels[m.businessType]}{m.isBrand ? ' · brand' : ''}</TableCell
-						>
+						<TableCell>{businessTypeLabels[m.businessType]}{m.isBrand ? ' · brand' : ''}</TableCell>
 						<TableCell>{m.country}</TableCell>
 						<TableCell>
 							<span class="text-sm text-muted-foreground">{m.certifications.length} certs</span>
@@ -397,225 +397,172 @@
 
 		<div class="flex flex-col gap-4">
 			<!-- ===================== BASIC INFO (always expanded) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (basicExpanded = !basicExpanded)}
-			>
-				{#if basicExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Basic Info
-			</button>
+			<CollapsibleSection title="Basic Info" bind:open={basicExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Name *</Field.FieldLabel>
+					<Input
+						value={form.name}
+						oninput={(e) => onNameInput((e.currentTarget as HTMLInputElement).value)}
+						placeholder="Company name"
+					/>
+				</Field.Field>
 
-			{#if basicExpanded}
-				<div class="flex flex-col gap-4 pl-6">
+				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
-						<Field.FieldLabel>Name *</Field.FieldLabel>
-						<Input
-							value={form.name}
-							oninput={(e) => onNameInput((e.currentTarget as HTMLInputElement).value)}
-							placeholder="Company name"
-						/>
+						<Field.FieldLabel>Slug</Field.FieldLabel>
+						<Input bind:value={form.slug} placeholder="company-name" disabled={!!editing} />
 					</Field.Field>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Slug</Field.FieldLabel>
-							<Input bind:value={form.slug} placeholder="company-name" disabled={!!editing} />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Country *</Field.FieldLabel>
-							<Input bind:value={form.country} placeholder="Indonesia" />
-						</Field.Field>
-					</div>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Business type</Field.FieldLabel>
-							<Select bind:value={form.businessType} type="single">
-								<SelectTrigger class="w-full">
-									{businessTypeLabels[form.businessType]}
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										{#each Object.entries(businessTypeLabels) as [value, label] (value)}
-											<SelectItem {value}>{label}</SelectItem>
-										{/each}
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Status</Field.FieldLabel>
-							<Select bind:value={form.status} type="single">
-								<SelectTrigger class="w-full">{form.status}</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectItem value="active">active</SelectItem>
-										<SelectItem value="pending">pending</SelectItem>
-										<SelectItem value="suspended">suspended</SelectItem>
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</Field.Field>
-					</div>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Year established</Field.FieldLabel>
-							<Input bind:value={form.yearEstablished} type="number" min="1900" max="2030" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Logo initials</Field.FieldLabel>
-							<Input bind:value={form.logoInitials} placeholder="NF" />
-						</Field.Field>
-					</div>
-
-					<Field.Field orientation="horizontal" class="flex-row items-center gap-3">
-						<Switch bind:checked={form.isBrand} />
-						<Field.FieldLabel class="font-normal">Brand (sells under own label)</Field.FieldLabel>
-					</Field.Field>
-
 					<Field.Field>
-						<Field.FieldLabel>Cover Image URL</Field.FieldLabel>
-						<Input bind:value={form.coverImage} placeholder="https://..." />
+						<Field.FieldLabel>Country *</Field.FieldLabel>
+						<Input bind:value={form.country} placeholder="Indonesia" />
 					</Field.Field>
 				</div>
-			{/if}
+
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>Business type</Field.FieldLabel>
+						<Select bind:value={form.businessType} type="single">
+							<SelectTrigger class="w-full">
+								{businessTypeLabels[form.businessType]}
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									{#each Object.entries(businessTypeLabels) as [value, label] (value)}
+										<SelectItem {value}>{label}</SelectItem>
+									{/each}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Status</Field.FieldLabel>
+						<Select bind:value={form.status} type="single">
+							<SelectTrigger class="w-full">{form.status}</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									<SelectItem value="active">active</SelectItem>
+									<SelectItem value="pending">pending</SelectItem>
+									<SelectItem value="suspended">suspended</SelectItem>
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</Field.Field>
+				</div>
+
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>Year established</Field.FieldLabel>
+						<Input bind:value={form.yearEstablished} type="number" min="1900" max="2030" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Logo initials</Field.FieldLabel>
+						<Input bind:value={form.logoInitials} placeholder="NF" />
+					</Field.Field>
+				</div>
+
+				<Field.Field orientation="horizontal" class="flex-row items-center gap-3">
+					<Switch bind:checked={form.isBrand} />
+					<Field.FieldLabel class="font-normal">Brand (sells under own label)</Field.FieldLabel>
+				</Field.Field>
+
+				<Field.Field>
+					<Field.FieldLabel>Cover Image URL</Field.FieldLabel>
+					<Input bind:value={form.coverImage} placeholder="https://..." />
+				</Field.Field>
+			</CollapsibleSection>
 
 			<!-- ===================== CONTACT DETAILS (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (contactExpanded = !contactExpanded)}
-			>
-				{#if contactExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Contact Details
-			</button>
+			<CollapsibleSection title="Contact Details" bind:open={contactExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Website</Field.FieldLabel>
+					<Input bind:value={form.website} placeholder="https://example.com" />
+				</Field.Field>
 
-			{#if contactExpanded}
-				<div class="flex flex-col gap-4 pl-6">
+				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
-						<Field.FieldLabel>Website</Field.FieldLabel>
-						<Input bind:value={form.website} placeholder="https://example.com" />
+						<Field.FieldLabel>Email</Field.FieldLabel>
+						<Input bind:value={form.email} type="email" placeholder="info@company.com" />
 					</Field.Field>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Email</Field.FieldLabel>
-							<Input bind:value={form.email} type="email" placeholder="info@company.com" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Phone</Field.FieldLabel>
-							<Input bind:value={form.phone} placeholder="+62 21 1234 5678" />
-						</Field.Field>
-					</div>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>WhatsApp</Field.FieldLabel>
-							<Input bind:value={form.whatsapp} placeholder="+62 812 3456 7890" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>LINE</Field.FieldLabel>
-							<Input bind:value={form.line} placeholder="@company_id" />
-						</Field.Field>
-					</div>
+					<Field.Field>
+						<Field.FieldLabel>Phone</Field.FieldLabel>
+						<Input bind:value={form.phone} placeholder="+62 21 1234 5678" />
+					</Field.Field>
 				</div>
-			{/if}
+
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>WhatsApp</Field.FieldLabel>
+						<Input bind:value={form.whatsapp} placeholder="+62 812 3456 7890" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>LINE</Field.FieldLabel>
+						<Input bind:value={form.line} placeholder="@company_id" />
+					</Field.Field>
+				</div>
+			</CollapsibleSection>
 
 			<!-- ===================== BUSINESS DETAILS (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (businessExpanded = !businessExpanded)}
-			>
-				{#if businessExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Business Details
-			</button>
-
-			{#if businessExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Employee count</Field.FieldLabel>
-							<Input bind:value={form.employeeCount} placeholder="50-100" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Production capacity</Field.FieldLabel>
-							<Input bind:value={form.productionCapacity} placeholder="10,000 units/month" />
-						</Field.Field>
-					</div>
-
+			<CollapsibleSection title="Business Details" bind:open={businessExpanded}>
+				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
-						<Field.FieldLabel>Main markets</Field.FieldLabel>
-						<Input bind:value={form.mainMarkets} placeholder="Indonesia, Malaysia, UAE" />
-						<Field.FieldDescription>Comma-separated list of countries.</Field.FieldDescription>
+						<Field.FieldLabel>Employee count</Field.FieldLabel>
+						<Input bind:value={form.employeeCount} placeholder="50-100" />
 					</Field.Field>
-
 					<Field.Field>
-						<div class="flex items-center justify-between">
-							<Field.FieldLabel>Description</Field.FieldLabel>
-							<Button
-								variant="outline"
-								size="sm"
-								onclick={generateDescription}
-								disabled={aiLoading}
-							>
-								<Sparkles data-icon="inline-start" />
-								{aiLoading ? 'Generating...' : 'Generate'}
-							</Button>
-						</div>
-						<Textarea bind:value={form.description} rows={4} placeholder="Company description..." />
+						<Field.FieldLabel>Production capacity</Field.FieldLabel>
+						<Input bind:value={form.productionCapacity} placeholder="10,000 units/month" />
 					</Field.Field>
 				</div>
-			{/if}
+
+				<Field.Field>
+					<Field.FieldLabel>Main markets</Field.FieldLabel>
+					<Input bind:value={form.mainMarkets} placeholder="Indonesia, Malaysia, UAE" />
+					<Field.FieldDescription>Comma-separated list of countries.</Field.FieldDescription>
+				</Field.Field>
+
+				<Field.Field>
+					<div class="flex items-center justify-between">
+						<Field.FieldLabel>Description</Field.FieldLabel>
+						<Button variant="outline" size="sm" onclick={generateDescription} disabled={aiLoading}>
+							<Sparkles class="size-3.5" />
+							{aiLoading ? 'Generating...' : 'Generate'}
+						</Button>
+					</div>
+					<Textarea bind:value={form.description} rows={4} placeholder="Company description..." />
+				</Field.Field>
+			</CollapsibleSection>
 
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
 
 			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (seoExpanded = !seoExpanded)}
-			>
-				{#if seoExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				SEO & Metadata
-			</button>
-
-			{#if seoExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Meta Title</Field.FieldLabel>
-						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Meta Description</Field.FieldLabel>
-						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Keywords</Field.FieldLabel>
-						<Input bind:value={form.keywords} placeholder="Comma separated: halal, supplier, indonesia" />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="SEO & Metadata" bind:open={seoExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Meta Title</Field.FieldLabel>
+					<Input
+						bind:value={form.metaTitle}
+						maxlength={60}
+						placeholder="SEO page title (max 60 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Meta Description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.metaDescription}
+						maxlength={160}
+						rows={2}
+						placeholder="SEO description (max 160 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Keywords</Field.FieldLabel>
+					<Input
+						bind:value={form.keywords}
+						placeholder="Comma separated: halal, supplier, indonesia"
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 		</div>
 
 		<DialogFooter>

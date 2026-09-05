@@ -94,7 +94,10 @@
 							Show the "for demonstration only" disclaimer in the footer.
 						</p>
 					</div>
-					<Switch checked={form.enableDemoNotice} onCheckedChange={(v) => form.enableDemoNotice = v} />
+					<Switch
+						checked={form.enableDemoNotice}
+						onCheckedChange={(v) => (form.enableDemoNotice = v)}
+					/>
 				</div>
 				<div class="flex items-center justify-between gap-3">
 					<div>
@@ -103,7 +106,10 @@
 							Placeholder flag — not yet enforced in the demo.
 						</p>
 					</div>
-					<Switch checked={form.enableMaintenanceMode} onCheckedChange={(v) => form.enableMaintenanceMode = v} />
+					<Switch
+						checked={form.enableMaintenanceMode}
+						onCheckedChange={(v) => (form.enableMaintenanceMode = v)}
+					/>
 				</div>
 			</CardContent>
 		</Card>

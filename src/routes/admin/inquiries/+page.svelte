@@ -1,8 +1,5 @@
 <script lang="ts">
-	import {
-		adminData,
-		upsertItem
-	} from '#lib/stores/admin-data.svelte.js';
+	import { adminData, upsertItem } from '#lib/stores/admin-data.svelte.js';
 	import type { Inquiry } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -32,6 +29,7 @@
 	} from '#lib/components/ui/select/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
 	import Search from '@lucide/svelte/icons/search';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -71,11 +69,7 @@
 
 	function updateStatus(newStatus: Inquiry['status']) {
 		if (!selectedInquiry) return;
-		upsertItem<Inquiry>(
-			'inquiries',
-			{ ...selectedInquiry, status: newStatus },
-			selectedInquiry
-		);
+		upsertItem<Inquiry>('inquiries', { ...selectedInquiry, status: newStatus }, selectedInquiry);
 		selectedInquiry = { ...selectedInquiry, status: newStatus };
 	}
 </script>
@@ -96,23 +90,16 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search inquiries..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Inquiries</p>
-			<p class="text-xl font-bold">{totalInquiries}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Active</p>
-			<p class="text-xl font-bold">{activeCount}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Flagged</p>
-			<p class="text-xl font-bold">{flaggedCount}</p>
-		</div>
+	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<StatTile value={totalInquiries} label="Total Inquiries" />
+		<StatTile value={activeCount} label="Active" />
+		<StatTile value={flaggedCount} label="Flagged" tone="warn" />
 	</div>
 
 	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
@@ -135,10 +122,19 @@
 						<TableCell>{inq.supplierSlug ?? '—'}</TableCell>
 						<TableCell>{inq.subject}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(inq.status ?? '')}`}>{inq.status}</Badge>
+							<Badge
+								variant="secondary"
+								class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(inq.status ?? '')}`}
+								>{inq.status}</Badge
+							>
 						</TableCell>
 						<TableCell class="text-right">
-							<Button variant="ghost" size="sm" class="h-7 text-[10px]" onclick={() => viewInquiry(inq)}>
+							<Button
+								variant="ghost"
+								size="sm"
+								class="h-7 text-[10px]"
+								onclick={() => viewInquiry(inq)}
+							>
 								View
 							</Button>
 						</TableCell>
@@ -168,25 +164,25 @@
 			<div class="flex flex-col gap-4">
 				<div class="grid grid-cols-2 gap-4 text-sm">
 					<div>
-						<p class="text-muted-foreground text-[10px]">Buyer</p>
+						<p class="text-[10px] text-muted-foreground">Buyer</p>
 						<p class="font-medium">{selectedInquiry.buyerSlug}</p>
 					</div>
 					<div>
-						<p class="text-muted-foreground text-[10px]">Supplier</p>
+						<p class="text-[10px] text-muted-foreground">Supplier</p>
 						<p class="font-medium">{selectedInquiry.supplierSlug ?? '—'}</p>
 					</div>
 					<div>
-						<p class="text-muted-foreground text-[10px]">Product</p>
+						<p class="text-[10px] text-muted-foreground">Product</p>
 						<p class="font-medium">{selectedInquiry.productSlug ?? '—'}</p>
 					</div>
 					<div>
-						<p class="text-muted-foreground text-[10px]">Status</p>
+						<p class="text-[10px] text-muted-foreground">Status</p>
 						<p class="font-medium capitalize">{selectedInquiry.status}</p>
 					</div>
 				</div>
 
 				<div class="rounded-lg bg-muted/50 p-3">
-					<p class="text-muted-foreground text-[10px] mb-1">Message</p>
+					<p class="mb-1 text-[10px] text-muted-foreground">Message</p>
 					<p class="text-sm whitespace-pre-wrap">{selectedInquiry.message}</p>
 				</div>
 

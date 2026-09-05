@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import {
 		listAccounts,
 		createAccount,
@@ -27,12 +26,6 @@
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
-	import {
-		Select,
-		SelectContent,
-		SelectItem,
-		SelectTrigger
-	} from '#lib/components/ui/select/index.js';
 	import { Empty } from '#lib/components/ui/empty/index.js';
 	import type { DemoAccount } from '#lib/stores/auth.svelte.js';
 	import Search from '@lucide/svelte/icons/search';

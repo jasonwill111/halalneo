@@ -36,8 +36,7 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -56,7 +55,18 @@
 		metaDescription: string;
 		keywords: string;
 	};
-	let form = $state<BodyForm>({ id: '', name: '', country: '', standard: '', website: '', description: '', status: 'active', metaTitle: '', metaDescription: '', keywords: '' });
+	let form = $state<BodyForm>({
+		id: '',
+		name: '',
+		country: '',
+		standard: '',
+		website: '',
+		description: '',
+		status: 'active',
+		metaTitle: '',
+		metaDescription: '',
+		keywords: ''
+	});
 	let formError = $state('');
 
 	const filtered = $derived.by(() => {
@@ -73,7 +83,18 @@
 
 	function openCreate() {
 		editing = null;
-		form = { id: '', name: '', country: '', standard: '', website: '', description: '', status: 'active', metaTitle: '', metaDescription: '', keywords: '' };
+		form = {
+			id: '',
+			name: '',
+			country: '',
+			standard: '',
+			website: '',
+			description: '',
+			status: 'active',
+			metaTitle: '',
+			metaDescription: '',
+			keywords: ''
+		};
 		formError = '';
 		seoExpanded = false;
 		dialogOpen = true;
@@ -252,7 +273,11 @@
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Description</Field.FieldLabel>
-				<Textarea bind:value={form.description} rows={3} placeholder="Certifying body description..." />
+				<Textarea
+					bind:value={form.description}
+					rows={3}
+					placeholder="Certifying body description..."
+				/>
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Status</Field.FieldLabel>
@@ -266,35 +291,32 @@
 			</Field.Field>
 
 			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (seoExpanded = !seoExpanded)}
-			>
-				{#if seoExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				SEO & Metadata
-			</button>
-
-			{#if seoExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Meta Title</Field.FieldLabel>
-						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Meta Description</Field.FieldLabel>
-						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Keywords</Field.FieldLabel>
-						<Input bind:value={form.keywords} placeholder="Comma separated: halal, certification, malaysia" />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="SEO & Metadata" bind:open={seoExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Meta Title</Field.FieldLabel>
+					<Input
+						bind:value={form.metaTitle}
+						maxlength={60}
+						placeholder="SEO page title (max 60 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Meta Description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.metaDescription}
+						maxlength={160}
+						rows={2}
+						placeholder="SEO description (max 160 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Keywords</Field.FieldLabel>
+					<Input
+						bind:value={form.keywords}
+						placeholder="Comma separated: halal, certification, malaysia"
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>

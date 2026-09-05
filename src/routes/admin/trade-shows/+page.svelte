@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		adminData,
-		upsertItem,
-		deleteItem
-	} from '#lib/stores/admin-data.svelte.js';
+	import { adminData, upsertItem, deleteItem } from '#lib/stores/admin-data.svelte.js';
 	import type { TradeShow } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -37,8 +33,8 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -229,7 +225,11 @@
 	function formatDate(d: string): string {
 		if (!d) return '—';
 		try {
-			return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+			return new Date(d).toLocaleDateString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric'
+			});
 		} catch {
 			return d;
 		}
@@ -256,23 +256,16 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search shows..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Shows</p>
-			<p class="text-xl font-bold">{shows.length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Active</p>
-			<p class="text-xl font-bold">{shows.filter((s) => s.status === 'active').length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Mega Shows</p>
-			<p class="text-xl font-bold">{shows.filter((s) => s.scale === 'mega').length}</p>
-		</div>
+	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<StatTile value={shows.length} label="Total Shows" />
+		<StatTile value={shows.filter((s) => s.status === 'active').length} label="Active" />
+		<StatTile value={shows.filter((s) => s.scale === 'mega').length} label="Mega Shows" />
 	</div>
 
 	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
@@ -297,14 +290,26 @@
 							</div>
 						</TableCell>
 						<TableCell>{s.city ? `${s.city}, ${s.country}` : (s.country ?? '—')}</TableCell>
-						<TableCell class="text-xs">{formatDate(s.startDate ?? '')} — {formatDate(s.endDate ?? '')}</TableCell>
+						<TableCell class="text-xs"
+							>{formatDate(s.startDate ?? '')} — {formatDate(s.endDate ?? '')}</TableCell
+						>
 						<TableCell class="capitalize">{s.scale ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(s.status ?? 'active')}`}>{s.status ?? 'active'}</Badge>
+							<Badge
+								variant="secondary"
+								class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(s.status ?? 'active')}`}
+								>{s.status ?? 'active'}</Badge
+							>
 						</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
-								<Button variant="ghost" size="icon" aria-label="Edit" class="size-8" onclick={() => openEdit(s)}>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="Edit"
+									class="size-8"
+									onclick={() => openEdit(s)}
+								>
 									<Pencil class="size-3.5"></Pencil>
 								</Button>
 								<Button
@@ -335,9 +340,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit trade show' : 'New trade show'}</DialogTitle>
-			<DialogDescription>
-				Create or update a trade show listing.
-			</DialogDescription>
+			<DialogDescription>Create or update a trade show listing.</DialogDescription>
 		</DialogHeader>
 
 		<div class="flex flex-col gap-4">
@@ -425,76 +428,61 @@
 			</Field.Field>
 
 			<!-- ===================== VENUE & DETAILS (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (detailsExpanded = !detailsExpanded)}
-			>
-				{#if detailsExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Venue & Details
-			</button>
-
-			{#if detailsExpanded}
-				<div class="flex flex-col gap-4 pl-6">
+			<CollapsibleSection title="Venue & Details" bind:open={detailsExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Venue</Field.FieldLabel>
+					<Input
+						bind:value={form.venue}
+						placeholder="Malaysia International Trade and Exhibition Centre"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Website</Field.FieldLabel>
+					<Input bind:value={form.website} placeholder="https://example.com" />
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Focus (comma-separated)</Field.FieldLabel>
+					<Input bind:value={form.focus} placeholder="Food & Beverage, Pharmaceuticals, ..." />
+				</Field.Field>
+				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
-						<Field.FieldLabel>Venue</Field.FieldLabel>
-						<Input bind:value={form.venue} placeholder="Malaysia International Trade and Exhibition Centre" />
+						<Field.FieldLabel>Exhibitors</Field.FieldLabel>
+						<Input bind:value={form.exhibitors} type="number" placeholder="1200" />
 					</Field.Field>
 					<Field.Field>
-						<Field.FieldLabel>Website</Field.FieldLabel>
-						<Input bind:value={form.website} placeholder="https://example.com" />
+						<Field.FieldLabel>Visitors</Field.FieldLabel>
+						<Input bind:value={form.visitors} type="number" placeholder="50000" />
 					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Focus (comma-separated)</Field.FieldLabel>
-						<Input bind:value={form.focus} placeholder="Food & Beverage, Pharmaceuticals, ..." />
-					</Field.Field>
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Exhibitors</Field.FieldLabel>
-							<Input bind:value={form.exhibitors} type="number" placeholder="1200" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Visitors</Field.FieldLabel>
-							<Input bind:value={form.visitors} type="number" placeholder="50000" />
-						</Field.Field>
-					</div>
 				</div>
-			{/if}
+			</CollapsibleSection>
 
 			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (seoExpanded = !seoExpanded)}
-			>
-				{#if seoExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				SEO & Metadata
-			</button>
-
-			{#if seoExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Meta Title</Field.FieldLabel>
-						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Meta Description</Field.FieldLabel>
-						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Keywords</Field.FieldLabel>
-						<Input bind:value={form.keywords} placeholder="Comma separated: halal, trade show, malaysia" />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="SEO & Metadata" bind:open={seoExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Meta Title</Field.FieldLabel>
+					<Input
+						bind:value={form.metaTitle}
+						maxlength={60}
+						placeholder="SEO page title (max 60 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Meta Description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.metaDescription}
+						maxlength={160}
+						rows={2}
+						placeholder="SEO description (max 160 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Keywords</Field.FieldLabel>
+					<Input
+						bind:value={form.keywords}
+						placeholder="Comma separated: halal, trade show, malaysia"
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 		</div>
 
 		{#if formError}

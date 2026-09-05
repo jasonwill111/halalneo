@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		adminData,
-		upsertItem,
-		deleteItem
-	} from '#lib/stores/admin-data.svelte.js';
+	import { adminData, upsertItem, deleteItem } from '#lib/stores/admin-data.svelte.js';
 	import type { ServiceProvider } from '#lib/data/types.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -37,8 +33,8 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -233,23 +229,24 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"></Search>
+		<Search
+			class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+		></Search>
 		<Input bind:value={search} placeholder="Search providers..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Total Providers</p>
-			<p class="text-xl font-bold">{providers.length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Active</p>
-			<p class="text-xl font-bold">{providers.filter((s) => s.status === 'active').length}</p>
-		</div>
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-			<p class="text-[10px] text-muted-foreground">Avg. Rating</p>
-			<p class="text-xl font-bold">{providers.filter((s) => s.rating != null).length > 0 ? (providers.reduce((sum, s) => sum + (s.rating ?? 0), 0) / providers.filter((s) => s.rating != null).length).toFixed(1) : '—'}</p>
-		</div>
+	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+		<StatTile value={providers.length} label="Total Providers" />
+		<StatTile value={providers.filter((s) => s.status === 'active').length} label="Active" />
+		<StatTile
+			value={providers.filter((s) => s.rating != null).length > 0
+				? (
+						providers.reduce((sum, s) => sum + (s.rating ?? 0), 0) /
+						providers.filter((s) => s.rating != null).length
+					).toFixed(1)
+				: '—'}
+			label="Avg. Rating"
+		/>
 	</div>
 
 	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
@@ -277,11 +274,21 @@
 						<TableCell>{sp.country}</TableCell>
 						<TableCell>{sp.rating ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(sp.status)}`}>{sp.status}</Badge>
+							<Badge
+								variant="secondary"
+								class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(sp.status)}`}
+								>{sp.status}</Badge
+							>
 						</TableCell>
 						<TableCell class="text-right">
 							<div class="flex items-center justify-end gap-1">
-								<Button variant="ghost" size="icon" aria-label="Edit" class="size-8" onclick={() => openEdit(sp)}>
+								<Button
+									variant="ghost"
+									size="icon"
+									aria-label="Edit"
+									class="size-8"
+									onclick={() => openEdit(sp)}
+								>
 									<Pencil class="size-3.5"></Pencil>
 								</Button>
 								<Button
@@ -312,9 +319,7 @@
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit provider' : 'New provider'}</DialogTitle>
-			<DialogDescription>
-				Create or update a service provider profile.
-			</DialogDescription>
+			<DialogDescription>Create or update a service provider profile.</DialogDescription>
 		</DialogHeader>
 
 		<div class="flex flex-col gap-4">
@@ -367,7 +372,14 @@
 
 			<Field.Field>
 				<Field.FieldLabel>Rating</Field.FieldLabel>
-				<Input bind:value={form.rating} type="number" min="0" max="5" step="0.1" placeholder="4.5" />
+				<Input
+					bind:value={form.rating}
+					type="number"
+					min="0"
+					max="5"
+					step="0.1"
+					placeholder="4.5"
+				/>
 			</Field.Field>
 
 			<Field.Field>
@@ -376,80 +388,62 @@
 			</Field.Field>
 
 			<!-- ===================== CONTACT DETAILS (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (contactExpanded = !contactExpanded)}
-			>
-				{#if contactExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				Contact Details
-			</button>
+			<CollapsibleSection title="Contact Details" bind:open={contactExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Website</Field.FieldLabel>
+					<Input bind:value={form.website} placeholder="https://example.com" />
+				</Field.Field>
 
-			{#if contactExpanded}
-				<div class="flex flex-col gap-4 pl-6">
+				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
-						<Field.FieldLabel>Website</Field.FieldLabel>
-						<Input bind:value={form.website} placeholder="https://example.com" />
+						<Field.FieldLabel>Email</Field.FieldLabel>
+						<Input bind:value={form.email} type="email" placeholder="info@company.com" />
 					</Field.Field>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>Email</Field.FieldLabel>
-							<Input bind:value={form.email} type="email" placeholder="info@company.com" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Phone</Field.FieldLabel>
-							<Input bind:value={form.phone} placeholder="+60 3 1234 5678" />
-						</Field.Field>
-					</div>
-
-					<div class="grid grid-cols-2 gap-4">
-						<Field.Field>
-							<Field.FieldLabel>WhatsApp</Field.FieldLabel>
-							<Input bind:value={form.whatsapp} placeholder="+60 12 345 6789" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>LINE</Field.FieldLabel>
-							<Input bind:value={form.line} placeholder="@provider_id" />
-						</Field.Field>
-					</div>
+					<Field.Field>
+						<Field.FieldLabel>Phone</Field.FieldLabel>
+						<Input bind:value={form.phone} placeholder="+60 3 1234 5678" />
+					</Field.Field>
 				</div>
-			{/if}
+
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>WhatsApp</Field.FieldLabel>
+						<Input bind:value={form.whatsapp} placeholder="+60 12 345 6789" />
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>LINE</Field.FieldLabel>
+						<Input bind:value={form.line} placeholder="@provider_id" />
+					</Field.Field>
+				</div>
+			</CollapsibleSection>
 
 			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
-			<button
-				type="button"
-				class="flex items-center gap-2 rounded-md px-1 py-1.5 text-sm font-medium select-none hover:bg-muted"
-				onclick={() => (seoExpanded = !seoExpanded)}
-			>
-				{#if seoExpanded}
-					<ChevronDown class="size-4" />
-				{:else}
-					<ChevronRight class="size-4" />
-				{/if}
-				SEO & Metadata
-			</button>
-
-			{#if seoExpanded}
-				<div class="flex flex-col gap-4 pl-6">
-					<Field.Field>
-						<Field.FieldLabel>Meta Title</Field.FieldLabel>
-						<Input bind:value={form.metaTitle} maxlength={60} placeholder="SEO page title (max 60 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Meta Description</Field.FieldLabel>
-						<Textarea bind:value={form.metaDescription} maxlength={160} rows={2} placeholder="SEO description (max 160 chars)" />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Keywords</Field.FieldLabel>
-						<Input bind:value={form.keywords} placeholder="Comma separated: halal, certification, malaysia" />
-					</Field.Field>
-				</div>
-			{/if}
+			<CollapsibleSection title="SEO & Metadata" bind:open={seoExpanded}>
+				<Field.Field>
+					<Field.FieldLabel>Meta Title</Field.FieldLabel>
+					<Input
+						bind:value={form.metaTitle}
+						maxlength={60}
+						placeholder="SEO page title (max 60 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Meta Description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.metaDescription}
+						maxlength={160}
+						rows={2}
+						placeholder="SEO description (max 160 chars)"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Keywords</Field.FieldLabel>
+					<Input
+						bind:value={form.keywords}
+						placeholder="Comma separated: halal, certification, malaysia"
+					/>
+				</Field.Field>
+			</CollapsibleSection>
 		</div>
 
 		{#if formError}
