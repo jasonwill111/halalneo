@@ -72,6 +72,7 @@
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filteredCategories as category, i}
 				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
+				<article>
 				<Card hoverable>
 					<CardHeader class="gap-3">
 						<div
@@ -96,6 +97,7 @@
 						</Button>
 					</CardContent>
 				</Card>
+				</article>
 			{:else}
 				<div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
 					<p class="text-lg font-medium text-muted-foreground">No categories found</p>

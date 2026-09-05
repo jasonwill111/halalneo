@@ -78,6 +78,7 @@
 
 	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as guide (guide.slug)}
+			<article class="contents">
 			<a href={localizeHref(`/market-guides/${guide.slug}`)} class="group h-full">
 			<Card class="h-full bg-card ring-1 ring-foreground/10 transition-shadow group-hover:shadow-md overflow-hidden">
 				{#if countryImages[guide.country]}
@@ -129,6 +130,7 @@
 				</CardContent>
 			</Card>
 			</a>
+			</article>
 		{:else}
 			<div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
 				<p class="text-lg font-medium text-muted-foreground">No market guides found</p>

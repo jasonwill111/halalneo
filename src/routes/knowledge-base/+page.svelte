@@ -152,6 +152,7 @@
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each filteredSections as section, i}
+			<article>
 			<Card hoverable class="h-full overflow-hidden">
 				{#if sectionImages[section.slug]}
 					<div class="aspect-[2/1] overflow-hidden">
@@ -186,41 +187,43 @@
 					</Button>
 				</CardContent>
 			</Card>
-			{/each}
-		</div>
+			</article>
+		{/each}
 	</div>
 
 	<!-- Popular Articles -->
 	<div>
 		<h2 class="mb-2.5 text-sm font-semibold text-foreground">Popular Articles</h2>
 		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-			<a href={localizeHref('/knowledge-base/halal-certification/how-to-choose-halal-certification')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
-					<BookOpen class="size-4"></BookOpen>
-				</div>
-				<div class="min-w-0">
-					<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">How to Choose Halal Certification</h3>
-					<p class="mt-0.5 text-xs text-muted-foreground">5 min read</p>
-				</div>
-			</a>
-			<a href={localizeHref('/knowledge-base/halal-certification/understanding-jakim-standards')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warn/10 text-warn">
-					<BookOpen class="size-4"></BookOpen>
-				</div>
-				<div class="min-w-0">
-					<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">Understanding JAKIM Standards</h3>
-					<p class="mt-0.5 text-xs text-muted-foreground">8 min read</p>
-				</div>
-			</a>
-			<a href={localizeHref('/knowledge-base/supply-chain/halal-supply-chain-best-practices')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-				<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success">
-					<BookOpen class="size-4"></BookOpen>
-				</div>
-				<div class="min-w-0">
-					<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">Halal Supply Chain Best Practices</h3>
-					<p class="mt-0.5 text-xs text-muted-foreground">6 min read</p>
-				</div>
-			</a>
+			<article class="contents">
+				<a href={localizeHref('/knowledge-base/halal-certification/how-to-choose-halal-certification')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
+					<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
+						<BookOpen class="size-4"></BookOpen>
+					</div>
+					<div class="min-w-0">
+						<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">How to Choose Halal Certification</h3>
+						<p class="mt-0.5 text-xs text-muted-foreground">5 min read</p>
+					</div>
+				</a>
+				<a href={localizeHref('/knowledge-base/halal-certification/understanding-jakim-standards')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
+					<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warn/10 text-warn">
+						<BookOpen class="size-4"></BookOpen>
+					</div>
+					<div class="min-w-0">
+						<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">Understanding JAKIM Standards</h3>
+						<p class="mt-0.5 text-xs text-muted-foreground">8 min read</p>
+					</div>
+				</a>
+				<a href={localizeHref('/knowledge-base/supply-chain/halal-supply-chain-best-practices')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
+					<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success">
+						<BookOpen class="size-4"></BookOpen>
+					</div>
+					<div class="min-w-0">
+						<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">Halal Supply Chain Best Practices</h3>
+						<p class="mt-0.5 text-xs text-muted-foreground">6 min read</p>
+					</div>
+				</a>
+			</article>
 		</div>
 	</div>
 

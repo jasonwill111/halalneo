@@ -66,7 +66,7 @@
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 			{#each productCategories as cat}
-				<div class="rounded-xl ring-1 ring-foreground/10 bg-card overflow-hidden">
+				<article class="rounded-xl ring-1 ring-foreground/10 bg-card overflow-hidden">
 					{#if catImages[cat.slug]}
 						<div class="aspect-[4/3] overflow-hidden">
 							<img src={catImages[cat.slug]} alt={cat.name} class="h-full w-full object-cover" loading="lazy" decoding="async" width="400" height="300" />
@@ -80,12 +80,11 @@
 						<h3 class="text-sm font-medium">{cat.name}</h3>
 						<p class="mt-1 text-xs text-muted-foreground line-clamp-2">{cat.description}</p>
 					</div>
-				</div>
+				</article>
 			{/each}
 		</div>
-	</div>
 
-	<!-- Target Markets -->
+		<!-- Target Markets -->
 	<div class="space-y-4">
 		<div>
 			<h2 class="text-lg font-semibold">Target markets</h2>
@@ -93,10 +92,10 @@
 		</div>
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 			{#each markets as market}
-				<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
+				<article class="rounded-xl ring-1 ring-foreground/10 bg-card p-4">
 					<h3 class="text-sm font-semibold">{market.region}</h3>
 					<p class="mt-1 text-xs text-muted-foreground">{market.countries}</p>
-				</div>
+				</article>
 			{/each}
 		</div>
 	</div>

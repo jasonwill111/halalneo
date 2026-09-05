@@ -234,7 +234,7 @@
 
 		<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
 			{#each paged as provider}
-				<div
+				<article
 					class="group rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
 				>
 					<div class="mb-4 flex items-start gap-3.5">
@@ -346,7 +346,7 @@
 							</Button>
 						{/if}
 					</div>
-				</div>
+				</article>
 			{/each}
 		</div>
 

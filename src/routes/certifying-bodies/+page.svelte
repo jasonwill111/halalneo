@@ -99,6 +99,7 @@
 
 	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
 		{#each filtered as body, i}
+			<article class="contents">
 			<a href={localizeHref(`/certifying-bodies/${body.id}`)} class="group h-full">
 				<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
 					<CardContent class="flex items-center gap-3 p-3">
@@ -124,6 +125,7 @@
 					</CardContent>
 				</Card>
 			</a>
+			</article>
 		{/each}
 	</div>
 
