@@ -24,6 +24,19 @@
 	const baseUrl = 'https://halalneo.com';
 	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 
+	const toIsoDate = (v: unknown): string | undefined => {
+		if (v == null || v === '') return undefined;
+		if (typeof v === 'number') return new Date(v > 1e12 ? v : v * 1000).toISOString();
+		const d = new Date(String(v));
+		return isNaN(d.getTime()) ? undefined : d.toISOString();
+	};
+
+	const plainText = (html: unknown): string =>
+		String(html ?? '')
+			.replace(/<[^>]*>/g, ' ')
+			.replace(/\s+/g, ' ')
+			.trim();
+
 	const blogSchema = $derived(
 		item
 			? {
@@ -31,14 +44,14 @@
 					'@type': 'BlogPosting',
 					headline: item.title,
 					image: ogImage,
-					author: item.author ? { '@type': 'Person', name: item.author.name } : undefined,
-					datePublished: item.date,
-					dateModified: item.date,
+					author: { '@type': 'Person', name: item.author?.name ?? 'HalalNeo' },
+					datePublished: toIsoDate(item.date),
+					dateModified: toIsoDate(item.date),
 					mainEntityOfPage: {
 						'@type': 'WebPage',
 						'@id': `${baseUrl}/blog/${data.slug}`
 					},
-					wordCount: Math.ceil((item.content?.length ?? 0) / 5),
+					wordCount: plainText(item.content).split(' ').filter(Boolean).length || undefined,
 					articleSection: item.tags?.length ? item.tags.join(', ') : undefined,
 					publisher: {
 						'@type': 'Organization',

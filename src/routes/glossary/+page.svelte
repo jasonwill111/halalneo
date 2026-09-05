@@ -8,6 +8,24 @@
 	let { data } = $props();
 	let search = $state('');
 
+	const definedTermSet = $derived(
+		JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'DefinedTermSet',
+			name: 'Halal Trade Glossary',
+			description:
+				'Definitions of halal certification, trade, finance, logistics and regulatory terms for B2B buyers and suppliers.',
+			url: 'https://halalneo.com/glossary',
+			hasDefinedTerm: ((data.terms ?? []) as any[]).slice(0, 100).map((t: any) => ({
+				'@type': 'DefinedTerm',
+				name: t.term,
+				description: t.definition,
+				url: `https://halalneo.com/glossary#term-${encodeURIComponent(t.term)}`,
+				inDefinedTermSet: 'https://halalneo.com/glossary'
+			}))
+		})
+	);
+
 	const sorted = $derived(
 		(data.terms ?? [])
 			.toSorted((a: any, b: any) => a.term.localeCompare(b.term))
@@ -24,6 +42,10 @@
 </script>
 
 <Breadcrumb items={[{ label: 'Glossary', href: '/glossary' }]} />
+
+<svelte:head>
+	{@html `<script type="application/ld+json">${definedTermSet}</script>`}
+</svelte:head>
 
 <section class="space-y-6">
 	<div class="max-w-2xl space-y-2">
