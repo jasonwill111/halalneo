@@ -1,4 +1,4 @@
-import { eq, like, and, sql, desc, asc } from 'drizzle-orm';
+import { eq, like, and, sql, desc, asc, inArray } from 'drizzle-orm';
 import type { drizzle } from 'drizzle-orm/d1';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium } from '../cache.js';
@@ -893,7 +893,12 @@ export async function getKbListItems(
 	const queryFn = async () => {
 		const { limit = 20, offset = 0, search, section, status } = opts;
 
-		const conditions = [eq(schema.knowledgeBase.status, status ?? 'published')];
+		const conditions = [
+			eq(
+				schema.knowledgeBase.status,
+				(status ?? 'published') as 'published' | 'draft' | 'archived'
+			)
+		];
 		if (search) conditions.push(like(schema.knowledgeBase.title, `%${search}%`));
 		if (section) conditions.push(eq(schema.knowledgeBase.section, section));
 
