@@ -166,6 +166,9 @@
 	{#if supplierSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(supplierSchema)}</script>`}
 	{/if}
+	{#if item?.coverImage}
+		<link rel="preload" as="image" href={item.coverImage} fetchpriority="high" />
+	{/if}
 	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 

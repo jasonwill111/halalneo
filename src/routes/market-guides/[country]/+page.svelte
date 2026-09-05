@@ -79,6 +79,9 @@
 		content={guide.summary?.slice(0, 160) ??
 			`Halal market guide for ${guide.country} — certification requirements, market size, and compliance insights.`}
 	/>
+	{#if countryImages[guide.country]}
+		<link rel="preload" as="image" href={countryImages[guide.country]} fetchpriority="high" />
+	{/if}
 	{@html `<script type="application/ld+json">${jsonLd}</script>`}
 </svelte:head>
 

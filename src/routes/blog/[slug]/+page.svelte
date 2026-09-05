@@ -52,6 +52,7 @@
 
 <svelte:head>
 	<title>{data.item?.title ?? 'Blog Post'} — HalalNeo</title>
+	<link rel="preload" as="image" href={data.item?.image ?? blogImages[0]} fetchpriority="high" />
 	<meta
 		name="description"
 		content={data.item?.excerpt?.slice(0, 160) ?? data.item?.content?.slice(0, 160)}

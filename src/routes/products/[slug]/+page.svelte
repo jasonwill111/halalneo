@@ -158,6 +158,9 @@
 
 <svelte:head>
 	<title>{seo.title ?? `${item?.name ?? 'Product'} — HalalNeo`}</title>
+	{#if item?.image}
+		<link rel="preload" as="image" href={item.image} fetchpriority="high" />
+	{/if}
 	<meta name="description" content={seo.description ?? item?.shortDescription ?? ''} />
 	{#if productSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(productSchema)}</script>`}

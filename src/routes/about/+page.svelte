@@ -21,6 +21,10 @@
 	let { data } = $props();
 </script>
 
+<svelte:head>
+	<link rel="preload" as="image" href="/api/media/about-hero.webp" fetchpriority="high" />
+</svelte:head>
+
 <Breadcrumb items={[{ label: 'About', href: '/about' }]} />
 
 <section class="space-y-8">
