@@ -18,6 +18,7 @@
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
 	import CalculatorIcon from '@lucide/svelte/icons/calculator';
+	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import ScaleIcon from '@lucide/svelte/icons/scale';
 	import HandshakeIcon from '@lucide/svelte/icons/handshake';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
@@ -51,9 +52,12 @@
 		{
 			label: 'Halal Tools',
 			items: [
+				{ label: 'All Tools', href: '/tools', icon: CalculatorIcon },
 				{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
 				{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
-				{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon }
+				{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
+				{ label: 'Landed Cost', href: '/tools/landed-cost', icon: BanknoteIcon },
+				{ label: 'RFQ Builder', href: '/tools/rfq-builder', icon: FileTextIcon }
 			]
 		},
 		{
@@ -148,7 +152,7 @@
 <!-- Explore Popover (fixed, rendered outside tab bar) -->
 {#if showExplore}
 	<div
-		class="fixed z-50 max-h-[60vh] w-56 overflow-y-auto rounded-xl border border-border/60 bg-background p-2 shadow-xl md:hidden"
+		class="glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-2xl p-2 md:hidden"
 		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%);"
 		data-popover-panel
 	>
@@ -184,7 +188,7 @@
 <!-- Menu Popover (fixed, rendered outside tab bar) -->
 {#if showMenu}
 	<div
-		class="fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl border border-border/60 bg-background p-2 shadow-xl md:hidden"
+		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-2xl p-2 md:hidden"
 		style="right: {menuPos.right}px; top: {menuPos.top}px; transform: translateY(-100%);"
 		data-popover-panel
 	>

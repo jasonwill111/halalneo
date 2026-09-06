@@ -3,12 +3,15 @@ import type { PageLoad } from './$types';
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
-	const [productsRes, suppliersRes, categoriesRes, kbSectionsRes, kbArticlesRes] = await Promise.all([
+	const [productsRes, suppliersRes, categoriesRes, kbSectionsRes, kbArticlesRes, guidesRes, certifiersRes, glossaryRes] = await Promise.all([
 		fetch('/api/products?limit=4&status=active'),
 		fetch('/api/suppliers?limit=4&status=active'),
 		fetch('/api/categories'),
 		fetch('/api/knowledge-base/sections'),
-		fetch('/api/knowledge-base?limit=50')
+		fetch('/api/knowledge-base?limit=50'),
+		fetch('/api/market-guides?limit=1'),
+		fetch('/api/certifying-bodies?limit=1'),
+		fetch('/api/pages?category=glossary&limit=1')
 	]);
 
 	const productsData = productsRes.ok ? ((await productsRes.json()) as any) : { items: [], total: 0 };
@@ -28,6 +31,9 @@ export const load: PageLoad = async ({ fetch }) => {
 		...s,
 		certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
 	}));
+	const guidesTotal = guidesRes.ok ? (((await guidesRes.json()) as any).total ?? 0) : 0;
+	const certifiersTotal = certifiersRes.ok ? (((await certifiersRes.json()) as any).total ?? 0) : 0;
+	const glossaryTotal = glossaryRes.ok ? (((await glossaryRes.json()) as any).total ?? 0) : 0;
 
 	return {
 		seo: {
@@ -43,7 +49,9 @@ export const load: PageLoad = async ({ fetch }) => {
 			verifiedSuppliers: suppliersData.total ?? 0,
 			certifiedProducts: productsData.total ?? 0,
 			kbSections: kbSections.length,
-			glossaryTerms: 30
+			glossaryTerms: glossaryTotal,
+			guideCount: guidesTotal,
+			certifierCount: certifiersTotal
 		}
 	};
 };

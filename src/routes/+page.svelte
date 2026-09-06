@@ -102,17 +102,29 @@
 </svelte:head>
 
 <!-- HERO -->
-<section class="flex flex-col items-center py-4 text-center sm:py-10">
+<section class="relative flex flex-col items-center py-4 text-center sm:py-10">
+	<div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+		<div
+			class="animate-glow absolute -top-10 -left-16 size-64 rounded-full bg-primary/20 blur-3xl sm:size-80 dark:bg-primary/15"
+		></div>
+		<div
+			class="animate-glow absolute top-16 -right-16 size-56 rounded-full bg-info/15 blur-3xl sm:size-72 dark:bg-info/10"
+			style="animation-delay: -2.5s"
+		></div>
+	</div>
 	<span
-		class="mb-2 inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-medium text-secondary-foreground sm:mb-3"
+		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium text-secondary-foreground sm:mb-3"
 	>
 		<ShieldCheck class="size-2.5 text-primary"></ShieldCheck>
 		Halal B2B marketplace & trade intelligence
 	</span>
 
 	<!-- Hero Carousel -->
-	<div class="relative mb-3 w-full overflow-hidden rounded-xl sm:mb-4">
-		<div class="relative aspect-[16/7] sm:aspect-[16/6]">
+	<div
+		class="animate-enter relative mb-3 w-full overflow-hidden rounded-xl shadow-lg sm:mb-4"
+		style="--enter-delay: 90ms"
+	>
+		<div class="relative aspect-[16/10] sm:aspect-[16/6]">
 			{#each slides as slide, i}
 				<div
 					class="absolute inset-0 transition-opacity duration-500 {i === currentSlide
@@ -186,7 +198,10 @@
 		</div>
 	</div>
 
-	<p class="mb-3 text-[10px] text-muted-foreground sm:mb-4 sm:text-[11px]">
+	<p
+		class="animate-enter relative mb-3 text-[10px] text-muted-foreground sm:mb-4 sm:text-[11px]"
+		style="--enter-delay: 180ms"
+	>
 		Researched data from <span class="font-medium text-foreground"
 			>{data.stats.kbSections} knowledge sections</span
 		>
@@ -198,8 +213,8 @@
 <section class="flex gap-1 sm:gap-2 lg:grid lg:grid-cols-4">
 	<StatTile value={data.stats.kbSections} label="KB sections" tone="info" />
 	<StatTile value={data.stats.glossaryTerms} label="Glossary" tone="warn" />
-	<StatTile value="14+" label="Certifiers" tone="success" />
-	<StatTile value="7" label="Guides" tone="accent-purple" />
+	<StatTile value={`${data.stats.certifierCount}+`} label="Certifiers" tone="success" />
+	<StatTile value={data.stats.guideCount} label="Guides" tone="accent-purple" />
 </section>
 
 <!-- TOOLS -->
