@@ -4,6 +4,7 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import GuideHero from '#lib/components/site/guide-hero.svelte';
 	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
 	import { cn } from '#lib/utils.js';
@@ -66,8 +67,13 @@
 						<img src={countryImages[guide.country]} srcset={`${countryImages[guide.country]}?w=480 480w, ${countryImages[guide.country]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={guide.country} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
 					</div>
 				{:else}
-					<div class="flex -mx-4 -mt-4 aspect-[16/9] items-center justify-center bg-muted/50 sm:-mx-5 sm:-mt-4">
-						<GlobeIcon class="size-6 text-muted-foreground/30" />
+					<div class="-mx-4 -mt-4 sm:-mx-5 sm:-mt-4">
+						<GuideHero
+							country={guide.country}
+							flag={guide.flag}
+							rounded="rounded-none"
+							class="aspect-[16/9] w-full"
+						/>
 					</div>
 				{/if}
 				<CardContent class="flex flex-1 flex-col gap-2 p-3 sm:p-4">

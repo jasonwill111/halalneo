@@ -1,0 +1,3 @@
+-- IS EG Halal: sole-gatekeeper body for Egypt meat/poultry imports (per iseghalal.com, self-asserted; confirm before commercial reliance).
+INSERT INTO certifying_bodies (id, name, country, standard, website, description, status, created_at, updated_at) VALUES ('is-eg-halal','IS EG Halal','Egypt','ES 4249 (Egyptian halal standard)','https://iseghalal.com','Egyptian halal certification entity for meat and poultry imports, operating alongside GOVS import-permit procedures. Exporters should confirm current recognition scope before shipping.', 'active',1789500000,1789500000);
+UPDATE market_guides SET certifying_bodies='[{"name":"IS EG Halal","slug":"is-eg-halal"}]', updated_at=1789500000 WHERE slug='egypt';

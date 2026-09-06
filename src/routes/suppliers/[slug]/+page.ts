@@ -14,12 +14,15 @@ interface SupplierItem {
 	website?: string;
 	email?: string;
 	phone?: string;
+	whatsapp?: string;
+	line?: string;
 	status?: string;
 	isBrand?: boolean;
 	rating?: number | null;
 	certifications?: any;
 	yearEstablished?: number;
 	employeeCount?: string;
+	productionCapacity?: string;
 	products?: unknown[];
 }
 

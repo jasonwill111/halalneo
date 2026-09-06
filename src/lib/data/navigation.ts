@@ -9,6 +9,7 @@ import GlobeIcon from '@lucide/svelte/icons/globe';
 import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
 import CalculatorIcon from '@lucide/svelte/icons/calculator';
+import FileTextIcon from '@lucide/svelte/icons/file-text';
 import InfoIcon from '@lucide/svelte/icons/info';
 import NewspaperIcon from '@lucide/svelte/icons/newspaper';
 import HandshakeIcon from '@lucide/svelte/icons/handshake';
@@ -66,9 +67,12 @@ export const navGroups: NavGroup[] = [
 	{
 		label: 'Halal Tools',
 		items: [
+			{ label: 'All Tools', href: '/tools', icon: CalculatorIcon },
 			{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
 			{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
-			{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon }
+			{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
+			{ label: 'Landed Cost', href: '/tools/landed-cost', icon: BanknoteIcon },
+			{ label: 'RFQ Builder', href: '/tools/rfq-builder', icon: FileTextIcon }
 		]
 	},
 	{

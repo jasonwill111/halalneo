@@ -20,6 +20,8 @@
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import Send from '@lucide/svelte/icons/send';
 	import Heart from '@lucide/svelte/icons/heart';
+	import Play from '@lucide/svelte/icons/play';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
@@ -118,6 +120,49 @@
 
 	let activeTab = $state('description');
 
+	// Gallery: primary image + images[] JSON (most rows only have the primary).
+	const galleryImages = $derived.by(() => {
+		const list: string[] = [];
+		if (item?.image) list.push(item.image);
+		const raw = item?.images;
+		if (typeof raw === 'string') {
+			try {
+				const parsed = JSON.parse(raw);
+				if (Array.isArray(parsed)) list.push(...parsed.filter(Boolean).map(String));
+			} catch {
+				if (raw.trim()) list.push(raw.trim());
+			}
+		} else if (Array.isArray(raw)) {
+			list.push(...raw.filter(Boolean).map(String));
+		}
+		return [...new Set(list)];
+	});
+	let activeImage = $state(0);
+
+	$effect(() => {
+		if (activeImage >= galleryImages.length) activeImage = 0;
+	});
+
+	// Videos: JSON array of URLs (mp4/webm play inline, others link out).
+	const productVideos = $derived.by(() => {
+		const raw = item?.videos;
+		let arr: unknown[] = [];
+		if (typeof raw === 'string') {
+			try {
+				const parsed = JSON.parse(raw);
+				if (Array.isArray(parsed)) arr = parsed;
+				else if (raw.trim()) arr = [raw.trim()];
+			} catch {
+				if (raw.trim()) arr = [raw.trim()];
+			}
+		} else if (Array.isArray(raw)) {
+			arr = raw;
+		}
+		return arr.filter((v): v is string => typeof v === 'string' && v.length > 0);
+	});
+
+	const isPlayableVideo = (url: string): boolean => /\.(mp4|webm|ogg)(\?|#|$)/i.test(url);
+
 	// Tabs with no data are hidden instead of rendering empty states
 	// (most catalogue rows lack specs/faqs/resources in D1).
 	const availableTabs = $derived.by(() => {
@@ -209,14 +254,14 @@
 
 		<!-- Top: Image + Info -->
 		<div class="grid gap-6 lg:grid-cols-5">
-			<!-- Image -->
+			<!-- Image gallery -->
 			<div class="lg:col-span-2">
 				<div
 					class="flex aspect-square w-full items-center justify-center rounded-xl border border-border bg-muted"
 				>
-					{#if item.image}
+					{#if galleryImages.length > 0}
 						<img
-							src={item.image}
+							src={galleryImages[activeImage] ?? galleryImages[0]}
 							alt={item.name}
 							class="h-full w-full rounded-xl object-cover"
 							loading="eager"
@@ -232,6 +277,29 @@
 						<span class="text-sm text-muted-foreground">No image available</span>
 					{/if}
 				</div>
+				{#if galleryImages.length > 1}
+					<div class="mt-2 grid grid-cols-5 gap-1.5">
+						{#each galleryImages as src, i}
+							<button
+								type="button"
+								onclick={() => (activeImage = i)}
+								class={`aspect-square overflow-hidden rounded-lg border bg-muted transition-all ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
+								aria-label={`View image ${i + 1}`}
+								aria-pressed={i === activeImage}
+							>
+								<img
+									src={src}
+									alt=""
+									class="h-full w-full object-cover"
+									loading="lazy"
+									decoding="async"
+									width="128"
+									height="128"
+								/>
+							</button>
+						{/each}
+					</div>
+				{/if}
 			</div>
 
 			<!-- Product Info -->
@@ -461,6 +529,42 @@
 				</Card>
 			</div>
 		</div>
+
+		{#if productVideos.length > 0}
+			<section class="space-y-2">
+				<h2 class="text-base font-semibold">Product videos</h2>
+				<div class="grid gap-3 sm:grid-cols-2">
+					{#each productVideos as url, i}
+						{#if isPlayableVideo(url)}
+							<video
+								src={url}
+								controls
+								preload="none"
+								class="aspect-video w-full rounded-xl border border-border bg-muted"
+							>
+								<track kind="captions" srcLang="en" label="English" />
+								Your browser does not support video playback.
+							</video>
+						{:else}
+							<Button
+								href={url}
+								target="_blank"
+								rel="noopener"
+								variant="outline"
+								class="h-auto justify-start gap-2 p-3 text-left"
+							>
+								<Play class="size-4 shrink-0 text-primary" />
+								<span class="min-w-0">
+									<span class="block truncate text-sm font-medium">Watch video {i + 1}</span>
+									<span class="block truncate text-[10px] text-muted-foreground">{url}</span>
+								</span>
+								<ExternalLink class="ml-auto size-3.5 shrink-0 text-muted-foreground" />
+							</Button>
+						{/if}
+					{/each}
+				</div>
+			</section>
+		{/if}
 
 		<RelatedLinks
 			title="Related products"

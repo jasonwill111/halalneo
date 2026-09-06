@@ -19,6 +19,8 @@
 	import Search from '@lucide/svelte/icons/search';
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 	import Calculator from '@lucide/svelte/icons/calculator';
+	import Banknote from '@lucide/svelte/icons/banknote';
+	import FileText from '@lucide/svelte/icons/file-text';
 	import Globe from '@lucide/svelte/icons/globe';
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import Briefcase from '@lucide/svelte/icons/briefcase';
@@ -206,52 +208,34 @@
 		number="01"
 		title="Halal trade tools"
 		description="Free tools to help you navigate halal certification and compliance."
+		href="/tools"
+		linkLabel="View all"
 	/>
 	<div
-		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-3 sm:px-0"
+		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
 	>
-		<a
-			href={localizeHref('/tools/ingredient-checker')}
-			class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-4"
-		>
-			<FlaskConical class="size-4 shrink-0 text-info sm:size-6" />
-			<div class="min-w-0">
-				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Ingredient Checker
-				</h3>
-				<p class="truncate text-[10px] text-muted-foreground sm:text-xs">
-					Analyze ingredients for halal compliance.
-				</p>
-			</div>
-		</a>
-		<a
-			href={localizeHref('/tools/certification-cost')}
-			class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-4"
-		>
-			<Calculator class="size-4 shrink-0 text-warn sm:size-6" />
-			<div class="min-w-0">
-				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Certification Cost
-				</h3>
-				<p class="truncate text-[10px] text-muted-foreground sm:text-xs">
-					Estimate costs across 7 certifiers.
-				</p>
-			</div>
-		</a>
-		<a
-			href={localizeHref('/verify')}
-			class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-4"
-		>
-			<Search class="size-4 shrink-0 text-success sm:size-6" />
-			<div class="min-w-0">
-				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					Verify Certificate
-				</h3>
-				<p class="truncate text-[10px] text-muted-foreground sm:text-xs">
-					Check certificate authenticity.
-				</p>
-			</div>
-		</a>
+		{#each [
+			{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' },
+			{ href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' },
+			{ href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' },
+			{ href: '/tools/rfq-builder', icon: FileText, tone: 'text-accent-purple', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' },
+			{ href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }
+		] as tool (tool.href)}
+			<a
+				href={localizeHref(tool.href)}
+				class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-4"
+			>
+				<tool.icon class="size-4 shrink-0 {tool.tone} sm:size-6" />
+				<div class="min-w-0">
+					<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+						{tool.name}
+					</h3>
+					<p class="truncate text-[10px] text-muted-foreground sm:text-xs">
+						{tool.desc}
+					</p>
+				</div>
+			</a>
+		{/each}
 	</div>
 </section>
 

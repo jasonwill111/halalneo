@@ -5,6 +5,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import GuideHero from '#lib/components/site/guide-hero.svelte';
 	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
 	import { cn } from '#lib/utils.js';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
@@ -82,6 +83,13 @@
 			/>
 			<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 		</div>
+	{:else}
+		<GuideHero
+			country={guide.country}
+			flag={guide.flag}
+			region={guide.region}
+			class="aspect-[5/2] w-full"
+		/>
 	{/if}
 	<div class="max-w-3xl space-y-3">
 		<div class="flex items-center gap-3">
