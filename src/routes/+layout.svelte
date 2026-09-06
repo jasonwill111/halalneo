@@ -15,6 +15,7 @@
 	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
 	import MobileTab from '#lib/components/mobile-tab.svelte';
 	import BackToTop from '#lib/components/site/back-to-top.svelte';
+	import { initWebVitals } from '#lib/vitals.js';
 	import {
 		NavigationMenuRoot,
 		NavigationMenuItem,
@@ -98,6 +99,12 @@
 
 	let lastScrollY = 0;
 	let headerHidden = $state(false);
+
+	// Real-user Core Web Vitals -> /api/vitals -> Analytics Engine (once per load).
+	// $effect only runs in the browser, so no browser guard is needed.
+	$effect(() => {
+		initWebVitals();
+	});
 
 	function onScroll() {
 		const scrollY = window.scrollY;

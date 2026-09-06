@@ -6,7 +6,7 @@
 		SelectItem,
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
-	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
+	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Package from '@lucide/svelte/icons/package';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
@@ -53,11 +53,11 @@
 	{#if products.length > 0}
 		<!-- Filter bar -->
 		<div class="mb-6 flex flex-wrap items-center gap-2">
-			<ToggleGroup type="single" bind:value={certFilter} size="sm" variant="outline" aria-label="Filter by certification status">
+			<ToggleGroup.Root type="single" bind:value={certFilter} size="sm" variant="outline" aria-label="Filter by certification status">
 				<ToggleGroup.Item value="all">All</ToggleGroup.Item>
 				<ToggleGroup.Item value="certified">Certified</ToggleGroup.Item>
 				<ToggleGroup.Item value="pending">Pending</ToggleGroup.Item>
-			</ToggleGroup>
+			</ToggleGroup.Root>
 
 			{#if countries.length > 0}
 				<Select type="single" bind:value={countryFilter}>

@@ -7,7 +7,7 @@
 		AccordionItem,
 		AccordionTrigger
 	} from '#lib/components/ui/accordion/index.js';
-	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
+	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import Check from '@lucide/svelte/icons/check';
 	import X from '@lucide/svelte/icons/x';
 
@@ -96,10 +96,10 @@
 
 <div class="flex justify-center mb-4">
 	<div class="inline-flex items-center gap-1.5">
-		<ToggleGroup type="single" bind:value={billing} size="sm" variant="outline" aria-label="Billing period">
+		<ToggleGroup.Root type="single" bind:value={billing} size="sm" variant="outline" aria-label="Billing period">
 			<ToggleGroup.Item value="monthly">Monthly</ToggleGroup.Item>
 			<ToggleGroup.Item value="annual">Annual</ToggleGroup.Item>
-		</ToggleGroup>
+		</ToggleGroup.Root>
 		<span class="ml-1 text-[10px] text-muted-foreground">Save 20%</span>
 	</div>
 </div>

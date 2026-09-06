@@ -28,5 +28,13 @@
 	],
 	"images": {
 		"binding": "IMAGES"
-	}
+	},
+	// TODO(re-enable after owner enables Analytics Engine in dashboard):
+	// https://dash.cloudflare.com/0b8c74af4a5531bd63c074724898a4c9/workers/analytics-engine
+	// "analytics_engine_datasets": [
+	// 	{
+	// 		"binding": "WEBSITE_ANALYTICS",
+	// 		"dataset": "halalneo_web_vitals"
+	// 	}
+	// ]
 }

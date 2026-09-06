@@ -2,7 +2,7 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
+	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import CalculatorIcon from '@lucide/svelte/icons/calculator';
 	import ClockIcon from '@lucide/svelte/icons/clock';
@@ -140,7 +140,7 @@
 		<div class="space-y-6">
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="certifier-label">Certifying Body</span>
-				<ToggleGroup
+				<ToggleGroup.Root
 					type="single"
 					bind:value={selectedCertifier}
 					variant="outline"
@@ -154,12 +154,12 @@
 							<span class="text-xs text-muted-foreground">{c.country}</span>
 						</ToggleGroup.Item>
 					{/each}
-				</ToggleGroup>
+				</ToggleGroup.Root>
 			</div>
 
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="category-label">Product Category</span>
-				<ToggleGroup
+				<ToggleGroup.Root
 					type="single"
 					bind:value={selectedCategory}
 					variant="outline"
@@ -172,12 +172,12 @@
 							{cat.name}
 						</ToggleGroup.Item>
 					{/each}
-				</ToggleGroup>
+				</ToggleGroup.Root>
 			</div>
 
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="size-label">Company Size</span>
-				<ToggleGroup
+				<ToggleGroup.Root
 					type="single"
 					bind:value={selectedSize}
 					variant="outline"
@@ -190,7 +190,7 @@
 							{s.name}
 						</ToggleGroup.Item>
 					{/each}
-				</ToggleGroup>
+				</ToggleGroup.Root>
 			</div>
 		</div>
 

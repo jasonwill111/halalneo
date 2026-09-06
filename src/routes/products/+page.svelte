@@ -83,8 +83,9 @@
 				</Card>
 			{/each}
 		</div>
+	</div>
 
-		<!-- Target Markets -->
+	<!-- Target Markets -->
 	<div class="space-y-4">
 		<div>
 			<h2 class="text-lg font-semibold">Target markets</h2>

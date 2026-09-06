@@ -183,6 +183,7 @@
 			</Card>
 			</article>
 		{/each}
+		</div>
 	</div>
 
 	<!-- Popular Articles -->

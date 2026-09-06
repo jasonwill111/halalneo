@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ToggleGroup } from '#lib/components/ui/toggle-group/index.js';
+	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import { cn } from '#lib/utils.js';
 
 	interface Option {
@@ -27,7 +27,7 @@
 	}: Props = $props();
 </script>
 
-<ToggleGroup
+<ToggleGroup.Root
 	type="single"
 	bind:value
 	{size}
@@ -43,4 +43,4 @@
 			{/if}
 		</ToggleGroup.Item>
 	{/each}
-</ToggleGroup>
+</ToggleGroup.Root>
