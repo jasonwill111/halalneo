@@ -118,6 +118,23 @@
 
 	let activeTab = $state('description');
 
+	// Tabs with no data are hidden instead of rendering empty states
+	// (most catalogue rows lack specs/faqs/resources in D1).
+	const availableTabs = $derived.by(() => {
+		const tabs = [
+			{ value: 'description', label: 'Description' },
+			{ value: 'certifications', label: 'Certifications' }
+		];
+		if (Object.keys(specifications).length > 0) tabs.splice(1, 0, { value: 'specs', label: 'Specs' });
+		if (faqs.length > 0) tabs.push({ value: 'faq', label: 'FAQ' });
+		if (resources.length > 0) tabs.push({ value: 'resources', label: 'Resources' });
+		return tabs;
+	});
+
+	$effect(() => {
+		if (!availableTabs.some((t) => t.value === activeTab)) activeTab = availableTabs[0].value;
+	});
+
 	// Initialize favorite state from localStorage (client-only)
 	$effect(() => {
 		if (item?.slug) {
@@ -293,14 +310,12 @@
 
 		<Separator class="my-6"></Separator>
 
-		<!-- Tabs -->
+		<!-- Tabs (only tabs with data are shown) -->
 		<Tabs bind:value={activeTab} class="w-full">
 			<TabsList variant="line" class="w-full justify-start">
-				<TabsTrigger value="description">Description</TabsTrigger>
-				<TabsTrigger value="specs">Specs</TabsTrigger>
-				<TabsTrigger value="certifications">Certifications</TabsTrigger>
-				<TabsTrigger value="faq">FAQ</TabsTrigger>
-				<TabsTrigger value="resources">Resources</TabsTrigger>
+				{#each availableTabs as t (t.value)}
+					<TabsTrigger value={t.value}>{t.label}</TabsTrigger>
+				{/each}
 			</TabsList>
 		</Tabs>
 

@@ -17,6 +17,7 @@
 	import Search from '@lucide/svelte/icons/search';
 	import Target from '@lucide/svelte/icons/target';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 
 	let { data } = $props();
 </script>
@@ -44,14 +45,14 @@
 		<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 	</div>
 
-	<div class="rounded-xl bg-card p-6">
+	<Card class="p-6">
 		<h2 class="mb-2 text-lg font-bold text-foreground">Our Mission</h2>
 		<p class="text-sm text-muted-foreground leading-relaxed">
 			HalalNeo simplifies halal trade by providing verified supplier profiles, certified product
 			catalogs, and comprehensive trade intelligence — all in one platform. We help buyers find
 			genuinely certified suppliers and verify certifications before committing to a shipment.
 		</p>
-	</div>
+	</Card>
 
 	<div class="grid gap-4 sm:grid-cols-3">
 		<Card>
@@ -141,36 +142,18 @@
 					Researched knowledge base, trade tools, and market intelligence — built for halal B2B buyers and suppliers.
 				</p>
 			</div>
-			<div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-info">{data.stats.kbSectionCount}</p>
-					<p class="text-sm text-muted-foreground">knowledge sections</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-warn">{data.stats.certifierCount}</p>
-					<p class="text-sm text-muted-foreground">certifying bodies</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-success">3</p>
-					<p class="text-sm text-muted-foreground">trade tools</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-accent-purple">7</p>
-					<p class="text-sm text-muted-foreground">market guides</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-accent-rose">80+</p>
-					<p class="text-sm text-muted-foreground">glossary terms</p>
-				</div>
-				<div class="rounded-xl bg-card/70 p-4 backdrop-blur-sm">
-					<p class="text-3xl font-semibold text-info">20+</p>
-					<p class="text-sm text-muted-foreground">trade shows</p>
-				</div>
-			</div>
+			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+			<StatTile value={data.stats.kbSectionCount} label="knowledge sections" tone="info" />
+			<StatTile value={data.stats.certifierCount} label="certifying bodies" tone="warn" />
+			<StatTile value={3} label="trade tools" tone="success" />
+			<StatTile value={data.stats.guideCount} label="market guides" tone="accent-purple" />
+			<StatTile value="80+" label="glossary terms" tone="accent-rose" />
+			<StatTile value={data.stats.showCount} label="trade shows" tone="info" />
+		</div>
 		</div>
 	</div>
 
-	<div class="rounded-xl bg-card p-6">
+	<Card class="p-6">
 		<h2 class="mb-2 text-lg font-bold text-foreground">How we source data</h2>
 		<p class="text-sm text-muted-foreground leading-relaxed">
 			All certification data on HalalNeo is sourced from publicly available registers of accredited halal
@@ -179,7 +162,7 @@
 			Supplier and product listings are illustrative examples to demonstrate the platform; always verify
 			directly with the certifying body before entering into any commercial agreement.
 		</p>
-	</div>
+	</Card>
 
 	<div class="space-y-6">
 		<div class="max-w-2xl space-y-2">

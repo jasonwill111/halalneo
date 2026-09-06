@@ -64,9 +64,46 @@
 		typeof (provider as any)?.serviceAreas === 'string' ? (() => { try { return JSON.parse((provider as any).serviceAreas); } catch { return []; } })() : []
 	);
 
-	const services = $derived(
-		provider?.type ? [{ title: `${typeLabel(provider.type as ProviderType)} Services`, desc: provider.description ?? 'Professional halal services', color: 'bg-primary/10 text-primary' }] : []
-	);
+	const servicesByType: Record<string, { title: string; desc: string }[]> = {
+		certification: [
+			{ title: 'Halal certification audits', desc: 'Facility audits and ingredient reviews against recognised halal standards.' },
+			{ title: 'Scope & renewal management', desc: 'Certificate scope extensions, surveillance audits and timely renewals.' },
+			{ title: 'Export market recognition', desc: 'Guidance on which certificates open which destination markets.' }
+		],
+		logistics: [
+			{ title: 'Halal-compliant warehousing', desc: 'Segregated storage with documented halal integrity controls.' },
+			{ title: 'Certified transport', desc: 'Container and fleet handling that preserves halal status in transit.' },
+			{ title: 'Cold-chain handling', desc: 'Temperature-controlled logistics for meat, dairy and frozen goods.' }
+		],
+		finance: [
+			{ title: 'Islamic trade finance', desc: 'Murabaha, salam and wakala structures for halal shipments.' },
+			{ title: 'Credit & takaful cover', desc: 'Receivables protection and takaful alternatives to conventional insurance.' }
+		],
+		payment: [
+			{ title: 'Cross-border collection', desc: 'Multi-currency collection from buyers in OIC markets.' },
+			{ title: 'Sharia-compliant settlement', desc: 'Settlement rails without riba-based correspondent charges.' }
+		],
+		insurance: [
+			{ title: 'Cargo takaful', desc: 'Sharia-compliant cover for halal goods in transit and storage.' },
+			{ title: 'Liability & recall cover', desc: 'Product liability and recall protection for exporters.' }
+		],
+		consulting: [
+			{ title: 'Certification readiness', desc: 'Gap assessments and documentation prep before the audit.' },
+			{ title: 'Label & claims review', desc: 'Pre-print artwork checks against GSO 9 and market rules.' },
+			{ title: 'Market entry planning', desc: 'Regulatory roadmaps for first-time halal exporters.' }
+		]
+	};
+
+	const services = $derived.by(() => {
+		if (!provider?.type) return [];
+		const list = servicesByType[provider.type] ?? [
+			{ title: 'Professional halal services', desc: provider.description ?? 'Contact the provider for a full service catalogue.' }
+		];
+		return list.map((s, i) => ({
+			...s,
+			color: ['bg-primary/10 text-primary', 'bg-info/10 text-info', 'bg-success/10 text-success'][i % 3]
+		}));
+	});
 </script>
 
 <svelte:head>

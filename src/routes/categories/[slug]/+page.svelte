@@ -113,19 +113,15 @@
 						{:else}
 							<Package class="size-8 text-muted-foreground/30" />
 						{/if}
-						{#if product.certStatus === 'certified'}
-							<span
-								class="absolute top-1.5 left-1.5 rounded-full bg-success/10 px-1.5 py-0.5 text-[10px] font-semibold text-success"
-							>
-								Halal
-							</span>
-						{:else if product.certStatus === 'pending'}
-							<span
-								class="absolute top-1.5 left-1.5 rounded-full bg-warn/10 px-1.5 py-0.5 text-[10px] font-semibold text-warn"
-							>
-								Pending
-							</span>
-						{/if}
+					{#if product.certStatus === 'certified'}
+						<Badge class="absolute top-1.5 left-1.5 bg-success/10 text-success hover:bg-success/20">
+							Halal
+						</Badge>
+					{:else if product.certStatus === 'pending'}
+						<Badge class="absolute top-1.5 left-1.5 bg-warn/10 text-warn hover:bg-warn/20">
+							Pending
+						</Badge>
+					{/if}
 					</div>
 					{#if product.moq}
 						<p class="mb-1 text-[10px] text-muted-foreground">MOQ: {product.moq}</p>
