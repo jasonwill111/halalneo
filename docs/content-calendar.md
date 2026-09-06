@@ -4,51 +4,55 @@ Cadence: **1 blog post / week** (regulatory news + market analysis alternating),
 **1 market guide / 2 weeks**, KB fill-ins for the thinnest section first.
 Every news post doubles as a backlink outreach hook (see week notes).
 
-## Section inventory (D1, Sept 2026)
+## Section inventory (D1, live)
 
 | Section | Articles | Status |
 |---|---|---|
+| trade-sourcing | 26 | OK |
+| due-diligence | 24 | OK |
+| logistics | 23 | OK |
 | country-market-guides | 19 | OK |
-| due-diligence | 19 | OK |
 | halal-certification | 19 | OK |
-| logistics | 18 | OK |
-| trade-sourcing | 16 | OK |
-| packaging-labeling | 10 | **thinnest — fill first** |
-| Market guides (countries) | 7 | ID, MY, SA, UAE, TR, PK, US |
-| Blog (published) | 6 | 2 evergreen + 4 news |
-| Glossary | 80 terms | OK, expand opportunistically |
+| packaging-labeling | 14 | filled wk1–2 ✅ |
+| Market guides (countries) | 11 | ID, MY, SA, UAE, TR, PK, US, TH, SG, BD, EG |
+| Certifying bodies | 15 | +IS EG Halal (EG gatekeeper) |
+| Blog (published) | 8 | 3 evergreen + 5 news |
+| Glossary | 83 terms | OK, expand opportunistically |
+| Tools | 6 | +landed-cost, +rfq-builder, +tools hub (wk of Sep 6) |
 
-## Weeks 1–2: regulatory news + packaging fill
+## Weeks 1–2 ✅ DONE (shipped)
 
-- **Blog (news):** "UAE MOIAT Halal National Mark: application walkthrough" —
-  tags: uae, moiat, certification. Outreach: UAE trade groups, LinkedIn.
-- **KB ×2 → packaging-labeling:** "GSO 193 labelling claims checklist",
-  "Arabic label mandatory elements by market".
-- **Market guide:** Thailand (CICOT certifier exists, no guide yet).
+- **Blog (news):** "UAE MOIAT Halal National Mark: application walkthrough" — live.
+- **KB ×2 → packaging-labeling:** "GSO 9 labelling claims checklist"
+  (opened with GSO-193 correction), "Arabic label mandatory elements by market" — live.
+- **Market guide:** Thailand — live. Glossary backfill: Halal National Mark.
 
-## Weeks 3–4: sourcing season + Singapore
+## Weeks 3–4 ✅ DONE (shipped)
 
-- **Blog (news):** "Gulfood / MIHAS 2026 calendar: which shows matter for buyers" —
-  tags: trade-shows, sourcing. Outreach: exhibitors, event organizers.
-- **KB ×2 → packaging-labeling:** "Primary vs secondary halal packaging rules",
-  "Migration testing for food-contact packaging".
-- **Market guide:** Singapore (MUIS certifier exists, high-income voluntary market).
+- **Blog (news):** "Gulfood / MIHAS 2026 calendar" — live.
+- **KB ×2 → packaging-labeling:** "Primary vs secondary packaging rules",
+  "Migration testing for food-contact packaging" — live.
+- **Market guide:** Singapore — live. Glossary: MIHAS, Gulfood.
 
-## Weeks 5–6: finance theme + South Asia
+## Weeks 5–6: finance theme + South Asia (guide DONE early, rest pending)
 
 - **Blog (analysis):** "Murabaha vs conventional LC: true cost comparison for halal importers"
   — tags: islamic-finance, trade-finance. Outreach: Islamic fintech blogs.
-- **KB ×2 → trade-sourcing:** "RFQ template for halal procurement",
-  "OEM vs ODM halal compliance checklist".
-- **Market guide:** Bangladesh (large Muslim market, no guide yet).
+  Cross-link the landed-cost tool + finance-type service providers.
+- **KB ×2 → trade-sourcing:** "RFQ template for halal procurement" (note: RFQ
+  Builder tool now covers the interactive half — write the article as the
+  strategic companion, link the tool), "OEM vs ODM halal compliance checklist".
+- **Market guide:** Bangladesh — ✅ DONE early. Next: Nigeria (see wk 7–8).
 
-## Weeks 7–8: due diligence + MENA depth
+## Weeks 7–8: due diligence + Africa depth (guide DONE early, rest pending)
 
 - **Blog (news):** "Certificate fraud red flags: 7 checks before you wire money" —
   tags: due-diligence, verification. Outreach: sourcing communities, Reddit r/import.
+  Cross-link /verify tool + certification-vault post.
 - **KB ×2 → due-diligence:** "How to read a halal certificate scope",
   "Audit history requests that actually get answered".
-- **Market guide:** Egypt or Nigeria (gateway African markets).
+- **Market guide:** Egypt — ✅ DONE early (incl. IS EG Halal body). Remaining: **Nigeria**
+  (gateway African market, SANHA recognition lists it as pending — good hook).
 
 ## Standing rules
 

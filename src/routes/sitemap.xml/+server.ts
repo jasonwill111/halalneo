@@ -12,7 +12,8 @@ import {
 	getCertifyingBodies,
 	getPages
 } from '#lib/server/queries/index.js';
-import { marketGuides } from '#lib/data/market-guides.js';
+import { marketGuides as staticMarketGuides } from '#lib/data/market-guides.js';
+import { marketGuides as dbMarketGuides } from '#lib/server/db/schema.js';
 
 const BASE_URL = 'https://halalneo.com';
 const MAX_URLS = 5000;
@@ -34,8 +35,12 @@ const staticRoutes = [
 	'/market-guides',
 	'/certifying-bodies',
 	'/service-providers',
+	'/tools',
 	'/tools/ingredient-checker',
-	'/tools/certification-cost'
+	'/tools/certification-cost',
+	'/tools/landed-cost',
+	'/tools/rfq-builder',
+	'/tools/ai-chat'
 ];
 
 function formatDate(date: Date | null | undefined): string {
@@ -91,8 +96,8 @@ export const GET: RequestHandler = async (event) => {
 		addEntry(route, staticLastmod, route === '/' ? 'daily' : 'weekly', route === '/' ? '1.0' : '0.8');
 	}
 
-	// Market guide country pages (static data)
-	for (const guide of marketGuides) {
+	// Market guide country pages (static fallback when DB is unavailable)
+	for (const guide of staticMarketGuides) {
 		addEntry(`/market-guides/${guide.slug}`, staticLastmod, 'monthly', '0.7');
 	}
 
@@ -100,6 +105,17 @@ export const GET: RequestHandler = async (event) => {
 		try {
 			const cacheKey = 'sitemap:dynamic-routes';
 
+			// Market guides from DB (source of truth — includes guides added after seed)
+			const dbGuides = await cachedQuery(
+				`${cacheKey}:market-guides`,
+				() => db.select({ slug: dbMarketGuides.slug, updatedAt: dbMarketGuides.updatedAt }).from(dbMarketGuides),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			const staticSlugs = new Set(staticMarketGuides.map((g) => g.slug));
+			for (const guide of dbGuides) {
+				if (staticSlugs.has(guide.slug)) continue;
+				addEntry(`/market-guides/${guide.slug}`, guide.updatedAt, 'monthly', '0.7');
+			}
 			const products = await cachedQuery(
 				`${cacheKey}:products`,
 				() => getProducts(db, { limit: 5000, offset: 0 }),
