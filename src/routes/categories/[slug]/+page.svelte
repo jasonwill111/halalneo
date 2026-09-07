@@ -11,6 +11,7 @@
 	import Package from '@lucide/svelte/icons/package';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 	const category = $derived(data.category);
@@ -34,6 +35,19 @@
 			list.sort((a: any, b: any) => (b.priceMin ?? -Infinity) - (a.priceMin ?? -Infinity));
 		if (sortBy === 'name') list.sort((a: any, b: any) => a.name.localeCompare(b.name));
 		return list;
+	});
+
+	const PAGE_SIZE = 12;
+	let page = $state(1);
+	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	// Reset to first page whenever filters change
+	$effect(() => {
+		void certFilter;
+		void countryFilter;
+		void sortBy;
+		page = 1;
 	});
 </script>
 
@@ -94,7 +108,7 @@
 
 		<!-- Product grid -->
 		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-			{#each filtered as product (product.slug)}
+			{#each paged as product (product.slug)}
 				<a
 					href={localizeHref(`/products/${product.slug}`)}
 					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md"
@@ -146,6 +160,7 @@
 				</a>
 			{/each}
 		</div>
+		<Paginator bind:page {totalPages} />
 	{:else}
 		<div class="flex min-h-[30vh] items-center justify-center">
 			<p class="text-sm text-muted-foreground">No products in this category yet.</p>

@@ -6,6 +6,7 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 	let search = $state('');
@@ -22,6 +23,16 @@
 					: true
 			)
 	);
+
+	const PAGE_SIZE = 6;
+	let page = $state(1);
+	const totalPages = $derived(Math.max(1, Math.ceil(published.length / PAGE_SIZE)));
+	const paged = $derived(published.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	$effect(() => {
+		void search;
+		page = 1;
+	});
 </script>
 
 <Breadcrumb items={[{ label: 'Blog', href: '/blog' }]} />
@@ -60,7 +71,7 @@
 		</div>
 	{:else}
 		<div class="grid gap-3 sm:grid-cols-2">
-			{#each published as post, idx (post.slug)}
+			{#each paged as post, idx (post.slug)}
 				<Card class="overflow-hidden">
 					<article>
 						<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
@@ -88,5 +99,6 @@
 				</Card>
 			{/each}
 		</div>
+		<Paginator bind:page {totalPages} />
 	{/if}
 </section>

@@ -8,6 +8,14 @@
 - **共享数据/工具**（优先复用）：`#lib/utils/tile-colors.js`（TILE_COLORS）、`#lib/utils/mandate.js`（MANDATE_STATUSES）、`#lib/utils/region.js`（getRegion）、`#lib/data/country-images.js`（COUNTRY_IMAGES）、`#lib/data/recognition.ts`（RECOGNITION_DATA + status helpers）、`#lib/data/navigation.ts`（全站导航唯一源）。
 - **动效纪律**：滚动显现只用 `reveal` attach（`layout.css` 的 `.reveal/.in`）；入场用 `.animate-enter` + `--enter-delay` stagger；装饰浮动用 `.animate-float` / `.animate-glow`；只许 opacity/transform（GPU 属性），backdrop-blur 仅用于 header/浮层/hero，禁止下放到列表卡片网格。`prefers-reduced-motion` 已全局兜底。
 - **内容规范**：KB/blog 正文存 Markdown（渲染器转 HTML + 自动 TOC；禁止存裸 HTML）。新增市场指南必须同步：`COUNTRY_IMAGES`（无图用 GuideHero 兜底）、`RECOGNITION_DATA`（如涉及新认证机构）、sitemap 自动覆盖（DB 驱动）。市场指南 `status` 用 `'active'`（seed 约定）。
+- **响应式/排版原则**（mobile 优先紧凑，2026-09 落定）：
+  - 断点：base（<640 mobile）/ sm（≥640 tablet）/ lg（≥1024 desktop），xl 仅用于 4 列大屏。
+  - 列表网格 mobile 一律 ≥2 列（`grid-cols-2` 起步），卡片图用小比例（`aspect-[16/10]` 或更小），mobile 藏次要描述（`hidden sm:block`）、标题 truncate、padding 降档（p-2.5 vs sm:p-4）。
+  - 详情页 mobile 单列堆叠、桌面双栏（主内容 + sticky 侧栏）；容器 `max-w-6xl` 起步，禁止无故 `max-w-4xl` 留白。
+  - 字号：标签 10-11px、正文 12-14px；mobile 禁止 text-base 以上装饰性大字（hero 标题除外）。
+  - 间距：section 间 `space-y-4`（mobile）/`space-y-6`（sm+）；卡片内 `p-3`/`p-4`；网格 gap-2/gap-3。
+  - 所有列表页必须分页：用共享 `site/paginator.svelte`（`bind:page` + `totalPages`），PAGE_SIZE 按网格列数取（2/3/4 列对应 8/9/12），筛选变化时 `$effect` 重置 page=1；只有 1 页时组件自动隐藏。
+- **数据层纪律**：列表 API 必须 limit（上限 100）+ 列投影；结果依赖 query 参数的接口必须传显式 `cacheKey: queryCacheKey(url)`（path-only 键会污染所有筛选组合）；WHERE 列必须有 D1 索引覆盖；`LIKE '%x%'` 全表扫仅允许小表（<500 行），否则上 FTS。
 
 ---
 

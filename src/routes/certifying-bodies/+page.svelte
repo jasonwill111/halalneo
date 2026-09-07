@@ -9,6 +9,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import Paginator from '#lib/components/site/paginator.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { getRegion } from '#lib/utils/region.js';
 
@@ -42,6 +43,17 @@
 		})
 	);
 
+	const PAGE_SIZE = 12;
+	let page = $state(1);
+	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	$effect(() => {
+		void query;
+		void selectedRegion;
+		page = 1;
+	});
+
 	// Initials tile palette — shared with homepage/categories/KB for cross-page consistency
 	const tileColors = TILE_COLORS;
 </script>
@@ -69,7 +81,7 @@
 	/>
 
 	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
-		{#each filtered as body, i}
+		{#each paged as body, i}
 			<article class="contents">
 			<a href={localizeHref(`/certifying-bodies/${body.id}`)} class="group h-full">
 				<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
@@ -103,4 +115,5 @@
 	{#if filtered.length === 0}
 		<p class="py-10 text-center text-muted-foreground">No certifying bodies match "{query}"</p>
 	{/if}
+	<Paginator bind:page {totalPages} />
 </section>

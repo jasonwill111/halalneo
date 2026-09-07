@@ -3,8 +3,15 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
+
+	const PAGE_SIZE = 9;
+	let page = $state(1);
+	const articles = $derived((data.item?.articles ?? []) as any[]);
+	const totalPages = $derived(Math.max(1, Math.ceil(articles.length / PAGE_SIZE)));
+	const paged = $derived(articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 </script>
 
 <svelte:head>
@@ -29,7 +36,7 @@
 		</header>
 
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each data.item.articles as article}
+			{#each paged as article}
 				<Card>
 					<CardHeader>
 						<CardTitle class="text-lg">{article.title}</CardTitle>
@@ -47,6 +54,7 @@
 				</Card>
 			{/each}
 		</div>
+		<Paginator bind:page {totalPages} />
 	{:else}
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">

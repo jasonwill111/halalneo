@@ -12,6 +12,7 @@
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 
@@ -50,6 +51,9 @@
 
 	const regions = ['all', 'Asia', 'Europe', 'Middle East', 'North America', 'Africa'] as const;
 
+	const PAGE_SIZE = 9;
+	let page = $state(1);
+
 	const filtered = $derived(
 		(data.shows ?? [])
 			.filter((s: any) => (selectedRegion === 'all' || s.region === selectedRegion))
@@ -62,6 +66,15 @@
 			)
 			.sort((a: any, b: any) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
 	);
+
+	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	$effect(() => {
+		void selectedRegion;
+		void search;
+		page = 1;
+	});
 
 	const now = new Date();
 
@@ -154,7 +167,7 @@
 		</div>
 	{:else}
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each filtered as show (show.id)}
+			{#each paged as show (show.id)}
 				{@const ongoing = isOngoing(show.startDate, show.endDate)}
 				{@const upcoming = isUpcoming(show.startDate)}
 				{@const past = isPast(show.endDate)}
@@ -217,5 +230,6 @@
 				</Card>
 			{/each}
 		</div>
+		<Paginator bind:page {totalPages} />
 	{/if}
 </section>

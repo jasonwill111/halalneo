@@ -4,20 +4,21 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card } from '#lib/components/ui/card/index.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 
-	const certBodies = [
-		{ name: 'JAKIM', country: 'Malaysia', standard: 'MS 1500' },
-		{ name: 'BPJPH / MUI', country: 'Indonesia', standard: 'SNI 97112:2022' },
-		{ name: 'MUIS', country: 'Singapore', standard: 'Singapore MUIS' },
-		{ name: 'SFDA', country: 'Saudi Arabia', standard: 'SASO' },
-		{ name: 'MOIAT', country: 'UAE', standard: 'ESMA' },
-		{ name: 'IFANCA', country: 'United States', standard: 'IFANCA' },
-		{ name: 'GIMDES', country: 'Türkiye', standard: 'GIMDES' },
-		{ name: 'SANHA', country: 'South Africa', standard: 'SANHA' }
-	];
+	const suppliers = $derived((data.suppliers ?? []) as any[]);
+	const products = $derived((data.products ?? []) as any[]);
+
+	const PAGE_SIZE = 9;
+	let page = $state(1);
+	const totalPages = $derived(Math.max(1, Math.ceil(suppliers.length / PAGE_SIZE)));
+	const pagedSuppliers = $derived(suppliers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	const productCount = (slug: string): number => products.filter((p: any) => p.supplierSlug === slug).length;
 
 	const businessTypes = [
 		'Food Manufacturers',
@@ -27,8 +28,6 @@
 		'Ingredients & Additives',
 		'Packaging & Logistics'
 	];
-
-	const shieldColors = ['text-info', 'text-warn', 'text-success'];
 </script>
 
 <Breadcrumb items={[{ label: 'Suppliers', href: '/suppliers' }]} />
@@ -46,34 +45,65 @@
 	</div>
 
 	<!-- Marketplace Coming Soon -->
-	<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-6 text-center sm:p-8">
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4 text-center sm:p-8">
 		<Badge variant="secondary" class="mb-3">Coming Soon</Badge>
-		<h2 class="text-xl font-semibold tracking-tight">Verified supplier profiles</h2>
+		<h2 class="text-xl font-semibold tracking-tight">Direct ordering</h2>
 		<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
-			We're onboarding certified halal suppliers. Each profile will include certification details, scope, and verified contact information.
+			Browse verified profiles today. Checkout, escrow and order tracking are on the way —
+			inquiries already reach suppliers directly.
 		</p>
 		<div class="mt-4">
 			<Button href={localizeHref('/register')} size="sm">Join the waitlist</Button>
 		</div>
 	</div>
 
+	<!-- Verified Suppliers -->
+	{#if suppliers.length > 0}
+		<div class="space-y-4">
+			<div class="flex items-end justify-between gap-2">
+				<div>
+					<h2 class="text-lg font-semibold">Verified suppliers</h2>
+					<p class="text-xs text-muted-foreground">{suppliers.length} certified suppliers on HalalNeo.</p>
+				</div>
+			</div>
+			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+				{#each pagedSuppliers as s}
+					<a
+						href={localizeHref(`/suppliers/${s.slug}`)}
+						class="group flex items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-3"
+					>
+						<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary sm:size-10">
+							{s.logoInitials ?? s.name?.slice(0, 2) ?? '?'}
+						</div>
+						<div class="min-w-0 flex-1">
+							<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+								{s.name}
+							</h3>
+							<p class="mt-0.5 truncate text-[10px] text-muted-foreground sm:text-xs">
+								{s.country} · {productCount(s.slug)} product{productCount(s.slug) === 1 ? '' : 's'}
+							</p>
+						</div>
+						{#if s.status === 'active'}
+							<ShieldCheck class="size-3.5 shrink-0 text-success sm:size-4" />
+						{/if}
+					</a>
+				{/each}
+			</div>
+			<Paginator bind:page {totalPages} />
+		</div>
+	{/if}
+
 	<!-- Certifying Bodies -->
 	<div class="space-y-4">
-		<div>
-			<h2 class="text-lg font-semibold">Recognised certifying bodies</h2>
-			<p class="text-xs text-muted-foreground">Suppliers on HalalNeo carry certificates from these recognised bodies.</p>
-		</div>
-		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-			{#each certBodies as body, i}
-				<Card class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<ShieldCheck class="size-4 {shieldColors[i % shieldColors.length]}" />
-						<span class="text-sm font-semibold">{body.name}</span>
-					</div>
-					<p class="text-xs text-muted-foreground">{body.country}</p>
-					<p class="text-xs text-muted-foreground">Standard: {body.standard}</p>
-				</Card>
-			{/each}
+		<div class="flex items-end justify-between gap-2">
+			<div>
+				<h2 class="text-lg font-semibold">Recognised certifying bodies</h2>
+				<p class="text-xs text-muted-foreground">Suppliers on HalalNeo carry certificates from these recognised bodies.</p>
+			</div>
+			<Button href={localizeHref('/certifying-bodies')} variant="outline" size="sm" class="shrink-0 text-xs">
+				View all 15
+				<ArrowRight class="size-3.5" />
+			</Button>
 		</div>
 	</div>
 

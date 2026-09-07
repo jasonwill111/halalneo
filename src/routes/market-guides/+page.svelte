@@ -5,6 +5,7 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import GuideHero from '#lib/components/site/guide-hero.svelte';
+	import Paginator from '#lib/components/site/paginator.svelte';
 	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
 	import { cn } from '#lib/utils.js';
@@ -34,6 +35,16 @@
 			? data.guides
 			: data.guides.filter((g: any) => g.region === selectedRegion)
 	);
+
+	const PAGE_SIZE = 9;
+	let page = $state(1);
+	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	$effect(() => {
+		void selectedRegion;
+		page = 1;
+	});
 </script>
 
 <Breadcrumb items={[{ label: 'Market Guides', href: '/market-guides' }]} />
@@ -58,7 +69,7 @@
 	/>
 
 	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-			{#each filtered as guide (guide.slug)}
+			{#each paged as guide (guide.slug)}
 			<article class="contents">
 			<a href={localizeHref(`/market-guides/${guide.slug}`)} class="group h-full">
 			<Card class="h-full bg-card ring-1 ring-foreground/10 transition-shadow group-hover:shadow-md overflow-hidden">
@@ -126,6 +137,7 @@
 			</div>
 		{/each}
 	</div>
+	<Paginator bind:page {totalPages} />
 
 	<div class="rounded-xl border border-dashed border-border p-6 text-center text-muted-foreground">
 		<ScaleIcon class="mx-auto mb-2 size-8 opacity-40" />
