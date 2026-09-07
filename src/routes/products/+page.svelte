@@ -47,7 +47,7 @@
 	</div>
 
 	<!-- Marketplace Coming Soon -->
-	<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-6 text-center sm:p-8">
+	<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4 text-center sm:p-8">
 		<Badge variant="secondary" class="mb-3">Coming Soon</Badge>
 		<h2 class="text-xl font-semibold tracking-tight">Product listings</h2>
 		<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
@@ -64,21 +64,21 @@
 			<h2 class="text-lg font-semibold">Product categories</h2>
 			<p class="text-xs text-muted-foreground">Halal-certified products across these categories.</p>
 		</div>
-		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
 			{#each productCategories as cat}
 				<Card class="overflow-hidden p-0">
 					{#if catImages[cat.slug]}
-						<div class="aspect-[4/3] overflow-hidden">
-							<img src={catImages[cat.slug]} alt={cat.name} class="h-full w-full object-cover" loading="lazy" decoding="async" width="400" height="300" />
+						<div class="aspect-[16/10] overflow-hidden">
+							<img src={catImages[cat.slug]} alt={cat.name} class="h-full w-full object-cover" loading="lazy" decoding="async" width="400" height="250" />
 						</div>
 					{:else}
-						<div class="p-4 pb-0">
-							<Package class="size-5 text-primary mb-2" />
+						<div class="p-2.5 pb-0 sm:p-4 sm:pb-0">
+							<Package class="size-4 text-primary mb-1.5 sm:size-5 sm:mb-2" />
 						</div>
 					{/if}
-					<CardContent class="p-4">
-						<h3 class="text-sm font-medium">{cat.name}</h3>
-						<p class="mt-1 text-xs text-muted-foreground line-clamp-2">{cat.description}</p>
+					<CardContent class="p-2.5 sm:p-4">
+						<h3 class="truncate text-xs font-medium sm:text-sm">{cat.name}</h3>
+						<p class="mt-0.5 hidden text-xs text-muted-foreground line-clamp-2 sm:block">{cat.description}</p>
 					</CardContent>
 				</Card>
 			{/each}
@@ -91,11 +91,11 @@
 			<h2 class="text-lg font-semibold">Target markets</h2>
 			<p class="text-xs text-muted-foreground">Products available for import across these regions.</p>
 		</div>
-		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each markets as market}
-				<Card class="p-4">
-					<h3 class="text-sm font-semibold">{market.region}</h3>
-					<p class="mt-1 text-xs text-muted-foreground">{market.countries}</p>
+				<Card class="p-3 sm:p-4">
+					<h3 class="truncate text-xs font-semibold sm:text-sm">{market.region}</h3>
+					<p class="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground sm:mt-1 sm:text-xs">{market.countries}</p>
 				</Card>
 			{/each}
 		</div>

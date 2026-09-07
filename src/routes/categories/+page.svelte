@@ -64,31 +64,31 @@
 			{/each}
 		</div>
 	{:else}
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each filteredCategories as category, i}
 				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
 				<article>
 				<Card hoverable>
-					<CardHeader class="gap-3">
+					<CardHeader class="gap-2 sm:gap-3">
 						<div
-							class="flex size-10 items-center justify-center rounded-lg {tileColors[
+							class="flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-10 {tileColors[
 								i % tileColors.length
 							]}"
 						>
-							<Icon name={category.icon} class="size-5"></Icon>
+							<Icon name={category.icon} class="size-4 sm:size-5"></Icon>
 						</div>
-						<div class="space-y-1">
-							<CardTitle class="text-lg">{category.name}</CardTitle>
-							<CardDescription>{category.description}</CardDescription>
+						<div class="min-w-0 space-y-0.5 sm:space-y-1">
+							<CardTitle class="truncate text-sm sm:text-lg">{category.name}</CardTitle>
+							<CardDescription class="hidden sm:block">{category.description}</CardDescription>
 						</div>
 					</CardHeader>
-					<CardContent class="space-y-3">
-						<p class="text-sm text-muted-foreground">
+					<CardContent class="space-y-2 sm:space-y-3">
+						<p class="text-xs text-muted-foreground sm:text-sm">
 							{count} product{count === 1 ? '' : 's'}
 						</p>
-						<Button href={localizeHref(`/categories/${category.slug}`)} variant="outline" size="sm">
+						<Button href={localizeHref(`/categories/${category.slug}`)} variant="outline" size="sm" class="w-full text-xs sm:w-auto">
 							View products
-							<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
+							<ArrowUpRight class="size-3.5 sm:size-4" data-icon="inline-end"></ArrowUpRight>
 						</Button>
 					</CardContent>
 				</Card>

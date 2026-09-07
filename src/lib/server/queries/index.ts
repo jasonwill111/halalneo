@@ -31,11 +31,12 @@ export async function getProducts(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.products.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, categorySlug, certStatus, status } = opts;
+		const { limit = 20, offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
 
 		const conditions = [];
 		if (search) conditions.push(like(schema.products.name, `%${search}%`));
 		if (categorySlug) conditions.push(eq(schema.products.categorySlug, categorySlug));
+		if (supplierSlug) conditions.push(eq(schema.products.supplierSlug, supplierSlug));
 		if (certStatus)
 			conditions.push(
 				eq(schema.products.certStatus, certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable')

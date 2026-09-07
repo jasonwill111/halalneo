@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
 import { categories } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
-import { cachedQuery, cacheMedium, invalidateCache } from '#lib/server/cache.js';
+import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
 export const GET: RequestHandler = async ({ platform, url }) => {
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 
 				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},
-			{ ...cacheMedium() }
+			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
 		);
 
 		return json(data);

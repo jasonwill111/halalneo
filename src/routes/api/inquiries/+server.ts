@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
 import { inquiries } from '#lib/server/db/schema.js';
 import { eq, like, sql, and } from 'drizzle-orm';
-import { cachedQuery, cacheShort } from '#lib/server/cache.js';
+import { cachedQuery, cacheShort, queryCacheKey } from '#lib/server/cache.js';
 import { z } from 'zod';
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 
 				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},
-			{ ...cacheShort() }
+			{ ...cacheShort(), cacheKey: queryCacheKey(url) }
 		);
 		return json(data);
 	} catch (e: any) {

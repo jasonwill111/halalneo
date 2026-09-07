@@ -103,6 +103,23 @@ export const cacheImmutable = (
 	staleWhileRevalidate: 0
 });
 
+/**
+ * Query-aware cache key for list endpoints: pathname + sorted params.
+ * Bare path-only keys merge `?supplierSlug=a` with `?supplierSlug=b`
+ * (first response wins for every filter combo). Use this everywhere
+ * the result depends on the query string. Detail routes ([slug]/[id])
+ * are path-unique and don't need it.
+ * Trade-off: POST invalidation deletes path-only keys, so filtered
+ * entries can stay stale up to TTL (300s medium / 60s short) after
+ * admin writes. Correctness first — stale window is bounded and short.
+ */
+export function queryCacheKey(url: URL): string {
+	const params = new URLSearchParams(url.search);
+	params.sort();
+	const qs = params.toString();
+	return qs ? `${url.pathname}?${qs}` : url.pathname;
+}
+
 export async function invalidateCache(...urls: string[]): Promise<void> {
 	const cache = await getDefaultCache();
 	if (!cache) return;

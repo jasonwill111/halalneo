@@ -228,7 +228,7 @@
 	</div>
 
 	<!-- Company info -->
-	<div class="relative mx-auto -mt-8 max-w-5xl">
+	<div class="relative mx-auto -mt-8 max-w-6xl">
 		<div class="mb-3 flex items-end gap-4">
 			<div
 				class="flex size-12 items-center justify-center rounded-2xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm"
@@ -321,8 +321,8 @@
 			<StatTile value={item.yearEstablished ?? '—'} label="Est." tone="success" />
 		</div>
 
-		<div class="grid gap-4 lg:grid-cols-3">
-			<div class="min-w-0 space-y-4 lg:col-span-2">
+		<div class="grid gap-3 sm:gap-4 lg:grid-cols-5">
+			<div class="min-w-0 space-y-4 lg:col-span-3">
 				<!-- About -->
 				<section>
 					<h2 class="mb-1 text-sm font-semibold">About</h2>
@@ -422,7 +422,7 @@
 				{/if}
 			</div>
 
-			<aside class="min-w-0 space-y-4">
+			<aside class="min-w-0 space-y-3 sm:space-y-4 lg:col-span-2">
 				<!-- Company facts -->
 				<Card class="p-4">
 					<CardTitle class="mb-3 text-sm">Company facts</CardTitle>
