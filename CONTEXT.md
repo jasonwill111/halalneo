@@ -427,6 +427,16 @@ admin notification → admin reviews (dashboard shows pending applications)
 paid plans will be announced with ≥30 days' notice. Pricing shown on
 `/pricing` is the post-test-mode standard.
 
+#### Known boundaries (not tested / not built)
+
+- No email service: application confirmation is copy-only, nothing sent.
+- `/supplier/*` portal (dashboard/products/orders) still runs demo data
+  (hardcoded `nusantara-foods`); supplier self-service is future work —
+  admin-mediated upload is the current model.
+- Mobile verified via viewport screenshots only, no real-device testing.
+- English only (i18n infrastructure ready but unused).
+- No payment/subscription flows (none exist by design in test mode).
+
 ### Paid Services
 
 - **Promotion**: Search ranking boost, featured listings, category/product top placement
