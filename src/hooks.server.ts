@@ -102,7 +102,11 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	}
 
 	// Write API endpoints — no cache (POST/PUT/DELETE)
-	if (pathname.startsWith('/api') && event.request.method !== 'GET') {
+	// Auth endpoints — never cache (session responses are per-user)
+	if (
+		pathname.startsWith('/api/auth') ||
+		(pathname.startsWith('/api') && event.request.method !== 'GET')
+	) {
 		const response = await resolve(event);
 		response.headers.set('Cache-Control', 'no-store');
 		return response;
@@ -291,12 +295,23 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 		event.locals.user = session.user;
 	}
 
-	// Admin route protection: require authenticated session
-	if (pathname.startsWith('/admin') && !session) {
-		return new Response(null, {
-			status: 302,
-			headers: { Location: '/login' }
-		});
+	// Admin route protection: require an authenticated session whose email is
+	// on the ADMIN_EMAILS allowlist (comma-separated, set as a worker secret).
+	// The admin login page itself stays reachable without a session.
+	const isAdminLogin = pathname === '/admin/login' || pathname.startsWith('/admin/login/');
+	if (pathname.startsWith('/admin') && !isAdminLogin) {
+		const env = (event.platform?.env ?? {}) as unknown as Record<string, string | undefined>;
+		const allowlist = (env.ADMIN_EMAILS ?? '')
+			.split(',')
+			.map((s) => s.trim().toLowerCase())
+			.filter(Boolean);
+		const email = (session?.user?.email ?? '').toLowerCase();
+		if (!session || !email || !allowlist.includes(email)) {
+			return new Response(null, {
+				status: 302,
+				headers: { Location: '/admin/login' }
+			});
+		}
 	}
 
 	return svelteKitHandler({ event, resolve, auth, building });

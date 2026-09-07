@@ -95,7 +95,8 @@ _Avoid_: content generator, AI assistant
 | About | `/about` | ✅ Mission, milestones, team |
 | FAQ | `/faq` | ✅ Accordion FAQ with search |
 | Contact | `/contact` | ✅ Contact form |
-| Auth | `/login`, `/register`, `/supplier/login` | ✅ Buyer + supplier auth |
+| Auth | `/login`, `/register`, `/supplier/login` | ✅ Buyer + supplier auth (demo/localStorage) |
+| Admin Auth | `/admin/login`, `/api/auth/*` | ✅ Real better-auth (email/password, D1) gated by `ADMIN_EMAILS` allowlist |
 | Buyer Account | `/account`, `/account/profile`, `/account/saved`, `/account/inquiries` | ✅ Dashboard + 3 sub-pages |
 | Supplier Portal | `/supplier/onboarding`, `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage` | ✅ 6 pages |
 | Admin | `/admin/*` | ✅ 14 pages (dashboard, users, products, suppliers, categories, blog, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings) |
@@ -129,6 +130,7 @@ _Avoid_: content generator, AI assistant
 | `/api/verify` | GET | Certificate verification search |
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |
+| `/api/auth/*` | GET, POST | better-auth handlers (sign-up/sign-in/sign-out/session); never cached |
 | `/api/pages` | GET | CMS pages |
 | `/api/pages/[slug]` | GET | CMS page detail |
 | `/api/settings` | GET | Site settings |
@@ -169,6 +171,7 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 | Database | Cloudflare D1 (SQLite) |
 | Storage | Cloudflare R2 |
 | Auth | Better Auth 1.7.2 |
+| Admin gate | `ADMIN_EMAILS` worker secret (comma-separated allowlist); `/admin/*` requires session + allowlisted email, redirects to `/admin/login` |
 | ORM | Drizzle ORM 0.45.2 |
 | AI | Mastra 1.63.0 + Vercel AI SDK 7.0.85 |
 | Hosting | Cloudflare Workers |
