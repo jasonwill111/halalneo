@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { getCurrentAccount, signOut } from '#lib/stores/auth.svelte.js';
+	import { authClient } from '#lib/auth-client.js';
 	import { mode, toggleMode } from 'mode-watcher';
+	import { onMount } from 'svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import { page } from '$app/state';
@@ -28,10 +29,31 @@
 
 	interface Props {
 		variant: 'desktop' | 'mobile';
+		user?: { name?: string | null; email?: string | null; image?: string | null } | null;
 		onNavigate?: () => void;
 	}
 
-	let { variant, onNavigate }: Props = $props();
+	let { variant, user = null, onNavigate }: Props = $props();
+
+	let fallbackUser = $state<{ name?: string | null; email?: string | null } | null>(null);
+
+	// The /admin layout instance is reused when navigating between /admin/login
+	// and /admin (login is a child of the admin layout), so the user prop may
+	// arrive after mount. Render it reactively; only fall back to a client
+	// session fetch when the server never supplied one.
+	onMount(() => {
+		if (user) return;
+		authClient
+			.getSession()
+			.then(({ data }) => {
+				if (data?.user) fallbackUser = data.user;
+			})
+			.catch(() => {
+				// leave the server-provided value as-is
+			});
+	});
+
+	const displayUser = $derived(user ?? fallbackUser);
 
 	const navItems = [
 		{ label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -52,15 +74,13 @@
 		{ label: 'Settings', href: '/admin/settings', icon: Settings }
 	];
 
-	let currentAccount = $derived(getCurrentAccount());
-
 	function isActive(pathname: string, href: string): boolean {
 		if (href === '/admin') return pathname === '/admin' || pathname === '/admin/';
 		return pathname === href;
 	}
 
-	function initials(name: string): string {
-		return name
+	function initials(name?: string | null): string {
+		return (name ?? '')
 			.split(' ')
 			.map((p) => p[0])
 			.filter(Boolean)
@@ -69,9 +89,13 @@
 			.toUpperCase();
 	}
 
-	function handleSignOut() {
-		signOut();
-		window.location.href = localizeHref('/');
+	async function handleSignOut() {
+		try {
+			await authClient.signOut();
+		} catch {
+			// ignore — proceed to login regardless
+		}
+		window.location.href = localizeHref('/admin/login');
 	}
 </script>
 
@@ -133,15 +157,15 @@
 		<div class="flex items-center gap-2.5 rounded-lg px-2 py-2">
 			<Avatar class="size-8">
 				<AvatarFallback class="bg-primary/15 text-xs font-semibold text-primary">
-					{currentAccount ? initials(currentAccount.fullName) : 'AD'}
+					{displayUser ? initials(displayUser.name) : 'AD'}
 				</AvatarFallback>
 			</Avatar>
 			<div class="min-w-0 flex-1">
 				<p class="truncate text-sm font-medium">
-					{currentAccount ? currentAccount.fullName : 'Not signed in'}
+					{displayUser?.name ?? 'Not signed in'}
 				</p>
-				{#if currentAccount}
-					<p class="truncate text-xs text-muted-foreground">{currentAccount.email}</p>
+				{#if displayUser?.email}
+					<p class="truncate text-xs text-muted-foreground">{displayUser.email}</p>
 				{/if}
 			</div>
 		</div>

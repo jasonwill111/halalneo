@@ -4,7 +4,7 @@
 	import Menu from '@lucide/svelte/icons/menu';
 	import AdminSidebar from '#lib/components/site/admin-sidebar.svelte';
 
-	let { children } = $props();
+	let { children, data } = $props();
 	let sheetOpen = $state(false);
 
 	function closeSheet() {
@@ -22,7 +22,7 @@
 		class="hidden lg:flex h-dvh w-60 shrink-0 flex-col border-r border-border/50 bg-card/60 backdrop-blur-xl"
 		aria-label="Admin navigation"
 	>
-		<AdminSidebar variant="desktop" />
+		<AdminSidebar variant="desktop" user={data.adminUser} />
 	</aside>
 
 	<!-- Mobile header with hamburger -->
@@ -35,7 +35,7 @@
 					</Button>
 				</SheetTrigger>
 				<SheetContent side="left" class="w-60 p-0">
-					<AdminSidebar variant="mobile" onNavigate={closeSheet} />
+					<AdminSidebar variant="mobile" user={data.adminUser} onNavigate={closeSheet} />
 				</SheetContent>
 			</Sheet>
 			<span class="text-sm font-bold tracking-tight text-primary">HalalNeo Admin</span>
