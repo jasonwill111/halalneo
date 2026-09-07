@@ -16,6 +16,11 @@
   - 间距：section 间 `space-y-4`（mobile）/`space-y-6`（sm+）；卡片内 `p-3`/`p-4`；网格 gap-2/gap-3。
   - 所有列表页必须分页：用共享 `site/paginator.svelte`（`bind:page` + `totalPages`），PAGE_SIZE 按网格列数取（2/3/4 列对应 8/9/12），筛选变化时 `$effect` 重置 page=1；只有 1 页时组件自动隐藏。
 - **数据层纪律**：列表 API 必须 limit（上限 100）+ 列投影；结果依赖 query 参数的接口必须传显式 `cacheKey: queryCacheKey(url)`（path-only 键会污染所有筛选组合）；WHERE 列必须有 D1 索引覆盖；`LIKE '%x%'` 全表扫仅允许小表（<500 行），否则上 FTS。
+- **文档同步纪律**（CONTEXT.md / DESIGN.md / 日历必须随时最新）：
+  - 发布内容（blog/指南/KB/词条/认证机构）后 → 同步 `docs/content-calendar.md` 盘点表。
+  - 改动组件/动效/色板/排版后 → 同步 `DESIGN.md` 对应章节（frontmatter tokens 必须 == `layout.css` 实际值）。
+  - 新增路由/API/表后 → 同步 `CONTEXT.md` 路由表/API 表/schema 表。
+  - 以上全部进同一 commit（`docs(sync)` 可单独成 commit），禁止"代码走了文档没走"。
 
 ---
 
