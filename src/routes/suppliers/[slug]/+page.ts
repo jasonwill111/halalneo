@@ -35,6 +35,18 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		if (res.ok) {
 			const data: SupplierItem = (await res.json()) as any;
+			// Only approved suppliers are publicly visible; pending/rejected render as not-found.
+			if (data.status && data.status !== 'active') {
+				return {
+					slug: params.slug,
+					seo: {
+						title: `${params.slug} — HalalNeo`,
+						description: `${params.slug} — halal-certified supplier on HalalNeo.`,
+						robots: 'noindex, nofollow'
+					},
+					item: null
+				};
+			}
 			const certificationsParsed = typeof data.certifications === 'string' ? JSON.parse(data.certifications || '[]') : data.certifications ?? [];
 			const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
 			return {

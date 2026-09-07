@@ -7,28 +7,40 @@ import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
 const ALLOWED_SUPPLIER_FIELDS = new Set([
-	'name', 'country', 'businessType', 'isBrand', 'status', 'logoInitials',
+	'name', 'country', 'businessType', 'isBrand', 'status', 'adminNotes', 'logoInitials',
 	'description', 'coverImage', 'website', 'email', 'phone', 'whatsapp',
 	'line', 'yearEstablished', 'employeeCount', 'productionCapacity',
 	'mainMarkets', 'certifications', 'metaTitle', 'metaDescription', 'keywords'
 ]);
 
-export const GET: RequestHandler = async ({ params, url, platform }) => {
+export const GET: RequestHandler = async ({ params, url, platform, request }) => {
 	const db = getDbFromPlatform(platform);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
-		const row = await cachedQuery(
+		// Visibility guard: only approved suppliers are public. Non-active rows
+		// (pending/rejected/suspended) resolve for authenticated admin sessions
+		// only, and are never edge-cached. This also keeps SvelteKit's SSR
+		// fetch-cache from embedding the raw row (name/email/adminNotes) into
+		// the HTML of pages rendered for anonymous visitors.
+		const [row] = await db.select().from(suppliers).where(eq(suppliers.slug, params.slug)).limit(1);
+
+		if (!row) return json({ error: 'Not found' }, { status: 404 });
+
+		if (row.status !== 'active') {
+			const session = await getSession({ platform, request, locals: {} } as any);
+			if (!session) return json({ error: 'Not found' }, { status: 404 });
+			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
+		}
+
+		const cached = await cachedQuery(
 			url.toString(),
-			async () => {
-				const [row] = await db.select().from(suppliers).where(eq(suppliers.slug, params.slug)).limit(1);
-				return row ?? null;
-			},
+			async () => row ?? null,
 			{ ...cacheLong() }
 		);
 
-		if (!row) return json({ error: 'Not found' }, { status: 404 });
-		return json(row);
+		if (!cached) return json({ error: 'Not found' }, { status: 404 });
+		return json(cached);
 	} catch (e: any) {
 		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
 	}

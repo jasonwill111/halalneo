@@ -9,6 +9,15 @@
 	} from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import {
+		Dialog,
+		DialogContent,
+		DialogDescription,
+		DialogFooter,
+		DialogHeader,
+		DialogTitle
+	} from '#lib/components/ui/dialog/index.js';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Users from '@lucide/svelte/icons/users';
 	import Store from '@lucide/svelte/icons/store';
@@ -18,6 +27,9 @@
 	import Inbox from '@lucide/svelte/icons/inbox';
 	import Mail from '@lucide/svelte/icons/mail';
 	import Clock from '@lucide/svelte/icons/clock';
+	import Check from '@lucide/svelte/icons/check';
+	import X from '@lucide/svelte/icons/x';
+	import Globe from '@lucide/svelte/icons/globe';
 
 	let { data } = $props();
 
@@ -35,17 +47,74 @@
 		adminData.products.filter((s) => s.certStatus === 'not-certified').length
 	);
 
-	const liveApplications = $derived(
-		(data.applications ?? []) as Array<{
-			slug: string;
-			name: string;
-			country: string;
-			businessType: string;
-			email: string | null;
-			createdAt: number | string;
-		}>
-	);
-	const livePendingCount = $derived(data.pendingCount ?? 0);
+	interface ApplicationRow {
+		slug: string;
+		name: string;
+		country: string;
+		businessType: string;
+		email: string | null;
+		website: string | null;
+		adminNotes: string | null;
+		createdAt: number | string;
+		applicationText: string | null;
+	}
+
+	let liveApplications = $state<ApplicationRow[]>([]);
+	let livePendingCount = $state(0);
+	let loaded = $state(false);
+
+	$effect(() => {
+		liveApplications = ((data.applications ?? []) as ApplicationRow[]).map((a) => ({ ...a }));
+		livePendingCount = data.pendingCount ?? 0;
+		loaded = true;
+	});
+
+	// Review dialog state
+	let reviewOpen = $state(false);
+	let reviewTarget = $state<ApplicationRow | null>(null);
+	let reviewFeedback = $state('');
+	let reviewError = $state('');
+	let reviewBusy = $state(false);
+
+	function openReview(app: ApplicationRow) {
+		reviewTarget = app;
+		reviewFeedback = '';
+		reviewError = '';
+		reviewOpen = true;
+	}
+
+	async function review(decision: 'active' | 'rejected') {
+		if (!reviewTarget || reviewBusy) return;
+		if (decision === 'rejected' && !reviewFeedback.trim()) {
+			reviewError = 'Please include a reason when rejecting an application.';
+			return;
+		}
+		reviewBusy = true;
+		reviewError = '';
+		try {
+			const res = await fetch(`/api/suppliers/${reviewTarget.slug}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					status: decision,
+					adminNotes: reviewFeedback.trim() || null
+				})
+			});
+			if (!res.ok) {
+				const body = (await res.json().catch(() => ({}))) as { error?: string };
+				throw new Error(body?.error ?? `Failed to ${decision === 'active' ? 'approve' : 'reject'}`);
+			}
+			// Optimistically remove from the pending list and decrement the count.
+			liveApplications = liveApplications.filter((a) => a.slug !== reviewTarget!.slug);
+			livePendingCount = Math.max(0, livePendingCount - 1);
+			reviewOpen = false;
+			reviewTarget = null;
+		} catch (e: any) {
+			reviewError = e?.message ?? 'Something went wrong. Please try again.';
+		} finally {
+			reviewBusy = false;
+		}
+	}
 
 	function formatTime(ts: number | string): string {
 		const d = new Date(ts);
@@ -81,12 +150,12 @@
 					<Badge variant="secondary">{livePendingCount} pending</Badge>
 				</div>
 				<CardDescription>
-					New applications submitted through <a href="/supplier/onboarding" class="underline underline-offset-2 hover:text-foreground">/supplier/onboarding</a>. Approve or reject each from <a href="/admin/inquiries" class="underline underline-offset-2 hover:text-foreground">/admin/inquiries</a>; the supplier slug becomes public once status is set to active.
+					New applications submitted through <a href="/supplier/onboarding" class="underline underline-offset-2 hover:text-foreground">/supplier/onboarding</a>. Approve to make the supplier public, or reject with feedback. Both actions update the live D1 record.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<ul class="divide-y divide-border">
-					{#each liveApplications.slice(0, 5) as app (app.slug)}
+					{#each liveApplications as app (app.slug)}
 						<li class="flex items-center gap-3 py-2.5">
 							<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-xs font-semibold text-primary">
 								{app.name
@@ -116,12 +185,15 @@
 								<Clock class="size-3"></Clock>
 								{formatTime(app.createdAt)}
 							</div>
+							<Button variant="outline" size="sm" class="shrink-0 text-[10px]" onclick={() => openReview(app)}>
+								Review
+							</Button>
 						</li>
 					{/each}
 				</ul>
-				{#if liveApplications.length > 5}
+				{#if liveApplications.length < livePendingCount}
 					<p class="mt-3 text-[10px] text-muted-foreground">
-						Showing 5 of {livePendingCount}. Manage all in /admin/inquiries.
+						Showing {liveApplications.length} of {livePendingCount} pending applications.
 					</p>
 				{/if}
 			</CardContent>
@@ -226,3 +298,86 @@
 		</Card>
 	</div>
 </div>
+
+<Dialog bind:open={reviewOpen}>
+	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+		<DialogHeader>
+			<DialogTitle>Review application</DialogTitle>
+			<DialogDescription>
+				{reviewTarget?.name ?? ''} — {reviewTarget?.country ?? ''}
+			</DialogDescription>
+		</DialogHeader>
+
+		{#if reviewTarget}
+			<div class="space-y-3">
+				<div class="flex flex-wrap items-center gap-2 text-xs">
+					<Badge variant="secondary" class="capitalize">{reviewTarget.businessType}</Badge>
+					{#if reviewTarget.email}
+						<a href="mailto:{reviewTarget.email}" class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
+							<Mail class="size-3"></Mail>
+							{reviewTarget.email}
+						</a>
+					{/if}
+					{#if reviewTarget.website}
+						<a href={reviewTarget.website} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
+							<Globe class="size-3"></Globe>
+							Website
+						</a>
+					{/if}
+					<span class="inline-flex items-center gap-1 text-muted-foreground">
+						<Clock class="size-3"></Clock>
+						{formatTime(reviewTarget.createdAt)}
+					</span>
+				</div>
+
+				<div class="max-h-48 overflow-y-auto rounded-lg bg-muted/50 p-3">
+					<p class="mb-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Application details</p>
+					{#if reviewTarget.applicationText}
+						<pre class="whitespace-pre-wrap font-sans text-[11px] leading-relaxed">{reviewTarget.applicationText}</pre>
+					{:else}
+						<p class="text-[11px] text-muted-foreground">No application text available.</p>
+					{/if}
+				</div>
+
+				<div class="space-y-1">
+					<p class="text-[11px] font-medium">Feedback to the applicant</p>
+					<Textarea
+						bind:value={reviewFeedback}
+						placeholder="Optional for approval. Required when rejecting — this is recorded as the review note."
+						class="min-h-20 text-xs"
+					></Textarea>
+					{#if reviewTarget.adminNotes}
+						<p class="text-[10px] text-muted-foreground">Previous note: {reviewTarget.adminNotes}</p>
+					{/if}
+				</div>
+
+				{#if reviewError}
+					<p class="text-xs text-destructive">{reviewError}</p>
+				{/if}
+			</div>
+		{/if}
+
+		<DialogFooter class="gap-2 sm:gap-0">
+			<Button variant="outline" size="sm" disabled={reviewBusy} onclick={() => (reviewOpen = false)}>
+				Cancel
+			</Button>
+			<Button
+				variant="destructive"
+				size="sm"
+				disabled={reviewBusy}
+				onclick={() => review('rejected')}
+			>
+				<X class="size-3.5"></X>
+				Reject
+			</Button>
+			<Button
+				size="sm"
+				disabled={reviewBusy}
+				onclick={() => review('active')}
+			>
+				<Check class="size-3.5"></Check>
+				Approve
+			</Button>
+		</DialogFooter>
+	</DialogContent>
+</Dialog>

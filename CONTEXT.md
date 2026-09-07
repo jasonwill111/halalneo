@@ -421,8 +421,13 @@ tiers are free while the first suppliers are onboarded. Flow: public
 `/supplier/onboarding` (3-step form) → POST `/api/supplier-applications`
 creates a `suppliers` row (`status='pending'`) + an inquiry record as the
 admin notification → admin reviews (dashboard shows pending applications)
-→ admin approves by setting `status='active'` (D1) → public
-`/suppliers/[slug]` goes live. Products are uploaded by admin via
+→ admin approves or rejects from the dashboard review dialog (Approve sets
+`status='active'`; Reject requires feedback and sets `status='rejected'`;
+both persist feedback to `suppliers.admin_notes` via PUT
+`/api/suppliers/[slug]`) → public `/suppliers/[slug]` goes live (only
+`active` suppliers are publicly resolvable — the detail API 404s
+non-active rows for anonymous requests and the listing filters
+`status=active`). Products are uploaded by admin via
 `/admin/products` on the supplier's behalf. No payment infrastructure yet;
 paid plans will be announced with ≥30 days' notice. Pricing shown on
 `/pricing` is the post-test-mode standard.

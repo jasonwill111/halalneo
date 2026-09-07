@@ -183,7 +183,7 @@ export async function getSuppliers(
 
 		const conditions = [];
 		if (search) conditions.push(like(schema.suppliers.name, `%${search}%`));
-		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended'));
+		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
 		if (country) conditions.push(eq(schema.suppliers.country, country));
 
 		const where = buildConditions(conditions);
@@ -599,7 +599,7 @@ export async function getSuppliersByCertifyingBody(
 		country: string;
 		businessType: 'manufacturer' | 'wholesaler' | 'trader';
 		isBrand: boolean | null;
-		status: 'active' | 'pending' | 'suspended' | null;
+		status: 'active' | 'pending' | 'suspended' | 'rejected' | null;
 		logoInitials: string | null;
 		description: string | null;
 		certifications: string | null;
@@ -833,7 +833,7 @@ export async function getSupplierListItems(
 
 		const conditions = [];
 		if (search) conditions.push(like(schema.suppliers.name, `%${search}%`));
-		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended'));
+		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
 		if (country) conditions.push(eq(schema.suppliers.country, country));
 		if (businessType) conditions.push(eq(schema.suppliers.businessType, businessType as 'manufacturer' | 'wholesaler' | 'trader'));
 

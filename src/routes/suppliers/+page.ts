@@ -6,7 +6,7 @@ export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
 	const [suppliersRes, productsRes] = await Promise.all([
-		fetch('/api/suppliers?limit=100'),
+		fetch('/api/suppliers?limit=100&status=active'),
 		fetch('/api/products?limit=100')
 	]);
 
