@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { products } from '#lib/server/db/schema.js';
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	const db = getDbFromPlatform(platform);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (((await request.json()) as any).catch(() => null)) as Record<string, unknown> | null;
+	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
 	if (!body?.slug || !body?.name || !body?.supplierSlug || !body?.categorySlug) {
 		return json({ error: 'slug, name, supplierSlug, categorySlug are required' }, { status: 400 });
 	}

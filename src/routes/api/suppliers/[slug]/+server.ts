@@ -43,7 +43,7 @@ export const PUT: RequestHandler = async ({ params, request, platform }) => {
 	const db = getDbFromPlatform(platform);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (((await request.json()) as any).catch(() => null)) as Record<string, unknown> | null;
+	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
 	if (!body) return json({ error: 'Invalid body' }, { status: 400 });
 
 	const { slug: _slug, ...rawUpdates } = body;

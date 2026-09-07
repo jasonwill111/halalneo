@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
 import { marketGuides as dbMarketGuides } from '#lib/server/db/schema.js';
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	const db = getDbFromPlatform(platform);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (((await request.json()) as any).catch(() => null)) as Record<string, unknown> | null;
+	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
 	if (!body?.slug || !body?.country) {
 		return json({ error: 'slug and country are required' }, { status: 400 });
 	}
