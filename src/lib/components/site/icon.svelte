@@ -15,6 +15,8 @@
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import Briefcase from '@lucide/svelte/icons/briefcase';
 	import Newspaper from '@lucide/svelte/icons/newspaper';
+	import Syringe from '@lucide/svelte/icons/syringe';
+	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 
 	const icons = {
 		UtensilsCrossed,
@@ -32,7 +34,9 @@
 		SearchCheck,
 		Calendar,
 		Briefcase,
-		Newspaper
+		Newspaper,
+		Syringe,
+		FlaskConical
 	} as const;
 
 	let { name, class: className = 'size-4' }: { name: string; class?: string } = $props();

@@ -102,18 +102,9 @@
 </svelte:head>
 
 <!-- HERO -->
-<section class="relative flex flex-col items-center py-4 text-center sm:py-10">
-	<div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
-		<div
-			class="animate-glow absolute -top-10 -left-16 size-64 rounded-full bg-primary/20 blur-3xl sm:size-80 dark:bg-primary/15"
-		></div>
-		<div
-			class="animate-glow absolute top-16 -right-16 size-56 rounded-full bg-info/15 blur-3xl sm:size-72 dark:bg-info/10"
-			style="animation-delay: -2.5s"
-		></div>
-	</div>
+<section class="flex flex-col items-center py-2 text-center sm:py-4">
 	<span
-		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium text-secondary-foreground sm:mb-3"
+		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium text-secondary-foreground"
 	>
 		<ShieldCheck class="size-2.5 text-primary"></ShieldCheck>
 		Halal B2B marketplace & trade intelligence
@@ -121,10 +112,10 @@
 
 	<!-- Hero Carousel -->
 	<div
-		class="animate-enter relative mb-3 w-full overflow-hidden rounded-xl shadow-lg sm:mb-4"
+		class="animate-enter relative mb-2 w-full overflow-hidden rounded-xl shadow-lg sm:mb-3"
 		style="--enter-delay: 90ms"
 	>
-		<div class="relative aspect-[16/10] sm:aspect-[16/6]">
+		<div class="relative aspect-[16/10] sm:aspect-[16/5]">
 			{#each slides as slide, i}
 				<div
 					class="absolute inset-0 transition-opacity duration-500 {i === currentSlide
@@ -199,7 +190,7 @@
 	</div>
 
 	<p
-		class="animate-enter relative mb-3 text-[10px] text-muted-foreground sm:mb-4 sm:text-[11px]"
+		class="animate-enter relative mb-2 text-[10px] text-muted-foreground sm:mb-3 sm:text-[11px]"
 		style="--enter-delay: 180ms"
 	>
 		Researched data from <span class="font-medium text-foreground"
@@ -405,19 +396,19 @@
 </section>
 
 <!-- TRUST / METHODOLOGY -->
-<section {@attach reveal} class="space-y-4">
-	<div class="max-w-2xl space-y-2">
+<section {@attach reveal} class="grid gap-3 sm:gap-4 lg:grid-cols-5 lg:gap-6">
+	<div class="space-y-2 lg:col-span-2 lg:pt-1">
 		<h2 class="text-sm font-semibold text-foreground">How we verify</h2>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
 			All certification data on HalalNeo is sourced from publicly available registers of accredited halal
 			certifying bodies. We cross-reference certificate numbers, issuing organisations and scope details
 			against the original body's published records.
 		</p>
 	</div>
-	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:col-span-3">
 		<div class="rounded-lg bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">JAKIM · MUI · ESMA</p>
-			<p class="mt-0.5 text-[10px] text-muted-foreground">14+ certifying body databases</p>
+			<p class="mt-0.5 text-[10px] text-muted-foreground">15 certifying body databases</p>
 		</div>
 		<div class="rounded-lg bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Public certificate registers</p>

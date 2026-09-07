@@ -3,24 +3,13 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
-	import Package from '@lucide/svelte/icons/package';
+	import Icon from '#lib/components/site/icon.svelte';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 
 	let { data } = $props();
 
-	// Categories come from D1 via the page loader (same source as the API).
-	// Category hero images are static art mapped by canonical slug.
-	const catImages: Record<string, string> = {
-		'food-beverages': '/api/media/cat-food-beverages.webp',
-		'cosmetics-personal-care': '/api/media/cat-cosmetics.webp',
-		'nutritional-supplements': '/api/media/cat-supplements.webp',
-		'meat-poultry': '/api/media/cat-meat-poultry.webp',
-		'dairy-eggs': '/api/media/cat-dairy-eggs.webp',
-		'confectionery-snacks': '/api/media/cat-confectionery.webp',
-		'beverages': '/api/media/cat-beverages.webp'
-	};
-
-	const productCategories = $derived((data.categories ?? []) as { slug: string; name: string; description: string }[]);
+	const productCategories = $derived((data.categories ?? []) as { slug: string; name: string; description: string; icon: string }[]);
 
 	const markets = [
 		{ region: 'ASEAN', countries: 'Malaysia, Indonesia, Singapore, Thailand, Philippines' },
@@ -65,22 +54,24 @@
 			<p class="text-xs text-muted-foreground">Halal-certified products across these categories.</p>
 		</div>
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-			{#each productCategories as cat}
-				<Card class="overflow-hidden p-0">
-					{#if catImages[cat.slug]}
-						<div class="aspect-[16/10] overflow-hidden">
-							<img src={catImages[cat.slug]} alt={cat.name} class="h-full w-full object-cover" loading="lazy" decoding="async" width="400" height="250" />
-						</div>
-					{:else}
-						<div class="p-2.5 pb-0 sm:p-4 sm:pb-0">
-							<Package class="size-4 text-primary mb-1.5 sm:size-5 sm:mb-2" />
-						</div>
-					{/if}
-					<CardContent class="p-2.5 sm:p-4">
-						<h3 class="truncate text-xs font-medium sm:text-sm">{cat.name}</h3>
-						<p class="mt-0.5 hidden text-xs text-muted-foreground line-clamp-2 sm:block">{cat.description}</p>
-					</CardContent>
-				</Card>
+			{#each productCategories as cat, i}
+				<a href={localizeHref(`/categories/${cat.slug}`)} class="group h-full">
+					<Card hoverable class="h-full p-3 transition-shadow group-hover:shadow-md sm:p-4">
+						<CardContent class="flex items-center gap-2.5 p-0 sm:gap-3">
+							<div
+								class="flex size-9 shrink-0 items-center justify-center rounded-lg sm:size-10 {TILE_COLORS[
+									i % TILE_COLORS.length
+								]}"
+							>
+								<Icon name={cat.icon ?? 'Package'} class="size-4 sm:size-5" />
+							</div>
+							<div class="min-w-0">
+								<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">{cat.name}</h3>
+								<p class="mt-0.5 hidden text-xs text-muted-foreground line-clamp-2 sm:block">{cat.description}</p>
+							</div>
+						</CardContent>
+					</Card>
+				</a>
 			{/each}
 		</div>
 	</div>
