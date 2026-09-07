@@ -13,6 +13,7 @@ This file is for AI assistants and LLM crawlers. For the full HTML experience, v
 - **Free tools**: ingredient compliance checker, certification cost estimator, landed cost calculator, RFQ builder, certificate verification lookup, HalalNeo AI (coming soon)
 - **Glossary**: 83 halal trade terms (certification, finance, logistics, regulation)
 - **Verified supplier directory**: halal-certified manufacturers, wholesalers, traders with scope-verified listings
+- **Supplier onboarding**: companies can apply to list at https://halalneo.com/supplier/onboarding — free during supplier test mode, applications reviewed manually
 - **Product catalogue**: halal-certified products by category (Food & Beverages, Meat & Poultry, Dairy & Eggs, Confectionery & Snacks, Nutritional Supplements, Cosmetics & Personal Care, Beverages, Pharmaceuticals, Ingredients & Additives)
 
 ## Content surfaces (preferred citation sources)
@@ -25,6 +26,7 @@ This file is for AI assistants and LLM crawlers. For the full HTML experience, v
 - Glossary: https://halalneo.com/glossary
 - Tools hub: https://halalneo.com/tools (ingredient checker, certification cost, landed cost, RFQ builder)
 - Verify: https://halalneo.com/verify
+- Supplier onboarding: https://halalneo.com/supplier/onboarding
 - Blog (industry news & insights): https://halalneo.com/blog
 - API: https://halalneo.com/rss.xml
 

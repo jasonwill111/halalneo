@@ -31,6 +31,7 @@ Confirmed growth path, in this order: **knowledge base first (authority) → mar
 - Content is authored as Markdown edited via git (no CMS backend for content).
 - Deployment is a Cloudflare Worker on the free `workers.dev` subdomain (no custom domain in this phase) with D1 (drizzle, schema ready) and R2 (binary assets) wired.
 - Phase 1 runs on curated **example/demo data**; real supplier/SKU volume is intentionally future work. Nothing about the deployed data should be presented as real market statistics.
+- **Supplier test mode (2026-09):** supplier onboarding is open and free while the first suppliers are onboarded; `/pricing` tier prices represent the post-test-mode standard and are labelled as such. No payment infrastructure exists; admin approves applications manually.
 
 ## Capabilities and Constraints
 

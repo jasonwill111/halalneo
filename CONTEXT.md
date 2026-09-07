@@ -125,6 +125,7 @@ _Avoid_: content generator, AI assistant
 | `/api/trade-shows/[id]` | GET | Show detail |
 | `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache) |
 | `/api/inquiries` | GET, POST | List/create inquiries (rate-limited) |
+| `/api/supplier-applications` | GET, POST | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET lists applications |
 | `/api/verify` | GET | Certificate verification search |
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |
@@ -409,6 +410,19 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 ---
 
 ## Backlog — Future Features
+
+### Supplier Test Mode (live)
+
+Supplier onboarding is open during a limited **supplier test mode**: all plan
+tiers are free while the first suppliers are onboarded. Flow: public
+`/supplier/onboarding` (3-step form) → POST `/api/supplier-applications`
+creates a `suppliers` row (`status='pending'`) + an inquiry record as the
+admin notification → admin reviews (dashboard shows pending applications)
+→ admin approves by setting `status='active'` (D1) → public
+`/suppliers/[slug]` goes live. Products are uploaded by admin via
+`/admin/products` on the supplier's behalf. No payment infrastructure yet;
+paid plans will be announced with ≥30 days' notice. Pricing shown on
+`/pricing` is the post-test-mode standard.
 
 ### Paid Services
 

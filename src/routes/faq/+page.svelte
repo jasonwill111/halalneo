@@ -38,7 +38,11 @@
 		},
 		{
 			q: 'Is HalalNeo free to use?',
-			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts —shortlisting and messaging suppliers —are free. Supplier listing is by invitation; contact us to be considered.'
+			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts — shortlisting and messaging suppliers — are free. While we are in supplier test mode, every supplier plan tier is also free. We will give every active supplier at least 30 days’ notice before any paid plan is introduced.'
+		},
+		{
+			q: 'How can my company become a supplier on HalalNeo?',
+			a: 'Apply through our supplier onboarding form. We will review your company details, country and halal certification. Most applications are processed within 1–3 business days.'
 		},
 		{
 			q: 'How do I get in touch with a supplier?',

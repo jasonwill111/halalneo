@@ -80,6 +80,7 @@ export const navGroups: NavGroup[] = [
 		items: [
 			{ label: 'Certifying Bodies', href: '/certifying-bodies', icon: ScaleIcon },
 			{ label: 'Service Providers', href: '/service-providers', icon: HandshakeIcon },
+			{ label: 'Become a Supplier', href: '/supplier/onboarding', icon: UserPlusIcon },
 			{ label: 'Pricing', href: '/pricing', icon: BanknoteIcon },
 			{ label: 'FAQ', href: '/faq', icon: HelpCircleIcon }
 		]
@@ -104,6 +105,7 @@ export const utilityNav: NavItem[] = [
 export const footerOnlyNav: NavItem[] = [
 	{ label: 'Saved Items', href: '/account/saved', icon: NewspaperIcon },
 	{ label: 'My Inquiries', href: '/account/inquiries', icon: MessageCircleIcon },
+	{ label: 'Become a Supplier', href: '/supplier/onboarding', icon: UserPlusIcon },
 	{ label: 'Supplier Sign In', href: '/supplier/login', icon: TagsIcon }
 ];
 
