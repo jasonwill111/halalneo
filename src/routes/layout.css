@@ -109,8 +109,8 @@
 	--border: oklch(0.895 0.012 85);
 	--input: oklch(0.895 0.012 85);
 	--ring: oklch(0.44 0.15 158);
-	--info: oklch(0.55 0.15 255);
-	--warn: oklch(0.55 0.15 75);
+	--info: oklch(0.52 0.15 255);
+	--warn: oklch(0.52 0.15 75);
 	--success: oklch(0.5 0.16 150);
 	--accent-purple: oklch(0.55 0.18 300);
 	--accent-rose: oklch(0.55 0.19 12);
