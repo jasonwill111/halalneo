@@ -76,17 +76,20 @@ _Avoid_: content generator, AI assistant
 | Products | `/products`, `/products/[slug]` | ✅ Full catalog with detail pages (image, price, specs, certifications, FAQs, resources) |
 | Suppliers | `/suppliers`, `/suppliers/[slug]` | ✅ Directory with profiles (cover, certifications, products, trade terms) |
 | Categories | `/categories`, `/categories/[slug]` | ✅ Product taxonomy |
-| Knowledge Base | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]` | ✅ 6 sections, 121 articles |
-| Blog | `/blog`, `/blog/[slug]` | ✅ Blog with article detail |
-| Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 7 countries (Indonesia, Malaysia, UAE, Saudi, Türkiye, Pakistan, USA) |
-| Glossary | `/glossary` | ✅ 30+ terms, A-Z navigation |
-| Trade Shows | `/trade-shows` | ✅ 20+ events with region filter |
-| Certifying Bodies | `/certifying-bodies`, `/certifying-bodies/[slug]` | ✅ 14 bodies |
-| Service Providers | `/service-providers`, `/service-providers/[slug]` | ✅ 10 providers |
+| Knowledge Base | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]` | ✅ 6 sections, 125 articles (Markdown bodies, rendered + TOC) |
+| Blog | `/blog`, `/blog/[slug]` | ✅ 8 posts (7 published + 1 evergreen) |
+| Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt) |
+| Glossary | `/glossary` | ✅ 83 terms, A-Z navigation |
+| Trade Shows | `/trade-shows` | ✅ 20 events with region filter + pagination |
+| Certifying Bodies | `/certifying-bodies`, `/certifying-bodies/[slug]` | ✅ 15 bodies with recognition data |
+| Service Providers | `/service-providers`, `/service-providers/[slug]` | ✅ 14 providers |
 | Verify | `/verify` | ✅ Certificate verification tool |
-| AI Chat | `/tools/ai-chat` | ⏸️ Coming soon (temporarily disabled) |
+| Tools hub | `/tools` | ✅ 6 tools directory |
+| AI Chat | `/tools/ai-chat` | ⏸️ Coming soon teaser page |
 | Ingredient Checker | `/tools/ingredient-checker` | ✅ AI ingredient analysis |
 | Certification Cost | `/tools/certification-cost` | ✅ Cost estimator (7 certifiers × 6 categories × 4 sizes) |
+| Landed Cost | `/tools/landed-cost` | ✅ CIF+duty+VAT+clearance+cert amortisation calculator |
+| RFQ Builder | `/tools/rfq-builder` | ✅ RFQ text generator (copy/download) |
 | Search | `/search` | ✅ Full-text search across articles, glossary, suppliers, products |
 | Pricing | `/pricing` | ✅ 4-tier pricing + Brand URL add-on |
 | About | `/about` | ✅ Mission, milestones, team |
@@ -97,13 +100,13 @@ _Avoid_: content generator, AI assistant
 | Supplier Portal | `/supplier/onboarding`, `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage` | ✅ 6 pages |
 | Admin | `/admin/*` | ✅ 14 pages (dashboard, users, products, suppliers, categories, blog, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings) |
 
-### API Endpoints (22)
+### API Endpoints (27)
 
 | Endpoint | Methods | Purpose |
 |----------|---------|---------|
-| `/api/products` | GET, POST | List/create products |
+| `/api/products` | GET, POST | List/create products (query-keyed cache) |
 | `/api/products/[slug]` | GET, PUT, DELETE | CRUD product |
-| `/api/suppliers` | GET | List suppliers |
+| `/api/suppliers` | GET | List suppliers (query-keyed cache) |
 | `/api/suppliers/[slug]` | GET | Supplier detail |
 | `/api/categories` | GET, POST | List/create categories |
 | `/api/categories/[slug]` | GET | Category detail |
@@ -116,8 +119,14 @@ _Avoid_: content generator, AI assistant
 | `/api/certifying-bodies/[id]` | GET | Certifier detail |
 | `/api/service-providers` | GET | List service providers |
 | `/api/service-providers/[slug]` | GET | Provider detail |
+| `/api/market-guides` | GET | List market guides |
+| `/api/market-guides/[slug]` | GET | Guide detail |
+| `/api/trade-shows` | GET | List trade shows |
+| `/api/trade-shows/[id]` | GET | Show detail |
+| `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache) |
 | `/api/inquiries` | GET, POST | List/create inquiries (rate-limited) |
 | `/api/verify` | GET | Certificate verification search |
+| `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |
 | `/api/pages` | GET | CMS pages |
 | `/api/pages/[slug]` | GET | CMS page detail |
@@ -125,20 +134,27 @@ _Avoid_: content generator, AI assistant
 | `/api/media/[key]` | GET | Media retrieval (R2 + 304 support) |
 | `/api/media/upload` | POST | Media upload |
 
-### Database Schema (14 tables + 35 indexes)
+### Database Schema (12 tables, 37 indexes in production)
 
 | Table | Purpose | Key |
 |-------|---------|-----|
 | `suppliers` | Supplier profiles with certifications JSON | slug |
 | `products` | Product catalog | slug |
 | `categories` | Product taxonomy | slug |
-| `certifyingBodies` | Halal certification organizations | id |
-| `knowledgeBase` | KB articles | slug |
-| `pages` | Landing pages + blog posts | slug |
+| `certifyingBodies` | Halal certification organizations (15 rows) | id |
+| `knowledgeBase` | KB articles (125 rows, Markdown bodies) | slug |
+| `pages` | Landing pages + blog posts + glossary | slug |
+| `marketGuides` | Country guides (11 rows, `status='active'`) | slug |
+| `tradeShows` | Exhibition calendar (20 rows) | id |
 | `serviceProviders` | Service provider profiles | slug |
 | `inquiries` | Buyer inquiries | id |
 | `media` | R2 media files | id |
 | `siteSettings` | KV site settings | key |
+
+List-query discipline: `limit` ≤ 100 + column projection on every list
+endpoint; query-dependent results use explicit `queryCacheKey(url)`
+(path-only keys merge filter combos); every WHERE column is covered
+by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 
 ---
 
@@ -356,10 +372,19 @@ _Avoid_: content generator, AI assistant
 
 ### Component Rules
 
-- All UI primitives from shadcn-svelte (`#lib/components/ui/`)
-- Cards: `bg-card shadow-sm` (NO border)
-- Buttons: `rounded-lg`, primary/secondary/outline/ghost variants
-- Mobile tab bar: Telegram-style, `min(90vw, 360px)`, sticky bottom
+- All UI primitives from shadcn-svelte (`#lib/components/ui/`, bits-ui headless — never React shadcn). No raw `<button>/<input>/<select>/<textarea>/<table>` outside `ui/` internals.
+- Shared site components in `#lib/components/site/` (stat-tile, filter-pills, collapsible-section, share-buttons, related-links, guide-hero, paginator, account-nav/admin-sidebar/supplier-sidebar) — reuse, never rewrite per page.
+- Cards: `bg-card` + `ring-1 ring-foreground/10` (compact `p-3`/`p-4`); hover lift + shadow on linked cards.
+- Buttons: `rounded-lg`, primary/secondary/outline/ghost variants.
+- Mobile tab bar: glass dock, `min(90vw, 360px)`, sticky bottom.
+
+### Responsive Density (mobile-first compact)
+
+- Breakpoints: base (<640 mobile) / sm (≥640 tablet) / lg (≥1024 desktop).
+- Listing grids are ≥2 columns on mobile (`grid-cols-2` up); card images capped (`aspect-[16/10]` or smaller); secondary descriptions hidden on mobile (`hidden sm:block`); titles truncate; padding steps down (p-2.5 vs sm:p-4).
+- Detail pages stack single-column on mobile, two columns (content + sticky sidebar) on desktop; content containers start at `max-w-6xl`.
+- Type scale: labels 10-11px, body 12-14px; no decorative text above text-base on mobile (hero titles excepted).
+- Every listing page paginates via shared `site/paginator.svelte` (PAGE_SIZE matched to grid columns: 8/9/12 for 2/3/4 cols); filters reset to page 1.
 
 ### Layout
 

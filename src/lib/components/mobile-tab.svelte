@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import { localizeHref, deLocalizeUrl } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import HomeIcon from '@lucide/svelte/icons/home';
@@ -261,31 +262,33 @@
 		</a>
 
 		<!-- Explore -->
-		<button
-			bind:this={exploreBtnEl}
+		<Button
+			variant="ghost"
+			bind:ref={exploreBtnEl}
 			onclick={(e) => { e.stopPropagation(); toggleExplore(); }}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
+				'h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				showExplore ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 			data-popover
 		>
 			<CompassIcon class="size-4" strokeWidth={showExplore ? 2.2 : 1.8} />
 			<span>Explore</span>
-		</button>
+		</Button>
 
 		<!-- Menu -->
-		<button
-			bind:this={menuBtnEl}
+		<Button
+			variant="ghost"
+			bind:ref={menuBtnEl}
 			onclick={(e) => { e.stopPropagation(); toggleMenu(); }}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
+				'h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
 				showMenu ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
 			)}
 			data-popover
 		>
 			<MenuIcon class="size-4" strokeWidth={showMenu ? 2.2 : 1.8} />
 			<span>Menu</span>
-		</button>
+		</Button>
 	</div>
 </nav>

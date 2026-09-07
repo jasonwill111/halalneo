@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { onMount } from 'svelte';
 
 	let visible = $state(false);
@@ -32,11 +33,13 @@
 </script>
 
 {#if visible}
-	<button
+	<Button
+		variant="outline"
+		size="icon"
 		onclick={scrollToTop}
 		aria-label="Back to top"
-		class="fixed right-3 bottom-3 z-50 flex size-8 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md transition-all duration-300 outline-none hover:shadow-lg hover:border-primary/30 focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-95 motion-safe:animate-fade-in sm:right-4 sm:bottom-4"
+		class="fixed right-3 bottom-3 z-50 size-8 rounded-full shadow-md motion-safe:animate-fade-in sm:right-4 sm:bottom-4"
 	>
 		<ArrowUp class="size-4" />
-	</button>
+	</Button>
 {/if}

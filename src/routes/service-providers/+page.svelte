@@ -9,6 +9,8 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
+	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import Star from '@lucide/svelte/icons/star';
 	import Eye from '@lucide/svelte/icons/eye';
@@ -151,11 +153,9 @@
 				<div class="space-y-2">
 					{#each types as type}
 						<label class="flex cursor-pointer items-center gap-2">
-							<input
-								type="checkbox"
-								class="size-3.5 rounded border-border text-primary focus:ring-primary"
+							<Checkbox
 								checked={selectedTypes.has(type)}
-								onchange={() => toggleType(type)}
+								onCheckedChange={() => toggleType(type)}
 							/>
 							<span class="text-xs">{typeLabel(type)}</span>
 						</label>
@@ -176,22 +176,22 @@
 				</Select>
 			</div>
 
-			<div class="mb-2">
+		<div class="mb-2">
 				<h3 class="mb-2.5 text-xs font-semibold">Rating</h3>
-				<div class="space-y-2">
+				<ToggleGroup.Root
+					type="single"
+					bind:value={selectedRating}
+					variant="outline"
+					spacing={2}
+					orientation="vertical"
+					class="w-full items-stretch"
+					aria-label="Filter by minimum rating"
+				>
+					<ToggleGroup.Item value="" class="justify-start text-xs">Any rating</ToggleGroup.Item>
 					{#each [{ val: '4.5', label: '4.5 & up' }, { val: '4.0', label: '4.0 & up' }, { val: '3.5', label: '3.5 & up' }] as r}
-						<label class="flex cursor-pointer items-center gap-2">
-							<input
-								type="radio"
-								name="rating"
-								class="size-3.5 border-border text-primary focus:ring-primary"
-								value={r.val}
-								bind:group={selectedRating}
-							/>
-							<span class="text-xs">{r.label}</span>
-						</label>
+						<ToggleGroup.Item value={r.val} class="justify-start text-xs">{r.label}</ToggleGroup.Item>
 					{/each}
-				</div>
+				</ToggleGroup.Root>
 			</div>
 		</div>
 	</aside>

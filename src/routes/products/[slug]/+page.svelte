@@ -280,10 +280,10 @@
 				{#if galleryImages.length > 1}
 					<div class="mt-2 grid grid-cols-5 gap-1.5">
 						{#each galleryImages as src, i}
-							<button
-								type="button"
+							<Button
+								variant="ghost"
 								onclick={() => (activeImage = i)}
-								class={`aspect-square overflow-hidden rounded-lg border bg-muted transition-all ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
+								class={`h-auto aspect-square overflow-hidden rounded-lg border bg-muted p-0 transition-all ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
 								aria-label={`View image ${i + 1}`}
 								aria-pressed={i === activeImage}
 							>
@@ -296,7 +296,7 @@
 									width="128"
 									height="128"
 								/>
-							</button>
+							</Button>
 						{/each}
 					</div>
 				{/if}
