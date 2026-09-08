@@ -154,7 +154,7 @@
 										<Badge variant="secondary">Uncertified</Badge>
 									{/if}
 									<Button
-										href={r.type === 'supplier' ? `/suppliers/${r.slug}` : `/products/${r.slug}`}
+										href={r.type === 'supplier' ? `/supplier/${r.slug}` : `/product/${r.slug}`}
 										variant="outline"
 										size="sm"
 										class="ml-auto h-7 text-xs"

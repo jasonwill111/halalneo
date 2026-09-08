@@ -213,7 +213,7 @@
 										<p class="text-sm text-muted-foreground">{supplier.country}</p>
 									</div>
 									<Button
-										href={localizeHref(`/suppliers/${supplier.slug}`)}
+										href={localizeHref(`/supplier/${supplier.slug}`)}
 										variant="ghost"
 										size="sm"
 									>

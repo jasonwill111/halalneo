@@ -32,7 +32,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			item: {
 				'@type': 'Organization',
 				name: s.name,
-				url: `${BASE_URL}/suppliers/${s.slug}`,
+				url: `${BASE_URL}/supplier/${s.slug}`,
 				address: { '@type': 'PostalAddress', addressCountry: s.country }
 			}
 		}))

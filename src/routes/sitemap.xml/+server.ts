@@ -122,7 +122,7 @@ export const GET: RequestHandler = async (event) => {
 				{ ttl: 3600, staleWhileRevalidate: 3600 }
 			);
 			for (const product of products.items) {
-				addEntry(`/products/${product.slug}`, product.updatedAt, 'weekly', '0.7');
+				addEntry(`/product/${product.slug}`, product.updatedAt, 'weekly', '0.7');
 			}
 
 			const suppliers = await cachedQuery(
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async (event) => {
 				{ ttl: 3600, staleWhileRevalidate: 3600 }
 			);
 			for (const supplier of suppliers.items) {
-				addEntry(`/suppliers/${supplier.slug}`, supplier.updatedAt, 'weekly', '0.7');
+				addEntry(`/supplier/${supplier.slug}`, supplier.updatedAt, 'weekly', '0.7');
 			}
 
 			const blogPosts = await cachedQuery(
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async (event) => {
 				{ ttl: 3600, staleWhileRevalidate: 3600 }
 			);
 			for (const category of categories) {
-				addEntry(`/categories/${category.slug}`, category.updatedAt, 'weekly', '0.7');
+				addEntry(`/category/${category.slug}`, category.updatedAt, 'weekly', '0.7');
 			}
 
 			const kbArticles = await cachedQuery(

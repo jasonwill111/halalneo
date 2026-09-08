@@ -163,7 +163,7 @@
 				{#each paged as p (p.slug)}
 					{@const cert = certBadge(p)}
 					<a
-						href={localizeHref(`/products/${p.slug}`)}
+						href={localizeHref(`/product/${p.slug}`)}
 						class="group flex h-full flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<div class="relative aspect-[16/10] overflow-hidden rounded-t-xl bg-muted">

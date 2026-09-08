@@ -13,7 +13,7 @@ _Avoid_: purchaser, customer, client
 **Seller**: A User whose role is `seller` — operates a Supplier profile on the platform.
 _Avoid_: vendor, supplier user
 
-**Supplier**: A seller-side business entity on the platform.
+**Supplier**: A seller-side business entity on the platform. Public detail pages live at `/supplier/[slug]` (singular); `/supplier/onboarding`, `/supplier/login`, `/supplier/dashboard` etc. are portal routes that take precedence over the dynamic detail slug — company slugs matching these are rejected at application time.
 _Avoid_: merchant, store, company, seller entity
 
 **businessType**: A Supplier's mutually-exclusive business classification. Values: `manufacturer`, `wholesaler`, `trader`.
@@ -73,9 +73,9 @@ _Avoid_: content generator, AI assistant
 | Section | Pages | Status |
 |---------|-------|--------|
 | Homepage | `/` | ✅ Hero carousel, stats, categories, featured products/suppliers, KB preview |
-| Products | `/products`, `/products/[slug]` | ✅ Full catalog with detail pages (image, price, specs, certifications, FAQs, resources) |
-| Suppliers | `/suppliers`, `/suppliers/[slug]` | ✅ Directory with profiles (cover, certifications, products, trade terms) |
-| Categories | `/categories`, `/categories/[slug]` | ✅ Product taxonomy |
+| Products | `/products` (listing), `/product/[slug]` (detail) | ✅ Full catalog with detail pages (image, price, specs, certifications, FAQs, resources); old `/products/[slug]` 301s to `/product/[slug]` |
+| Suppliers | `/suppliers` (listing), `/supplier/[slug]` (detail) | ✅ Directory with profiles (cover, certifications, products, trade terms); old `/suppliers/[slug]` 301s to `/supplier/[slug]`; detail page uses the root layout |
+| Categories | `/categories` (listing), `/category/[slug]` (detail) | ✅ Product taxonomy; old `/categories/[slug]` 301s to `/category/[slug]` |
 | Knowledge Base | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]` | ✅ 6 sections, 125 articles (Markdown bodies, rendered + TOC) |
 | Blog | `/blog`, `/blog/[slug]` | ✅ 8 posts (7 published + 1 evergreen) |
 | Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt) |

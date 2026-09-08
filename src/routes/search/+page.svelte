@@ -428,7 +428,7 @@
 					{#each paginatedResults as result (result.kind + ':' + (result.kind === 'term' ? result.term : result.slug))}
 						{#if result.kind === 'sku'}
 							<a
-								href={localizeHref(`/products/${result.slug}`)}
+								href={localizeHref(`/product/${result.slug}`)}
 								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
 							>
 								<div class="relative mb-2 aspect-square rounded-md bg-muted">
@@ -452,7 +452,7 @@
 							</a>
 						{:else if result.kind === 'supplier'}
 							<a
-								href={localizeHref(`/suppliers/${result.slug}`)}
+								href={localizeHref(`/supplier/${result.slug}`)}
 								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
 							>
 								<div

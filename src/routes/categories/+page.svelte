@@ -86,7 +86,7 @@
 						<p class="text-xs text-muted-foreground sm:text-sm">
 							{count} product{count === 1 ? '' : 's'}
 						</p>
-						<Button href={localizeHref(`/categories/${category.slug}`)} variant="outline" size="sm" class="w-full text-xs sm:w-auto">
+						<Button href={localizeHref(`/category/${category.slug}`)} variant="outline" size="sm" class="w-full text-xs sm:w-auto">
 							View products
 							<ArrowUpRight class="size-3.5 sm:size-4" data-icon="inline-end"></ArrowUpRight>
 						</Button>

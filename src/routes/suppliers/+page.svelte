@@ -127,7 +127,7 @@
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 				{#each pagedSuppliers as s, i (s.slug)}
 					<a
-						href={localizeHref(`/suppliers/${s.slug}`)}
+						href={localizeHref(`/supplier/${s.slug}`)}
 						class="group flex h-full flex-col rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-3"
 					>
 						<div class="flex items-center gap-2.5">

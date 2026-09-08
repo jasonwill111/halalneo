@@ -251,7 +251,7 @@
 	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
 		{#each data.categories.slice(0, 6) as category, i}
 			<a
-				href={localizeHref(`/categories/${category.slug}`)}
+				href={localizeHref(`/category/${category.slug}`)}
 				class="group flex items-center gap-3 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
 			>
 				<div

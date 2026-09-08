@@ -87,7 +87,7 @@
 			{ name: 'Home', url: baseUrl },
 			{ name: 'Products', url: `${baseUrl}/products` }
 		];
-		if (item?.name) items.push({ name: item.name, url: `${baseUrl}/products/${data.slug}` });
+		if (item?.name) items.push({ name: item.name, url: `${baseUrl}/product/${data.slug}` });
 		return items;
 	});
 
@@ -214,14 +214,14 @@
 					name: item.name ?? '',
 					description: item.shortDescription ?? item.description ?? '',
 					image: item.image ?? ogImage,
-					url: `${baseUrl}/products/${item.slug}`,
+					url: `${baseUrl}/product/${item.slug}`,
 					brand: { '@type': 'Brand', name: item.supplierSlug ?? '' },
 					category: item.categorySlug ?? '',
 					...(item.priceMin
 						? {
 								offers: {
 									'@type': 'Offer',
-									url: `${baseUrl}/products/${item.slug}`,
+									url: `${baseUrl}/product/${item.slug}`,
 									itemCondition: 'https://schema.org/NewCondition',
 									priceCurrency: 'USD',
 									price: item.priceMin
@@ -347,7 +347,7 @@
 							{item.originCountry}
 						</Badge>
 					{/if}
-					<a href={localizeHref(`/categories/${item.categorySlug}`)} class="transition-transform hover:scale-105">
+					<a href={localizeHref(`/category/${item.categorySlug}`)} class="transition-transform hover:scale-105">
 						<Badge variant="outline" class="gap-1 text-[10px] font-medium {TILE_COLORS[(item.categorySlug?.length ?? 0) % TILE_COLORS.length]}">
 							<Icon name={categoryIcon} class="size-2.5"></Icon>
 							{categoryName}
@@ -542,7 +542,7 @@
 							<dt class="text-muted-foreground">Category</dt>
 							<dd class="font-medium">
 								<a
-									href={localizeHref(`/categories/${item.categorySlug}`)}
+									href={localizeHref(`/category/${item.categorySlug}`)}
 									class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold {TILE_COLORS[(item.categorySlug?.length ?? 0) % TILE_COLORS.length]}">{categoryName}</a
 								>
 							</dd>
@@ -581,7 +581,7 @@
 						</div>
 					</div>
 					<Button
-						href={localizeHref(`/suppliers/${item.supplierSlug}`)}
+						href={localizeHref(`/supplier/${item.supplierSlug}`)}
 						variant="outline"
 						size="sm"
 						class="mt-3 w-full"
@@ -633,7 +633,7 @@
 			items={(data.relatedProducts ?? []).map((p: any) => ({
 				label: p.name,
 				description: p.originCountry ?? p.supplierSlug,
-				href: `/products/${p.slug}`
+				href: `/product/${p.slug}`
 			}))}
 		/>
 	</div>

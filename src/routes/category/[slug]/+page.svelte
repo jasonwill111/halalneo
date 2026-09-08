@@ -110,7 +110,7 @@
 		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
 			{#each paged as product (product.slug)}
 				<a
-					href={localizeHref(`/products/${product.slug}`)}
+					href={localizeHref(`/product/${product.slug}`)}
 					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md"
 				>
 					<div

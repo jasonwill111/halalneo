@@ -46,7 +46,7 @@
 					subtitle: product.shortDescription,
 					price: priceDisplay,
 					badge: product.categorySlug,
-					href: `/products/${product.slug}`,
+					href: `/product/${product.slug}`,
 					slug: product.slug
 				});
 			}

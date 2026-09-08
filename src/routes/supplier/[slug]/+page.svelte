@@ -117,7 +117,7 @@
 					'@type': 'Organization',
 					name: item.name,
 					description: item.description ?? '',
-					url: `${baseUrl}/suppliers/${data.slug}`,
+					url: `${baseUrl}/supplier/${data.slug}`,
 					address: item.country
 						? { '@type': 'PostalAddress', addressCountry: item.country }
 						: undefined,
@@ -139,7 +139,7 @@
 				'@type': 'ListItem',
 				position: 3,
 				name: item?.name ?? 'Supplier',
-				item: `${baseUrl}/suppliers/${data.slug}`
+				item: `${baseUrl}/supplier/${data.slug}`
 			}
 		]
 	});
@@ -423,7 +423,7 @@
 						<div class="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
 							{#each products as product, i}
 								<a
-									href={localizeHref(`/products/${product.slug}`)}
+									href={localizeHref(`/product/${product.slug}`)}
 									class="group flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 								>
 									<div class="relative aspect-[16/10] overflow-hidden rounded-t-xl bg-muted">

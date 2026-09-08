@@ -42,6 +42,23 @@ function slugify(s: string): string {
 		.slice(0, 60);
 }
 
+// Slugs that would collide with real /supplier/* portal routes.
+const RESERVED_SUPPLIER_SLUGS = new Set([
+	'onboarding',
+	'login',
+	'dashboard',
+	'products',
+	'orders',
+	'manage',
+	'analytics',
+	'profile',
+	'settings'
+]);
+
+function isReservedSupplierSlug(slug: string): boolean {
+	return RESERVED_SUPPLIER_SLUGS.has(slug);
+}
+
 function initialsFromName(name: string): string {
 	return (
 		name
@@ -113,6 +130,12 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 
 	const data = parsed.data;
 	const baseSlug = slugify(data.company);
+	if (isReservedSupplierSlug(baseSlug)) {
+		return json(
+			{ error: 'This company name would create a reserved URL. Please use the full legal name.' },
+			{ status: 409 }
+		);
+	}
 	let finalSlug = baseSlug || `supplier-${Date.now()}`;
 
 	try {

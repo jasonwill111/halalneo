@@ -35,7 +35,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			item: {
 				'@type': 'Product',
 				name: p.name,
-				url: `${BASE_URL}/products/${p.slug}`,
+				url: `${BASE_URL}/product/${p.slug}`,
 				category: p.categorySlug,
 				offers: p.priceMin
 					? { '@type': 'Offer', priceCurrency: 'USD', price: p.priceMin }
