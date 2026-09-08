@@ -28,7 +28,7 @@
 
 <Breadcrumb items={[{ label: 'About', href: '/about' }]} />
 
-<section class="space-y-8">
+<section class="space-y-4 sm:space-y-8">
 	<div class="max-w-3xl space-y-4">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-5xl">
 			Halal trade, without the guesswork
@@ -93,7 +93,7 @@
 		</Card>
 	</div>
 
-	<div class="space-y-6">
+	<div class="space-y-4 sm:space-y-6">
 		<div class="max-w-2xl space-y-2">
 			<h2 class="text-2xl font-semibold tracking-tight">Why HalalNeo exists</h2>
 			<p class="text-muted-foreground">
@@ -164,7 +164,7 @@
 		</p>
 	</Card>
 
-	<div class="space-y-6">
+	<div class="space-y-4 sm:space-y-6">
 		<div class="max-w-2xl space-y-2">
 			<h2 class="text-2xl font-semibold tracking-tight">Certification, spelled out</h2>
 			<p class="text-muted-foreground">

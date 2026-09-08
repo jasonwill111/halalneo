@@ -48,7 +48,7 @@
 <svelte:head><title>{tool?.name ?? 'Tool'} —HalalNeo</title></svelte:head>
 
 {#if tool}
-	<section class="space-y-8">
+	<section class="space-y-4 sm:space-y-8">
 		<Breadcrumb>
 			<BreadcrumbList>
 				<BreadcrumbItem>
@@ -62,7 +62,7 @@
 		</Breadcrumb>
 
 		<div class="grid gap-8 lg:grid-cols-[1fr_360px]">
-			<div class="space-y-6">
+			<div class="space-y-4 sm:space-y-6">
 				<div class="space-y-3">
 					<div class="flex items-center gap-2">
 						<div class="flex size-11 items-center justify-center rounded-xl bg-primary/15">

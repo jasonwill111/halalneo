@@ -157,7 +157,7 @@
 
 		<div class="flex gap-6">
 			<aside class="hidden w-56 shrink-0 lg:block">
-				<div class="sticky top-20 space-y-6">
+				<div class="sticky top-20 space-y-4 sm:space-y-6">
 					<Card>
 						<CardContent class="p-4">
 							<h3 class="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
@@ -191,7 +191,7 @@
 				</div>
 			</aside>
 
-		<article class="min-w-0 flex-1 space-y-6" bind:this={articleEl}>
+		<article class="min-w-0 flex-1 space-y-4 sm:space-y-6" bind:this={articleEl}>
 			<header class="space-y-4">
 				<div class="flex flex-wrap items-center gap-2">
 					<Badge variant="secondary">{data.item.sectionName}</Badge>
@@ -228,7 +228,7 @@
 							{#each related as rel}
 								<a
 									href={localizeHref(`/knowledge-base/${rel.sectionSlug}/${rel.slug}`)}
-									class="group block rounded-xl bg-card p-4 shadow-sm transition-all hover:shadow-md"
+									class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
 								>
 									<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
 										{rel.title}

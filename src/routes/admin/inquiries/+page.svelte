@@ -82,7 +82,7 @@
 <div class="flex flex-col gap-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
-			<h1 class="text-3xl font-semibold tracking-tight">Inquiries</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Inquiries</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
 				Manage buyer inquiries and support requests.
 			</p>

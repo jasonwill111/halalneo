@@ -123,7 +123,7 @@
 	]}
 />
 
-<section class="space-y-6">
+<section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<CalculatorIcon class="size-4"></CalculatorIcon>
@@ -137,7 +137,7 @@
 	</div>
 
 	<div class="grid gap-6 lg:grid-cols-[1fr_auto]">
-		<div class="space-y-6">
+		<div class="space-y-4 sm:space-y-6">
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="certifier-label">Certifying Body</span>
 				<ToggleGroup.Root

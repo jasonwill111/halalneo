@@ -356,7 +356,7 @@
 			</div>
 		</header>
 
-		<main class="mx-auto w-full max-w-7xl flex-1 space-y-6 px-4 pt-3 pb-12 sm:px-6 sm:pt-4 sm:space-y-8 sm:pb-8">
+		<main class="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 pt-3 pb-12 sm:space-y-8 sm:px-6 sm:pt-4 sm:pb-8">
 			{@render children()}
 		</main>
 

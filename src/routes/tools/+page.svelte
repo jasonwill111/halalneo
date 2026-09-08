@@ -75,7 +75,7 @@
 
 <Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
 
-<section class="space-y-6">
+<section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<Wrench class="size-4" />

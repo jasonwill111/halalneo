@@ -90,7 +90,7 @@ Format your response as:
 	]}
 />
 
-<section class="space-y-8">
+<section class="space-y-4 sm:space-y-8">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<FlaskConicalIcon class="size-4"></FlaskConicalIcon>

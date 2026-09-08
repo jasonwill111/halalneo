@@ -261,7 +261,7 @@
 </svelte:head>
 
 {#if item}
-	<div class="mx-auto max-w-5xl space-y-6">
+	<div class="mx-auto max-w-5xl space-y-4 sm:space-y-6">
 		<Breadcrumb
 			items={[{ label: 'Products', href: '/products' }, { label: item.name ?? 'Product' }]}
 		/>

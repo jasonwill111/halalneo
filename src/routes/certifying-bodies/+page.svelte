@@ -60,7 +60,7 @@
 
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
 
-<section class="space-y-6">
+<section class="space-y-4 sm:space-y-6">
 	<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 		<div class="max-w-2xl space-y-2">
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Certifying bodies</h1>

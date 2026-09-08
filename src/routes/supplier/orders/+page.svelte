@@ -35,7 +35,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<Card class="p-3 shadow-sm">
+<Card class="p-3">
 	<div class="mb-2 flex items-center justify-between">
 		<h2 class="text-sm font-bold">Orders</h2>
 		<Button variant="ghost" size="sm" class="text-[10px]">Filter</Button>

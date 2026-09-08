@@ -244,7 +244,7 @@
 <div class="flex flex-col gap-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
-			<h1 class="text-3xl font-semibold tracking-tight">Trade Shows</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Trade Shows</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
 				Manage halal trade shows, exhibitions, and industry events.
 			</p>

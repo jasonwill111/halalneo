@@ -55,7 +55,7 @@
 	items={[{ label: 'Tools', href: '/tools' }, { label: 'Landed Cost', href: '/tools/landed-cost' }]}
 />
 
-<section class="space-y-6">
+<section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<Calculator class="size-4" />

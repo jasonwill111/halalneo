@@ -82,7 +82,7 @@
 				{ label: body.name ?? 'Certifying Body' }
 			]}
 		/>
-		<article class="space-y-8">
+		<article class="space-y-4 sm:space-y-8">
 			<header class="space-y-3">
 				<div class="flex items-center gap-3">
 					<div

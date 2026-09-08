@@ -187,10 +187,10 @@
 
 <svelte:head><title>AI Tools — HalalNeo Admin</title></svelte:head>
 
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="space-y-1">
-			<h1 class="text-3xl font-semibold tracking-tight">AI Tools</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">AI Tools</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
 				AI-powered tools offered to platform users. Enable or disable tool availability.
 			</p>

@@ -21,7 +21,7 @@
 
 <div class="py-8">
 	{#if data.item}
-		<article class="space-y-6">
+		<article class="space-y-4 sm:space-y-6">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.title}</h1>
 			<div class="prose max-w-none prose-neutral dark:prose-invert">
 				{@html data.item.content}

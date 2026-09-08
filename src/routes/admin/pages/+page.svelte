@@ -185,7 +185,7 @@
 <div class="flex flex-col gap-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
-			<h1 class="text-3xl font-semibold tracking-tight">Pages</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Pages</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">Manage landing pages and blog content.</p>
 		</div>
 		<Button variant="default" size="sm" onclick={openCreate}>

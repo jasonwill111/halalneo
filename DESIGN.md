@@ -17,21 +17,21 @@ typography:
   display:
     fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: 'clamp(2.25rem, 5vw, 3.75rem)'
-    fontWeight: 700
+    fontWeight: 600
     lineHeight: 1.1
     letterSpacing: '-0.02em'
   headline:
     fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: '1.875rem'
-    fontWeight: 700
+    fontWeight: 600
     lineHeight: 1.2
   title:
     fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
     fontSize: '1.125rem'
-    fontWeight: 700
+    fontWeight: 600
     lineHeight: 1.3
   body:
-    fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
+    fontFamily: 'Almarai, Space Grotesk, ui-sans-serif, system-ui, sans-serif'
     fontSize: '1rem'
     fontWeight: 400
     lineHeight: 1.6
@@ -43,8 +43,8 @@ typography:
 rounded:
   sm: '6px'
   md: '8px'
-  lg: '10px'
-  xl: '12px'
+  lg: '10px (icon/avatar/stat tiles only)'
+  xl: '14px (cards, popovers, panels)'
 spacing:
   base: '8px'
   card: '16px'

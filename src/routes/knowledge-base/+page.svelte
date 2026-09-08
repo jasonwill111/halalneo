@@ -73,7 +73,7 @@
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
 
-<section class="space-y-6">
+<section class="space-y-4 sm:space-y-6">
 	<div class="space-y-4">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<BookOpen class="size-4"></BookOpen>

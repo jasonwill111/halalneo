@@ -100,7 +100,7 @@
 	<meta name="description" content="Apply to list your halal-certified products on HalalNeo and reach global buyers.">
 </svelte:head>
 
-<section class="mx-auto max-w-4xl">
+<section class="mx-auto max-w-3xl">
 		<div class="mb-4 text-center">
 		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Become a HalalNeo supplier</h1>
 		<p class="mx-auto mt-1 max-w-xl text-sm text-muted-foreground">

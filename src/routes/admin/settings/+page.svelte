@@ -31,9 +31,9 @@
 
 <svelte:head><title>Settings — HalalNeo Admin</title></svelte:head>
 
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="space-y-1">
-		<h1 class="text-3xl font-semibold tracking-tight">Settings</h1>
+		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Settings</h1>
 		<p class="max-w-2xl text-sm text-muted-foreground">
 			Site-wide configuration used across the public pages.
 		</p>

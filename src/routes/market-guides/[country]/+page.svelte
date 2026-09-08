@@ -68,7 +68,7 @@
 	]}
 />
 
-<section class="space-y-8">
+<section class="space-y-4 sm:space-y-8">
 	{#if countryImages[guide.country]}
 		<div class="relative overflow-hidden rounded-xl">
 			<img

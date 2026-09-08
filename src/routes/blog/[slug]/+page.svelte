@@ -96,7 +96,7 @@
 		<Breadcrumb
 			items={[{ label: 'Blog', href: '/blog' }, { label: data.item.title ?? 'Blog Post' }]}
 		/>
-		<article class="space-y-6">
+		<article class="space-y-4 sm:space-y-6">
 			<header class="space-y-4">
 				<div class="flex flex-wrap gap-2">
 					{#each data.item.tags as tag}

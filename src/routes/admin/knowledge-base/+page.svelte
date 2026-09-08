@@ -79,10 +79,10 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="space-y-1">
-			<h1 class="text-3xl font-semibold tracking-tight">Knowledge Base</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Knowledge Base</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
 				Manage help articles and documentation across {sections.length} sections.
 			</p>

@@ -301,10 +301,10 @@
 
 <svelte:head><title>Suppliers — HalalNeo Admin</title></svelte:head>
 
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
-			<h1 class="text-3xl font-semibold tracking-tight">Suppliers</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Suppliers</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
 				Seller accounts and supplier company profiles listed in the marketplace.
 			</p>

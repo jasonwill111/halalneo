@@ -131,9 +131,9 @@
 	}
 </script>
 
-<div class="space-y-8">
+<div class="space-y-4 sm:space-y-8">
 	<div class="space-y-1">
-		<h1 class="text-3xl font-semibold tracking-tight">Dashboard</h1>
+		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Dashboard</h1>
 		<p class="max-w-2xl text-sm text-muted-foreground">
 			Operational overview of the HalalNeo demo dataset.
 		</p>

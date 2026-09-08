@@ -87,7 +87,7 @@
 
 <Breadcrumb items={[{ label: 'FAQ', href: '/faq' }]} />
 
-<section class="mx-auto max-w-3xl space-y-6">
+<section class="mx-auto max-w-3xl space-y-4 sm:space-y-6">
 	<div class="rounded-xl bg-card p-6 text-center space-y-4">
 		<h2 class="text-lg font-semibold">How can we help?</h2>
 		<div class="relative mx-auto max-w-md">

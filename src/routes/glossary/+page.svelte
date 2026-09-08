@@ -48,7 +48,7 @@
 	{@html `<script type="application/ld+json">${definedTermSet}</script>`}
 </svelte:head>
 
-<section class="space-y-6">
+<section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
 			<BookText class="size-4"></BookText>
@@ -78,7 +78,7 @@
 		{/each}
 	</nav>
 
-	<div class="space-y-6">
+	<div class="space-y-4 sm:space-y-6">
 		{#each letters as letter}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>

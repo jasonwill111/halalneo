@@ -24,7 +24,7 @@
 		<p class="mt-1 text-center text-xs text-muted-foreground">Access your supplier dashboard to manage listings and orders.</p>
 	</div>
 
-	<Card class="p-5 shadow-sm">
+	<Card class="p-5">
 		<CardContent class="space-y-3 p-0">
 			<form class="space-y-3">
 				<div class="space-y-1">

@@ -392,10 +392,10 @@
 
 <svelte:head><title>Products — HalalNeo Admin</title></svelte:head>
 
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="space-y-1">
-			<h1 class="text-3xl font-semibold tracking-tight">Products</h1>
+			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Products</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
 				All product SKUs listed on the marketplace, with certification status.
 			</p>
