@@ -126,6 +126,8 @@ Five muted-role colors for wayfinding, never for large surfaces. Each has a ligh
 
 All five pass WCAG AA (≥4.5:1) as text on their own `/10` badge tints in both modes — verified by measurement, not by eye. (Light warn/info were darkened 0.55→0.52 for exactly this reason.)
 
+**Badge vocabulary (listing + detail pages).** Status and classification badges use a fixed color-to-meaning map, shared via `#lib/utils/region.ts` + `tile-colors.ts`: certified = Success + ShieldCheck; cert-pending = Warn; not-certified = Destructive; country = region map (`regionBadgeClass`); business type = Manufacturer Info / Wholesaler Purple / Trader Rose; brand owner = Rose. Certification chips on card images sit on `bg-background/80 backdrop-blur-sm` so they read over photos.
+
 ### Named Rules
 
 **The Rare Green Rule.** Primary green appears on ≤10% of any given screen — buttons, links, badges, and active states only. Green is evidence; it marks what is certified and what you can act on. If a surface starts feeling green, verification has stopped meaning something.

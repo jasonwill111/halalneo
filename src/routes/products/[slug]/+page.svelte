@@ -17,6 +17,9 @@
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
+	import Icon from '#lib/components/site/icon.svelte';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import Send from '@lucide/svelte/icons/send';
 	import Heart from '@lucide/svelte/icons/heart';
@@ -109,6 +112,17 @@
 	const heartFill = $derived(favorited ? 'currentColor' : 'none');
 
 	const features = $derived(Array.isArray(item?.features) ? item.features : []);
+
+	// Category display: name/icon from the categories fetched in +page.ts
+	const categoryInfo = $derived(
+		((data.categories ?? []) as Array<{ slug: string; name: string; icon?: string }>).find(
+			(c) => c.slug === item?.categorySlug
+		)
+	);
+	const categoryName = $derived(
+		categoryInfo?.name ?? (item?.categorySlug ? item.categorySlug.replace(/-/g, ' ') : 'Uncategorized')
+	);
+	const categoryIcon = $derived(categoryInfo?.icon ?? 'Package');
 
 	const specifications = $derived(
 		typeof item?.specifications === 'object' && item.specifications ? item.specifications : {}
@@ -314,15 +328,31 @@
 				<!-- Certification badges -->
 				<div class="flex flex-wrap gap-1.5">
 					{#if item.certStatus === 'certified'}
-						<Badge variant="secondary" class="gap-1">
-							<ShieldCheck class="size-2.5 text-success"></ShieldCheck>
+						<span class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
+							<ShieldCheck class="size-2.5"></ShieldCheck>
 							Halal Certified
-						</Badge>
+						</span>
+					{:else if item.certStatus === 'pending'}
+						<span class="inline-flex items-center gap-1 rounded-full border border-warn/20 bg-warn/10 px-2 py-0.5 text-[10px] font-semibold text-warn">
+							<Play class="size-2.5"></Play>
+							Certification pending
+						</span>
+					{:else if item.certStatus === 'not-certified'}
+						<span class="inline-flex items-center gap-1 rounded-full border border-destructive/20 bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+							Not certified
+						</span>
 					{/if}
 					{#if item.originCountry}
-						<Badge variant="secondary">{item.originCountry}</Badge>
+						<Badge variant="outline" class="text-[10px] font-medium {regionBadgeClass(getRegion(item.originCountry))}">
+							{item.originCountry}
+						</Badge>
 					{/if}
-					<Badge variant="secondary">{item.categorySlug}</Badge>
+					<a href={localizeHref(`/categories/${item.categorySlug}`)} class="transition-transform hover:scale-105">
+						<Badge variant="outline" class="gap-1 text-[10px] font-medium {TILE_COLORS[(item.categorySlug?.length ?? 0) % TILE_COLORS.length]}">
+							<Icon name={categoryIcon} class="size-2.5"></Icon>
+							{categoryName}
+						</Badge>
+					</a>
 				</div>
 
 				<!-- Price card -->
@@ -401,12 +431,17 @@
 					</div>
 					{#if features.length > 0}
 						<h3 class="mt-4 text-sm font-medium text-foreground">Key Features</h3>
-						<ul class="mt-1 list-inside list-disc space-y-1 text-sm">
-							{#each features as feature}
-								<li>
-									{typeof feature === 'string'
-										? feature
-										: (feature.value ?? JSON.stringify(feature))}
+						<ul class="mt-2 space-y-1.5">
+							{#each features as feature, i}
+								<li class="flex items-start gap-2">
+									<div class={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded ${TILE_COLORS[i % TILE_COLORS.length]}`}>
+										<ShieldCheck class="size-2.5"></ShieldCheck>
+									</div>
+									<span class="text-sm leading-relaxed">
+										{typeof feature === 'string'
+											? feature
+											: (feature.value ?? JSON.stringify(feature))}
+									</span>
 								</li>
 							{/each}
 						</ul>
@@ -467,11 +502,24 @@
 					{#if resources.length > 0}
 						<div class="space-y-2">
 							{#each resources as res}
-								<div class="flex items-center justify-between rounded-xl border border-border p-3">
-									<span class="text-sm font-medium"
-										>{typeof res === 'string' ? res : (res.name ?? 'Resource')}</span
-									>
-									<Button variant="outline" size="sm">Download</Button>
+								{@const url = typeof res === 'string' ? null : (res.url ?? res.href ?? null)}
+								<div class="flex items-center justify-between gap-2 rounded-xl border border-border p-3">
+									<div class="flex min-w-0 items-center gap-2">
+										<div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
+											<ExternalLink class="size-3.5"></ExternalLink>
+										</div>
+										<span class="min-w-0 truncate text-sm font-medium"
+											>{typeof res === 'string' ? res : (res.name ?? 'Resource')}</span
+										>
+									</div>
+									{#if url}
+										<Button href={url} target="_blank" rel="noopener" variant="outline" size="sm">
+											<ExternalLink class="size-3"></ExternalLink>
+											Open
+										</Button>
+									{:else}
+										<Button variant="outline" size="sm" disabled>Download</Button>
+									{/if}
 								</div>
 							{/each}
 						</div>
@@ -495,7 +543,7 @@
 							<dd class="font-medium">
 								<a
 									href={localizeHref(`/categories/${item.categorySlug}`)}
-									class="text-primary underline-offset-4 hover:underline">{item.categorySlug}</a
+									class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold {TILE_COLORS[(item.categorySlug?.length ?? 0) % TILE_COLORS.length]}">{categoryName}</a
 								>
 							</dd>
 						</div>
@@ -517,12 +565,26 @@
 				<!-- Supplier card -->
 				<Card class="p-4">
 					<h3 class="mb-3 text-sm font-semibold">Supplier</h3>
-					<p class="text-sm">{item.supplierSlug}</p>
+					<div class="flex items-center gap-2.5">
+						<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
+							{(data.supplierName ?? item.supplierSlug ?? '?')
+								.split(/\s+/)
+								.map((p: string) => p[0])
+								.filter(Boolean)
+								.slice(0, 2)
+								.join('')
+								.toUpperCase()}
+						</div>
+						<div class="min-w-0">
+							<p class="truncate text-sm font-medium">{data.supplierName ?? item.supplierSlug}</p>
+							<p class="text-[10px] text-muted-foreground">Verified halal supplier</p>
+						</div>
+					</div>
 					<Button
 						href={localizeHref(`/suppliers/${item.supplierSlug}`)}
 						variant="outline"
 						size="sm"
-						class="mt-2 w-full"
+						class="mt-3 w-full"
 					>
 						View Supplier Profile
 					</Button>

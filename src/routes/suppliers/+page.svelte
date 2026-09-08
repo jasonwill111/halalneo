@@ -5,29 +5,60 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Factory from '@lucide/svelte/icons/factory';
+	import Warehouse from '@lucide/svelte/icons/warehouse';
+	import ArrowLeftRight from '@lucide/svelte/icons/arrow-left-right';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 
 	let { data } = $props();
 
-	const suppliers = $derived((data.suppliers ?? []) as any[]);
+	type SupplierRow = {
+		slug: string;
+		name: string;
+		country?: string | null;
+		businessType?: string | null;
+		isBrand?: boolean | null;
+		status?: string | null;
+		logoInitials?: string | null;
+		description?: string | null;
+	};
+
+	const suppliers = $derived((data.suppliers ?? []) as SupplierRow[]);
 	const products = $derived((data.products ?? []) as any[]);
 
 	const PAGE_SIZE = 9;
 	let page = $state(1);
-	const totalPages = $derived(Math.max(1, Math.ceil(suppliers.length / PAGE_SIZE)));
-	const pagedSuppliers = $derived(suppliers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+
+	// Business type filter — 'all' shows everything
+	let activeType = $state('all');
+	const filtered = $derived(
+		activeType === 'all' ? suppliers : suppliers.filter((s) => s.businessType === activeType)
+	);
+	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+	const pagedSuppliers = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+	$effect(() => {
+		activeType;
+		page = 1;
+	});
 
 	const productCount = (slug: string): number => products.filter((p: any) => p.supplierSlug === slug).length;
 
-	const businessTypes = [
-		'Food Manufacturers',
-		'Cosmetics & Personal Care',
-		'Pharmaceutical',
-		'Food Service & Catering',
-		'Ingredients & Additives',
-		'Packaging & Logistics'
+	const typeMeta: Record<string, { label: string; cls: string }> = {
+		manufacturer: { label: 'Manufacturer', cls: 'bg-info/10 text-info border-info/20' },
+		wholesaler: { label: 'Wholesaler', cls: 'bg-accent-purple/10 text-accent-purple border-accent-purple/20' },
+		trader: { label: 'Trader', cls: 'bg-accent-rose/10 text-accent-rose border-accent-rose/20' }
+	};
+
+	const typeCards = [
+		{ value: 'manufacturer', icon: Factory, cls: 'bg-info/10 text-info' },
+		{ value: 'wholesaler', icon: Warehouse, cls: 'bg-accent-purple/10 text-accent-purple' },
+		{ value: 'trader', icon: ArrowLeftRight, cls: 'bg-accent-rose/10 text-accent-rose' }
 	];
+
+	const typeCount = (value: string): number => suppliers.filter((s) => s.businessType === value).length;
 </script>
 
 <Breadcrumb items={[{ label: 'Suppliers', href: '/suppliers' }]} />
@@ -40,58 +71,110 @@
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Supplier directory</h1>
 		<p class="text-muted-foreground">
-			Browse halal-certified suppliers by certification body, business type, or region.
+			{suppliers.length} halal-certified suppliers across {new Set(suppliers.map((s) => s.country)).size} countries — filter by business type and check certifications before you inquire.
 		</p>
 	</div>
 
-	<!-- Marketplace Coming Soon -->
-	<div class="rounded-xl ring-1 ring-foreground/10 bg-card p-4 text-center sm:p-8">
-		<Badge variant="secondary" class="mb-3">Coming Soon</Badge>
-		<h2 class="text-xl font-semibold tracking-tight">Direct ordering</h2>
-		<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
-			Browse verified profiles today. Checkout, escrow and order tracking are on the way —
-			inquiries already reach suppliers directly.
-		</p>
-		<div class="mt-4">
-			<Button href={localizeHref('/register')} size="sm">Join the waitlist</Button>
+	<!-- Business type cards (also act as filters) -->
+	<div class="space-y-4">
+		<div class="grid gap-2 sm:grid-cols-3">
+			{#each typeCards as t (t.value)}
+				{@const meta = typeMeta[t.value]}
+				<button
+					type="button"
+					onclick={() => (activeType = activeType === t.value ? 'all' : t.value)}
+					aria-pressed={activeType === t.value}
+					class="group text-left"
+				>
+					<Card class={`p-3.5 transition-all group-hover:shadow-md sm:p-4 ${activeType === t.value ? 'ring-2 ring-primary' : ''}`}>
+						<div class="flex items-center gap-2.5">
+							<div class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${t.cls}`}>
+								<t.icon class="size-4"></t.icon>
+							</div>
+							<div class="min-w-0">
+								<h3 class="truncate text-sm font-medium">{meta?.label ?? t.value}</h3>
+								<p class="text-[10px] text-muted-foreground">{typeCount(t.value)} compan{typeCount(t.value) === 1 ? 'y' : 'ies'}</p>
+							</div>
+						</div>
+					</Card>
+				</button>
+			{/each}
 		</div>
 	</div>
 
-	<!-- Verified Suppliers -->
-	{#if suppliers.length > 0}
-		<div class="space-y-4">
-			<div class="flex items-end justify-between gap-2">
-				<div>
-					<h2 class="text-lg font-semibold">Verified suppliers</h2>
-					<p class="text-xs text-muted-foreground">{suppliers.length} certified suppliers on HalalNeo.</p>
-				</div>
+	<!-- Supplier grid -->
+	<div class="space-y-4">
+		<div class="flex flex-wrap items-end justify-between gap-2">
+			<div>
+				<h2 class="text-lg font-semibold">
+					{activeType === 'all' ? 'Verified suppliers' : (typeMeta[activeType]?.label ?? activeType) + 's'}
+				</h2>
+				<p class="text-xs text-muted-foreground">{filtered.length} compan{filtered.length === 1 ? 'y' : 'ies'}</p>
 			</div>
+			{#if activeType !== 'all'}
+				<Button variant="outline" size="sm" class="text-[10px]" onclick={() => (activeType = 'all')}>
+					Clear filter
+				</Button>
+			{/if}
+		</div>
+
+		{#if pagedSuppliers.length === 0}
+			<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
+				<p class="text-sm font-medium">No suppliers of this type yet</p>
+				<p class="mt-1 text-xs text-muted-foreground">New suppliers are joining during test mode — check back soon.</p>
+			</div>
+		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-				{#each pagedSuppliers as s}
+				{#each pagedSuppliers as s, i (s.slug)}
 					<a
 						href={localizeHref(`/suppliers/${s.slug}`)}
-						class="group flex items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-3"
+						class="group flex h-full flex-col rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-3"
 					>
-						<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary sm:size-10">
-							{s.logoInitials ?? s.name?.slice(0, 2) ?? '?'}
+						<div class="flex items-center gap-2.5">
+							<div class={`flex size-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold sm:size-10 ${TILE_COLORS[i % TILE_COLORS.length]}`}>
+								{s.logoInitials ?? s.name?.slice(0, 2) ?? '?'}
+							</div>
+							<div class="min-w-0 flex-1">
+								<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+									{s.name}
+								</h3>
+								<div class="mt-0.5 flex flex-wrap items-center gap-1">
+									{#if s.status === 'active'}
+										<span class="inline-flex items-center gap-0.5 text-[9px] font-medium text-success">
+											<ShieldCheck class="size-2.5"></ShieldCheck>
+											Verified
+										</span>
+									{/if}
+									{#if s.isBrand}
+										<span class="inline-flex items-center rounded-full border border-accent-rose/20 bg-accent-rose/10 px-1.5 py-px text-[9px] font-medium text-accent-rose">Brand</span>
+									{/if}
+								</div>
+							</div>
 						</div>
-						<div class="min-w-0 flex-1">
-							<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-								{s.name}
-							</h3>
-							<p class="mt-0.5 truncate text-[10px] text-muted-foreground sm:text-xs">
-								{s.country} · {productCount(s.slug)} product{productCount(s.slug) === 1 ? '' : 's'}
-							</p>
-						</div>
-						{#if s.status === 'active'}
-							<ShieldCheck class="size-3.5 shrink-0 text-success sm:size-4" />
+						{#if s.description}
+							<p class="mt-1.5 hidden text-[10px] leading-snug text-muted-foreground line-clamp-2 sm:block">{s.description}</p>
 						{/if}
+						<div class="mt-auto flex flex-wrap items-center gap-1 pt-2">
+							{#if s.country}
+								<Badge variant="outline" class="text-[9px] font-medium {regionBadgeClass(getRegion(s.country))}">
+									{s.country}
+								</Badge>
+							{/if}
+							{#if s.businessType}
+								<Badge variant="outline" class="text-[9px] font-medium {typeMeta[s.businessType]?.cls ?? ''}">
+									{typeMeta[s.businessType]?.label ?? s.businessType}
+								</Badge>
+							{/if}
+							<span class="ml-auto text-[10px] text-muted-foreground">
+								{productCount(s.slug)} product{productCount(s.slug) === 1 ? '' : 's'}
+							</span>
+						</div>
 					</a>
 				{/each}
 			</div>
 			<Paginator bind:page {totalPages} />
-		</div>
-	{/if}
+		{/if}
+	</div>
 
 	<!-- Certifying Bodies -->
 	<div class="space-y-4">
@@ -104,22 +187,6 @@
 				View all 15
 				<ArrowRight class="size-3.5" />
 			</Button>
-		</div>
-	</div>
-
-	<!-- Business Types -->
-	<div class="space-y-4">
-		<div>
-			<h2 class="text-lg font-semibold">Supplier categories</h2>
-			<p class="text-xs text-muted-foreground">Halal-certified suppliers across these industries.</p>
-		</div>
-		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-			{#each businessTypes as type}
-				<Card class="p-4">
-					<h3 class="text-sm font-medium">{type}</h3>
-					<p class="mt-1 text-xs text-muted-foreground">Coming soon</p>
-				</Card>
-			{/each}
 		</div>
 	</div>
 </section>

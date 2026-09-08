@@ -31,7 +31,9 @@
 	import CalendarCheck from '@lucide/svelte/icons/calendar-check';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
+	import Package from '@lucide/svelte/icons/package';
 
 	let { data } = $props();
 
@@ -92,6 +94,19 @@
 
 	const item = $derived(data.item);
 	const products = $derived(data.products ?? []);
+
+	function typeBadgeCls(type?: string | null): string {
+		if (type === 'manufacturer') return 'bg-info/10 text-info border-info/20';
+		if (type === 'wholesaler') return 'bg-accent-purple/10 text-accent-purple border-accent-purple/20';
+		if (type === 'trader') return 'bg-accent-rose/10 text-accent-rose border-accent-rose/20';
+		return '';
+	}
+
+	function productPrice(p: any): string {
+		if (!p?.priceMin) return '';
+		const range = p.priceMax ? `$${p.priceMin}–$${p.priceMax}` : `$${p.priceMin}`;
+		return p.priceUnit ? `${range}/${p.priceUnit}` : range;
+	}
 
 	const baseUrl = 'https://halalneo.com';
 
@@ -243,13 +258,27 @@
 					{/if}
 				</div>
 				<p class="mt-0.5 text-[10px] text-muted-foreground">
-					{item.country} · {item.businessType} · Est. {item.yearEstablished ?? '—'}
+					Est. {item.yearEstablished ?? '—'}
 				</p>
 				<div class="mt-1 flex flex-wrap gap-1">
 					{#if item.status === 'active'}
-						<Badge variant="secondary" class="gap-0.5 text-[10px]">
-							<ShieldCheck class="size-2 text-success"></ShieldCheck>
+						<span class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
+							<ShieldCheck class="size-2.5"></ShieldCheck>
 							Verified
+						</span>
+					{/if}
+					{#if item.country}
+						<Badge variant="outline" class="text-[10px] font-medium {regionBadgeClass(getRegion(item.country))}">
+							{item.country}
+						</Badge>
+					{/if}
+					{#if item.businessType}
+						<Badge variant="outline" class="text-[10px] font-medium capitalize {typeBadgeCls(item.businessType)}">
+							{item.businessType}
+						</Badge>
+					{/if}					{#if item.isBrand}
+						<Badge variant="outline" class="border-accent-rose/20 bg-accent-rose/10 text-[10px] font-medium text-accent-rose">
+							Brand owner
 						</Badge>
 					{/if}
 					{#each certifications as cert}
@@ -392,29 +421,44 @@
 							<h2 class="text-sm font-semibold">Products ({products.length})</h2>
 						</div>
 						<div class="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-							{#each products as product}
+							{#each products as product, i}
 								<a
 									href={localizeHref(`/products/${product.slug}`)}
-									class="group rounded-xl bg-card p-1.5 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+									class="group flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 								>
-									<div
-										class="mb-1 flex aspect-square items-center justify-center rounded bg-muted text-[10px] text-muted-foreground"
-									>
+									<div class="relative aspect-[16/10] overflow-hidden rounded-t-xl bg-muted">
 										{#if product.image}
 											<img
 												src={product.image}
 												alt={product.name}
-												class="h-full w-full rounded object-cover"
+												class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 												loading="lazy"
 											/>
 										{:else}
-											No img
+											<div class="flex h-full w-full items-center justify-center {TILE_COLORS[i % TILE_COLORS.length]}">
+												<Package class="size-6 opacity-60"></Package>
+											</div>
+										{/if}
+										{#if product.certStatus === 'certified'}
+											<span class="absolute top-1 left-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-[9px] font-semibold text-success backdrop-blur-sm">
+												<ShieldCheck class="size-2.5"></ShieldCheck>
+												Cert
+											</span>
 										{/if}
 									</div>
-									<h3 class="truncate text-[10px] font-medium transition-colors group-hover:text-primary">
-										{product.name}
-									</h3>
-									<p class="text-[10px] text-muted-foreground">{product.moq ?? ''}</p>
+									<div class="flex flex-1 flex-col gap-1 p-2">
+										<h3 class="line-clamp-2 text-[11px] font-medium leading-snug transition-colors group-hover:text-primary">
+											{product.name}
+										</h3>
+										<div class="mt-auto flex items-center justify-between gap-1.5">
+											<span class="truncate text-[10px] font-semibold text-primary">
+												{productPrice(product) || (product.moq ? `MOQ ${product.moq}` : '')}
+											</span>
+											{#if product.moq && product.priceMin}
+												<span class="truncate text-[9px] text-muted-foreground">MOQ {product.moq}</span>
+											{/if}
+										</div>
+									</div>
 								</a>
 							{/each}
 						</div>
@@ -515,6 +559,17 @@
 							>
 								<MessageCircle class="size-3.5 shrink-0 text-muted-foreground" />
 								WhatsApp
+							</a>
+						{/if}
+						{#if item.line}
+							<a
+								href={item.line.startsWith('http') ? item.line : `https://line.me/R/ti/p/@${item.line}`}
+								target="_blank"
+								rel="noopener"
+								class="flex items-center gap-2 font-medium hover:text-primary"
+							>
+								<span class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-[7px] font-black text-success">L</span>
+								LINE<span class="truncate text-[10px] font-normal text-muted-foreground">{item.line}</span>
 							</a>
 						{/if}
 						{#if !hasDirectContact}

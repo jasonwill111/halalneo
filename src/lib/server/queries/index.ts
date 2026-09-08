@@ -781,6 +781,7 @@ export async function getProductListItems(
 					status: schema.products.status,
 					categorySlug: schema.products.categorySlug,
 					supplierSlug: schema.products.supplierSlug,
+					moq: schema.products.moq,
 					priceMin: schema.products.priceMin,
 					priceMax: schema.products.priceMax,
 					priceUnit: schema.products.priceUnit,
@@ -848,6 +849,7 @@ export async function getSupplierListItems(
 					country: schema.suppliers.country,
 					businessType: schema.suppliers.businessType,
 					status: schema.suppliers.status,
+					isBrand: schema.suppliers.isBrand,
 					logoInitials: schema.suppliers.logoInitials,
 					description: schema.suppliers.description
 				})

@@ -29,9 +29,10 @@ interface ProductItem {
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
-		const [res, relatedRes] = await Promise.all([
+		const [res, relatedRes, categoriesRes] = await Promise.all([
 			fetch(`/api/products/${params.slug}`),
-			fetch('/api/products?limit=50')
+			fetch('/api/products?limit=50'),
+			fetch('/api/categories')
 		]);
 		if (res.ok) {
 			const data: ProductItem = (await res.json()) as any;
@@ -56,6 +57,16 @@ export const load: PageLoad = async ({ params, fetch }) => {
 						: (data.resources ?? [])
 			};
 			const allProducts = relatedRes.ok ? (((await relatedRes.json()) as { items?: any[] }).items ?? []) : [];
+		const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
+		// Resolve the supplier name for the product page's supplier card.
+		let supplierName: string | null = null;
+		if (parsed.supplierSlug) {
+			const supplierRes = await fetch(`/api/suppliers/${parsed.supplierSlug}`);
+			if (supplierRes.ok) {
+				const s = (await supplierRes.json()) as { name?: string };
+				supplierName = s.name ?? null;
+			}
+		}
 			const relatedProducts = allProducts
 				.filter(
 					(p: any) => p.slug !== params.slug && p.categorySlug === (parsed as any).categorySlug
@@ -74,7 +85,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				},
 				slug: params.slug,
 				item: parsed,
-				relatedProducts
+				relatedProducts,
+				categories,
+				supplierName
 			};
 		}
 	} catch {}
