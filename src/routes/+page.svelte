@@ -229,7 +229,7 @@
 		] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
-				class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-4"
+				class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-4"
 			>
 				<tool.icon class="size-4 shrink-0 {tool.tone} sm:size-6" />
 				<div class="min-w-0">
@@ -252,7 +252,7 @@
 		{#each data.categories.slice(0, 6) as category, i}
 			<a
 				href={localizeHref(`/category/${category.slug}`)}
-				class="group flex items-center gap-3 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
+				class="group flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
 			>
 				<div
 					class="flex size-10 shrink-0 items-center justify-center rounded-lg {categoryColors[
@@ -275,7 +275,7 @@
 <!-- MARKETPLACE COMING SOON -->
 <section
 	{@attach reveal}
-	class="rounded-lg bg-card p-4 ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
+	class="rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
 >
 	<div class="text-center">
 		<Badge variant="secondary" class="mb-2 sm:mb-3">Launching 2026</Badge>
@@ -321,7 +321,7 @@
 		{#each data.kbArticles.slice(0, 6) as article}
 			<a
 				href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)}
-				class="group w-[220px] shrink-0 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-3"
+				class="group w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:rounded-xl sm:p-3"
 			>
 				<Badge variant="secondary" class="mb-1 text-[10px] sm:text-[10px]">{article.section}</Badge>
 				<h3
@@ -355,7 +355,7 @@
 		] as item (item.href)}
 			<a
 				href={localizeHref(item.href)}
-				class="group flex items-center gap-2.5 rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
+				class="group flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md hover:-translate-y-0.5 sm:rounded-xl sm:p-4"
 			>
 				<div class={`flex size-9 shrink-0 items-center justify-center rounded-lg bg-${item.tone}/10 text-${item.tone}`}>
 					<item.icon class="size-4.5" />
@@ -376,7 +376,7 @@
 <!-- CTA -->
 <section
 	{@attach reveal}
-	class="rounded-lg bg-card p-4 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
+	class="rounded-xl bg-card p-4 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
 >
 	<h2 class="text-xl font-semibold tracking-tight sm:text-2xl sm:text-3xl">
 		Navigate halal trade with confidence
@@ -406,19 +406,19 @@
 		</p>
 	</div>
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:col-span-3">
-		<div class="rounded-lg bg-card p-3 ring-1 ring-foreground/10">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">JAKIM · MUI · ESMA</p>
 			<p class="mt-0.5 text-[10px] text-muted-foreground">15 certifying body databases</p>
 		</div>
-		<div class="rounded-lg bg-card p-3 ring-1 ring-foreground/10">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Public certificate registers</p>
 			<p class="mt-0.5 text-[10px] text-muted-foreground">Cross-referenced against issuing bodies</p>
 		</div>
-		<div class="rounded-lg bg-card p-3 ring-1 ring-foreground/10">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Scope & expiry tracking</p>
 			<p class="mt-0.5 text-[10px] text-muted-foreground">Certificate validity shown on every profile</p>
 		</div>
-		<div class="rounded-lg bg-card p-3 ring-1 ring-foreground/10">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Open methodology</p>
 			<p class="mt-0.5 text-[10px] text-muted-foreground">How we source and verify data</p>
 		</div>

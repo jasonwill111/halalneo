@@ -246,7 +246,7 @@
 	<div class="relative mx-auto -mt-8 max-w-6xl">
 		<div class="mb-3 flex items-end gap-4">
 			<div
-				class="flex size-12 items-center justify-center rounded-2xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm"
+				class="flex size-12 items-center justify-center rounded-xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm"
 			>
 				{item.logoInitials ?? item.name?.slice(0, 2) ?? '?'}
 			</div>

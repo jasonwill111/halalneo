@@ -16,7 +16,7 @@
 			<SparklesIcon class="size-3" />
 			Coming soon
 		</Badge>
-		<div class="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
+		<div class="flex size-14 items-center justify-center rounded-xl bg-primary/10">
 			<BotIcon class="size-7 text-primary" />
 		</div>
 		<div>

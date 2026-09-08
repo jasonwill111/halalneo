@@ -331,7 +331,7 @@
 			</Field.Field>
 
 			{#if form.type === 'landing'}
-				<div class="space-y-3 rounded-lg border border-dashed border-border p-4">
+				<div class="space-y-3 rounded-xl border border-dashed border-border p-4">
 					<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
 						Landing Page Settings
 					</p>

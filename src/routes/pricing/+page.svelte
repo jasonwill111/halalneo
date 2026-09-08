@@ -104,7 +104,7 @@
 	</p>
 </div>
 
-<div class="mx-auto mb-3 max-w-2xl rounded-lg border border-info/30 bg-info/10 p-3">
+<div class="mx-auto mb-3 max-w-2xl rounded-xl border border-info/30 bg-info/10 p-3">
 	<div class="flex items-start gap-2.5">
 		<Sparkles class="mt-0.5 size-4 shrink-0 text-info"></Sparkles>
 		<div class="flex-1 space-y-1">
@@ -179,7 +179,7 @@
 	{/each}
 </div>
 
-<div class="mt-4 rounded-lg bg-card p-3 ring-1 ring-foreground/10">
+<div class="mt-4 rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 	<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 		<div class="space-y-1">
 			<h2 class="text-sm font-semibold">Brand URL Add-on</h2>

@@ -17,7 +17,7 @@
 
 <div class="w-full max-w-md animate-fade-in mx-auto pt-6">
 	<div class="mb-5">
-		<div class="mx-auto mb-2 flex size-12 items-center justify-center rounded-2xl bg-primary/10">
+		<div class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary/10">
 			<Building2 class="size-6 text-primary"></Building2>
 		</div>
 		<h1 class="text-center text-xl font-bold tracking-tight sm:text-2xl">Supplier Portal</h1>

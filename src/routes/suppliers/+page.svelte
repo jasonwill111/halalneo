@@ -128,7 +128,7 @@
 				{#each pagedSuppliers as s, i (s.slug)}
 					<a
 						href={localizeHref(`/supplier/${s.slug}`)}
-						class="group flex h-full flex-col rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-3"
+						class="group flex h-full flex-col rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-3"
 					>
 						<div class="flex items-center gap-2.5">
 							<div class={`flex size-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold sm:size-10 ${TILE_COLORS[i % TILE_COLORS.length]}`}>

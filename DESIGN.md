@@ -201,6 +201,8 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - Badges/chips: pill `rounded-4xl` — the one rounded exception, reserved for small certification/status chips.
 - Hairline borders everywhere (`border-border`); no colored left-borders above 1px.
 
+**Radius audit rule (2026-09).** Only three corner values exist on any surface: `rounded-md` (8px) for controls, `rounded-xl` (14px) for cards/popovers/panels (incl. the mobile glass tab bar and its popovers, Select/Dropdown panels, alerts), and pills for chips. `rounded-2xl/3xl` are banned; `rounded-lg` is reserved for icon tiles / avatar initials tiles / stat tiles only. Pages must not hand-roll card corners — use the shared `Card` or `rounded-xl bg-card ring-1`.
+
 ## Components
 
 ### Buttons

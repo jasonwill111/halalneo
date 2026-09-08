@@ -131,11 +131,11 @@
 	{#if provider}
 		<Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }, { label: provider.name ?? 'Provider' }]} />
 
-		<div class="mb-3 aspect-[3/1] max-h-[100px] w-full rounded-lg border border-border bg-muted sm:max-h-none sm:aspect-[3/1]"></div>
+		<div class="mb-3 aspect-[3/1] max-h-[100px] w-full rounded-xl border border-border bg-muted sm:max-h-none sm:aspect-[3/1]"></div>
 
 		<div class="mb-3">
 			<div class="flex items-start gap-3">
-				<div class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary text-lg font-bold">
+				<div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary text-lg font-bold">
 					{initials(provider.name)}
 				</div>
 				<div class="min-w-0 flex-1">

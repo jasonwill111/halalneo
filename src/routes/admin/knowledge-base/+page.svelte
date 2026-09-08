@@ -95,7 +95,7 @@
 
 	{#if error}
 		<div
-			class="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"
+			class="rounded-xl border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"
 		>
 			{error}
 		</div>

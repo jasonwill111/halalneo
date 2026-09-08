@@ -153,7 +153,7 @@
 <!-- Explore Popover (fixed, rendered outside tab bar) -->
 {#if showExplore}
 	<div
-		class="glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-2xl p-2 md:hidden"
+		class="glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-xl p-2 md:hidden"
 		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%);"
 		data-popover-panel
 	>
@@ -189,7 +189,7 @@
 <!-- Menu Popover (fixed, rendered outside tab bar) -->
 {#if showMenu}
 	<div
-		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-2xl p-2 md:hidden"
+		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl p-2 md:hidden"
 		style="right: {menuPos.right}px; top: {menuPos.top}px; transform: translateY(-100%);"
 		data-popover-panel
 	>
@@ -219,7 +219,7 @@
 	aria-label="Mobile navigation"
 >
 	<div
-		class="flex items-center justify-evenly rounded-2xl border border-white/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-white/10"
+		class="flex items-center justify-evenly rounded-xl border border-white/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-white/10"
 		style="width: min(90vw, 360px);"
 	>
 		<!-- Home -->
