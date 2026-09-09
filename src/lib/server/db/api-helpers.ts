@@ -1,9 +1,15 @@
 import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 
-export function getDbFromPlatform(platform: App.Platform | undefined) {
-	const d1 = platform?.env?.DB;
-	if (!d1) return null;
-	return getDb(d1);
+export function getDbFromPlatform(_platform: unknown) {
+	try {
+		const d1 = getBindings().DB;
+		if (!d1) return null;
+		return getDb(d1);
+	} catch {
+		// cloudflare:workers unavailable (unit tests / non-worker context)
+		return null;
+	}
 }
 
 export function parseQuery(url: URL) {

@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
+import { getBindings } from '#lib/server/bindings.js';
 
 // Real-user Core Web Vitals ingestion for Cloudflare Analytics Engine.
 // Client sends [{ metric: 'LCP'|'CLS'|'INP', value, page }]; we validate
@@ -8,7 +9,7 @@ import { json } from '@sveltejs/kit';
 // WHERE blob1 = '/some-page' GROUP BY metric
 const METRICS = new Set(['LCP', 'CLS', 'INP']);
 
-export const POST: RequestHandler = async ({ request, platform }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	let payload: unknown;
 	try {
 		payload = await request.json();
@@ -16,8 +17,13 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 		return json({ error: 'Invalid JSON' }, { status: 400 });
 	}
 	const items = Array.isArray(payload) ? payload : [payload];
-	const ae = (platform?.env as unknown as { WEBSITE_ANALYTICS?: AnalyticsEngineDataset })
-		?.WEBSITE_ANALYTICS;
+	let ae: AnalyticsEngineDataset | undefined;
+	try {
+		ae = (getBindings() as unknown as { WEBSITE_ANALYTICS?: AnalyticsEngineDataset })
+			.WEBSITE_ANALYTICS;
+	} catch {
+		ae = undefined;
+	}
 	if (!ae) return json({ error: 'Analytics unavailable' }, { status: 503 });
 
 	let written = 0;

@@ -4,6 +4,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import type { RequestEvent } from '@sveltejs/kit';
 
 const authConfig = {
@@ -31,7 +32,12 @@ export async function getSession(event: RequestEvent): Promise<{ session: any; u
 		return { session: event.locals.session, user: event.locals.user };
 	}
 
-	const db = event.platform?.env?.DB;
+	let db: any = null;
+	try {
+		db = getBindings().DB;
+	} catch {
+		db = null;
+	}
 	if (!db) return null;
 
 	const authInstance = createAuth(db);

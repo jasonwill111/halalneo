@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createAuth } from '#lib/server/auth.js';
 import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { media } from '#lib/server/db/schema.js';
 
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
@@ -109,8 +110,13 @@ async function collectStream(stream: ReadableStream<Uint8Array>): Promise<Uint8A
 }
 
 // ==================== POST: Upload ====================
-export const POST: RequestHandler = async ({ request, platform }) => {
-	const db = platform?.env?.DB;
+export const POST: RequestHandler = async ({ request }) => {
+	let db: any = null;
+	try {
+		db = getBindings().DB;
+	} catch {
+		db = null;
+	}
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	// Pre-check file size before reading into memory
@@ -142,8 +148,16 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 		return json({ error: `File too large (max ${MAX_SIZE / 1024 / 1024} MB)` }, { status: 400 });
 	}
 
-	const images = platform?.env?.IMAGES as ImagesBinding | undefined;
-	const r2 = platform?.env?.halalneo_assets as R2Bucket | undefined;
+	let images: ImagesBinding | undefined;
+	let r2: R2Bucket | undefined;
+	try {
+		const b = getBindings();
+		images = b.IMAGES as ImagesBinding | undefined;
+		r2 = b.halalneo_assets as R2Bucket | undefined;
+	} catch {
+		images = undefined;
+		r2 = undefined;
+	}
 	if (!r2) return json({ error: 'R2 bucket unavailable' }, { status: 503 });
 
 	try {
@@ -204,7 +218,12 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 			.returning()
 			.get();
 
-		const baseUrl = platform?.env?.ORIGIN || '';
+		let baseUrl = '';
+		try {
+			baseUrl = getBindings().ORIGIN || '';
+		} catch {
+			baseUrl = '';
+		}
 
 		return json(
 			{

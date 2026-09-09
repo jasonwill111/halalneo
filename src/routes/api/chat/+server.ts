@@ -3,13 +3,19 @@ import type { RequestHandler } from './$types';
 import { handleChatStream } from '@mastra/ai-sdk';
 import { createUIMessageStreamResponse } from 'ai';
 import { createMastra } from '#lib/server/mastra/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 
-export const POST: RequestHandler = async ({ request, locals, platform }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const apiKey = platform?.env?.AGNES_API_KEY;
+	let apiKey: string | undefined;
+	try {
+		apiKey = getBindings().AGNES_API_KEY;
+	} catch {
+		apiKey = undefined;
+	}
 	if (!apiKey) {
 		return json({ error: 'AI service unavailable' }, { status: 503 });
 	}

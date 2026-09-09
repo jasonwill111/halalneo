@@ -12,6 +12,8 @@ minimumReleaseAgeExclude:
   - '@ai-sdk/provider@4.0.9'
   - '@ai-sdk/svelte@5.0.85'
   - ai@7.0.85
+  - '@sveltejs/adapter-cloudflare@8.0.0-next.7'
+  - '@sveltejs/kit@3.0.0-next.27'
 
 overrides:
   'better-auth>@sveltejs/kit': 'catalog:'

@@ -7,7 +7,7 @@ import fs from 'node:fs';
 const BASE = 'https://halalneo.com';
 const OUT = 'D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke';
 fs.mkdirSync(OUT, { recursive: true });
-const pw = fs.readFileSync('C:/Users/Nick/AppData/Local/Temp/opencode/admin-pw.txt', 'utf8').trim();
+const pw = fs.readFileSync(process.env.USERPROFILE + '/.halalneo-admin/admin-pw.txt', 'utf8').trim();
 
 const results = [];
 const check = (name, ok, detail = '') => {

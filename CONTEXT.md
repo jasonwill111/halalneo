@@ -165,16 +165,16 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 
 | Component | Technology |
 |-----------|------------|
-| Framework | SvelteKit 3.0.0-next.25 RC |
+| Framework | SvelteKit 3.0.0-next.27 RC |
 | UI | Svelte 5.57.0 + shadcn-svelte |
-| CSS | Tailwind CSS 4 |
+| CSS | Tailwind CSS 4.3.3 |
 | Database | Cloudflare D1 (SQLite) |
 | Storage | Cloudflare R2 |
-| Auth | Better Auth 1.7.2 |
-| Admin gate | `ADMIN_EMAILS` worker secret (comma-separated allowlist); `/admin/*` requires session + allowlisted email, redirects to `/admin/login` |
+| Auth | Better Auth 1.7.3 |
 | ORM | Drizzle ORM 0.45.2 |
-| AI | Mastra 1.63.0 + Vercel AI SDK 7.0.85 |
-| Hosting | Cloudflare Workers |
+| AI | Mastra 1.64.0 + Vercel AI SDK 7.0.93 |
+| Hosting | Cloudflare Workers (adapter-cloudflare 8.0.0-next.7) |
+| Bindings | `cloudflare:workers` module via `#lib/server/bindings.ts` (adapter 8 removed `event.platform`) |
 | i18n | Paraglide.js 2.25.0 (URL strategy) |
 
 ### Svelte 5 Conventions (Strict)

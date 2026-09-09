@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createAuth } from '#lib/server/auth.js';
 import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { media } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 
@@ -15,13 +16,22 @@ function uint8ToStream(data: Uint8Array): ReadableStream<Uint8Array> {
 	return new Response(new Blob([data as unknown as BlobPart])).body as ReadableStream<Uint8Array>;
 }
 
-export const GET: RequestHandler = async ({ params, platform, request, url }) => {
+function getMediaBindings(): { r2?: R2Bucket; images?: ImagesBinding } {
+	try {
+		const b = getBindings();
+		return { r2: b.halalneo_assets as R2Bucket | undefined, images: b.IMAGES as ImagesBinding | undefined };
+	} catch {
+		return {};
+	}
+}
+
+export const GET: RequestHandler = async ({ params, request, url }) => {
 	const key = params.key;
 	if (!key) {
 		return json({ error: 'Missing key' }, { status: 400 });
 	}
 
-	const r2 = platform?.env?.halalneo_assets as R2Bucket | undefined;
+	const { r2 } = getMediaBindings();
 	if (!r2) return json({ error: 'R2 unavailable' }, { status: 503 });
 
 	// Reconstruct full key with media/ prefix if not present
@@ -36,7 +46,7 @@ export const GET: RequestHandler = async ({ params, platform, request, url }) =>
 		const contentType = object.httpMetadata?.contentType ?? '';
 		const askedWidth = Number(url.searchParams.get('w'));
 		const width = RESPONSIVE_WIDTHS.has(askedWidth) ? askedWidth : null;
-		const images = platform?.env?.IMAGES as ImagesBinding | undefined;
+		const { images } = getMediaBindings();
 
 		// Responsive variant: transform raster sources, serve as WebP.
 		if (width && images && !contentType.includes('svg')) {
@@ -80,20 +90,25 @@ export const GET: RequestHandler = async ({ params, platform, request, url }) =>
 };
 
 // ==================== DELETE: Remove media ====================
-export const DELETE: RequestHandler = async ({ params, request, platform }) => {
+export const DELETE: RequestHandler = async ({ params, request }) => {
 	const key = params.key;
 	if (!key) {
 		return json({ error: 'Missing key' }, { status: 400 });
 	}
 
-	const db = platform?.env?.DB;
+	let db: any = null;
+	try {
+		db = getBindings().DB;
+	} catch {
+		db = null;
+	}
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const auth = createAuth(db);
 	const session = await auth.api.getSession({ headers: request.headers });
 	if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
 
-	const r2 = platform?.env?.halalneo_assets as R2Bucket | undefined;
+	const { r2 } = getMediaBindings();
 	if (!r2) return json({ error: 'R2 unavailable' }, { status: 503 });
 
 	const fullKey = key.startsWith('media/') ? key : `media/${key}`;

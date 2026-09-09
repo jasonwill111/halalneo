@@ -1,4 +1,5 @@
 import type { PageServerLoad } from './$types';
+import { getBindings } from '#lib/server/bindings.js';
 
 interface ApplicationRow {
 	slug: string;
@@ -12,13 +13,18 @@ interface ApplicationRow {
 	applicationText: string | null;
 }
 
-export const load: PageServerLoad = async ({ platform }) => {
+export const load: PageServerLoad = async () => {
 	const seo = {
 		title: 'Admin Dashboard — HalalNeo',
 		description: 'Admin dashboard for managing HalalNeo content.'
 	};
 
-	const d1 = platform?.env?.DB;
+	let d1: any = null;
+	try {
+		d1 = getBindings().DB;
+	} catch {
+		d1 = null;
+	}
 	if (!d1) return { seo, applications: [], pendingCount: 0 };
 
 	try {

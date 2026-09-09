@@ -1,6 +1,7 @@
 import { sequence, type Handle } from '@sveltejs/kit/hooks';
 import { building } from '$app/env';
 import { createAuth } from '#lib/server/auth.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { getTextDirection } from '#lib/paraglide/runtime.js';
 import { paraglideMiddleware } from '#lib/paraglide/server.js';
@@ -278,7 +279,12 @@ function isPublicPath(pathname: string): boolean {
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	if (building) return resolve(event);
 
-	const db = event.platform?.env?.DB;
+	let db: any = null;
+	try {
+		db = getBindings().DB;
+	} catch {
+		db = null;
+	}
 	if (!db) return resolve(event);
 
 	// Strip locale prefix for auth checks (e.g. /en/admin → /admin)
@@ -300,11 +306,15 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	// The admin login page itself stays reachable without a session.
 	const isAdminLogin = pathname === '/admin/login' || pathname.startsWith('/admin/login/');
 	if (pathname.startsWith('/admin') && !isAdminLogin) {
-		const env = (event.platform?.env ?? {}) as unknown as Record<string, string | undefined>;
-		const allowlist = (env.ADMIN_EMAILS ?? '')
-			.split(',')
-			.map((s) => s.trim().toLowerCase())
-			.filter(Boolean);
+		let allowlist: string[] = [];
+		try {
+			allowlist = ((getBindings().ADMIN_EMAILS as string | undefined) ?? '')
+				.split(',')
+				.map((s) => s.trim().toLowerCase())
+				.filter(Boolean);
+		} catch {
+			allowlist = [];
+		}
 		const email = (session?.user?.email ?? '').toLowerCase();
 		if (!session || !email || !allowlist.includes(email)) {
 			return new Response(null, {
