@@ -48,7 +48,7 @@
 {/snippet}
 
 {#snippet navLinks()}
-	{#each nav as item}
+	{#each nav as item, index (index) }
 		<a
 			href={item.href}
 			onclick={onNavigate}

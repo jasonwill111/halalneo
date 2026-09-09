@@ -107,7 +107,7 @@
 
 {#snippet navList()}
 	<nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-3" aria-label="Admin pages">
-		{#each navItems as item}
+		{#each navItems as item, index (index) }
 			<Button
 				href={localizeHref(item.href)}
 				variant={isActive(page.url.pathname, item.href) ? 'secondary' : 'ghost'}

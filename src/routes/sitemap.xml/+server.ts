@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { cachedQuery } from '#lib/server/cache.js';
 import {
 	getProducts,
@@ -75,7 +76,7 @@ function buildUrlEntry(
 }
 
 export const GET: RequestHandler = async (event) => {
-	const db = getDbFromPlatform(event.platform);
+	const db = getDb(getBindings().DB);
 	const entries: string[] = [];
 	let count = 0;
 
