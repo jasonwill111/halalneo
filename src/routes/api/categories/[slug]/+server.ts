@@ -28,7 +28,10 @@ export const GET: RequestHandler = async (event) => {
 		);
 
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
-		if (row.status !== 'active') {
+		// NOTE: `status` may be absent on rows cached before the 2026-09
+		// categories-status migration — treat missing as public (all D1 rows
+		// are backfilled 'active'). Never 404 on a missing field.
+		if (row.status != null && row.status !== 'active') {
 			const session = await getSession(event);
 			if (!session) return json({ error: 'Not found' }, { status: 404 });
 		}
