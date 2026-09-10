@@ -243,11 +243,7 @@
 </script>
 
 <svelte:head>
-	<title>Search — HalalNeo</title>
-	<meta
-		name="description"
-		content="Search for halal products, suppliers, and market intelligence."
-	/>
+	<!-- Title + description render once via root layout from loader `seo`. -->
 </svelte:head>
 
 <div class="-mx-4 border-b border-border bg-card/50 px-4 sm:-mx-6 sm:px-6">

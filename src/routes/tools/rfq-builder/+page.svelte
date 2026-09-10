@@ -102,11 +102,7 @@
 </script>
 
 <svelte:head>
-	<title>RFQ Builder — HalalNeo</title>
-	<meta
-		name="description"
-		content="Build a halal-ready request for quotation: product specs, certification requirements, documents and delivery terms. Copy or download free."
-	/>
+	<!-- Title + description render once via root layout from loader `seo`. -->
 </svelte:head>
 
 <Breadcrumb

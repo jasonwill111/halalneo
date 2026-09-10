@@ -44,11 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Landed Cost Calculator — HalalNeo</title>
-	<meta
-		name="description"
-		content="Calculate true per-unit landed cost for halal imports: CIF, duty, VAT, clearance and amortised halal certification cost."
-	/>
+	<!-- Title + description render once via root layout from loader `seo`. -->
 </svelte:head>
 
 <Breadcrumb

@@ -66,11 +66,7 @@
 </script>
 
 <svelte:head>
-	<title>Halal Trade Tools — HalalNeo</title>
-	<meta
-		name="description"
-		content="Free halal trade tools: ingredient checker, certification cost estimator, landed cost calculator, RFQ builder and certificate verification."
-	/>
+	<!-- Title + description render once via root layout from loader `seo`. -->
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
