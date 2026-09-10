@@ -9,6 +9,7 @@
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
+	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import {
 		Dialog,
 		DialogContent,
@@ -29,6 +30,7 @@
 	import Users from '@lucide/svelte/icons/users';
 	import Building2 from '@lucide/svelte/icons/building-2';
 	import CalendarCheck from '@lucide/svelte/icons/calendar-check';
+	import CalendarPlus from '@lucide/svelte/icons/calendar-plus';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
@@ -198,15 +200,44 @@
 	const hasDirectContact = $derived(
 		!!(item?.email || item?.phone || item?.whatsapp || item?.line || item?.website)
 	);
+
+	// Header cert badges are capped at 3 on all viewports; the rest live behind #certifications.
+	const visibleCerts = $derived(certifications.slice(0, 3));
+	const hiddenCertCount = $derived(certifications.length - visibleCerts.length);
+
+	const memberSinceYear = $derived.by(() => {
+		const raw = item?.createdAt;
+		if (!raw) return null;
+		const d = new Date(raw);
+		return isNaN(d.getTime()) ? null : d.getFullYear();
+	});
+
+	const metaKeywords = $derived.by(() => {
+		const kw = item?.keywords;
+		if (!kw) return null;
+		if (Array.isArray(kw)) return kw.filter(Boolean).join(', ') || null;
+		if (typeof kw === 'string') {
+			try {
+				const parsed = JSON.parse(kw);
+				if (Array.isArray(parsed)) return parsed.filter(Boolean).join(', ') || null;
+			} catch {}
+			return kw.trim() || null;
+		}
+		return null;
+	});
 </script>
 
 <svelte:head>
-	<title>{item?.name ?? 'Supplier'} — HalalNeo</title>
+	<title>{item?.metaTitle ?? `${item?.name ?? 'Supplier'} — HalalNeo`}</title>
 	<meta
 		name="description"
-		content={item?.description?.slice(0, 160) ??
+		content={item?.metaDescription ??
+			item?.description?.slice(0, 160) ??
 			`Halal-certified supplier ${item?.name ?? ''} from ${item?.country ?? ''}.`}
 	/>
+	{#if metaKeywords}
+		<meta name="keywords" content={metaKeywords} />
+	{/if}
 	{#if supplierSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(supplierSchema)}</script>`}
 	{/if}
@@ -276,12 +307,8 @@
 						<Badge variant="outline" class="text-[10px] font-medium capitalize {typeBadgeCls(item.businessType)}">
 							{item.businessType}
 						</Badge>
-					{/if}					{#if item.isBrand}
-						<Badge variant="outline" class="border-accent-rose/20 bg-accent-rose/10 text-[10px] font-medium text-accent-rose">
-							Brand owner
-						</Badge>
 					{/if}
-					{#each certifications as cert}
+					{#each visibleCerts as cert (cert.bodyId || cert.name)}
 						{#if cert.bodyId}
 							<a href={localizeHref(`/certifying-bodies/${cert.bodyId}`)}>
 								<Badge
@@ -300,6 +327,11 @@
 							>
 						{/if}
 					{/each}
+					{#if hiddenCertCount > 0}
+						<a href="#certifications">
+							<Badge variant="secondary" class="text-[10px]">+{hiddenCertCount} more</Badge>
+						</a>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -345,7 +377,7 @@
 		<!-- Stats row -->
 		<div class="mb-4 grid grid-cols-2 gap-1 sm:grid-cols-4">
 			<StatTile value={products.length} label="Products" tone="primary" />
-			<StatTile value={item.rating ? `${item.rating}` : 'N/A'} label="Rating" tone="warn" />
+			<StatTile value={certifications.length} label="Certifications" tone="success" />
 			<StatTile value={mainMarkets.length > 0 ? mainMarkets.length : (item.mainMarkets?.length ?? '—')} label="Markets" tone="info" />
 			<StatTile value={item.yearEstablished ?? '—'} label="Est." tone="success" />
 		</div>
@@ -362,10 +394,10 @@
 
 				<!-- Certifications -->
 				{#if certifications.length > 0}
-					<section>
+					<section id="certifications" class="scroll-mt-24">
 						<h2 class="mb-1.5 text-sm font-semibold">Certifications</h2>
 						<div class="grid gap-1.5 sm:grid-cols-2">
-							{#each certifications as cert}
+							{#each certifications as cert (cert.bodyId || cert.name)}
 								{@const expired = isExpired(cert.expiry)}
 								<Card class="p-3">
 									<CardContent class="space-y-1.5 p-0">
@@ -421,7 +453,7 @@
 							<h2 class="text-sm font-semibold">Products ({products.length})</h2>
 						</div>
 						<div class="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-							{#each products as product, i}
+							{#each products as product, i (product.slug)}
 								<a
 									href={localizeHref(`/product/${product.slug}`)}
 									class="group flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
@@ -466,7 +498,7 @@
 				{/if}
 			</div>
 
-			<aside class="min-w-0 space-y-3 sm:space-y-4 lg:col-span-2">
+			<aside class="min-w-0 space-y-3 sm:space-y-4 lg:col-span-2 lg:sticky lg:top-20 lg:self-start">
 				<!-- Company facts -->
 				<Card class="p-4">
 					<CardTitle class="mb-3 text-sm">Company facts</CardTitle>
@@ -486,6 +518,16 @@
 								<p class="font-medium">{item.yearEstablished ?? '—'}</p>
 							</div>
 						</div>
+						{#if memberSinceYear}
+							<Separator />
+							<div class="flex items-start gap-2">
+								<CalendarPlus class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+								<div class="min-w-0 flex-1">
+									<p class="text-[10px] text-muted-foreground">Member since</p>
+									<p class="font-medium">{memberSinceYear}</p>
+								</div>
+							</div>
+						{/if}
 						{#if item.employeeCount}
 							<Separator />
 							<div class="flex items-start gap-2">
@@ -513,7 +555,7 @@
 								<div class="min-w-0 flex-1">
 									<p class="text-[10px] text-muted-foreground">Markets served</p>
 									<div class="mt-1 flex flex-wrap gap-1">
-										{#each mainMarkets as m}
+										{#each mainMarkets as m (m)}
 											<Badge variant="secondary" class="text-[10px]">{m}</Badge>
 										{/each}
 									</div>
@@ -593,6 +635,15 @@
 				</Card>
 			</aside>
 		</div>
+
+		<RelatedLinks
+			title="More suppliers"
+			items={(data.relatedSuppliers ?? []).map((s: any) => ({
+				label: s.name,
+				description: [s.businessType, s.country].filter(Boolean).join(' · '),
+				href: `/supplier/${s.slug}`
+			}))}
+		/>
 	</div>
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">

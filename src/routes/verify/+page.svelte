@@ -4,6 +4,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import CheckCircleIcon from '@lucide/svelte/icons/circle-check';
@@ -23,16 +24,24 @@
 	let results = $state.raw<any[]>([]);
 	let searched = $state(false);
 
-	const certifiers = [
-		{ name: 'JAKIM', country: 'Malaysia', color: 'bg-info/10 text-info' },
-		{ name: 'MUI / LPPOM', country: 'Indonesia', color: 'bg-success/10 text-success' },
-		{ name: 'ESMA', country: 'UAE', color: 'bg-accent-purple/10 text-accent-purple' },
-		{ name: 'GAC', country: 'Gulf States', color: 'bg-warn/10 text-warn' },
-		{ name: 'IFANCA', country: 'USA', color: 'bg-accent-rose/10 text-accent-rose' },
-		{ name: 'SFDA', country: 'Saudi Arabia', color: 'bg-primary/10 text-primary' },
-		{ name: 'Halal Food Council (HFC)', country: 'Singapore', color: 'bg-info/10 text-info' },
-		{ name: 'MHJ', country: 'Japan', color: 'bg-success/10 text-success' }
+	const fallbackCertifiers = [
+		{ id: 'jakim', name: 'JAKIM', country: 'Malaysia' },
+		{ id: 'mui', name: 'MUI / LPPOM', country: 'Indonesia' },
+		{ id: 'esma', name: 'ESMA', country: 'UAE' },
+		{ id: 'gac', name: 'GAC', country: 'Gulf States' },
+		{ id: 'ifanca', name: 'IFANCA', country: 'USA' },
+		{ id: 'sfda', name: 'SFDA', country: 'Saudi Arabia' },
+		{ id: 'hfc', name: 'Halal Food Council (HFC)', country: 'Singapore' },
+		{ id: 'mhj', name: 'MHJ', country: 'Japan' }
 	];
+
+	const certifiers = $derived(
+		((data.certifiers?.length ? data.certifiers : fallbackCertifiers) as {
+			id: string;
+			name: string;
+			country: string;
+		}[]).map((c, i) => ({ ...c, color: TILE_COLORS[i % TILE_COLORS.length] }))
+	);
 
 	async function handleSearch(e: Event) {
 		e.preventDefault();
@@ -88,7 +97,7 @@
 	<div class="space-y-3">
 		<h2 class="text-sm font-medium text-muted-foreground">Supported certifiers</h2>
 		<div class="flex flex-wrap gap-2">
-			{#each certifiers as c}
+			{#each certifiers as c, i (c.id ?? c.name)}
 				<Button
 					variant="outline"
 					size="sm"
@@ -140,7 +149,7 @@
 								</div>
 
 								<div class="flex flex-wrap gap-1">
-									{#each (r.certifications ?? []) as cert}
+									{#each (r.certifications ?? []) as cert, j (cert)}
 										<Badge variant="secondary" class="text-[10px]">{cert}</Badge>
 									{/each}
 								</div>

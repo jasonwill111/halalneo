@@ -10,58 +10,79 @@
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 
-	type Faq = { q: string; a: string };
+	type Faq = { q: string; a: string; category: string };
 	let search = $state('');
+	let category = $state('All');
 
 	const faqs: Faq[] = [
 		{
 			q: "What makes a supplier 'verified'?",
+			category: 'Certification',
 			a: 'Every supplier on HalalNeo holds a halal certificate issued by a recognised certifying body (e.g. JAKIM, BPJPH, MUIS, SFDA, MOIAT, IFANCA). Each profile shows the certifying body, the standard it certifies against and the scope of the certificate, so you can check it applies to the exact product you are buying.'
 		},
 		{
 			q: 'Which certifying bodies does HalalNeo recognise?',
+			category: 'Certification',
 			a: 'We primarily recognise certificates issued under the major national and multilateral systems: JAKIM (Malaysia), BPJPH/MUI (Indonesia), MUIS (Singapore), SFDA (Saudi Arabia), MOIAT (UAE), IFANCA (US), GIMDES (Türkiye) and SANHA (South Africa), among others.'
 		},
 		{
 			q: 'Is HalalNeo itself a certifying body?',
+			category: 'General',
 			a: "No. HalalNeo is a marketplace and trade-intelligence platform. Certification is always issued independently by the listed certifying bodies. We publish the certificate details on each supplier's profile so buyers can verify claims against the issuing body before purchase."
 		},
 		{
 			q: 'How do I confirm a certificate is valid?',
+			category: 'Certification',
 			a: 'Check three things on the supplier profile: the certifying body, the standard (e.g. MS 1500:2019) and the certificate scope and expiry. For critical orders, contact the issuing body directly —most publish a public verification lookup.'
 		},
 		{
 			q: 'Do you vet product ingredients or manufacturing sites?',
+			category: 'Sourcing',
 			a: 'We publish the certificate scope as issued by the certifying body. Whether a specific product falls within that scope is ultimately a matter between the buyer, supplier and certifying body. The knowledge base explains exactly how to read a scope.'
 		},
 		{
 			q: 'Is HalalNeo free to use?',
+			category: 'General',
 			a: 'Yes. Browsing suppliers, products and the knowledge base is free. Buyer accounts — shortlisting and messaging suppliers — are free. While we are in supplier test mode, every supplier plan tier is also free. We will give every active supplier at least 30 days’ notice before any paid plan is introduced.'
 		},
 		{
 			q: 'How can my company become a supplier on HalalNeo?',
+			category: 'Account',
 			a: 'Apply through our supplier onboarding form. We will review your company details, country and halal certification. Most applications are processed within 1–3 business days.'
 		},
 		{
 			q: 'How do I get in touch with a supplier?',
+			category: 'Sourcing',
 			a: 'Each product and supplier profile includes a request-information option. Register as a buyer to build a shortlist and contact suppliers directly.'
 		},
 		{
 			q: 'Is the product data on this site real?',
+			category: 'General',
 			a: 'Certifying bodies and certification standards referenced on HalalNeo are real and current. Supplier and product listings are illustrative examples to demonstrate the platform. Always verify directly with the certifying body before entering into any commercial agreement.'
 		}
 	];
 
+	const categories = $derived(['All', ...new Set(faqs.map((f) => f.category))]);
+
+	const filterOptions = $derived(
+		categories.map((c) => ({
+			value: c,
+			label: c,
+			count: c === 'All' ? faqs.length : faqs.filter((f) => f.category === c).length
+		}))
+	);
+
 	const filteredFaqs = $derived(
-		search.trim()
-			? faqs.filter(
-					(f) =>
-						f.q.toLowerCase().includes(search.toLowerCase()) ||
-						f.a.toLowerCase().includes(search.toLowerCase())
-				)
-			: faqs
+		faqs.filter(
+			(f) =>
+				(category === 'All' || f.category === category) &&
+				(!search.trim() ||
+					f.q.toLowerCase().includes(search.toLowerCase()) ||
+					f.a.toLowerCase().includes(search.toLowerCase()))
+		)
 	);
 
 	// Single source of truth: the inline svelte:head block below renders the FAQPage schema.
@@ -108,9 +129,13 @@
 		</p>
 	</div>
 
+	<div class="flex justify-center">
+		<FilterPills options={filterOptions} bind:value={category} ariaLabel="Filter questions by category" />
+	</div>
+
 	<Accordion type="multiple">
-		{#each filteredFaqs as faq, i}
-			<AccordionItem value={String(i)}>
+		{#each filteredFaqs as faq (faq.q)}
+			<AccordionItem value={faq.q}>
 				<AccordionTrigger>{faq.q}</AccordionTrigger>
 				<AccordionContent>{faq.a}</AccordionContent>
 			</AccordionItem>

@@ -120,11 +120,15 @@
 						<CardTitle>About</CardTitle>
 					</CardHeader>
 					<CardContent class="space-y-3">
-						<p class="text-sm text-foreground/80">
-							{body.name} is the recognized halal certification authority in {body.country},
-							operating under the {body.standard} standard. The body certifies food, beverage, pharmaceutical,
-							and medical device products for domestic and international markets.
-						</p>
+						{#if body.description}
+							<p class="text-sm text-foreground/80">{body.description}</p>
+						{:else}
+							<p class="text-sm text-foreground/80">
+								{body.name} is the recognized halal certification authority in {body.country},
+								operating under the {body.standard} standard. The body certifies food, beverage, pharmaceutical,
+								and medical device products for domestic and international markets.
+							</p>
+						{/if}
 						<div class="grid grid-cols-2 gap-4 text-sm">
 							<div>
 								<p class="text-muted-foreground">Country</p>
@@ -170,7 +174,7 @@
 						</p>
 					</div>
 					<div class="flex flex-wrap gap-2">
-						{#each recognitionEntries as entry}
+						{#each recognitionEntries as entry (entry.country)}
 							<Badge
 								variant="outline"
 								class={`gap-1.5 ${recognitionStatusClasses(entry.status)}`}
@@ -194,7 +198,7 @@
 				<section class="space-y-4">
 					<h2 class="text-xl font-semibold">Certification types</h2>
 					<div class="flex flex-wrap gap-2">
-						{#each data.certificationTypes as cat}
+						{#each data.certificationTypes as cat (cat.slug)}
 							<Badge variant="secondary">{cat.name}</Badge>
 						{/each}
 					</div>
@@ -205,7 +209,7 @@
 				<h2 class="text-xl font-semibold">Certified suppliers</h2>
 				{#if (data.certifiedSuppliers ?? []).length > 0}
 					<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-						{#each data.certifiedSuppliers as supplier}
+						{#each data.certifiedSuppliers as supplier (supplier.slug)}
 							<Card>
 								<CardContent class="flex items-center justify-between p-4">
 									<div class="space-y-1">

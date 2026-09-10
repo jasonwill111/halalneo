@@ -1,9 +1,12 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { inquiries } from '#lib/server/db/schema.js';
 import { eq, like, sql, and } from 'drizzle-orm';
 import { cachedQuery, cacheShort, queryCacheKey } from '#lib/server/cache.js';
+import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -30,8 +33,11 @@ const inquirySchema = z.object({
 	message: z.string().min(10, 'Message must be at least 10 characters').max(5000, 'Message must be at most 5000 characters')
 });
 
-export const GET: RequestHandler = async ({ platform, url }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async (event) => {
+	const { url } = event;
+	const session = await getSession(event);
+	if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const { limit, offset, search } = parseQuery(url);
@@ -71,13 +77,13 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	}
 };
 
-export const POST: RequestHandler = async ({ request, platform }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
 	if (!checkRateLimit(ip)) {
 		return json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

@@ -7,11 +7,27 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
 
 	let { data } = $props();
 	let search = $state('');
+	let activeCategory = $state('all');
 
 	const blogImages = ['/api/media/blog-featured-1.webp', '/api/media/blog-featured-2.webp', '/api/media/blog-1.webp', '/api/media/blog-2.webp', '/api/media/blog-3.webp'];
+
+	const categoryOptions = $derived([
+		{ value: 'all', label: 'All' },
+		...Array.from(
+			new Set((data.posts ?? []).map((p: any) => p.category).filter((c): c is string => !!c))
+		)
+			.sort()
+			.map((c) => ({
+				value: c,
+				label: c,
+				count: (data.posts ?? []).filter((p: any) => p.category === c && p.status === 'published')
+					.length
+			}))
+	]);
 
 	const published = $derived(
 		(data.posts ?? [])
@@ -22,6 +38,7 @@
 					? p.title.toLowerCase().includes(search.toLowerCase())
 					: true
 			)
+			.filter((p: any) => (activeCategory === 'all' ? true : p.category === activeCategory))
 	);
 
 	const PAGE_SIZE = 6;
@@ -31,6 +48,7 @@
 
 	$effect(() => {
 		void search;
+		void activeCategory;
 		page = 1;
 	});
 </script>
@@ -63,6 +81,14 @@
 		/>
 	</div>
 
+	{#if categoryOptions.length > 1}
+		<FilterPills
+			options={categoryOptions}
+			bind:value={activeCategory}
+			ariaLabel="Filter posts by category"
+		/>
+	{/if}
+
 	{#if published.length === 0}
 		<div
 			class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground"
@@ -80,6 +106,9 @@
 							</div>
 							<CardContent class="space-y-2 pt-3">
 								<div class="flex items-center gap-2 text-xs text-muted-foreground">
+									{#if post.category}
+										<Badge variant="outline" class="text-[10px]">{post.category}</Badge>
+									{/if}
 									<span class="font-medium text-foreground/80">{post.author}</span>
 									<span>·</span>
 									<time datetime={post.date}>{post.date}</time>
@@ -89,7 +118,7 @@
 								</CardTitle>
 								<p class="text-sm text-muted-foreground">{post.excerpt}</p>
 								<div class="flex flex-wrap gap-1.5 pt-1">
-									{#each post.tags as tag}
+									{#each post.tags as tag (tag)}
 										<Badge variant="secondary">{tag}</Badge>
 									{/each}
 								</div>

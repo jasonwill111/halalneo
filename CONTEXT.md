@@ -79,8 +79,8 @@ _Avoid_: content generator, AI assistant
 | Knowledge Base | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]` | ✅ 6 sections, 125 articles (Markdown bodies, rendered + TOC) |
 | Blog | `/blog`, `/blog/[slug]` | ✅ 8 posts (7 published + 1 evergreen) |
 | Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt) |
-| Glossary | `/glossary` | ✅ 83 terms, A-Z navigation |
-| Trade Shows | `/trade-shows` | ✅ 20 events with region filter + pagination |
+| Glossary | `/glossary` | ✅ 83 terms, A-Z letter-pill pagination + search |
+| Trade Shows | `/trade-shows`, `/trade-shows/[id]` | ✅ 20 events with region filter + pagination, detail pages with Event JSON-LD |
 | Certifying Bodies | `/certifying-bodies`, `/certifying-bodies/[slug]` | ✅ 15 bodies with recognition data |
 | Service Providers | `/service-providers`, `/service-providers/[slug]` | ✅ 14 providers |
 | Verify | `/verify` | ✅ Certificate verification tool |
@@ -105,28 +105,28 @@ _Avoid_: content generator, AI assistant
 
 | Endpoint | Methods | Purpose |
 |----------|---------|---------|
-| `/api/products` | GET, POST | List/create products (query-keyed cache) |
-| `/api/products/[slug]` | GET, PUT, DELETE | CRUD product |
-| `/api/suppliers` | GET | List suppliers (query-keyed cache) |
-| `/api/suppliers/[slug]` | GET | Supplier detail |
-| `/api/categories` | GET, POST | List/create categories |
-| `/api/categories/[slug]` | GET | Category detail |
-| `/api/knowledge-base` | GET, POST | List/create KB articles |
-| `/api/knowledge-base/[slug]` | GET | KB article detail |
+| `/api/products` | GET, POST | List/create products (query-keyed cache; GET defaults `status=active`) |
+| `/api/products/[slug]` | GET, PUT, DELETE | CRUD product (GET 404s non-active for anonymous) |
+| `/api/suppliers` | GET | List suppliers (query-keyed cache; GET defaults `status=active`) |
+| `/api/suppliers/[slug]` | GET | Supplier detail (404s non-active for anonymous) |
+| `/api/categories` | GET, POST | List/create categories (GET defaults `status=active`) |
+| `/api/categories/[slug]` | GET | Category detail (404s inactive for anonymous) |
+| `/api/knowledge-base` | GET, POST | List/create KB articles (GET defaults `status=published`) |
+| `/api/knowledge-base/[slug]` | GET | KB article detail (404s unpublished for anonymous) |
 | `/api/knowledge-base/sections` | GET | KB sections |
-| `/api/blog` | GET | List blog posts |
-| `/api/blog/[slug]` | GET | Blog post detail |
-| `/api/certifying-bodies` | GET | List certifiers |
-| `/api/certifying-bodies/[id]` | GET | Certifier detail |
-| `/api/service-providers` | GET | List service providers |
-| `/api/service-providers/[slug]` | GET | Provider detail |
-| `/api/market-guides` | GET | List market guides |
-| `/api/market-guides/[slug]` | GET | Guide detail |
-| `/api/trade-shows` | GET | List trade shows |
-| `/api/trade-shows/[id]` | GET | Show detail |
+| `/api/blog` | GET | List blog posts (defaults `status=published`) |
+| `/api/blog/[slug]` | GET | Blog post detail (404s unpublished for anonymous) |
+| `/api/certifying-bodies` | GET | List certifiers (defaults `status=active`) |
+| `/api/certifying-bodies/[id]` | GET | Certifier detail (404s inactive for anonymous) |
+| `/api/service-providers` | GET | List service providers (defaults `status=active`) |
+| `/api/service-providers/[slug]` | GET | Provider detail (404s inactive for anonymous) |
+| `/api/market-guides` | GET | List market guides (defaults `status=active`) |
+| `/api/market-guides/[slug]` | GET | Guide detail (404s inactive for anonymous) |
+| `/api/trade-shows` | GET | List trade shows (defaults `status=active`; `?scale=` filters scale) |
+| `/api/trade-shows/[id]` | GET | Show detail (404s inactive for anonymous) |
 | `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache) |
-| `/api/inquiries` | GET, POST | List/create inquiries (rate-limited) |
-| `/api/supplier-applications` | GET, POST | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET lists applications |
+| `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public); GET requires session |
+| `/api/supplier-applications` | GET, POST | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET requires session |
 | `/api/verify` | GET | Certificate verification search |
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |

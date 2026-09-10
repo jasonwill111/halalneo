@@ -1,15 +1,16 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { eq, like, or, sql } from 'drizzle-orm';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheShort } from '#lib/server/cache.js';
 
-export const GET: RequestHandler = async ({ url, platform }) => {
+export const GET: RequestHandler = async ({ url }) => {
 	const q = url.searchParams.get('q')?.trim();
 	if (!q) return json({ results: [] });
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const term = `%${q}%`;

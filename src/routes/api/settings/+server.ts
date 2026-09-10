@@ -1,6 +1,7 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { siteSettings } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
@@ -13,8 +14,9 @@ const ALLOWED_SETTINGS_KEYS = new Set([
 	'contactPhone', 'businessAddress', 'businessHours', 'businessEmail'
 ]);
 
-export const GET: RequestHandler = async ({ platform, url, request }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async (event) => {
+	const { url, request } = event;
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const key = url.searchParams.get('key');
@@ -32,7 +34,7 @@ export const GET: RequestHandler = async ({ platform, url, request }) => {
 		return json(row);
 	}
 
-	const session = await getSession({ platform, request, locals: {} } as any);
+	const session = await getSession(event);
 	const data = await cachedQuery(
 		url.toString(),
 		async () => {
@@ -46,13 +48,14 @@ export const GET: RequestHandler = async ({ platform, url, request }) => {
 	return json(data);
 };
 
-export const PUT: RequestHandler = async ({ request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const PUT: RequestHandler = async (event) => {
+	const { request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

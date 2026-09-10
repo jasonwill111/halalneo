@@ -9,11 +9,14 @@
 	import { sanitizeHtml } from '#lib/sanitize.js';
 	import { marked } from 'marked';
 	import { onMount } from 'svelte';
+	import User from '@lucide/svelte/icons/user';
+	import Eye from '@lucide/svelte/icons/eye';
 
 	let { data } = $props();
 
 	const seo = $derived(data.seo ?? {});
 	const item = $derived(data.item);
+	const meta = $derived((item ?? {}) as { author?: string | null; views?: number | null });
 	const related = $derived(data.related ?? []);
 
 	let activeId = $state('');
@@ -164,7 +167,7 @@
 								On this page
 							</h3>
 							<nav class="space-y-1">
-								{#each tocItems as tocItem}
+								{#each tocItems as tocItem (tocItem.id)}
 									<a
 										href="#{tocItem.id}"
 										class="block rounded-md px-2 py-1 text-xs transition-colors hover:bg-accent hover:text-accent-foreground {activeId ===
@@ -197,6 +200,16 @@
 					<Badge variant="secondary">{data.item.sectionName}</Badge>
 					<Badge variant="outline">{data.item.readTime}</Badge>
 				</div>
+				<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+					<span class="inline-flex items-center gap-1">
+						<User class="size-3.5" />
+						{meta.author ?? 'HalalNeo Research'}
+					</span>
+					<span class="inline-flex items-center gap-1">
+						<Eye class="size-3.5" />
+						{meta.views ?? 0} reads
+					</span>
+				</div>
 				<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
 				<p class="text-lg text-muted-foreground">{data.item.summary}</p>
 			</header>
@@ -206,7 +219,7 @@
 			</div>
 
 				<div class="flex flex-wrap gap-2 border-t border-border pt-6">
-					{#each data.item.tags ?? [] as tag}
+					{#each data.item.tags ?? [] as tag (tag)}
 						<a href={localizeHref(`/search?q=${encodeURIComponent(tag)}`)}>
 							<Badge
 								variant="secondary"
@@ -225,7 +238,7 @@
 					<section class="space-y-4 border-t border-border pt-8">
 						<h2 class="text-xl font-semibold tracking-tight">Related Articles</h2>
 						<div class="grid gap-3 sm:grid-cols-3">
-							{#each related as rel}
+							{#each related as rel (rel.slug)}
 								<a
 									href={localizeHref(`/knowledge-base/${rel.sectionSlug}/${rel.slug}`)}
 									class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"

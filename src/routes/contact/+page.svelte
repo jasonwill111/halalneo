@@ -12,6 +12,7 @@
 	} from '#lib/components/ui/card/index.js';
 	import Mail from '@lucide/svelte/icons/mail';
 	import MapPin from '@lucide/svelte/icons/map-pin';
+	import Phone from '@lucide/svelte/icons/phone';
 	import Clock from '@lucide/svelte/icons/clock';
 	import Send from '@lucide/svelte/icons/send';
 	import CheckCircle from '@lucide/svelte/icons/check-circle';
@@ -127,8 +128,16 @@
 						Kuala Lumpur, Malaysia
 					</p>
 					<p class="flex items-center gap-1.5">
+						<Phone class="size-3.5 shrink-0 text-primary"></Phone>
+						<a href="tel:+603XXXXXXXX" class="transition-colors hover:text-foreground">
+							+60 3-XXXX XXXX
+						</a>
+					</p>
+					<p class="flex items-center gap-1.5">
 						<Mail class="size-3.5 shrink-0 text-primary"></Mail>
-						contact@halalneo.com
+						<a href="mailto:contact@halalneo.com" class="transition-colors hover:text-foreground">
+							contact@halalneo.com
+						</a>
 					</p>
 				</CardContent>
 			</Card>
@@ -141,7 +150,7 @@
 					</div>
 				</CardHeader>
 				<CardContent class="space-y-3">
-					{#each offices as office}
+					{#each offices as office (office.city)}
 						<div>
 							<p class="text-sm font-medium">{office.city}</p>
 							<p class="text-sm text-muted-foreground">{office.address}</p>
@@ -212,7 +221,7 @@
 								Select a topic
 							</SelectTrigger>
 							<SelectContent>
-								{#each topics as t}
+								{#each topics as t (t)}
 									<SelectItem value={t}>{t}</SelectItem>
 								{/each}
 							</SelectContent>

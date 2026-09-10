@@ -175,7 +175,9 @@
 					<CardContent class="flex flex-1 flex-col gap-2.5 p-3 sm:p-4">
 						<div class="flex items-start justify-between gap-2">
 							<div class="space-y-1">
-								<CardTitle class="text-base leading-snug">{show.name}</CardTitle>
+								<a href="/trade-shows/{show.id}" class="hover:text-primary">
+									<CardTitle class="text-base leading-snug">{show.name}</CardTitle>
+								</a>
 								<div class="flex items-center gap-1.5 text-sm text-muted-foreground">
 									<MapPinIcon class="size-3.5 shrink-0" />
 									<span>{show.city}, {show.country}</span>
@@ -189,7 +191,7 @@
 						</p>
 
 						<div class="flex flex-wrap gap-1.5">
-							{#each show.focus.slice(0, 3) as tag}
+							{#each show.focus.slice(0, 3) as tag, j (tag)}
 								<Badge variant="secondary" class="text-[10px]">{tag}</Badge>
 							{/each}
 							{#if show.focus.length > 3}

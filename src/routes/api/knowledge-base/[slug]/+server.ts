@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { knowledgeBase } from '#lib/server/db/schema.js';
 import { eq, sql } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
@@ -11,8 +12,9 @@ const ALLOWED_KB_FIELDS = new Set([
 	'status', 'metaTitle', 'metaDescription', 'keywords'
 ]);
 
-export const GET: RequestHandler = async ({ params, url, platform }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async (event) => {
+	const { params, url } = event;
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
@@ -35,29 +37,40 @@ export const GET: RequestHandler = async ({ params, url, platform }) => {
 			return json(sections);
 		}
 
-		const row = await cachedQuery(
+		const [row] = await db.select().from(knowledgeBase).where(eq(knowledgeBase.slug, params.slug)).limit(1);
+
+		if (!row) return json({ error: 'Not found' }, { status: 404 });
+
+		// Visibility guard: only published articles are public. Non-published
+		// rows resolve for authenticated sessions only, and are never
+		// edge-cached.
+		if (row.status !== 'published') {
+			const session = await getSession(event);
+			if (!session) return json({ error: 'Not found' }, { status: 404 });
+			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
+		}
+
+		const cached = await cachedQuery(
 			url.toString(),
-			async () => {
-				const [row] = await db.select().from(knowledgeBase).where(eq(knowledgeBase.slug, params.slug)).limit(1);
-				return row ?? null;
-			},
+			async () => row ?? null,
 			{ ...cacheLong() }
 		);
 
-		if (!row) return json({ error: 'Not found' }, { status: 404 });
-		return json(row);
+		if (!cached) return json({ error: 'Not found' }, { status: 404 });
+		return json(cached);
 	} catch (e: any) {
 		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
 	}
 };
 
-export const PUT: RequestHandler = async ({ params, request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const PUT: RequestHandler = async (event) => {
+	const { params, request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
@@ -84,13 +97,14 @@ export const PUT: RequestHandler = async ({ params, request, platform }) => {
 	}
 };
 
-export const DELETE: RequestHandler = async ({ params, request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const DELETE: RequestHandler = async (event) => {
+	const { params, request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {

@@ -1,13 +1,15 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { certifyingBodies } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
-export const GET: RequestHandler = async ({ platform, url }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async ({ url }) => {
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
@@ -15,7 +17,7 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 			url.toString(),
 			async () => {
 				const { limit, offset, search } = parseQuery(url);
-				const status = url.searchParams.get('status') || undefined;
+				const status = url.searchParams.get('status') || 'active';
 				const country = url.searchParams.get('country') || undefined;
 
 				const conditions = [];
@@ -48,13 +50,14 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	}
 };
 
-export const POST: RequestHandler = async ({ request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const POST: RequestHandler = async (event) => {
+	const { request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

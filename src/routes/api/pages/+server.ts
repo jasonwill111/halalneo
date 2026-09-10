@@ -1,12 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { pages } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, queryCacheKey } from '#lib/server/cache.js';
 
-export const GET: RequestHandler = async ({ platform, url }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async ({ url }) => {
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
@@ -16,11 +18,13 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 				const { limit, offset, search } = parseQuery(url);
 				const type = url.searchParams.get('type') || undefined;
 				const category = url.searchParams.get('category') || undefined;
+				const status = url.searchParams.get('status') || 'published';
 
 				const conditions = [];
 				if (search) conditions.push(like(pages.title, `%${search}%`));
 				if (type) conditions.push(eq(pages.type, type as 'landing' | 'blog'));
 				if (category) conditions.push(eq(pages.category, category));
+				if (status) conditions.push(eq(pages.status, status as 'published' | 'draft' | 'archived'));
 
 				const where = conditions.length ? and(...conditions) : undefined;
 

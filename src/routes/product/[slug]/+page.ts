@@ -25,6 +25,11 @@ interface ProductItem {
 	originCountry?: string | null;
 	certStatus?: string | null;
 	status?: string | null;
+	views?: number | null;
+	createdAt?: string | null;
+	metaTitle?: string | null;
+	metaDescription?: string | null;
+	keywords?: any;
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {

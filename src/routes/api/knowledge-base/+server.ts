@@ -1,13 +1,14 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { knowledgeBase } from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getKbListItems } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
-export const GET: RequestHandler = async ({ platform, url }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async ({ url }) => {
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
@@ -23,7 +24,7 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 					offset,
 					search: url.searchParams.get('search') || undefined,
 					section: (url.searchParams.get('section') as any) || undefined,
-					status: url.searchParams.get('status') || undefined
+					status: url.searchParams.get('status') || 'published'
 				});
 			},
 			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
@@ -35,13 +36,14 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	}
 };
 
-export const POST: RequestHandler = async ({ request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const POST: RequestHandler = async (event) => {
+	const { request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

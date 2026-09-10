@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
-	import { Button } from '#lib/components/ui/button/index.js';
 	import BookText from '@lucide/svelte/icons/book-text';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 
 	let { data } = $props();
 	let search = $state('');
+	let activeLetter = $state('all');
 
 	const definedTermSet = $derived(
 		JSON.stringify({
@@ -27,19 +28,43 @@
 		})
 	);
 
+	const allSorted = $derived(
+		(data.terms ?? []).toSorted((a: any, b: any) => a.term.localeCompare(b.term))
+	);
+
+	const allGrouped = $derived(Object.groupBy(allSorted, (t: any) => t.term[0].toUpperCase()));
+	const allLetters = $derived(Object.keys(allGrouped).toSorted());
+
+	const pillOptions = $derived([
+		{ value: 'all', label: 'All', count: allSorted.length },
+		...allLetters.map((letter) => ({
+			value: letter,
+			label: letter,
+			count: allGrouped[letter]?.length ?? 0
+		}))
+	]);
+
+	// Search takes precedence over the letter filter; letter filtering is client-side
+	// so all terms stay server-rendered in HTML for SEO.
 	const sorted = $derived(
-		(data.terms ?? [])
-			.toSorted((a: any, b: any) => a.term.localeCompare(b.term))
-			.filter((t: any) =>
-				search.trim()
-					? t.term.toLowerCase().includes(search.toLowerCase()) ||
-						t.definition.toLowerCase().includes(search.toLowerCase())
-					: true
-			)
+		allSorted.filter((t: any) => {
+			if (search.trim()) {
+				const q = search.toLowerCase();
+				return (
+					t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q)
+				);
+			}
+			if (activeLetter !== 'all') {
+				return t.term[0].toUpperCase() === activeLetter;
+			}
+			return true;
+		})
 	);
 
 	const grouped = $derived(Object.groupBy(sorted, (t: any) => t.term[0].toUpperCase()));
 	const letters = $derived(Object.keys(grouped).toSorted());
+
+	const isSearching = $derived(search.trim().length > 0);
 </script>
 
 <Breadcrumb items={[{ label: 'Glossary', href: '/glossary' }]} />
@@ -70,20 +95,20 @@
 		/>
 	</div>
 
-	<nav class="flex flex-wrap gap-1.5" aria-label="Glossary index">
-		{#each letters as letter}
-			<Button href="#term-{letter}" variant="ghost" size="icon" class="size-8">
-				{letter}
-			</Button>
-		{/each}
-	</nav>
+	{#if !isSearching}
+		<FilterPills
+			options={pillOptions}
+			bind:value={activeLetter}
+			ariaLabel="Filter glossary by letter"
+		/>
+	{/if}
 
 	<div class="space-y-4 sm:space-y-6">
-		{#each letters as letter}
+		{#each letters as letter, i (letter)}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
 				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-					{#each grouped[letter] as term}
+					{#each grouped[letter] as term, j (term.term)}
 						<Card>
 							<CardContent class="space-y-1 pt-4">
 								<CardTitle class="text-base">{term.term}</CardTitle>

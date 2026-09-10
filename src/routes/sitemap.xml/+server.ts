@@ -14,7 +14,8 @@ import {
 	getPages
 } from '#lib/server/queries/index.js';
 import { marketGuides as staticMarketGuides } from '#lib/data/market-guides.js';
-import { marketGuides as dbMarketGuides } from '#lib/server/db/schema.js';
+import { marketGuides as dbMarketGuides, tradeShows as dbTradeShows } from '#lib/server/db/schema.js';
+import { tradeShows as staticTradeShows } from '#lib/data/trade-shows.js';
 
 const BASE_URL = 'https://halalneo.com';
 const MAX_URLS = 5000;
@@ -102,6 +103,11 @@ export const GET: RequestHandler = async (event) => {
 		addEntry(`/market-guides/${guide.slug}`, staticLastmod, 'monthly', '0.7');
 	}
 
+	// Trade show detail pages (static fallback when DB is unavailable)
+	for (const show of staticTradeShows) {
+		addEntry(`/trade-shows/${show.id}`, staticLastmod, 'monthly', '0.7');
+	}
+
 	if (db) {
 		try {
 			const cacheKey = 'sitemap:dynamic-routes';
@@ -116,6 +122,21 @@ export const GET: RequestHandler = async (event) => {
 			for (const guide of dbGuides) {
 				if (staticSlugs.has(guide.slug)) continue;
 				addEntry(`/market-guides/${guide.slug}`, guide.updatedAt, 'monthly', '0.7');
+			}
+
+			// Trade shows from DB (source of truth — includes shows added after seed)
+			const dbShows = await cachedQuery(
+				`${cacheKey}:trade-shows`,
+				() =>
+					db
+						.select({ id: dbTradeShows.id, updatedAt: dbTradeShows.updatedAt })
+						.from(dbTradeShows),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			const staticShowIds = new Set(staticTradeShows.map((s) => s.id));
+			for (const show of dbShows) {
+				if (staticShowIds.has(show.id)) continue;
+				addEntry(`/trade-shows/${show.id}`, show.updatedAt, 'monthly', '0.7');
 			}
 			const products = await cachedQuery(
 				`${cacheKey}:products`,

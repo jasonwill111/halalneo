@@ -29,6 +29,29 @@
 			.slice(0, 3)
 	);
 
+	function parsePop(s: string | null | undefined): { value: number; unit: string } | null {
+		if (!s) return null;
+		const match = String(s).replace(/,/g, '').match(/[\d.]+/);
+		const value = match ? parseFloat(match[0]) : NaN;
+		if (!Number.isFinite(value)) return null;
+		const lower = String(s).toLowerCase();
+		const unit = lower.includes('billion') ? 'b' : lower.includes('million') ? 'm' : lower.includes('thousand') ? 'k' : '';
+		return { value, unit };
+	}
+
+	// Share of Muslims in total population — only when both are numeric with matching units
+	const popShare = $derived.by(() => {
+		const m = parsePop(guide.muslimPopulation);
+		const t = parsePop(guide.totalPopulation);
+		if (!m || !t || m.unit !== t.unit || t.value <= 0) return null;
+		return Math.round((m.value / t.value) * 100);
+	});
+	const popHint = $derived(
+		guide.totalPopulation
+			? `${guide.totalPopulation} total${popShare !== null ? ` · ${popShare}% Muslim` : ''}`
+			: undefined
+	);
+
 	const jsonLd = $derived(
 		JSON.stringify({
 			'@context': 'https://schema.org',
@@ -108,7 +131,7 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-		<StatTile value={guide.muslimPopulation} label="Muslim population" tone="info" />
+		<StatTile value={guide.muslimPopulation} label="Muslim population" tone="info" hint={popHint} />
 		<StatTile value={guide.marketSizeUsd} label="Market size" tone="success" />
 		<StatTile value={guide.processingTime} label="Processing time" tone="warn" />
 		<StatTile value={guide.certificateValidity} label="Certificate validity" tone="accent-purple" />
@@ -122,7 +145,7 @@
 					<CardTitle class="text-base">Import Requirements</CardTitle>
 				</div>
 				<ul class="space-y-2">
-					{#each guide.importRequirements as req}
+					{#each guide.importRequirements as req (req)}
 						<li class="flex items-start gap-2 text-sm text-foreground/80">
 							<span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"></span>
 							{req}
@@ -150,7 +173,7 @@
 					<div class="flex items-start justify-between gap-4">
 						<dt class="text-xs text-muted-foreground">Certifying bodies</dt>
 						<dd class="flex flex-wrap justify-end gap-1">
-							{#each guide.certifyingBodies as cb}
+							{#each guide.certifyingBodies as cb (cb.slug)}
 								{#if data.validCertifierIds?.includes(cb.slug)}
 									<a href={localizeHref(`/certifying-bodies/${cb.slug}`)}>
 										<Badge
@@ -187,7 +210,7 @@
 					<CardTitle class="text-sm">Key Insights</CardTitle>
 				</div>
 				<ul class="space-y-2">
-					{#each guide.keyInsights as insight}
+					{#each guide.keyInsights as insight (insight)}
 						<li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
 							<span class="mt-1.5 size-1 shrink-0 rounded-full bg-primary"></span>
 							{insight}
@@ -204,7 +227,7 @@
 					<CardTitle class="text-sm">Opportunities</CardTitle>
 				</div>
 				<ul class="space-y-2">
-					{#each guide.opportunities as opp}
+					{#each guide.opportunities as opp (opp)}
 						<li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
 							<span class="mt-1.5 size-1 shrink-0 rounded-full bg-success"></span>
 							{opp}
@@ -221,7 +244,7 @@
 					<CardTitle class="text-sm">Challenges</CardTitle>
 				</div>
 				<ul class="space-y-2">
-					{#each guide.challenges as ch}
+					{#each guide.challenges as ch (ch)}
 						<li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
 							<span class="mt-1.5 size-1 shrink-0 rounded-full bg-warn"></span>
 							{ch}

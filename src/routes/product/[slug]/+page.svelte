@@ -21,6 +21,7 @@
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
+	import Eye from '@lucide/svelte/icons/eye';
 	import Send from '@lucide/svelte/icons/send';
 	import Heart from '@lucide/svelte/icons/heart';
 	import Play from '@lucide/svelte/icons/play';
@@ -177,6 +178,27 @@
 
 	const isPlayableVideo = (url: string): boolean => /\.(mp4|webm|ogg)(\?|#|$)/i.test(url);
 
+	const listedSinceYear = $derived.by(() => {
+		const raw = item?.createdAt;
+		if (!raw) return null;
+		const d = new Date(raw);
+		return isNaN(d.getTime()) ? null : d.getFullYear();
+	});
+
+	const metaKeywords = $derived.by(() => {
+		const kw = item?.keywords;
+		if (!kw) return null;
+		if (Array.isArray(kw)) return kw.filter(Boolean).join(', ') || null;
+		if (typeof kw === 'string') {
+			try {
+				const parsed = JSON.parse(kw);
+				if (Array.isArray(parsed)) return parsed.filter(Boolean).join(', ') || null;
+			} catch {}
+			return kw.trim() || null;
+		}
+		return null;
+	});
+
 	// Tabs with no data are hidden instead of rendering empty states
 	// (most catalogue rows lack specs/faqs/resources in D1).
 	const availableTabs = $derived.by(() => {
@@ -235,11 +257,17 @@
 </script>
 
 <svelte:head>
-	<title>{seo.title ?? `${item?.name ?? 'Product'} — HalalNeo`}</title>
+	<title>{item?.metaTitle ?? seo.title ?? `${item?.name ?? 'Product'} — HalalNeo`}</title>
 	{#if item?.image}
 		<link rel="preload" as="image" href={item.image} fetchpriority="high" />
 	{/if}
-	<meta name="description" content={seo.description ?? item?.shortDescription ?? ''} />
+	<meta
+		name="description"
+		content={item?.metaDescription ?? seo.description ?? item?.shortDescription ?? ''}
+	/>
+	{#if metaKeywords}
+		<meta name="keywords" content={metaKeywords} />
+	{/if}
 	{#if productSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(productSchema)}</script>`}
 	{/if}
@@ -293,7 +321,7 @@
 				</div>
 				{#if galleryImages.length > 1}
 					<div class="mt-2 grid grid-cols-5 gap-1.5">
-						{#each galleryImages as src, i}
+						{#each galleryImages as src, i (src)}
 							<Button
 								variant="ghost"
 								onclick={() => (activeImage = i)}
@@ -402,6 +430,12 @@
 		<div class="flex items-center gap-2">
 			<span class="text-xs text-muted-foreground">Share:</span>
 			<ShareButtons title={item.name ?? 'HalalNeo product'} text={item.shortDescription ?? ''} />
+			{#if item.views != null}
+				<span class="ml-auto inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+					<Eye class="size-3" />
+					{item.views} views
+				</span>
+			{/if}
 		</div>
 			</div>
 		</div>
@@ -410,7 +444,7 @@
 
 		<!-- Tabs (only tabs with data are shown) -->
 		<Tabs bind:value={activeTab} class="w-full">
-			<TabsList variant="line" class="w-full justify-start">
+			<TabsList variant="line" class="w-full justify-start overflow-x-auto">
 				{#each availableTabs as t (t.value)}
 					<TabsTrigger value={t.value}>{t.label}</TabsTrigger>
 				{/each}
@@ -432,7 +466,7 @@
 					{#if features.length > 0}
 						<h3 class="mt-4 text-sm font-medium text-foreground">Key Features</h3>
 						<ul class="mt-2 space-y-1.5">
-							{#each features as feature, i}
+							{#each features as feature, i (i)}
 								<li class="flex items-start gap-2">
 									<div class={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded ${TILE_COLORS[i % TILE_COLORS.length]}`}>
 										<ShieldCheck class="size-2.5"></ShieldCheck>
@@ -450,7 +484,7 @@
 					<h2 class="text-base font-semibold">Specifications</h2>
 					{#if Object.keys(specifications).length > 0}
 						<dl class="space-y-2 text-sm">
-							{#each Object.entries(specifications) as [key, value]}
+							{#each Object.entries(specifications) as [key, value] (key)}
 								<div class="flex justify-between border-t border-border pt-2">
 									<dt class="text-muted-foreground">{key}</dt>
 									<dd class="font-medium">
@@ -475,15 +509,38 @@
 									</p>
 								</div>
 							</div>
+						{:else if item.certStatus === 'pending'}
+							<div class="flex items-center gap-2 rounded-xl bg-warn/5 p-3">
+								<ShieldCheck class="size-5 text-warn"></ShieldCheck>
+								<div>
+									<p class="text-sm font-medium">Certification pending</p>
+									<p class="text-xs text-muted-foreground">
+										The supplier is completing halal certification for this product
+									</p>
+								</div>
+							</div>
 						{:else}
-							<p class="text-sm text-muted-foreground">No certifications listed.</p>
+							<p class="text-sm text-muted-foreground">
+								No certifications listed for this product.
+							</p>
+						{/if}
+						{#if item.supplierSlug}
+							<Button
+								href={`${localizeHref(`/supplier/${item.supplierSlug}`)}#certifications`}
+								variant="outline"
+								size="sm"
+								class="gap-1 text-xs"
+							>
+								<ShieldCheck class="size-3.5" />
+								View supplier certifications
+							</Button>
 						{/if}
 					</div>
 				{:else if activeTab === 'faq'}
 					<h2 class="text-base font-semibold">Frequently Asked Questions</h2>
 					{#if faqs.length > 0}
 						<div class="space-y-3">
-							{#each faqs as faq}
+							{#each faqs as faq, i (i)}
 								<Card class="p-3">
 									<h3 class="text-sm font-medium">
 										{typeof faq === 'string' ? faq : (faq.question ?? faq.q ?? 'Question')}
@@ -501,7 +558,7 @@
 					<h2 class="text-base font-semibold">Resources</h2>
 					{#if resources.length > 0}
 						<div class="space-y-2">
-							{#each resources as res}
+							{#each resources as res, i (i)}
 								{@const url = typeof res === 'string' ? null : (res.url ?? res.href ?? null)}
 								<div class="flex items-center justify-between gap-2 rounded-xl border border-border p-3">
 									<div class="flex min-w-0 items-center gap-2">
@@ -530,7 +587,7 @@
 			</div>
 
 			<!-- Quick Info sidebar -->
-			<div class="space-y-4">
+			<div class="space-y-4 lg:sticky lg:top-20 lg:self-start">
 				<Card class="p-4">
 					<h3 class="mb-3 text-sm font-semibold">Quick Info</h3>
 					<dl class="space-y-2 text-sm">
@@ -559,6 +616,12 @@
 							<dt class="text-muted-foreground">Price</dt>
 							<dd class="font-medium">{priceDisplay}</dd>
 						</div>
+						{#if listedSinceYear}
+							<div class="flex justify-between border-t border-border pt-2">
+								<dt class="text-muted-foreground">Listed since</dt>
+								<dd class="font-medium">{listedSinceYear}</dd>
+							</div>
+						{/if}
 					</dl>
 				</Card>
 
@@ -596,7 +659,7 @@
 			<section class="space-y-2">
 				<h2 class="text-base font-semibold">Product videos</h2>
 				<div class="grid gap-3 sm:grid-cols-2">
-					{#each productVideos as url, i}
+						{#each productVideos as url, i (url)}
 						{#if isPlayableVideo(url)}
 							<video
 								src={url}

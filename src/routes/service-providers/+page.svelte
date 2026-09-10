@@ -10,10 +10,12 @@
 	} from '#lib/components/ui/select/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
 	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import Star from '@lucide/svelte/icons/star';
 	import Eye from '@lucide/svelte/icons/eye';
+	import SearchIcon from '@lucide/svelte/icons/search';
 	import X from '@lucide/svelte/icons/x';
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -45,6 +47,20 @@
 	let selectedTypes = $state<Set<ProviderType>>(new Set());
 	let selectedLocation = $state('');
 	let selectedRating = $state('');
+	let searchQuery = $state('');
+
+	// Real counts computed from data
+	const providerCount = $derived((data.providers ?? []).length);
+	const countryCount = $derived(
+		new Set((data.providers ?? []).map((p: any) => p.country).filter(Boolean)).size
+	);
+	const typeCount = $derived(
+		new Set((data.providers ?? []).map((p: any) => p.type).filter(Boolean)).size
+	);
+	const countryPeerCount = (country: string): number =>
+		(data.providers ?? []).filter((p: any) => p.country === country).length;
+	const typePeerCount = (type: string): number =>
+		(data.providers ?? []).filter((p: any) => p.type === type).length;
 
 	function toggleType(type: ProviderType) {
 		if (selectedTypes.has(type)) {
@@ -59,6 +75,7 @@
 		selectedTypes = new Set();
 		selectedLocation = '';
 		selectedRating = '';
+		searchQuery = '';
 	}
 
 	const filtered = $derived(
@@ -69,6 +86,8 @@
 				const min = parseFloat(selectedRating);
 				if (!p.rating || p.rating < min) return false;
 			}
+			const q = searchQuery.trim().toLowerCase();
+			if (q && !(p.name ?? '').toLowerCase().includes(q)) return false;
 			return true;
 		})
 	);
@@ -109,6 +128,14 @@
 	const perPage = 6;
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / perPage)));
 	const paged = $derived(filtered.slice((currentPage - 1) * perPage, currentPage * perPage));
+
+	$effect(() => {
+		void selectedTypes;
+		void selectedLocation;
+		void selectedRating;
+		void searchQuery;
+		currentPage = 1;
+	});
 </script>
 
 <Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }]} />
@@ -132,6 +159,9 @@
 		<p class="mt-0.5 text-sm text-muted-foreground">
 			Certification, logistics, finance, and payment services for halal trade
 		</p>
+		<p class="mt-1 text-xs text-muted-foreground">
+			{providerCount} providers across {countryCount} countries · {typeCount} service types
+		</p>
 	</div>
 </div>
 
@@ -151,7 +181,7 @@
 			<div class="mb-5">
 				<h3 class="mb-2.5 text-xs font-semibold">Service Type</h3>
 				<div class="space-y-2">
-					{#each types as type}
+					{#each types as type (type)}
 						<label class="flex cursor-pointer items-center gap-2">
 							<Checkbox
 								checked={selectedTypes.has(type)}
@@ -169,9 +199,25 @@
 					<SelectTrigger class="w-full text-xs">All Locations</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="">All Locations</SelectItem>
-						{#each locations as loc}
+						{#each locations as loc (loc)}
 							<SelectItem value={loc}>{loc}</SelectItem>
-						{/each}
+				{/each}
+				{#if searchQuery.trim()}
+					<span
+						class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
+					>
+						“{searchQuery.trim()}”
+						<Button
+							variant="ghost"
+							size="icon"
+							class="size-4 rounded-full p-0 hover:bg-primary/20"
+							onclick={() => (searchQuery = '')}
+							aria-label="Clear search filter"
+						>
+							<X class="size-3" />
+						</Button>
+					</span>
+				{/if}
 					</SelectContent>
 				</Select>
 			</div>
@@ -188,7 +234,7 @@
 					aria-label="Filter by minimum rating"
 				>
 					<ToggleGroup.Item value="" class="justify-start text-xs">Any rating</ToggleGroup.Item>
-					{#each [{ val: '4.5', label: '4.5 & up' }, { val: '4.0', label: '4.0 & up' }, { val: '3.5', label: '3.5 & up' }] as r}
+					{#each [{ val: '4.5', label: '4.5 & up' }, { val: '4.0', label: '4.0 & up' }, { val: '3.5', label: '3.5 & up' }] as r (r.val)}
 						<ToggleGroup.Item value={r.val} class="justify-start text-xs">{r.label}</ToggleGroup.Item>
 					{/each}
 				</ToggleGroup.Root>
@@ -197,9 +243,18 @@
 	</aside>
 
 	<div class="min-w-0 flex-1">
-		{#if selectedTypes.size > 0 || selectedLocation || selectedRating}
+		<div class="relative mb-4">
+			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<Input
+				type="search"
+				placeholder="Search providers by name..."
+				class="pl-9 text-xs"
+				bind:value={searchQuery}
+			/>
+		</div>
+		{#if selectedTypes.size > 0 || selectedLocation || selectedRating || searchQuery.trim()}
 			<div class="mb-4 flex flex-wrap items-center gap-2">
-				{#each [...selectedTypes] as type}
+				{#each [...selectedTypes] as type (type)}
 					<span
 						class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
 					>
@@ -225,7 +280,7 @@
 		{/if}
 
 		<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-			{#each paged as provider}
+			{#each paged as provider (provider.slug)}
 				<article
 					class="group rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
 				>
@@ -263,48 +318,12 @@
 							<div class="text-[10px] text-muted-foreground">Rating</div>
 						</div>
 						<div>
-							<div class="text-base font-bold">
-								{provider.type === 'certification'
-									? '320+'
-									: provider.type === 'logistics'
-										? '15'
-										: provider.type === 'finance'
-											? '$2B+'
-											: provider.type === 'payment'
-												? '50K+'
-												: provider.type === 'insurance'
-													? '8K+'
-													: '180+'}
-							</div>
-							<div class="text-[10px] text-muted-foreground">
-								{provider.type === 'certification'
-									? 'Certified'
-									: provider.type === 'logistics'
-										? 'Countries'
-										: provider.type === 'finance'
-											? 'Financed'
-											: provider.type === 'payment'
-												? 'Merchants'
-												: provider.type === 'insurance'
-													? 'Policies'
-													: 'Certified'}
-							</div>
+							<div class="text-base font-bold">{countryPeerCount(provider.country)}</div>
+							<div class="text-[10px] text-muted-foreground">Same country</div>
 						</div>
 						<div>
-							<div class="text-base font-bold">
-								{provider.type === 'certification'
-									? '12yr'
-									: provider.type === 'logistics'
-										? '8yr'
-										: provider.type === 'finance'
-											? '15yr'
-											: provider.type === 'payment'
-												? '6yr'
-												: provider.type === 'insurance'
-													? '10yr'
-													: '18yr'}
-							</div>
-							<div class="text-[10px] text-muted-foreground">Experience</div>
+							<div class="text-base font-bold">{typePeerCount(provider.type)}</div>
+							<div class="text-[10px] text-muted-foreground">Same type</div>
 						</div>
 					</div>
 					{#if provider.description}
@@ -353,7 +372,7 @@
 				>
 					<ChevronLeft class="size-4" />
 				</Button>
-				{#each Array(totalPages) as _, i}
+				{#each Array(totalPages) as _, i (i)}
 					{@const page = i + 1}
 					{#if page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1}
 						<Button

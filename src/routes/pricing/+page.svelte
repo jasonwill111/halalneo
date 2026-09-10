@@ -13,13 +13,14 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
-	let billing = $state('monthly');
+	let billing = $state<'monthly' | 'annual'>('monthly');
 
 	const plans = [
 		{
 			name: 'Free',
 			description: 'Get started exploring',
-			price: '$0',
+			monthly: 0,
+			annual: 0,
 			highlight: false,
 			features: [
 				{ text: '3 product listings', included: true },
@@ -32,7 +33,8 @@
 		{
 			name: 'Starter',
 			description: 'For growing suppliers',
-			price: '$49',
+			monthly: 49,
+			annual: 39,
 			highlight: false,
 			features: [
 				{ text: '30 product listings', included: true },
@@ -46,7 +48,8 @@
 		{
 			name: 'Business',
 			description: 'For established exporters',
-			price: '$99',
+			monthly: 99,
+			annual: 79,
 			highlight: true,
 			features: [
 				{ text: '80 product listings', included: true },
@@ -61,7 +64,8 @@
 		{
 			name: 'Enterprise',
 			description: 'For large-scale operations',
-			price: '$199',
+			monthly: 199,
+			annual: 159,
 			highlight: false,
 			features: [
 				{ text: '200 product listings', included: true },
@@ -139,7 +143,7 @@
 </p>
 
 <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-	{#each plans as plan}
+	{#each plans as plan (plan.name)}
 		<Card class={`relative overflow-visible ${plan.highlight ? 'border-2 border-primary' : ''} p-2.5 space-y-2`}>
 			{#if plan.highlight}
 				<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
@@ -151,8 +155,16 @@
 				<p class="text-[11px] text-muted-foreground">{plan.description}</p>
 			</div>
 			<div>
-				<span class="text-lg font-bold">{plan.price}</span>
+				<span class="text-lg font-bold">${billing === 'annual' ? plan.annual : plan.monthly}</span>
 				<span class="text-muted-foreground text-[11px]">/mo</span>
+				{#if billing === 'annual' && plan.monthly > 0}
+					<span
+						class="ml-1 inline-flex items-center rounded-full bg-success/15 px-1.5 py-0.5 text-[10px] font-medium text-success"
+					>
+						Save {Math.round((1 - plan.annual / plan.monthly) * 100)}%
+					</span>
+					<p class="text-[10px] text-muted-foreground">billed annually</p>
+				{/if}
 				<p class="text-[10px] text-success">Free during test mode</p>
 			</div>
 			<Button
@@ -164,7 +176,7 @@
 				{plan.name === 'Enterprise' ? 'Talk to our team' : 'Apply'}
 			</Button>
 			<ul class="space-y-1 text-xs">
-				{#each plan.features as feature}
+				{#each plan.features as feature (feature.text)}
 					<li class="flex items-center gap-1.5">
 						{#if feature.included}
 							<Check class="size-3 shrink-0 text-muted-foreground"></Check>
@@ -201,8 +213,8 @@
 <div class="mt-6 max-w-2xl mx-auto">
 	<h2 class="text-sm font-semibold text-center mb-3">FAQ</h2>
 	<Accordion type="single">
-		{#each pricingFaqs as faq, i}
-			<AccordionItem value={`faq-${i}`}>
+		{#each pricingFaqs as faq (faq.q)}
+			<AccordionItem value={faq.q}>
 				<AccordionTrigger class="text-xs">{faq.q}</AccordionTrigger>
 				<AccordionContent class="text-[11px]">{faq.a}</AccordionContent>
 			</AccordionItem>

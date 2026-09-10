@@ -18,11 +18,14 @@ interface SupplierItem {
 	line?: string;
 	status?: string;
 	isBrand?: boolean;
-	rating?: number | null;
 	certifications?: any;
 	yearEstablished?: number;
 	employeeCount?: string;
 	productionCapacity?: string;
+	metaTitle?: string | null;
+	metaDescription?: string | null;
+	keywords?: any;
+	createdAt?: string | null;
 	products?: unknown[];
 }
 
@@ -49,6 +52,21 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			}
 			const certificationsParsed = typeof data.certifications === 'string' ? JSON.parse(data.certifications || '[]') : data.certifications ?? [];
 			const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
+			// Related suppliers: same country, excluding self (list API supports ?country=).
+			let relatedSuppliers: any[] = [];
+			try {
+				if (data.country) {
+					const relRes = await fetch(
+						`/api/suppliers?country=${encodeURIComponent(data.country)}&status=active&limit=5`
+					);
+					if (relRes.ok) {
+						const rel = (await relRes.json()) as { items?: any[] };
+						relatedSuppliers = (rel.items ?? [])
+							.filter((s: any) => s.slug !== params.slug)
+							.slice(0, 4);
+					}
+				}
+			} catch {}
 			return {
 				slug: params.slug,
 				seo: {
@@ -60,7 +78,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					keywords: [data.name, 'halal supplier', data.country, data.businessType, 'certified'].filter(Boolean)
 				},
 				item: { ...data, certifications: certificationsParsed },
-				products
+				products,
+				relatedSuppliers
 			};
 		}
 	} catch {}

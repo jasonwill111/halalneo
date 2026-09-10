@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { suppliers } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
@@ -13,8 +14,9 @@ const ALLOWED_SUPPLIER_FIELDS = new Set([
 	'mainMarkets', 'certifications', 'metaTitle', 'metaDescription', 'keywords'
 ]);
 
-export const GET: RequestHandler = async ({ params, url, platform, request }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async (event) => {
+	const { params, url } = event;
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
@@ -28,7 +30,7 @@ export const GET: RequestHandler = async ({ params, url, platform, request }) =>
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 
 		if (row.status !== 'active') {
-			const session = await getSession({ platform, request, locals: {} } as any);
+			const session = await getSession(event);
 			if (!session) return json({ error: 'Not found' }, { status: 404 });
 			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
 		}
@@ -46,13 +48,14 @@ export const GET: RequestHandler = async ({ params, url, platform, request }) =>
 	}
 };
 
-export const PUT: RequestHandler = async ({ params, request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const PUT: RequestHandler = async (event) => {
+	const { params, request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
@@ -79,13 +82,14 @@ export const PUT: RequestHandler = async ({ params, request, platform }) => {
 	}
 };
 
-export const DELETE: RequestHandler = async ({ params, request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const DELETE: RequestHandler = async (event) => {
+	const { params, request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {

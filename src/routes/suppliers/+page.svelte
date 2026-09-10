@@ -10,6 +10,8 @@
 	import ArrowLeftRight from '@lucide/svelte/icons/arrow-left-right';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 
@@ -34,13 +36,36 @@
 
 	// Business type filter — 'all' shows everything
 	let activeType = $state('all');
+	let activeCountry = $state('all');
+	let query = $state('');
+
+	const countryOptions = $derived([
+		{ value: 'all', label: 'All countries' },
+		...Array.from(
+			new Set(suppliers.map((s) => s.country).filter((c): c is string => !!c))
+		)
+			.sort()
+			.map((c) => ({
+				value: c,
+				label: c,
+				count: suppliers.filter((s) => s.country === c).length
+			}))
+	]);
 	const filtered = $derived(
-		activeType === 'all' ? suppliers : suppliers.filter((s) => s.businessType === activeType)
+		suppliers.filter((s) => {
+			if (activeType !== 'all' && s.businessType !== activeType) return false;
+			if (activeCountry !== 'all' && s.country !== activeCountry) return false;
+			const q = query.trim().toLowerCase();
+			if (q && !(s.name ?? '').toLowerCase().includes(q)) return false;
+			return true;
+		})
 	);
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
 	const pagedSuppliers = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 	$effect(() => {
 		activeType;
+		void activeCountry;
+		void query;
 		page = 1;
 	});
 
@@ -102,6 +127,23 @@
 		</div>
 	</div>
 
+	<!-- Country filter + name search -->
+	<div class="space-y-2">
+		<div class="w-full sm:max-w-xs">
+			<Input
+				bind:value={query}
+				type="search"
+				placeholder="Search suppliers by name..."
+				class="text-xs"
+			/>
+		</div>
+		<FilterPills
+			options={countryOptions}
+			bind:value={activeCountry}
+			ariaLabel="Filter suppliers by country"
+		/>
+	</div>
+
 	<!-- Supplier grid -->
 	<div class="space-y-4">
 		<div class="flex flex-wrap items-end justify-between gap-2">
@@ -111,8 +153,17 @@
 				</h2>
 				<p class="text-xs text-muted-foreground">{filtered.length} compan{filtered.length === 1 ? 'y' : 'ies'}</p>
 			</div>
-			{#if activeType !== 'all'}
-				<Button variant="outline" size="sm" class="text-[10px]" onclick={() => (activeType = 'all')}>
+			{#if activeType !== 'all' || activeCountry !== 'all' || query.trim()}
+				<Button
+					variant="outline"
+					size="sm"
+					class="text-[10px]"
+					onclick={() => {
+						activeType = 'all';
+						activeCountry = 'all';
+						query = '';
+					}}
+				>
 					Clear filter
 				</Button>
 			{/if}
@@ -120,7 +171,7 @@
 
 		{#if pagedSuppliers.length === 0}
 			<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
-				<p class="text-sm font-medium">No suppliers of this type yet</p>
+				<p class="text-sm font-medium">No suppliers match these filters</p>
 				<p class="mt-1 text-xs text-muted-foreground">New suppliers are joining during test mode — check back soon.</p>
 			</div>
 		{:else}

@@ -26,6 +26,11 @@
 			: data.categories ?? []
 	);
 
+	// Subcategories derived from the parentSlug hierarchy (no hardcoded list)
+	const subcategories = $derived(
+		(data.categories ?? []).filter((c: any) => c.parentSlug != null)
+	);
+
 	// Icon tile palette — shared with homepage/certifiers/KB for cross-page consistency
 	const tileColors = TILE_COLORS;
 </script>
@@ -51,7 +56,7 @@
 
 	{#if !data.categories}
 		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each Array(6) as _}
+			{#each Array(6) as _, i (i)}
 				<Card>
 					<CardHeader class="gap-3">
 						<div class="h-10 w-10 animate-pulse rounded-lg bg-muted"></div>
@@ -65,7 +70,7 @@
 		</div>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-			{#each filteredCategories as category, i}
+			{#each filteredCategories as category, i (category.slug)}
 				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
 				<article>
 				<Card hoverable>
@@ -102,13 +107,19 @@
 		</div>
 	{/if}
 
-	<!-- Popular Subcategories -->
-	<div class="mt-4">
-		<h2 class="mb-2 text-sm font-semibold text-foreground">Popular Subcategories</h2>
-		<div class="flex flex-wrap gap-1.5">
-			{#each ['Halal Cosmetics', 'Pharmaceutical API', 'Organic Food', 'Modest Fashion', 'Medical Devices', 'Nutraceuticals', 'Halal Tourism', 'Halal Finance'] as sub}
-				<Badge variant="secondary" class="font-medium transition-colors hover:text-primary">{sub}</Badge>
-			{/each}
+	{#if subcategories.length > 0}
+		<!-- Popular Subcategories (data-driven from parentSlug hierarchy) -->
+		<div class="mt-4">
+			<h2 class="mb-2 text-sm font-semibold text-foreground">Popular Subcategories</h2>
+			<div class="flex flex-wrap gap-1.5">
+				{#each subcategories as sub (sub.slug)}
+					<a href={localizeHref(`/category/${sub.slug}`)}>
+						<Badge variant="secondary" class="font-medium transition-colors hover:text-primary"
+							>{sub.name}</Badge
+						>
+					</a>
+				{/each}
+			</div>
 		</div>
-	</div>
+	{/if}
 </section>

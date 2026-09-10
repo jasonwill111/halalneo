@@ -1,7 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { or, like, eq, and } from 'drizzle-orm';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheShort } from '#lib/server/cache.js';
 
@@ -11,11 +12,11 @@ import { cachedQuery, cacheShort } from '#lib/server/cache.js';
 //
 // Query-string matters here — explicit cacheKey keeps `?q=halal` separate
 // from `?q=beef` (same pattern as /api/verify).
-export const GET: RequestHandler = async ({ url, platform }) => {
+export const GET: RequestHandler = async ({ url }) => {
 	const q = url.searchParams.get('q')?.trim();
 	if (!q) return json({ products: [], suppliers: [], articles: [], terms: [] });
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const term = `%${q}%`;

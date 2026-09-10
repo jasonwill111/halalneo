@@ -1,23 +1,29 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform, parseQuery } from '#lib/server/db/api-helpers.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { tradeShows as dbTradeShows } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 import { tradeShows as staticTradeShows } from '#lib/data/trade-shows.js';
 
-export const GET: RequestHandler = async ({ platform, url }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async ({ url }) => {
+	const db = getDb(getBindings().DB);
 	const { limit, offset, search } = parseQuery(url);
-	const status = url.searchParams.get('status') || undefined;
+	const status = url.searchParams.get('status') || 'active';
+	const scale = url.searchParams.get('scale') || undefined;
 	const country = url.searchParams.get('country') || undefined;
 
 	if (!db) {
 		let filtered = [...staticTradeShows];
 		if (search) filtered = filtered.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
-		if (status) filtered = filtered.filter((s) => s.scale === status);
+		if (scale) filtered = filtered.filter((s) => s.scale === scale);
 		if (country) filtered = filtered.filter((s) => s.country === country);
+		// Static entries are curated public content (no status field) — treat
+		// as implicitly active; only filter when a non-default status is asked.
+		if (status !== 'active') filtered = filtered.filter((s) => (s as any).status === status);
 		const total = filtered.length;
 		const items = filtered.slice(offset, offset + limit);
 		return json({ items, total, limit, offset });
@@ -30,6 +36,7 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 				const conditions = [];
 				if (search) conditions.push(like(dbTradeShows.name, `%${search}%`));
 				if (status) conditions.push(eq(dbTradeShows.status, status));
+				if (scale) conditions.push(eq(dbTradeShows.scale, scale));
 				if (country) conditions.push(eq(dbTradeShows.country, country));
 
 				const where = conditions.length ? and(...conditions) : undefined;
@@ -55,21 +62,23 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	} catch {
 		let filtered = [...staticTradeShows];
 		if (search) filtered = filtered.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
-		if (status) filtered = filtered.filter((s) => s.scale === status);
+		if (scale) filtered = filtered.filter((s) => s.scale === scale);
 		if (country) filtered = filtered.filter((s) => s.country === country);
+		if (status !== 'active') filtered = filtered.filter((s) => (s as any).status === status);
 		const total = filtered.length;
 		const items = filtered.slice(offset, offset + limit);
 		return json({ items, total, limit, offset });
 	}
 };
 
-export const POST: RequestHandler = async ({ request, platform }) => {
-	const session = await getSession({ platform, request, locals: {} } as any);
+export const POST: RequestHandler = async (event) => {
+	const { request } = event;
+	const session = await getSession(event);
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

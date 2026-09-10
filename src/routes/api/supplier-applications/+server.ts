@@ -1,9 +1,11 @@
 ﻿import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
+import { getDb } from '#lib/server/db/index.js';
+import { getBindings } from '#lib/server/bindings.js';
 import { suppliers, inquiries } from '#lib/server/db/schema.js';
 import { eq, sql, and } from 'drizzle-orm';
 import { invalidateCache } from '#lib/server/cache.js';
+import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -71,8 +73,11 @@ function initialsFromName(name: string): string {
 	);
 }
 
-export const GET: RequestHandler = async ({ platform, url }) => {
-	const db = getDbFromPlatform(platform);
+export const GET: RequestHandler = async (event) => {
+	const { url } = event;
+	const session = await getSession(event);
+	if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
@@ -111,13 +116,13 @@ export const GET: RequestHandler = async ({ platform, url }) => {
 	}
 };
 
-export const POST: RequestHandler = async ({ request, platform }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
 	if (!checkRateLimit(ip)) {
 		return json({ error: 'Too many applications. Please try again in a minute.' }, { status: 429 });
 	}
 
-	const db = getDbFromPlatform(platform);
+	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
