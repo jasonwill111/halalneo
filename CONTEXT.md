@@ -174,6 +174,7 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 | ORM | Drizzle ORM 0.45.2 |
 | AI | Mastra 1.64.0 + Vercel AI SDK 7.0.93 |
 | Hosting | Cloudflare Workers (adapter-cloudflare 8.0.0-next.7) |
+| Runtime | `compatibility_date 2026-09-09` + `nodejs_compat` (explicit). `new_module_registry` REJECTED 2026-09-10: hangs every request ~61s → 500 on adapter-8 output (preview-verified); revisit when Cloudflare sets a default date |
 | Bindings | `cloudflare:workers` module via `#lib/server/bindings.ts` (adapter 8 removed `event.platform`) |
 | i18n | Paraglide.js 2.25.0 (URL strategy) |
 

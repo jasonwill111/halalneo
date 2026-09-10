@@ -2,7 +2,7 @@
 // (checked against the shipped CSS bundle + live page HTML).
 import { chromium } from '@playwright/test';
 
-const BASE = 'https://halalneo.com';
+const BASE = process.env.SMOKE_BASE || 'https://halalneo.com';
 const results = [];
 const check = (name, ok, detail = '') => {
 	results.push({ name, ok });

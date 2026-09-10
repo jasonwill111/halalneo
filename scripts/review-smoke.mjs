@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test';
 import fs from 'node:fs';
 import { execSync } from 'node:child_process';
 
-const BASE = 'https://halalneo.com';
+const BASE = process.env.SMOKE_BASE || 'https://halalneo.com';
 const OUT = 'D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke';
 fs.mkdirSync(OUT, { recursive: true });
 const pw = fs.readFileSync(process.env.USERPROFILE + '/.halalneo-admin/admin-pw.txt', 'utf8').trim();

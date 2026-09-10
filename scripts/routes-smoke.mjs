@@ -1,7 +1,7 @@
 // Route-scheme verification: plural listings, singular details, 301 redirects.
 import { chromium } from '@playwright/test';
 
-const BASE = 'https://halalneo.com';
+const BASE = process.env.SMOKE_BASE || 'https://halalneo.com';
 const results = [];
 const check = (name, ok, detail = '') => {
 	results.push({ name, ok });
