@@ -124,10 +124,10 @@ _Avoid_: content generator, AI assistant
 | `/api/market-guides/[slug]` | GET | Guide detail (404s inactive for anonymous) |
 | `/api/trade-shows` | GET | List trade shows (defaults `status=active`; `?scale=` filters scale) |
 | `/api/trade-shows/[id]` | GET | Show detail (404s inactive for anonymous) |
-| `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache) |
+| `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache; suppliers+products filtered `status=active`) |
 | `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public); GET requires session |
 | `/api/supplier-applications` | GET, POST | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET requires session |
-| `/api/verify` | GET | Certificate verification search |
+| `/api/verify` | GET | Certificate verification search (suppliers+products filtered `status=active`) |
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |
 | `/api/auth/*` | GET, POST | better-auth handlers (sign-up/sign-in/sign-out/session); never cached |
