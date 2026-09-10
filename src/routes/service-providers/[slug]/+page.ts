@@ -5,6 +5,8 @@ export const entries: EntryGenerator = () => [];
 interface ProviderItem {
 	slug?: string;
 	name?: string;
+	metaTitle?: string;
+	metaDescription?: string;
 	description?: string;
 	type?: string;
 	country?: string;
@@ -27,8 +29,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			const related = (relatedData.items ?? []).filter((p: ProviderItem) => p.slug !== params.slug).slice(0, 4);
 			return {
 				seo: {
-					title: data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`,
+					// DB per-row meta wins when admins filled it; else derive.
+					title: data.metaTitle || (data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`),
 					description:
+						data.metaDescription ||
 						data.description ||
 						`${data.name || params.slug} — halal service provider (${data.type || 'specialist'}) in ${data.country || 'worldwide'}. View details on HalalNeo.`,
 					ogImage: 'https://halalneo.com/api/media/og-services.png',

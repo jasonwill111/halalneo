@@ -22,8 +22,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 		show,
 		related,
 		seo: {
-			title: `${show.name} — ${show.city}, ${show.country} | HalalNeo`,
-			description: (show.description || `${show.name} in ${show.city}, ${show.country}.`).slice(0, 155),
+			// DB per-row meta wins when admins filled it; else derive.
+			title: show.metaTitle || `${show.name} — ${show.city}, ${show.country} | HalalNeo`,
+			description:
+				show.metaDescription ||
+				(show.description || `${show.name} in ${show.city}, ${show.country}.`).slice(0, 155),
 			ogImage: 'https://halalneo.com/api/media/og-default.png',
 			keywords: [show.name, show.city, show.country, 'halal trade show', show.region].filter(Boolean)
 		}

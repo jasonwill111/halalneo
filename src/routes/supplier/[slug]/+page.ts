@@ -70,10 +70,12 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			return {
 				slug: params.slug,
 				seo: {
-					title: data.name ? `${data.name} 鈥?HalalNeo` : `${params.slug} 鈥?HalalNeo`,
+					// DB per-row meta wins when admins filled it; else derive.
+					title: data.metaTitle || (data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`),
 					description:
+						data.metaDescription ||
 						data.description ||
-						`${data.name || params.slug} 鈥?halal-certified ${data.businessType || 'supplier'} from ${data.country || 'worldwide'}. View products, certifications, and contact info on HalalNeo.`,
+						`${data.name || params.slug} — halal-certified ${data.businessType || 'supplier'} from ${data.country || 'worldwide'}. View products, certifications, and contact info on HalalNeo.`,
 					ogImage: 'https://halalneo.com/api/media/og-suppliers.png',
 					keywords: [data.name, 'halal supplier', data.country, data.businessType, 'certified'].filter(Boolean)
 				},

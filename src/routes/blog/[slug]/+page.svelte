@@ -80,12 +80,9 @@
 </script>
 
 <svelte:head>
-	<title>{data.item?.title ?? 'Blog Post'} — HalalNeo</title>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers metaTitle/metaDescription). -->
 	<link rel="preload" as="image" href={data.item?.image ?? blogImages[0]} fetchpriority="high" />
-	<meta
-		name="description"
-		content={data.item?.excerpt?.slice(0, 160) ?? data.item?.content?.slice(0, 160)}
-	/>
 	{#if blogSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(blogSchema)}</script>`}
 	{/if}

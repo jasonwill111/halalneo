@@ -152,11 +152,8 @@
 </script>
 
 <svelte:head>
-	<meta
-		name="description"
-		content={data.item?.summary?.slice(0, 160) ??
-			data.item?.body?.replace(/<[^>]*>/g, '').slice(0, 160)}
-	/>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers metaTitle/metaDescription). -->
 	{#if articleSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>`}
 	{/if}

@@ -72,12 +72,8 @@
 </script>
 
 <svelte:head>
-	<title>{guide.country} Halal Market Guide — HalalNeo</title>
-	<meta
-		name="description"
-		content={guide.summary?.slice(0, 160) ??
-			`Halal market guide for ${guide.country} — certification requirements, market size, and compliance insights.`}
-	/>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers guide.metaTitle/metaDescription). -->
 	{#if countryImages[guide.country]}
 		<link rel="preload" as="image" href={countryImages[guide.country]} fetchpriority="high" />
 	{/if}

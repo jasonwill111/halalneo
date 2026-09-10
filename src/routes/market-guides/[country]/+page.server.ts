@@ -32,8 +32,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 		validCertifierIds: Array.from(validCertifierIds),
 		certifierLinksByName,
 		seo: {
-			title: `Halal Market Guide: ${guide.country} — Certifiers, Requirements & Costs`,
-			description: (guide.summary || '').slice(0, 155),
+			// DB per-row meta wins when admins filled it; else derive.
+			title: guide.metaTitle || `Halal Market Guide: ${guide.country} — Certifiers, Requirements & Costs`,
+			description:
+				guide.metaDescription ||
+				(guide.summary || `Halal market guide for ${guide.country} — certification requirements, market size, and compliance insights.`).slice(0, 155),
 			ogImage: 'https://halalneo.com/api/media/og-default.png'
 		}
 	};

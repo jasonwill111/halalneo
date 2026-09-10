@@ -62,12 +62,8 @@
 </script>
 
 <svelte:head>
-	<title>{body?.name ?? 'Certifying Body'} — HalalNeo</title>
-	<meta
-		name="description"
-		content={body?.description?.slice(0, 160) ??
-			`${body?.name ?? 'Halal certifying body'} — recognized halal certification authority in ${body?.country ?? ''}.`}
-	/>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers body.metaTitle/metaDescription). -->
 	{#if certBodySchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(certBodySchema)}</script>`}
 	{/if}

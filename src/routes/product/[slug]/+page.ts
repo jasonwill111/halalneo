@@ -92,8 +92,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				.slice(0, 3);
 			return {
 				seo: {
-					title: parsed.name ? `${parsed.name} — HalalNeo` : `${params.slug} — HalalNeo`,
+					// DB per-row meta wins when admins filled it; else derive.
+					title: parsed.metaTitle || (parsed.name ? `${parsed.name} — HalalNeo` : `${params.slug} — HalalNeo`),
 				description:
+					parsed.metaDescription ||
 					parsed.shortDescription ||
 					`Product details for ${parsed.name || params.slug} on HalalNeo — halal-certified products with verified certification scope.`,
 					ogImage: parsed.image || 'https://halalneo.com/api/media/og-products.png',

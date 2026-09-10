@@ -257,14 +257,11 @@
 </script>
 
 <svelte:head>
-	<title>{item?.metaTitle ?? seo.title ?? `${item?.name ?? 'Product'} — HalalNeo`}</title>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers item.metaTitle/metaDescription). -->
 	{#if item?.image}
 		<link rel="preload" as="image" href={item.image} fetchpriority="high" />
 	{/if}
-	<meta
-		name="description"
-		content={item?.metaDescription ?? seo.description ?? item?.shortDescription ?? ''}
-	/>
 	{#if metaKeywords}
 		<meta name="keywords" content={metaKeywords} />
 	{/if}

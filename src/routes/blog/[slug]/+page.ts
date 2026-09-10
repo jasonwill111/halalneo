@@ -4,6 +4,7 @@ export const entries: EntryGenerator = () => [];
 
 interface BlogPost {
 	title?: string;
+	metaTitle?: string;
 	metaDescription?: string;
 	excerpt?: string;
 	featuredImage?: string;
@@ -71,10 +72,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			return {
 				slug: params.slug,
 				seo: {
-					title: data.title ? `${data.title} — HalalNeo Blog` : `${params.slug} — HalalNeo Blog`,
-				description:
-					data.excerpt || data.metaDescription ||
-					`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
+					title: data.metaTitle || (data.title ? `${data.title} — HalalNeo Blog` : `${params.slug} — HalalNeo Blog`),
+					description:
+						data.metaDescription || data.excerpt ||
+						`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
 					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-blog.png',
 					keywords: data.keywords || ['halal blog', 'certification insights', 'trade news']
 				},

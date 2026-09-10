@@ -5,6 +5,8 @@ export const entries: EntryGenerator = () => [];
 
 interface KbArticle {
 	title?: string;
+	metaTitle?: string;
+	metaDescription?: string;
 	summary?: string;
 	tags?: string[] | string;
 	body?: string;
@@ -83,8 +85,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				article: params.article,
 				readTime: computeReadTime(data.body ?? data.content),
 				seo: {
-					title: data.title ? `${data.title} — HalalNeo` : `${params.article} — HalalNeo`,
+					// DB per-row meta wins when admins filled it; else derive.
+					title: data.metaTitle || (data.title ? `${data.title} — HalalNeo` : `${params.article} — HalalNeo`),
 					description:
+						data.metaDescription ||
 						data.summary ||
 						`Read about ${data.title || params.article} on HalalNeo — halal certification and compliance guide.`,
 					ogImage: 'https://halalneo.com/api/media/og-kb.png',

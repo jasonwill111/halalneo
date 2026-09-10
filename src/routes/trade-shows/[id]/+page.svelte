@@ -78,12 +78,8 @@
 </script>
 
 <svelte:head>
-	<title>{show.name} — HalalNeo</title>
-	<meta
-		name="description"
-		content={(show.description ?? '').slice(0, 160) ??
-			`${show.name} in ${show.city}, ${show.country}. Dates, venue and event details on HalalNeo.`}
-	/>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers show.metaTitle/metaDescription). -->
 	{@html `<script type="application/ld+json">${jsonLd}</script>`}
 </svelte:head>
 

@@ -228,13 +228,8 @@
 </script>
 
 <svelte:head>
-	<title>{item?.metaTitle ?? `${item?.name ?? 'Supplier'} — HalalNeo`}</title>
-	<meta
-		name="description"
-		content={item?.metaDescription ??
-			item?.description?.slice(0, 160) ??
-			`Halal-certified supplier ${item?.name ?? ''} from ${item?.country ?? ''}.`}
-	/>
+	<!-- Title + description render once via root layout from loader `seo`
+	     (which prefers item.metaTitle/metaDescription). -->
 	{#if metaKeywords}
 		<meta name="keywords" content={metaKeywords} />
 	{/if}

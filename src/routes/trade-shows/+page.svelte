@@ -133,8 +133,7 @@
 </script>
 
 <svelte:head>
-	<title>Halal Trade Shows & Exhibitions — HalalNeo</title>
-	<meta name="description" content="Upcoming halal trade shows, exhibitions, and conferences worldwide. Find the right events to grow your halal business." />
+	<!-- Title + description render once via root layout from loader `seo`. -->
 	{@html `<script type="application/ld+json">${jsonLd}</script>`}
 </svelte:head>
 
