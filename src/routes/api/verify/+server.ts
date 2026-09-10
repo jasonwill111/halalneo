@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { eq, like, or, sql } from 'drizzle-orm';
+import { eq, like, or, sql, and } from 'drizzle-orm';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import * as schema from '#lib/server/db/schema.js';
@@ -34,9 +34,12 @@ export const GET: RequestHandler = async ({ url }) => {
 						})
 						.from(schema.suppliers)
 						.where(
-							or(
-								like(schema.suppliers.name, term),
-								like(schema.suppliers.certifications, term)
+							and(
+								eq(schema.suppliers.status, 'active'),
+								or(
+									like(schema.suppliers.name, term),
+									like(schema.suppliers.certifications, term)
+								)
 							)
 						)
 						.limit(20),
@@ -55,10 +58,13 @@ export const GET: RequestHandler = async ({ url }) => {
 						.innerJoin(schema.suppliers, eq(schema.products.supplierSlug, schema.suppliers.slug))
 						.leftJoin(schema.categories, eq(schema.products.categorySlug, schema.categories.slug))
 						.where(
-							or(
-								like(schema.products.name, term),
-								like(schema.suppliers.name, term),
-								like(schema.suppliers.certifications, term)
+							and(
+								eq(schema.products.status, 'active'),
+								or(
+									like(schema.products.name, term),
+									like(schema.suppliers.name, term),
+									like(schema.suppliers.certifications, term)
+								)
 							)
 						)
 						.limit(20)

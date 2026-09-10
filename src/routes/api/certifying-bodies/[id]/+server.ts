@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { certifyingBodies, suppliers, products } from '#lib/server/db/schema.js';
-import { eq, like, inArray } from 'drizzle-orm';
+import { eq, like, inArray, and } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
@@ -59,10 +59,16 @@ export const POST: RequestHandler = async (event) => {
 			const data = await cachedQuery(
 				`cert-body-suppliers:${params.id}`,
 				async () => {
+					// Public page payload: only active suppliers, minimal columns
+					// (no adminNotes/emails — this response is edge-cached).
 					const certifiedSuppliers = await db
-						.select()
+						.select({
+							slug: suppliers.slug,
+							name: suppliers.name,
+							country: suppliers.country
+						})
 						.from(suppliers)
-						.where(like(suppliers.certifications, `%"bodyId":"${params.id}"%`));
+						.where(and(eq(suppliers.status, 'active'), like(suppliers.certifications, `%"bodyId":"${params.id}"%`)));
 
 					if (certifiedSuppliers.length === 0) {
 						return { suppliers: [], certificationTypes: [] };

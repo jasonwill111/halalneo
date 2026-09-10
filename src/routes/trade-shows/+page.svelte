@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
@@ -17,6 +18,19 @@
 	let { data } = $props();
 
 	let selectedRegion = $state('all');
+
+	// Regions derived from data — sorted unique region values with counts, 'all' first
+	const regionOptions = $derived.by<{ value: string; label: string; count: number }[]>(() => {
+		const shows = (data.shows ?? []) as Array<{ region?: string | null }>;
+		const regions = Array.from(new Set(shows.map((s) => String(s.region ?? '')).filter((r) => r.length > 0)))
+			.sort()
+			.map((r) => ({
+				value: r,
+				label: r,
+				count: shows.filter((s) => s.region === r).length
+			}));
+		return [{ value: 'all', label: 'All Regions', count: shows.length }, ...regions];
+	});
 
 	const jsonLd = $derived(JSON.stringify({
 		'@context': 'https://schema.org',
@@ -48,8 +62,6 @@
 		}))
 	}));
 	let search = $state('');
-
-	const regions = ['all', 'Asia', 'Europe', 'Middle East', 'North America', 'Africa'] as const;
 
 	const PAGE_SIZE = 9;
 	let page = $state(1);
@@ -152,7 +164,7 @@
 			/>
 		</div>
 		<FilterPills
-			options={regions.map((r) => ({ value: r, label: r === 'all' ? 'All Regions' : r }))}
+			options={regionOptions}
 			bind:value={selectedRegion}
 			ariaLabel="Filter trade shows by region"
 		/>
@@ -166,7 +178,7 @@
 			<p class="text-sm">No events found matching your criteria.</p>
 		</div>
 	{:else}
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
 			{#each paged as show (show.id)}
 				{@const ongoing = isOngoing(show.startDate, show.endDate)}
 				{@const upcoming = isUpcoming(show.startDate)}
@@ -174,19 +186,19 @@
 				<Card class="flex flex-col bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md {past ? 'opacity-50' : ''}">
 					<CardContent class="flex flex-1 flex-col gap-2.5 p-3 sm:p-4">
 						<div class="flex items-start justify-between gap-2">
-							<div class="space-y-1">
-								<a href="/trade-shows/{show.id}" class="hover:text-primary">
-									<CardTitle class="text-base leading-snug">{show.name}</CardTitle>
+							<div class="min-w-0 flex-1 space-y-1">
+								<a href={localizeHref(`/trade-shows/${show.id}`)} class="hover:text-primary">
+									<CardTitle class="text-sm leading-snug sm:text-base">{show.name}</CardTitle>
 								</a>
-								<div class="flex items-center gap-1.5 text-sm text-muted-foreground">
+								<div class="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
 									<MapPinIcon class="size-3.5 shrink-0" />
-									<span>{show.city}, {show.country}</span>
+									<span class="truncate">{show.city}, {show.country}{#if show.venue} · {show.venue}{/if}</span>
 								</div>
 							</div>
-							<span class="text-lg" title={show.region}>{regionIcons[show.region] ?? '🌐'}</span>
+							<span class="shrink-0 text-lg" title={show.region}>{regionIcons[show.region] ?? '🌐'}</span>
 						</div>
 
-						<p class="text-xs leading-relaxed text-muted-foreground line-clamp-2">
+						<p class="hidden text-xs leading-relaxed text-muted-foreground line-clamp-2 sm:block">
 							{show.description}
 						</p>
 

@@ -7,8 +7,19 @@ export const prerender = false;
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('/api/pages?type=blog&limit=20');
 	const posts = res.ok ? ((await res.json()) as { items?: any[] }).items ?? [] : [];
+
+	// D1 stores publishedAt as epoch seconds; the svelte renders `post.date`
+	// directly (<time datetime>) so map it to ISO 8601 here.
+	const toIsoDate = (v: unknown): string => {
+		if (v == null || v === '') return '';
+		if (typeof v === 'number') return new Date(v > 1e12 ? v : v * 1000).toISOString();
+		const d = new Date(String(v));
+		return isNaN(d.getTime()) ? '' : d.toISOString();
+	};
+
 	const postsParsed = posts.map((p: any) => ({
 		...p,
+		date: toIsoDate(p.publishedAt),
 		tags: typeof p.tags === 'string' ? JSON.parse(p.tags || '[]') : p.tags ?? [],
 	}));
 
@@ -24,7 +35,7 @@ export const load: PageLoad = async ({ fetch }) => {
 				'@type': 'BlogPosting',
 				headline: p.title,
 				url: `${BASE_URL}/blog/${p.slug}`,
-				datePublished: p.publishedAt
+				datePublished: p.date || undefined
 			}
 		}))
 	};

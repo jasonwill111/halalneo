@@ -173,9 +173,12 @@
 					<div class="flex items-start justify-between gap-4">
 						<dt class="text-xs text-muted-foreground">Certifying bodies</dt>
 						<dd class="flex flex-wrap justify-end gap-1">
-							{#each guide.certifyingBodies as cb (cb.slug)}
-								{#if data.validCertifierIds?.includes(cb.slug)}
-									<a href={localizeHref(`/certifying-bodies/${cb.slug}`)}>
+							{#each guide.certifyingBodies ?? [] as cb (cb.slug)}
+								{@const bySlug = cb.slug ? data.validCertifierIds?.includes(cb.slug) : false}
+								{@const byName = data.certifierLinksByName?.[String(cb.name ?? '').trim().toLowerCase()]}
+								{@const bodyId = bySlug ? cb.slug : byName}
+								{#if bodyId}
+									<a href={localizeHref(`/certifying-bodies/${bodyId}`)}>
 										<Badge
 											variant="secondary"
 											class="text-[10px] transition-colors hover:text-primary hover:shadow-md"

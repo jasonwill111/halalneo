@@ -80,7 +80,7 @@
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="all">All origins</SelectItem>
-						{#each countries as country}
+						{#each countries as country (country)}
 							<SelectItem value={country}>{country}</SelectItem>
 						{/each}
 					</SelectContent>
@@ -149,7 +149,7 @@
 						{#if product.originCountry}
 							<p class="truncate text-xs text-muted-foreground">{product.originCountry}</p>
 						{:else}
-							<p class="truncate text-xs text-muted-foreground">{product.supplierSlug}</p>
+							<p class="truncate text-xs text-muted-foreground">—</p>
 						{/if}
 						{#if product.priceMin}
 							<span class="shrink-0 text-sm font-bold text-primary">
@@ -171,7 +171,7 @@
 		title="Related guides"
 		items={(data.relatedArticles ?? []).map((a: any) => ({
 			label: a.title,
-			description: a.readTime ?? '',
+			description: a.excerpt?.slice(0, 80) ?? '',
 			href: `/knowledge-base/${a.section ?? a.sectionSlug}/${a.slug}`
 		}))}
 	/>

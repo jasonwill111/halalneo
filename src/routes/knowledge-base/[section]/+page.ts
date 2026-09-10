@@ -1,4 +1,5 @@
 import type { PageLoad } from './$types';
+import { getSection } from '#lib/data/kb-sections.js';
 
 export const prerender = false;
 
@@ -8,7 +9,10 @@ interface KbSectionResponse {
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
-	const sectionTitle = params.section.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+	// Real display name from the static section definitions (e.g. slug
+	// 'country-market-guides' -> 'Country / Market Guides'); fall back to
+	// title-casing the slug for unknown sections.
+	const sectionTitle = getSection(params.section)?.title ?? params.section.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
 	try {
 		const res = await fetch(`/api/knowledge-base?section=${params.section}&limit=50`);

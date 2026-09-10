@@ -58,17 +58,16 @@
 		}
 	]);
 
-	const sectionImages: Record<string, string> = {
-		'getting-started': '/api/media/kb-certification.webp',
-		'certification': '/api/media/kb-certification.webp',
-		'sourcing': '/api/media/kb-sourcing.webp',
-		'compliance': '/api/media/kb-compliance.webp',
-		'supply-chain': '/api/media/kb-supply-chain.webp',
-		'markets': '/api/media/kb-sourcing.webp',
-	};
-
 	// Icon tile palette — shared with homepage/categories/certifiers for cross-page consistency
 	const tileColors = TILE_COLORS;
+
+	// Top-3 by views desc; fallback to latest 3 (API returns createdAt desc) when
+	// rows carry no view counts.
+	const popularArticles = $derived.by(() => {
+		const articles = (data.articles ?? []) as Array<{ slug: string; section: string | null; title: string; views?: number | null }>;
+		const viewed = articles.filter((a) => (a.views ?? 0) > 0).toSorted((a, b) => (b.views ?? 0) - (a.views ?? 0));
+		return viewed.length >= 3 ? viewed.slice(0, 3) : articles.slice(0, 3);
+	});
 </script>
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
@@ -100,7 +99,7 @@
 		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 		<Input
 			type="search"
-			placeholder="Search articles..."
+			placeholder="Search sections..."
 			class="pl-9"
 			bind:value={search}
 		/>
@@ -109,7 +108,7 @@
 	<!-- Resource Hubs -->
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Explore by Category</h2>
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
 			{#each subForms as form, i}
 				<a href={localizeHref(form.href)} class="group h-full">
 					<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
@@ -144,15 +143,10 @@
 <!-- KB Sections -->
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each filteredSections as section, i}
+		<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
+		{#each filteredSections as section, i (section.slug)}
 			<article>
 			<Card hoverable class="h-full overflow-hidden">
-				{#if sectionImages[section.slug]}
-					<div class="aspect-[2/1] overflow-hidden">
-						<img src={sectionImages[section.slug]} srcset={`${sectionImages[section.slug]}?w=480 480w, ${sectionImages[section.slug]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={section.title} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
-					</div>
-				{/if}
 				<CardHeader class="gap-3">
 					<div
 						class="flex size-10 items-center justify-center rounded-lg {tileColors[
@@ -187,40 +181,29 @@
 	</div>
 
 	<!-- Popular Articles -->
-	<div>
-		<h2 class="mb-2.5 text-sm font-semibold text-foreground">Popular Articles</h2>
-		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-			<article class="contents">
-				<a href={localizeHref('/knowledge-base/halal-certification/how-to-choose-halal-certification')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-					<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
-						<BookOpen class="size-4"></BookOpen>
-					</div>
-					<div class="min-w-0">
-						<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">How to Choose Halal Certification</h3>
-						<p class="mt-0.5 text-xs text-muted-foreground">5 min read</p>
-					</div>
-				</a>
-				<a href={localizeHref('/knowledge-base/halal-certification/understanding-jakim-standards')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-					<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warn/10 text-warn">
-						<BookOpen class="size-4"></BookOpen>
-					</div>
-					<div class="min-w-0">
-						<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">Understanding JAKIM Standards</h3>
-						<p class="mt-0.5 text-xs text-muted-foreground">8 min read</p>
-					</div>
-				</a>
-				<a href={localizeHref('/knowledge-base/supply-chain/halal-supply-chain-best-practices')} class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all">
-					<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success">
-						<BookOpen class="size-4"></BookOpen>
-					</div>
-					<div class="min-w-0">
-						<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">Halal Supply Chain Best Practices</h3>
-						<p class="mt-0.5 text-xs text-muted-foreground">6 min read</p>
-					</div>
-				</a>
-			</article>
+	{#if popularArticles.length > 0}
+		<div>
+			<h2 class="mb-2.5 text-sm font-semibold text-foreground">Popular Articles</h2>
+			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+				{#each popularArticles as article, i (article.slug)}
+					<a
+						href={localizeHref(`/knowledge-base/${article.section ?? ''}/${article.slug}`)}
+						class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all"
+					>
+						<div class="flex size-8 shrink-0 items-center justify-center rounded-lg {TILE_COLORS[i % TILE_COLORS.length]}">
+							<BookOpen class="size-4"></BookOpen>
+						</div>
+						<div class="min-w-0">
+							<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">{article.title}</h3>
+							{#if (article.views ?? 0) > 0}
+								<p class="mt-0.5 text-xs text-muted-foreground">{article.views} reads</p>
+							{/if}
+						</div>
+					</a>
+				{/each}
+			</div>
 		</div>
-	</div>
+	{/if}
 
 	<div class="rounded-xl ring-1 ring-primary/20 bg-primary/5 p-6 text-center">
 		<div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">

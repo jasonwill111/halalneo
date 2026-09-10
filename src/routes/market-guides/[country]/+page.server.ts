@@ -15,16 +15,22 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 	const guide: any = await guideRes.json();
 	const allGuides: any[] = allGuidesRes.ok ? ((((await allGuidesRes.json()) as any)).items ?? []) : [];
 	const allCertifiers: any[] = certifiersRes.ok ? ((((await certifiersRes.json()) as any)).items ?? []) : [];
-	const certifierIds = new Set(allCertifiers.map((c: any) => c.id));
+
+	// certifying_bodies.id IS a slug ("bpjph"), matching guide JSON entries'
+	// {slug, name}. Slug match is primary; name match covers entries whose
+	// label diverges from the canonical body name (e.g. "BPJPH" vs "BPJPH / MUI").
+	const validCertifierIds = new Set(allCertifiers.map((c: any) => c.id));
+	const certifierLinksByName: Record<string, string> = {};
+	for (const c of allCertifiers) {
+		const key = String(c.name ?? '').trim().toLowerCase();
+		if (key && !certifierLinksByName[key]) certifierLinksByName[key] = c.id;
+	}
 
 	return {
 		guide,
 		allGuides,
-		certifiersById: allCertifiers.reduce((acc: Record<string, any>, c: any) => {
-			acc[c.id] = c;
-			return acc;
-		}, {}),
-		validCertifierIds: Array.from(certifierIds),
+		validCertifierIds: Array.from(validCertifierIds),
+		certifierLinksByName,
 		seo: {
 			title: `Halal Market Guide: ${guide.country} — Certifiers, Requirements & Costs`,
 			description: (guide.summary || '').slice(0, 155),

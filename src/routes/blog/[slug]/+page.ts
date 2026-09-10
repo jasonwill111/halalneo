@@ -15,6 +15,14 @@ interface BlogPost {
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
+	// D1 stores publishedAt as epoch seconds; normalize to ISO 8601.
+	const toIsoDate = (v: unknown): string => {
+		if (v == null || v === '') return '';
+		if (typeof v === 'number') return new Date(v > 1e12 ? v : v * 1000).toISOString();
+		const d = new Date(String(v));
+		return isNaN(d.getTime()) ? '' : d.toISOString();
+	};
+
 	try {
 		const [res, relatedRes] = await Promise.all([
 			fetch(`/api/pages/${params.slug}`),
@@ -33,7 +41,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					slug: p.slug ?? '',
 					title: p.title ?? '',
 					excerpt: p.excerpt ?? p.metaDescription ?? '',
-					date: p.publishedAt ?? '',
+					date: toIsoDate(p.publishedAt),
 					author: { name: p.author || 'HalalNeo' },
 					tags: typeof p.tags === 'string' ? JSON.parse(p.tags || '[]') : p.tags ?? []
 				}));
@@ -41,11 +49,20 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			const wordCount = data.body ? data.body.replace(/<[^>]*>/g, '').split(/\s+/).length : 0;
 			const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
 
+			const authorInitials =
+				(data.author || 'HalalNeo')
+					.split(/\s+/)
+					.map((w: string) => w[0])
+					.filter(Boolean)
+					.slice(0, 2)
+					.join('')
+					.toUpperCase() || 'HN';
+
 			const item = {
 				title: data.title,
 				tags: tagsParsed,
-				date: data.publishedAt,
-				author: { name: data.author || 'HalalNeo', initials: 'HN' },
+				date: toIsoDate(data.publishedAt),
+				author: { name: data.author || 'HalalNeo', initials: authorInitials },
 				content: data.body,
 				image: data.featuredImage,
 				readTime

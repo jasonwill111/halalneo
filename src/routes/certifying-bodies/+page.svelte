@@ -12,6 +12,7 @@
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { getRegion } from '#lib/utils/region.js';
+	import GlobeIcon from '@lucide/svelte/icons/globe';
 
 	let { data } = $props();
 
@@ -37,7 +38,7 @@
 				!q ||
 				b.name.toLowerCase().includes(q) ||
 				b.country.toLowerCase().includes(q) ||
-				b.standard.toLowerCase().includes(q);
+				(b.standard ?? '').toLowerCase().includes(q);
 			const matchesRegion = !selectedRegion || getRegion(b.country) === selectedRegion;
 			return matchesQuery && matchesRegion;
 		})
@@ -80,12 +81,11 @@
 		ariaLabel="Filter certifying bodies by region"
 	/>
 
-	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
-		{#each paged as body, i}
-			<article class="contents">
-			<a href={localizeHref(`/certifying-bodies/${body.id}`)} class="group h-full">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
+		{#each paged as body, i (body.id)}
+			<article class="group relative h-full">
 				<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
-					<CardContent class="flex items-center gap-3 p-3">
+					<CardContent class="flex items-center gap-2.5 p-2.5 sm:gap-3 sm:p-3">
 						<div
 							class="flex size-10 shrink-0 items-center justify-center rounded-lg text-sm font-semibold {tileColors[
 								i % tileColors.length
@@ -95,19 +95,38 @@
 						</div>
 						<div class="min-w-0 flex-1">
 							<div class="flex items-center justify-between gap-2">
-								<CardTitle class="truncate text-sm transition-colors group-hover:text-primary">{body.name}</CardTitle>
-								<Badge variant="outline" class="shrink-0 text-[10px]">{getRegion(body.country)}</Badge>
+								<CardTitle class="truncate text-sm transition-colors group-hover:text-primary">
+									<a
+										href={localizeHref(`/certifying-bodies/${body.id}`)}
+										class="after:absolute after:inset-0"
+									>
+										{body.name}
+									</a>
+								</CardTitle>
+								<div class="flex shrink-0 items-center gap-1.5">
+									{#if body.website}
+										<a
+											href={body.website}
+											target="_blank"
+											rel="noopener"
+											class="relative z-10 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+											aria-label="Visit {body.name} website"
+										>
+											<GlobeIcon class="size-4" />
+										</a>
+									{/if}
+									<Badge variant="outline" class="text-[10px]">{getRegion(body.country)}</Badge>
+								</div>
 							</div>
 							<p
 								class="mt-0.5 truncate text-xs text-muted-foreground"
-								title={`${body.country} · ${body.standard}`}
+								title={`${body.country} · ${body.standard ?? ''}`}
 							>
-								{body.country} · {body.standard}
+								{body.country} · {body.standard ?? ''}
 							</p>
 						</div>
 					</CardContent>
 				</Card>
-			</a>
 			</article>
 		{/each}
 	</div>

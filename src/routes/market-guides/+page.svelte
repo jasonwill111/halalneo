@@ -20,15 +20,19 @@
 
 	const countryImages = COUNTRY_IMAGES;
 
-	const regions = ['all', 'Southeast Asia', 'Middle East', 'South Asia', 'Europe', 'North America'];
-
-	const regionOptions = $derived(
-		regions.map((r) => ({
-			value: r,
-			label: r === 'all' ? 'All Regions' : r,
-			count: r === 'all' ? data.guides.length : data.guides.filter((g: any) => g.region === r).length
-		}))
-	);
+	// Regions derived from data — sorted unique region values with counts, 'all' first
+	const regionOptions = $derived([
+		{ value: 'all', label: 'All Regions', count: data.guides.length },
+		...Array.from(
+			new Set(data.guides.map((g: any) => g.region).filter((r): r is string => !!r))
+		)
+			.sort()
+			.map((r) => ({
+				value: r,
+				label: r,
+				count: data.guides.filter((g: any) => g.region === r).length
+			}))
+	]);
 
 	const filtered = $derived(
 		selectedRegion === 'all'
@@ -68,7 +72,7 @@
 		ariaLabel="Filter market guides by region"
 	/>
 
-	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as guide (guide.slug)}
 			<article class="contents">
 			<a href={localizeHref(`/market-guides/${guide.slug}`)} class="group h-full">
@@ -106,23 +110,23 @@
 						</span>
 					</div>
 
-					<p class="line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">
+					<p class="hidden line-clamp-2 text-[11px] leading-relaxed text-muted-foreground sm:block">
 						{guide.summary}
 					</p>
 
-					<div class="grid grid-cols-2 gap-1.5 text-[11px]">
-						<div class="flex items-center gap-1 text-foreground/80">
+				<div class="grid grid-cols-2 gap-1.5 text-[11px]">
+						<div class="flex items-center gap-1 truncate text-foreground/80">
 							<UsersIcon class="size-3 shrink-0" />
-							{guide.muslimPopulation}
+							<span class="truncate">{guide.muslimPopulation}</span>
 						</div>
-						<div class="flex items-center gap-1 text-foreground/80">
+						<div class="flex items-center gap-1 truncate text-foreground/80">
 							<BanknoteIcon class="size-3 shrink-0" />
-							{guide.marketSizeUsd}
+							<span class="truncate">{guide.marketSizeUsd}</span>
 						</div>
 					</div>
 
-					<div class="flex flex-wrap gap-1">
-						{#each guide.certifyingBodies.slice(0, 3) as cb}
+					<div class="hidden flex-wrap gap-1 sm:flex">
+						{#each (guide.certifyingBodies ?? []).slice(0, 3) as cb, ci (ci + '-' + (cb?.name ?? ''))}
 							<Badge variant="secondary" class="text-[10px]">{cb.name}</Badge>
 						{/each}
 					</div>

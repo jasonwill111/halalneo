@@ -96,7 +96,7 @@
 			No published posts yet.
 		</div>
 	{:else}
-		<div class="grid gap-3 sm:grid-cols-2">
+		<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-2">
 			{#each paged as post, idx (post.slug)}
 				<Card class="overflow-hidden">
 					<article>
@@ -105,18 +105,26 @@
 								<img src={post.featuredImage || blogImages[idx % blogImages.length]} srcset={`${post.featuredImage || blogImages[idx % blogImages.length]}?w=480 480w, ${post.featuredImage || blogImages[idx % blogImages.length]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="300" />
 							</div>
 							<CardContent class="space-y-2 pt-3">
-								<div class="flex items-center gap-2 text-xs text-muted-foreground">
+								<div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 									{#if post.category}
 										<Badge variant="outline" class="text-[10px]">{post.category}</Badge>
 									{/if}
 									<span class="font-medium text-foreground/80">{post.author}</span>
-									<span>·</span>
-									<time datetime={post.date}>{post.date}</time>
+									{#if post.date}
+										<span>·</span>
+										<time datetime={post.date}
+											>{new Date(post.date).toLocaleDateString('en-US', {
+												year: 'numeric',
+												month: 'short',
+												day: 'numeric'
+											})}</time
+										>
+									{/if}
 								</div>
-								<CardTitle class="text-lg leading-snug group-hover:text-primary">
+								<CardTitle class="line-clamp-2 text-sm leading-snug group-hover:text-primary sm:text-lg">
 									{post.title}
 								</CardTitle>
-								<p class="text-sm text-muted-foreground">{post.excerpt}</p>
+								<p class="hidden text-sm text-muted-foreground sm:line-clamp-2 sm:block">{post.excerpt}</p>
 								<div class="flex flex-wrap gap-1.5 pt-1">
 									{#each post.tags as tag (tag)}
 										<Badge variant="secondary">{tag}</Badge>

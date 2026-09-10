@@ -22,7 +22,9 @@
 				'@type': 'DefinedTerm',
 				name: t.term,
 				description: t.definition,
-				url: `https://halalneo.com/glossary#term-${encodeURIComponent(t.term)}`,
+				// Letter anchors are what the page actually renders (`id="term-{letter}"`);
+				// per-term ids don't exist.
+				url: `https://halalneo.com/glossary#term-${t.term[0].toUpperCase()}`,
 				inDefinedTermSet: 'https://halalneo.com/glossary'
 			}))
 		})

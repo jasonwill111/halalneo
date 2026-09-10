@@ -886,6 +886,7 @@ type KbListItem = {
 	section: string | null;
 	status: string | null;
 	excerpt: string | null;
+	views: number | null;
 };
 
 export async function getKbListItems(
@@ -915,7 +916,8 @@ export async function getKbListItems(
 					title: schema.knowledgeBase.title,
 					section: schema.knowledgeBase.section,
 					status: schema.knowledgeBase.status,
-					excerpt: schema.knowledgeBase.summary
+					excerpt: schema.knowledgeBase.summary,
+					views: schema.knowledgeBase.views
 				})
 				.from(schema.knowledgeBase)
 				.where(where)

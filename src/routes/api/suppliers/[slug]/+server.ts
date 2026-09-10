@@ -19,13 +19,46 @@ export const GET: RequestHandler = async (event) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
+	// Public projection: every user-facing column EXCEPT adminNotes
+	// (internal moderation notes must never ship in public/edge-cached JSON).
+	const publicProjection = {
+		slug: suppliers.slug,
+		name: suppliers.name,
+		country: suppliers.country,
+		businessType: suppliers.businessType,
+		isBrand: suppliers.isBrand,
+		status: suppliers.status,
+		logoInitials: suppliers.logoInitials,
+		description: suppliers.description,
+		coverImage: suppliers.coverImage,
+		website: suppliers.website,
+		email: suppliers.email,
+		phone: suppliers.phone,
+		whatsapp: suppliers.whatsapp,
+		line: suppliers.line,
+		yearEstablished: suppliers.yearEstablished,
+		employeeCount: suppliers.employeeCount,
+		productionCapacity: suppliers.productionCapacity,
+		mainMarkets: suppliers.mainMarkets,
+		certifications: suppliers.certifications,
+		metaTitle: suppliers.metaTitle,
+		metaDescription: suppliers.metaDescription,
+		keywords: suppliers.keywords,
+		createdAt: suppliers.createdAt,
+		updatedAt: suppliers.updatedAt
+	};
+
 	try {
 		// Visibility guard: only approved suppliers are public. Non-active rows
 		// (pending/rejected/suspended) resolve for authenticated admin sessions
 		// only, and are never edge-cached. This also keeps SvelteKit's SSR
-		// fetch-cache from embedding the raw row (name/email/adminNotes) into
+		// fetch-cache from embedding the raw row (name/email) into
 		// the HTML of pages rendered for anonymous visitors.
-		const [row] = await db.select().from(suppliers).where(eq(suppliers.slug, params.slug)).limit(1);
+		const [row] = await db
+			.select(publicProjection)
+			.from(suppliers)
+			.where(eq(suppliers.slug, params.slug))
+			.limit(1);
 
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 

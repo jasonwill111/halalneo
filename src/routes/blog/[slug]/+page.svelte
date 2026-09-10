@@ -111,7 +111,15 @@
 					<div>
 						<p class="text-sm font-medium">{data.item.author.name}</p>
 						<div class="flex items-center gap-2 text-xs text-muted-foreground">
-							<time>{data.item.date}</time>
+							<time datetime={data.item.date || undefined}
+								>{data.item.date
+									? new Date(data.item.date).toLocaleDateString('en-US', {
+											year: 'numeric',
+											month: 'short',
+											day: 'numeric'
+										})
+									: ''}</time
+							>
 							{#if readTime}
 								<span>·</span>
 								<span>{readTime}</span>
@@ -180,8 +188,16 @@
 							>
 								<div class="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
 									<span class="font-medium text-foreground/80">{related.author.name}</span>
-									<span>·</span>
-									<time>{related.date}</time>
+									{#if related.date}
+										<span>·</span>
+										<time datetime={related.date}
+											>{new Date(related.date).toLocaleDateString('en-US', {
+												year: 'numeric',
+												month: 'short',
+												day: 'numeric'
+											})}</time
+										>
+									{/if}
 								</div>
 								<h3
 									class="mb-2 text-sm leading-snug font-semibold transition-colors group-hover:text-primary"

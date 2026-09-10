@@ -35,26 +35,30 @@
 			</div>
 		</header>
 
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each paged as article}
-				<Card>
-					<CardHeader>
-						<CardTitle class="text-lg">{article.title}</CardTitle>
-					</CardHeader>
-					<CardContent class="space-y-3">
-						<p class="text-sm text-muted-foreground">{article.summary}</p>
-						<Button
-							href={localizeHref(`/knowledge-base/${data.item.slug}/${article.slug}`)}
-							variant="outline"
-							size="sm"
-						>
-							Read Article
-						</Button>
-					</CardContent>
-				</Card>
-			{/each}
-		</div>
-		<Paginator bind:page {totalPages} />
+		{#if paged.length === 0}
+			<p class="text-sm text-muted-foreground">No articles in this section yet.</p>
+		{:else}
+			<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
+				{#each paged as article (article.slug)}
+					<Card>
+						<CardHeader>
+							<CardTitle class="text-sm sm:text-lg">{article.title}</CardTitle>
+						</CardHeader>
+						<CardContent class="space-y-3">
+							<p class="hidden text-xs text-muted-foreground sm:line-clamp-3 sm:text-sm">{article.summary}</p>
+							<Button
+								href={localizeHref(`/knowledge-base/${data.item.slug}/${article.slug}`)}
+								variant="outline"
+								size="sm"
+							>
+								Read Article
+							</Button>
+						</CardContent>
+					</Card>
+				{/each}
+			</div>
+			<Paginator bind:page {totalPages} />
+		{/if}
 	{:else}
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">

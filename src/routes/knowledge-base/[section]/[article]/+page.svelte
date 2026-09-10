@@ -7,6 +7,7 @@
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { sanitizeHtml } from '#lib/sanitize.js';
+	import { getSection } from '#lib/data/kb-sections.js';
 	import { marked } from 'marked';
 	import { onMount } from 'svelte';
 	import User from '@lucide/svelte/icons/user';
@@ -18,6 +19,22 @@
 	const item = $derived(data.item);
 	const meta = $derived((item ?? {}) as { author?: string | null; views?: number | null });
 	const related = $derived(data.related ?? []);
+
+	// Display name for the section comes from the static kb-sections registry;
+	// the article route param is the canonical section slug.
+	const sectionName = $derived(
+		data.sectionName ?? getSection(data.section ?? '')?.title ?? 'Section'
+	);
+	const sectionSlug = $derived(data.section ?? '');
+
+	// Mirrors the loader's words/200 estimate for the badge.
+	const readTime = $derived.by(() => {
+		if (data.readTime) return data.readTime;
+		const raw = (item?.body ?? item?.content ?? '') as string;
+		if (!raw) return '1 min read';
+		const words = raw.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+		return `${Math.max(1, Math.round(words / 200))} min read`;
+	});
 
 	let activeId = $state('');
 
@@ -116,11 +133,13 @@
 					headline: item.title,
 					abstract: item.summary,
 					image: ogImage,
-					url: `${baseUrl}/knowledge-base/${item.sectionSlug}/${data.slug}`,
+					url: `${baseUrl}/knowledge-base/${sectionSlug}/${data.slug}`,
 					mainEntityOfPage: {
 						'@type': 'WebPage',
-						'@id': `${baseUrl}/knowledge-base/${item.sectionSlug}/${data.slug}`
+						'@id': `${baseUrl}/knowledge-base/${sectionSlug}/${data.slug}`
 					},
+					...(item.createdAt ? { datePublished: new Date(item.createdAt).toISOString() } : {}),
+					...(item.updatedAt ? { dateModified: new Date(item.updatedAt).toISOString() } : {}),
 					author: { '@type': 'Organization', name: 'HalalNeo' },
 					publisher: {
 						'@type': 'Organization',
@@ -133,7 +152,6 @@
 </script>
 
 <svelte:head>
-	<title>{data.item?.title ?? 'Knowledge Base Article'} — HalalNeo</title>
 	<meta
 		name="description"
 		content={data.item?.summary?.slice(0, 160) ??
@@ -151,8 +169,8 @@
 			items={[
 				{ label: 'Knowledge Base', href: '/knowledge-base' },
 				{
-					label: data.item.sectionName ?? 'Section',
-					href: `/knowledge-base/${data.item.sectionSlug}`
+					label: sectionName,
+					href: `/knowledge-base/${sectionSlug}`
 				},
 				{ label: data.item.title ?? 'Article' }
 			]}
@@ -197,8 +215,8 @@
 		<article class="min-w-0 flex-1 space-y-4 sm:space-y-6" bind:this={articleEl}>
 			<header class="space-y-4">
 				<div class="flex flex-wrap items-center gap-2">
-					<Badge variant="secondary">{data.item.sectionName}</Badge>
-					<Badge variant="outline">{data.item.readTime}</Badge>
+					<Badge variant="secondary">{sectionName}</Badge>
+					<Badge variant="outline">{readTime}</Badge>
 				</div>
 				<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
 					<span class="inline-flex items-center gap-1">
@@ -238,29 +256,26 @@
 					<section class="space-y-4 border-t border-border pt-8">
 						<h2 class="text-xl font-semibold tracking-tight">Related Articles</h2>
 						<div class="grid gap-3 sm:grid-cols-3">
-							{#each related as rel (rel.slug)}
-								<a
-									href={localizeHref(`/knowledge-base/${rel.sectionSlug}/${rel.slug}`)}
-									class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
-								>
-									<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-										{rel.title}
-									</h3>
-									<p class="mt-1 line-clamp-2 text-xs text-muted-foreground">{rel.summary}</p>
-									<div class="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
-										<span>{rel.readTime}</span>
-									</div>
-								</a>
-							{/each}
+						{#each related as rel (rel.slug)}
+							<a
+								href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}
+								class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+							>
+								<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
+									{rel.title}
+								</h3>
+								<p class="mt-1 line-clamp-2 text-xs text-muted-foreground">{rel.summary}</p>
+							</a>
+						{/each}
 						</div>
 					</section>
 				{/if}
 
-				<footer class="border-t border-border pt-6">
-					<Button href={localizeHref(`/knowledge-base/${data.item.sectionSlug}`)} variant="outline">
-						← Back to {data.item.sectionName}
-					</Button>
-				</footer>
+			<footer class="border-t border-border pt-6">
+				<Button href={localizeHref(`/knowledge-base/${sectionSlug}`)} variant="outline">
+					← Back to {sectionName}
+				</Button>
+			</footer>
 
 			<div class="mt-8 border-t border-border pt-6">
 				<RelatedLinks

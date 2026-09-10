@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const [catRes, productsRes, kbRes] = await Promise.all([
 			fetch(`/api/categories/${params.slug}`),
-			fetch(`/api/products?categorySlug=${params.slug}&limit=50`),
+			fetch(`/api/products?categorySlug=${params.slug}&limit=100`),
 			fetch('/api/knowledge-base?limit=100')
 		]);
 

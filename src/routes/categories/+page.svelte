@@ -54,22 +54,7 @@
 		/>
 	</div>
 
-	{#if !data.categories}
-		<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each Array(6) as _, i (i)}
-				<Card>
-					<CardHeader class="gap-3">
-						<div class="h-10 w-10 animate-pulse rounded-lg bg-muted"></div>
-						<div class="space-y-1">
-							<div class="h-5 w-2/3 animate-pulse rounded bg-muted"></div>
-							<div class="h-3 w-full animate-pulse rounded bg-muted"></div>
-						</div>
-					</CardHeader>
-				</Card>
-			{/each}
-		</div>
-	{:else}
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each filteredCategories as category, i (category.slug)}
 				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
 				<article>
@@ -104,8 +89,7 @@
 					<p class="text-sm text-muted-foreground">Try adjusting your search.</p>
 				</div>
 			{/each}
-		</div>
-	{/if}
+	</div>
 
 	{#if subcategories.length > 0}
 		<!-- Popular Subcategories (data-driven from parentSlug hierarchy) -->

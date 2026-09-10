@@ -30,6 +30,7 @@
 
 	const suppliers = $derived((data.suppliers ?? []) as SupplierRow[]);
 	const products = $derived((data.products ?? []) as any[]);
+	const certifierCount = $derived(data.certifierCount ?? 0);
 
 	const PAGE_SIZE = 9;
 	let page = $state(1);
@@ -235,7 +236,7 @@
 				<p class="text-xs text-muted-foreground">Suppliers on HalalNeo carry certificates from these recognised bodies.</p>
 			</div>
 			<Button href={localizeHref('/certifying-bodies')} variant="outline" size="sm" class="shrink-0 text-xs">
-				View all 15
+				{#if certifierCount > 0}View all {certifierCount}{:else}View all{/if}
 				<ArrowRight class="size-3.5" />
 			</Button>
 		</div>

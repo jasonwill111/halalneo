@@ -6,12 +6,14 @@
 	import Icon from '#lib/components/site/icon.svelte';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import { Input } from '#lib/components/ui/input/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import Clock3 from '@lucide/svelte/icons/clock-3';
 	import CircleDashed from '@lucide/svelte/icons/circle-dashed';
 	import MapPin from '@lucide/svelte/icons/map-pin';
 	import Package from '@lucide/svelte/icons/package';
+	import SearchIcon from '@lucide/svelte/icons/search';
 
 	let { data } = $props();
 
@@ -44,8 +46,14 @@
 
 	// Category filter — 'all' shows everything
 	let activeCategory = $state('all');
+	let query = $state('');
 	const filtered = $derived(
-		activeCategory === 'all' ? allProducts : allProducts.filter((p) => p.categorySlug === activeCategory)
+		allProducts.filter((p) => {
+			if (activeCategory !== 'all' && p.categorySlug !== activeCategory) return false;
+			const q = query.trim().toLowerCase();
+			if (q && !(p.name ?? '').toLowerCase().includes(q)) return false;
+			return true;
+		})
 	);
 
 	const PAGE_SIZE = 12;
@@ -53,7 +61,8 @@
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
 	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 	$effect(() => {
-		activeCategory;
+		void activeCategory;
+		void query;
 		page = 1;
 	});
 
@@ -145,17 +154,36 @@
 				</h2>
 				<p class="text-xs text-muted-foreground">{filtered.length} listing{filtered.length === 1 ? '' : 's'}</p>
 			</div>
-			{#if activeCategory !== 'all'}
-				<Button variant="outline" size="sm" class="text-[10px]" onclick={() => (activeCategory = 'all')}>
+			{#if activeCategory !== 'all' || query.trim()}
+				<Button
+					variant="outline"
+					size="sm"
+					class="text-[10px]"
+					onclick={() => {
+						activeCategory = 'all';
+						query = '';
+					}}
+				>
 					Clear filter
 				</Button>
 			{/if}
+		</div>
+		<div class="relative w-full sm:max-w-xs">
+			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<Input
+				bind:value={query}
+				type="search"
+				placeholder="Search products by name..."
+				class="pl-9 text-xs"
+			/>
 		</div>
 
 		{#if paged.length === 0}
 			<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
 				<Package class="mx-auto mb-2 size-6 text-muted-foreground"></Package>
-				<p class="text-sm font-medium">No products in this category yet</p>
+				<p class="text-sm font-medium">
+					{query.trim() || activeCategory !== 'all' ? 'No products match these filters' : 'No products in this category yet'}
+				</p>
 				<p class="mt-1 text-xs text-muted-foreground">New listings are added as suppliers onboard during test mode.</p>
 			</div>
 		{:else}

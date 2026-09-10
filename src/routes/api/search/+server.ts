@@ -41,9 +41,12 @@ export const GET: RequestHandler = async ({ url }) => {
 						.from(schema.products)
 						.leftJoin(schema.suppliers, eq(schema.products.supplierSlug, schema.suppliers.slug))
 						.where(
-							or(
-								like(schema.products.name, term),
-								like(schema.products.shortDescription, term)
+							and(
+								eq(schema.products.status, 'active'),
+								or(
+									like(schema.products.name, term),
+									like(schema.products.shortDescription, term)
+								)
 							)
 						)
 						.limit(25),
@@ -57,10 +60,13 @@ export const GET: RequestHandler = async ({ url }) => {
 						})
 						.from(schema.suppliers)
 						.where(
-							or(
-								like(schema.suppliers.name, term),
-								like(schema.suppliers.country, term),
-								like(schema.suppliers.description, term)
+							and(
+								eq(schema.suppliers.status, 'active'),
+								or(
+									like(schema.suppliers.name, term),
+									like(schema.suppliers.country, term),
+									like(schema.suppliers.description, term)
+								)
 							)
 						)
 						.limit(15),

@@ -5,9 +5,10 @@ const BASE_URL = 'https://halalneo.com';
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
-	const [suppliersRes, productsRes] = await Promise.all([
+	const [suppliersRes, productsRes, certifiersRes] = await Promise.all([
 		fetch('/api/suppliers?limit=100&status=active'),
-		fetch('/api/products?limit=100')
+		fetch('/api/products?limit=100'),
+		fetch('/api/certifying-bodies?limit=1')
 	]);
 
 	const suppliers = (suppliersRes.ok ? ((await suppliersRes.json()) as { items?: any[] }).items ?? [] : []).map((s: any) => ({
@@ -19,6 +20,10 @@ export const load: PageLoad = async ({ fetch }) => {
 		...p,
 		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
 	}));
+	// Response shape (verified against /api/certifying-bodies handler): { items, total, limit, offset }
+	const certifierCount = certifiersRes.ok
+		? ((await certifiersRes.json()) as { total?: number }).total ?? 0
+		: 0;
 
 	const itemList = {
 		'@context': 'https://schema.org',
@@ -48,6 +53,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		},
 		suppliers,
 		products,
+		certifierCount,
 		itemList
 	};
 };

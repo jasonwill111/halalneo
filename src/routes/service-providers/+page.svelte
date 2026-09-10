@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
 		Select,
 		SelectContent,
@@ -9,6 +8,7 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import Paginator from '#lib/components/site/paginator.svelte';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
@@ -17,8 +17,6 @@
 	import Eye from '@lucide/svelte/icons/eye';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import X from '@lucide/svelte/icons/x';
-	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	let { data } = $props();
 
@@ -34,20 +32,24 @@
 		'consulting'
 	];
 
-	const locations = [
-		'Malaysia',
-		'Indonesia',
-		'Singapore',
-		'UAE',
-		'Saudi Arabia',
-		'Turkey',
-		'United Kingdom'
-	];
-
 	let selectedTypes = $state<Set<ProviderType>>(new Set());
-	let selectedLocation = $state('');
+	let selectedLocation = $state('all');
 	let selectedRating = $state('');
 	let searchQuery = $state('');
+
+	// Location options derived from fetched providers — sorted unique countries with counts, 'all' first
+	const locationOptions = $derived([
+		{ value: 'all', label: 'All Locations' },
+		...Array.from(
+			new Set((data.providers ?? []).map((p: any) => p.country).filter((c): c is string => !!c))
+		)
+			.sort()
+			.map((c) => ({
+				value: c,
+				label: c,
+				count: (data.providers ?? []).filter((p: any) => p.country === c).length
+			}))
+	]);
 
 	// Real counts computed from data
 	const providerCount = $derived((data.providers ?? []).length);
@@ -73,7 +75,7 @@
 
 	function clearAll() {
 		selectedTypes = new Set();
-		selectedLocation = '';
+		selectedLocation = 'all';
 		selectedRating = '';
 		searchQuery = '';
 	}
@@ -81,7 +83,7 @@
 	const filtered = $derived(
 		(data.providers ?? []).filter((p: any) => {
 			if (selectedTypes.size > 0 && !selectedTypes.has(p.type)) return false;
-			if (selectedLocation && p.country !== selectedLocation) return false;
+			if (selectedLocation !== 'all' && p.country !== selectedLocation) return false;
 			if (selectedRating) {
 				const min = parseFloat(selectedRating);
 				if (!p.rating || p.rating < min) return false;
@@ -198,26 +200,10 @@
 				<Select type="single" bind:value={selectedLocation}>
 					<SelectTrigger class="w-full text-xs">All Locations</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="">All Locations</SelectItem>
-						{#each locations as loc (loc)}
-							<SelectItem value={loc}>{loc}</SelectItem>
-				{/each}
-				{#if searchQuery.trim()}
-					<span
-						class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
-					>
-						“{searchQuery.trim()}”
-						<Button
-							variant="ghost"
-							size="icon"
-							class="size-4 rounded-full p-0 hover:bg-primary/20"
-							onclick={() => (searchQuery = '')}
-							aria-label="Clear search filter"
-						>
-							<X class="size-3" />
-						</Button>
-					</span>
-				{/if}
+						<SelectItem value="all">All Locations</SelectItem>
+						{#each locationOptions.filter((o) => o.value !== 'all') as loc (loc.value)}
+							<SelectItem value={loc.value}>{loc.label}</SelectItem>
+						{/each}
 					</SelectContent>
 				</Select>
 			</div>
@@ -252,7 +238,7 @@
 				bind:value={searchQuery}
 			/>
 		</div>
-		{#if selectedTypes.size > 0 || selectedLocation || selectedRating || searchQuery.trim()}
+		{#if selectedTypes.size > 0 || selectedLocation !== 'all' || selectedRating || searchQuery.trim()}
 			<div class="mb-4 flex flex-wrap items-center gap-2">
 				{#each [...selectedTypes] as type (type)}
 					<span
@@ -270,6 +256,22 @@
 						</Button>
 					</span>
 				{/each}
+				{#if searchQuery.trim()}
+					<span
+						class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
+					>
+						“{searchQuery.trim()}”
+						<Button
+							variant="ghost"
+							size="icon"
+							class="size-4 rounded-full p-0 hover:bg-primary/20"
+							onclick={() => (searchQuery = '')}
+							aria-label="Clear search filter"
+						>
+							<X class="size-3" />
+						</Button>
+					</span>
+				{/if}
 				<Button
 					variant="ghost"
 					size="sm"
@@ -279,14 +281,14 @@
 			</div>
 		{/if}
 
-		<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-4 xl:grid-cols-3">
 			{#each paged as provider (provider.slug)}
 				<article
-					class="group rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md sm:p-4"
 				>
-					<div class="mb-4 flex items-start gap-3.5">
+					<div class="mb-3 flex items-start gap-3 sm:mb-4 sm:gap-3.5">
 						<div
-							class="flex size-14 shrink-0 items-center justify-center rounded-xl text-lg font-bold {typeColor(
+							class="flex size-11 shrink-0 items-center justify-center rounded-xl text-base font-bold sm:size-14 sm:text-lg {typeColor(
 								provider.type
 							)}"
 						>
@@ -306,28 +308,28 @@
 							<p class="truncate text-xs text-muted-foreground">{provider.country}</p>
 						</div>
 					</div>
-					<div class="mb-4 flex flex-wrap gap-1.5">
+					<div class="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
 						<span
 							class="rounded-full {typeColor(provider.type)} px-2.5 py-1 text-[10px] font-medium"
 							>{typeLabel(provider.type)}</span
 						>
 					</div>
-					<div class="mb-3 grid grid-cols-3 gap-2 rounded-xl bg-muted/50 p-3 text-center">
+					<div class="mb-3 grid grid-cols-3 gap-1.5 rounded-xl bg-muted/50 p-2 text-center sm:mb-4 sm:gap-2 sm:p-3">
 						<div>
-							<div class="text-base font-bold">{provider.rating ?? '–'}</div>
+							<div class="text-sm font-bold sm:text-base">{provider.rating ?? '–'}</div>
 							<div class="text-[10px] text-muted-foreground">Rating</div>
 						</div>
 						<div>
-							<div class="text-base font-bold">{countryPeerCount(provider.country)}</div>
+							<div class="text-sm font-bold sm:text-base">{countryPeerCount(provider.country)}</div>
 							<div class="text-[10px] text-muted-foreground">Same country</div>
 						</div>
 						<div>
-							<div class="text-base font-bold">{typePeerCount(provider.type)}</div>
+							<div class="text-sm font-bold sm:text-base">{typePeerCount(provider.type)}</div>
 							<div class="text-[10px] text-muted-foreground">Same type</div>
 						</div>
 					</div>
 					{#if provider.description}
-						<p class="mb-4 line-clamp-2 text-xs text-muted-foreground">{provider.description}</p>
+						<p class="mb-3 hidden line-clamp-2 text-xs text-muted-foreground sm:mb-4 sm:block">{provider.description}</p>
 					{/if}
 					<div class="flex gap-2">
 						<Button
@@ -361,40 +363,6 @@
 			</p>
 		{/if}
 
-		{#if totalPages > 1}
-			<div class="mt-8 flex items-center justify-center gap-1.5">
-				<Button
-					variant="outline"
-					size="icon"
-					class="size-9"
-					disabled={currentPage === 1}
-					onclick={() => (currentPage = Math.max(1, currentPage - 1))}
-				>
-					<ChevronLeft class="size-4" />
-				</Button>
-				{#each Array(totalPages) as _, i (i)}
-					{@const page = i + 1}
-					{#if page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1}
-						<Button
-							variant={page === currentPage ? 'default' : 'outline'}
-							size="icon"
-							class="size-9"
-							onclick={() => (currentPage = page)}>{page}</Button
-						>
-					{:else if Math.abs(page - currentPage) === 2}
-						<span class="text-sm text-muted-foreground">...</span>
-					{/if}
-				{/each}
-				<Button
-					variant="outline"
-					size="icon"
-					class="size-9"
-					disabled={currentPage === totalPages}
-					onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
-				>
-					<ChevronRight class="size-4" />
-				</Button>
-			</div>
-		{/if}
+		<Paginator bind:page={currentPage} {totalPages} />
 	</div>
 </div>
