@@ -131,7 +131,7 @@
 				</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-3">
-				{#each teamMembers as member, i}
+				{#each teamMembers as member, i (member.email)}
 					<div class="flex items-center gap-3 rounded-lg bg-muted/40 px-3 py-2">
 						<div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
 							{member.initials}
@@ -202,7 +202,7 @@
 			</CardHeader>
 			<CardContent class="space-y-2">
 				{#if supplier && supplier.certifications.length > 0}
-					{#each supplier.certifications as cert}
+					{#each supplier.certifications as cert (cert.bodyName)}
 						<div class="flex items-center gap-2 rounded-lg bg-muted/40 px-2.5 py-2 text-[11px]">
 							<Badge class="bg-success/10 text-success text-[10px]">{cert.bodyName}</Badge>
 							<span class="text-muted-foreground">{cert.scope}</span>

@@ -128,7 +128,7 @@
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{#each filtered as t}
+				{#each filtered as t (t.term)}
 					<TableRow>
 						<TableCell class="font-medium">{t.term}</TableCell>
 						<TableCell class="max-w-md text-sm text-muted-foreground">{t.definition}</TableCell>

@@ -172,7 +172,7 @@
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{#each filtered as account}
+					{#each filtered as account (account.email)}
 						<TableRow>
 							<TableCell class="font-medium">
 								<div class="flex items-center gap-2">

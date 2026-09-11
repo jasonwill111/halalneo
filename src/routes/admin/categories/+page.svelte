@@ -210,7 +210,7 @@
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{#each filtered as c, index (index) }
+				{#each filtered as c (c.slug)}
 					<TableRow>
 						<TableCell class="font-medium">{c.name}</TableCell>
 						<TableCell class="text-sm text-muted-foreground">{parentName(c.parentSlug)}</TableCell>

@@ -15,6 +15,7 @@
 		adminData.products
 			.filter((p) => p.supplierSlug === SUPPLIER_SLUG)
 			.map((p) => ({
+				slug: p.slug,
 				name: p.name,
 				category: getCategory(p.categorySlug)?.name ?? p.categorySlug,
 				price: p.priceRange,
@@ -75,7 +76,7 @@
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{#each visibleProducts as p}
+				{#each visibleProducts as p (p.slug)}
 					<TableRow>
 						<TableCell class="font-medium">{p.name}</TableCell>
 						<TableCell class="text-muted-foreground">{p.category}</TableCell>

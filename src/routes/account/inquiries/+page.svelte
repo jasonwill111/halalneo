@@ -73,7 +73,7 @@
 		</div>
 	{:else}
 		<div class="space-y-1.5">
-			{#each filtered as item, index (index) }
+			{#each filtered as item (item.title)}
 				<div class={cn('group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-all hover:border-primary/20 hover:shadow-md', statusBorder(item.status))}>
 					<div class="flex items-start gap-2">
 						<div class={cn('flex size-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold', statusIconBg(item.status))}>

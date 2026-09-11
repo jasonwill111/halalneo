@@ -26,7 +26,21 @@
 		status?: string | null;
 		logoInitials?: string | null;
 		description?: string | null;
+		certifications?: unknown;
 	};
+
+	// Certification body names for the card line (entries are strings or
+	// {name/bodyId/body:{name}} objects — mirrors the detail-page parser).
+	function certNames(s: SupplierRow): string[] {
+		const raw = s.certifications;
+		const arr = Array.isArray(raw) ? raw : [];
+		return arr
+			.map((c: any) =>
+				typeof c === 'string' ? c : (c?.body?.name ?? c?.name ?? c?.bodyId ?? '')
+			)
+			.filter(Boolean)
+			.map(String);
+	}
 
 	const suppliers = $derived((data.suppliers ?? []) as SupplierRow[]);
 	const products = $derived((data.products ?? []) as any[]);
@@ -178,6 +192,7 @@
 		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 				{#each pagedSuppliers as s, i (s.slug)}
+					{@const certs = certNames(s)}
 					<a
 						href={localizeHref(`/supplier/${s.slug}`)}
 						class="group flex h-full flex-col rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-3"
@@ -205,6 +220,12 @@
 						</div>
 						{#if s.description}
 							<p class="mt-1.5 hidden text-[10px] leading-snug text-muted-foreground line-clamp-2 sm:block">{s.description}</p>
+						{/if}
+						{#if certs.length > 0}
+							<p class="mt-1 truncate text-[9px] leading-snug text-muted-foreground">
+								Cert: {certs.slice(0, 2).join(' · ')}{#if certs.length > 2}
+									+{certs.length - 2}{/if}
+							</p>
 						{/if}
 						<div class="mt-auto flex flex-wrap items-center gap-1 pt-2">
 							{#if s.country}

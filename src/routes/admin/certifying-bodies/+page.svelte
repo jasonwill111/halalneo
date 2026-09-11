@@ -214,7 +214,7 @@
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{#each filtered as b}
+				{#each filtered as b (b.id)}
 					<TableRow>
 						<TableCell class="font-medium">{b.name}</TableCell>
 						<TableCell>{b.country}</TableCell>

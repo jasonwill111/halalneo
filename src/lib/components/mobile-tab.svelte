@@ -4,7 +4,6 @@
 	import { cn } from '#lib/utils.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { fade } from 'svelte/transition';
-	import { onMount } from 'svelte';
 	import HomeIcon from '@lucide/svelte/icons/home';
 	import MenuIcon from '@lucide/svelte/icons/menu';
 	import Grid2x2Icon from '@lucide/svelte/icons/grid-2x2';
@@ -126,17 +125,15 @@
 		showMenu = false;
 	}
 
-	onMount(() => {
-		function handleClickOutside(e: MouseEvent) {
-			const target = e.target as HTMLElement;
-			if (!target.closest('[data-popover]') && !target.closest('[data-popover-panel]')) {
-				closeAll();
-			}
+	function handleClickOutside(e: MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (!target.closest('[data-popover]') && !target.closest('[data-popover-panel]')) {
+			closeAll();
 		}
-		document.addEventListener('click', handleClickOutside, true);
-		return () => document.removeEventListener('click', handleClickOutside, true);
-	});
+	}
 </script>
+
+<svelte:document onclickcapture={handleClickOutside} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->

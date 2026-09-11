@@ -48,7 +48,7 @@
 				<p class="text-[10px] text-muted-foreground">Orders will appear here once buyers place them.</p>
 			</div>
 		{:else}
-			{#each orders as order}
+				{#each orders as order (order.id)}
 				<Card class="bg-muted/40 px-2.5 py-2">
 					<div class="flex items-center justify-between">
 						<div>

@@ -96,7 +96,7 @@
 		<article class="space-y-4 sm:space-y-6">
 			<header class="space-y-4">
 				<div class="flex flex-wrap gap-2">
-					{#each data.item.tags as tag}
+						{#each data.item.tags as tag (tag)}
 						<Badge variant="secondary">{tag}</Badge>
 					{/each}
 				</div>
@@ -178,7 +178,7 @@
 				<section class="space-y-4 border-t border-border pt-8">
 					<h2 class="text-xl font-semibold tracking-tight">Related articles</h2>
 					<div class="grid gap-3 sm:grid-cols-3">
-						{#each data.related as related}
+						{#each data.related as related (related.slug)}
 							<a
 								href={localizeHref(`/blog/${related.slug}`)}
 								class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
@@ -204,7 +204,7 @@
 								<p class="line-clamp-2 text-xs text-muted-foreground">{related.excerpt}</p>
 								{#if related.tags?.length}
 									<div class="mt-3 flex flex-wrap gap-1.5">
-										{#each related.tags as tag}
+										{#each related.tags as tag (tag)}
 											<span
 												class="inline-flex items-center rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground"
 												>{tag}</span

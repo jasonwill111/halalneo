@@ -219,7 +219,7 @@
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				{#each filtered as a}
+				{#each filtered as a (a.slug)}
 					<TableRow>
 						<TableCell>
 							<div class="min-w-0">
@@ -270,7 +270,7 @@
 				<Select bind:value={form.section} type="single">
 					<SelectTrigger class="w-full">{sectionName(form.section)}</SelectTrigger>
 					<SelectContent>
-						{#each adminData.kbSections as sec}
+						{#each adminData.kbSections as sec (sec.slug)}
 							<SelectItem value={sec.slug}>{sec.title}</SelectItem>
 						{/each}
 					</SelectContent>

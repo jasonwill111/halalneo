@@ -47,7 +47,7 @@
 </div>
 
 <div class="mb-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
-	{#each stats as s}
+				{#each stats as s (s.label)}
 		<Card class="p-3">
 			<CardContent class="p-0">
 				<div class="flex items-center justify-between mb-1">
@@ -107,7 +107,7 @@
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{#each orders as order}
+					{#each orders as order (order.id)}
 						<TableRow>
 							<TableCell class="text-[10px] font-medium">{order.id}</TableCell>
 							<TableCell class="text-[10px]">{order.buyer}</TableCell>

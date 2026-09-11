@@ -282,7 +282,7 @@
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
 				<div class="space-y-1">
-					{#each categories as cat}
+						{#each categories as cat (cat)}
 						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
 							<Checkbox
 								checked={selectedCategories.has(cat)}
@@ -304,7 +304,7 @@
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Price Range</h3>
 				<div class="space-y-1">
-					{#each priceRanges as pr}
+						{#each priceRanges as pr (pr)}
 						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
 							<Checkbox
 								checked={selectedPrices.has(pr)}
@@ -321,7 +321,7 @@
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Supplier Location</h3>
 				<div class="space-y-1">
-					{#each supplierLocations as loc}
+					{#each supplierLocations as loc (loc)}
 						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
 							<Checkbox
 								checked={selectedLocations.has(loc)}
@@ -338,7 +338,7 @@
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Halal Certification</h3>
 				<div class="space-y-1">
-					{#each certifications as cert}
+					{#each certifications as cert (cert)}
 						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
 							<Checkbox
 								checked={selectedCerts.has(cert)}

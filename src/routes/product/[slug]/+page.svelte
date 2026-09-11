@@ -463,7 +463,7 @@
 					{#if features.length > 0}
 						<h3 class="mt-4 text-sm font-medium text-foreground">Key Features</h3>
 						<ul class="mt-2 space-y-1.5">
-							{#each features as feature, i (i)}
+							{#each features as feature, i (typeof feature === 'string' ? feature : (feature.value ?? JSON.stringify(feature)))}
 								<li class="flex items-start gap-2">
 									<div class={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded ${TILE_COLORS[i % TILE_COLORS.length]}`}>
 										<ShieldCheck class="size-2.5"></ShieldCheck>
@@ -537,7 +537,7 @@
 					<h2 class="text-base font-semibold">Frequently Asked Questions</h2>
 					{#if faqs.length > 0}
 						<div class="space-y-3">
-							{#each faqs as faq, i (i)}
+							{#each faqs as faq (typeof faq === 'string' ? faq : (faq.question ?? faq.q ?? JSON.stringify(faq)))}
 								<Card class="p-3">
 									<h3 class="text-sm font-medium">
 										{typeof faq === 'string' ? faq : (faq.question ?? faq.q ?? 'Question')}
@@ -555,7 +555,7 @@
 					<h2 class="text-base font-semibold">Resources</h2>
 					{#if resources.length > 0}
 						<div class="space-y-2">
-							{#each resources as res, i (i)}
+							{#each resources as res (typeof res === 'string' ? res : (res.url ?? res.href ?? res.name ?? JSON.stringify(res)))}
 								{@const url = typeof res === 'string' ? null : (res.url ?? res.href ?? null)}
 								<div class="flex items-center justify-between gap-2 rounded-xl border border-border p-3">
 									<div class="flex min-w-0 items-center gap-2">

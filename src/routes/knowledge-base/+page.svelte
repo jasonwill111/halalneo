@@ -109,7 +109,7 @@
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Explore by Category</h2>
 		<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
-			{#each subForms as form, i}
+			{#each subForms as form, i (form.href)}
 				<a href={localizeHref(form.href)} class="group h-full">
 					<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
 						<CardHeader class="gap-3">
