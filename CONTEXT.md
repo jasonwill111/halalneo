@@ -161,6 +161,32 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 
 ---
 
+## Roadmap (decided 2026-09-11, B2B competitive review)
+
+| # | Feature | Shape | Status |
+|---|---------|-------|--------|
+| 1 | Buying Requests (RFQ list) | Public list; posting requires login; quota 1 free/week (or /month — TBD), paid tiers raise cap but never unlimited (anti-spam) | next |
+| 2 | Quick Deals → seller `/promotions` | Inventory-clearance list; supplier-published, time-boxed | next |
+| 3 | Follow suppliers + supplier updates | Follow extends favorites; supplier posts on own detail page, quota 1 free/week | next |
+| 4 | Supplier analytics dashboard | Profile/product view stats; reserved as paid feature | later (paid) |
+| 5 | Site-level success stories | Supplier-detail stories exist; add site-level page | later |
+| 6 | Tenders board | Institutional procurement; admin-published only at launch | later |
+| 7 | Trade show × supplier linkage | Exhibitor cross-links, "meet at" CTAs | backlog |
+| 8 | In-site buyer↔supplier messaging | Deferred — reply-threading on inquiries first, only if leads prove demand | backlog |
+| 9 | i18n expansion (`ms/id/ar`) | Paraglide infra ready, `['en']` only for now | backlog |
+| 10 | Mobile app via Tauri 2.0 | Built on the website, future | backlog |
+| 11 | Escrow/transactions | Only if the site enters the transaction flow | backlog |
+| 12 | Blockchain certificates | Rejected for now — see note below | rejected |
+
+Blockchain note: our trust bottleneck is ISSUER audit integrity
+(JAKIM/MUI on-site audits), not document tampering — a chain faithfully
+records whatever the issuer asserts (oracle problem). The 80/20 is
+expiry enforcement (auto-suspend on cert expiry), verify-tool depth, and
+certifier-direct feeds — all without a chain. Revisit only if we handle
+transactions or certifiers expose anchorable APIs.
+
+---
+
 ## Tech Stack
 
 | Component | Technology |
