@@ -2,6 +2,7 @@ import { eq, like, and, sql, desc, asc, inArray } from 'drizzle-orm';
 import type { drizzle } from 'drizzle-orm/d1';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium } from '../cache.js';
+import { ftsQuery, ftsSlugs } from '../fts.js';
 import type {
 	PaginatedResult,
 	ProductQueryOptions,
@@ -34,7 +35,12 @@ export async function getProducts(
 		const { limit = 20, offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
 
 		const conditions = [];
-		if (search) conditions.push(like(schema.products.name, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.products.slug, await ftsSlugs(db, 'products', match, 200)));
+		}
 		if (categorySlug) conditions.push(eq(schema.products.categorySlug, categorySlug));
 		if (supplierSlug) conditions.push(eq(schema.products.supplierSlug, supplierSlug));
 		if (certStatus)
@@ -182,7 +188,14 @@ export async function getSuppliers(
 		const { limit = 20, offset = 0, search, status, country } = opts;
 
 		const conditions = [];
-		if (search) conditions.push(like(schema.suppliers.name, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.suppliers.slug, await ftsSlugs(db, 'suppliers', match, 200)));
+		}
+		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
+		if (country) conditions.push(eq(schema.suppliers.country, country));
 		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
 		if (country) conditions.push(eq(schema.suppliers.country, country));
 
@@ -625,7 +638,7 @@ export async function getSuppliersByCertifyingBody(
 				certifications: schema.suppliers.certifications
 			})
 			.from(schema.suppliers)
-			.where(like(schema.suppliers.certifications, `%"bodyId":${bodyId}%`))
+			.where(inArray(schema.suppliers.slug, await ftsSlugs(db, 'suppliers', `"${bodyId}"`, 200)))
 			.limit(50);
 
 		// Re-verify in JS to avoid false positives from LIKE substring matches
@@ -763,7 +776,12 @@ export async function getProductListItems(
 		const { limit = 20, offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
 
 		const conditions = [];
-		if (search) conditions.push(like(schema.products.name, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.products.slug, await ftsSlugs(db, 'products', match, 200)));
+		}
 		if (categorySlug) conditions.push(eq(schema.products.categorySlug, categorySlug));
 		if (supplierSlug) conditions.push(eq(schema.products.supplierSlug, supplierSlug));
 		if (certStatus) conditions.push(eq(schema.products.certStatus, certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable'));
@@ -833,7 +851,12 @@ export async function getSupplierListItems(
 		const { limit = 20, offset = 0, search, status, country, businessType } = opts;
 
 		const conditions = [];
-		if (search) conditions.push(like(schema.suppliers.name, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.suppliers.slug, await ftsSlugs(db, 'suppliers', match, 200)));
+		}
 		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
 		if (country) conditions.push(eq(schema.suppliers.country, country));
 		if (businessType) conditions.push(eq(schema.suppliers.businessType, businessType as 'manufacturer' | 'wholesaler' | 'trader'));

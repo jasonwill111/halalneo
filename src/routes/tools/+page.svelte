@@ -83,25 +83,25 @@
 		</p>
 	</div>
 
-	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each tools as tool}
 			<a href={localizeHref(tool.href)} class="group h-full">
-				<Card class="h-full p-4 transition-all hover:shadow-md hover:-translate-y-0.5">
-					<CardContent class="space-y-2.5 p-0">
+				<Card class="h-full p-3 transition-all hover:shadow-md hover:-translate-y-0.5 sm:p-4">
+					<CardContent class="space-y-2 p-0 sm:space-y-2.5">
 						<div class="flex items-center justify-between">
-							<div class={`flex size-9 items-center justify-center rounded-lg ${tool.tone}`}>
-								<tool.icon class="size-4.5" />
+							<div class={`flex size-8 items-center justify-center rounded-lg sm:size-9 ${tool.tone}`}>
+								<tool.icon class="size-4" />
 							</div>
 							<Badge variant={tool.badge === 'Live' ? 'secondary' : 'outline'} class="text-[10px]">
 								{tool.badge}
 							</Badge>
 						</div>
 						<div>
-							<h2 class="flex items-center gap-1 text-sm font-semibold transition-colors group-hover:text-primary">
+							<h2 class="flex items-center gap-1 text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm">
 								{tool.name}
 								<ArrowUpRight class="size-3.5 text-muted-foreground transition-colors group-hover:text-primary" />
 							</h2>
-							<p class="mt-0.5 text-xs leading-relaxed text-muted-foreground">{tool.desc}</p>
+							<p class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs sm:leading-relaxed">{tool.desc}</p>
 						</div>
 					</CardContent>
 				</Card>

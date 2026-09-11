@@ -3,9 +3,10 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { certifyingBodies, suppliers, products } from '#lib/server/db/schema.js';
-import { eq, like, inArray, and } from 'drizzle-orm';
+import { eq, inArray, and } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
+import { ftsSlugs } from '#lib/server/fts.js';
 
 const ALLOWED_CB_FIELDS = new Set(['name', 'slug', 'description', 'website', 'country']);
 
@@ -61,6 +62,8 @@ export const POST: RequestHandler = async (event) => {
 				async () => {
 					// Public page payload: only active suppliers, minimal columns
 					// (no adminNotes/emails — this response is edge-cached).
+					// Indexed FTS lookup on certifications JSON (replaces LIKE scan).
+					const certSlugs = await ftsSlugs(db, 'suppliers', `"${params.id}"`, 200);
 					const certifiedSuppliers = await db
 						.select({
 							slug: suppliers.slug,
@@ -68,7 +71,7 @@ export const POST: RequestHandler = async (event) => {
 							country: suppliers.country
 						})
 						.from(suppliers)
-						.where(and(eq(suppliers.status, 'active'), like(suppliers.certifications, `%"bodyId":"${params.id}"%`)));
+						.where(and(eq(suppliers.status, 'active'), inArray(suppliers.slug, certSlugs)));
 
 					if (certifiedSuppliers.length === 0) {
 						return { suppliers: [], certificationTypes: [] };

@@ -68,7 +68,7 @@ _Avoid_: content generator, AI assistant
 
 ## Current Implementation Status
 
-### Pages Implemented (55 routes)
+### Pages Implemented (72 routes)
 
 | Section | Pages | Status |
 |---------|-------|--------|
@@ -104,7 +104,7 @@ _Avoid_: content generator, AI assistant
 | Supplier Portal | `/supplier/onboarding`, `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage` | ✅ 6 pages |
 | Admin | `/admin/*` | ✅ 14 pages (dashboard, users, products, suppliers, categories, blog, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings) |
 
-### API Endpoints (27)
+### API Endpoints (40 files)
 
 | Endpoint | Methods | Purpose |
 |----------|---------|---------|
@@ -149,7 +149,7 @@ _Avoid_: content generator, AI assistant
 | `/api/media/[key]` | GET | Media retrieval (R2 + 304 support) |
 | `/api/media/upload` | POST | Media upload |
 
-### Database Schema (12 tables, 37 indexes in production)
+### Database Schema (19 tables, 50 indexes in production)
 
 | Table | Purpose | Key |
 |-------|---------|-----|
@@ -170,6 +170,7 @@ _Avoid_: content generator, AI assistant
 | `supplierUpdates` | Supplier posts feed (quota: 1/week/supplier) | id |
 | `pageViews` | Analytics beacon rows (supplier|product) | id |
 | `successStories` | Editorial case studies (draft|published) | slug |
+| `products_fts` / `suppliers_fts` | FTS5 side tables + sync triggers (replaces LIKE scans on unbounded tables) | rowid |
 | `media` | R2 media files | id |
 | `siteSettings` | KV site settings | key |
 
@@ -215,9 +216,9 @@ transactions or certifiers expose anchorable APIs.
 | CSS | Tailwind CSS 4.3.3 |
 | Database | Cloudflare D1 (SQLite) |
 | Storage | Cloudflare R2 |
-| Auth | Better Auth 1.7.3 |
-| ORM | Drizzle ORM 0.45.2 |
-| AI | Mastra 1.64.0 + Vercel AI SDK 7.0.93 |
+| Auth | Better Auth 1.7.4 (schema regenerated — byte-identical to 1.7.3, no migration) |
+| ORM | Drizzle ORM 0.45.2 + FTS5 side tables (`products_fts`, `suppliers_fts` with triggers) |
+| AI | Mastra 1.65.0 + Vercel AI SDK 7.0.97 |
 | Hosting | Cloudflare Workers (adapter-cloudflare 8.0.0-next.7) |
 | Runtime | `compatibility_date 2026-09-09` + `nodejs_compat` (explicit). `new_module_registry` REJECTED 2026-09-10: hangs every request ~61s → 500 on adapter-8 output (preview-verified); revisit when Cloudflare sets a default date |
 | Bindings | `cloudflare:workers` module via `#lib/server/bindings.ts` (adapter 8 removed `event.platform`) |
@@ -450,10 +451,10 @@ transactions or certifiers expose anchorable APIs.
 |-------------|-------------|
 | Static assets (fonts, icons) | `immutable` (1 year) |
 | Reference content (KB, market guides) | `s-maxage=86400` |
-| Listings (products, suppliers, blog) | `s-maxage=3600` |
+| Listings (products, suppliers, blog, rfqs, promotions, stories) | `s-maxage=300` (matches worker TTL — longer edge TTL would serve data the worker already considers stale) |
 | Homepage | `s-maxage=1800` |
-| Auth pages | `no-store` |
-| API verify | `s-maxage=120` |
+| Auth pages + session-scoped GETs (inquiries, supplier-applications, follows, memberships, views, stories?status=all) | `no-store` (edge cache is anonymous-shared — public directive would leak private data) |
+| API verify/search/rfq/promotions/stories | `s-maxage=120–300` |
 | API chat | `no-store` |
 
 ---

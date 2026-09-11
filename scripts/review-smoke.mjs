@@ -104,11 +104,16 @@ check('D1: B active', rowB?.status === 'active', JSON.stringify(rowB));
 // 6. Approved supplier is publicly visible; rejected is not.
 // The public listing page fetches /api/suppliers?limit=100&status=active;
 // the detail page renders not-found for non-active slugs.
-// The listing is edge-cached (s-maxage) and invalidated on approval — retry
-// briefly in case the first request races the invalidation propagation.
+// NOTE: the listing is edge-cached (s-maxage) + worker-cached (query-keyed
+// TTL) and approval invalidation only deletes path-only keys, so a plain
+// refetch can serve stale data for minutes. The `&_t=` cache-buster forces
+// a cold read at BOTH layers (edge key + worker cacheKey both include the
+// query string) — this asserts origin truth, not CDN timing luck.
 let activeText = '';
 for (let i = 0; i < 5; i++) {
-	const activeList = await page.request.get(`${BASE}/api/suppliers?limit=100&status=active`);
+	const activeList = await page.request.get(
+		`${BASE}/api/suppliers?limit=100&status=active&_t=${Date.now()}`
+	);
 	activeText = await activeList.text();
 	if (activeText.includes(SLUG_B) && !activeText.includes(SLUG_A)) break;
 	await page.waitForTimeout(3000);

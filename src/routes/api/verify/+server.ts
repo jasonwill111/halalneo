@@ -1,9 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { eq, like, or, sql, and } from 'drizzle-orm';
+import { eq, like, or, sql, and, inArray } from 'drizzle-orm';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import * as schema from '#lib/server/db/schema.js';
+import { ftsQuery, ftsSlugs } from '#lib/server/fts.js';
 import { cachedQuery, cacheShort } from '#lib/server/cache.js';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -13,14 +14,22 @@ export const GET: RequestHandler = async ({ url }) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const term = `%${q}%`;
+		const term = `%${q}%`;
+		// Indexed FTS lookups (products/suppliers) instead of LIKE scans.
+		const match = ftsQuery(q);
 
-	try {
+		try {
 		// Query string matters for verify results — explicit cacheKey keeps
 		// `?q=halal` separate from `?q=beef`. Path-only key would merge them.
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
+				const [pSlugs, sSlugs] = match
+					? await Promise.all([
+							ftsSlugs(db, 'products', match, 20),
+							ftsSlugs(db, 'suppliers', match, 20)
+						])
+					: [[], []];
 				const [supplierRows, productRows] = await Promise.all([
 					db
 						.select({
@@ -34,13 +43,15 @@ export const GET: RequestHandler = async ({ url }) => {
 						})
 						.from(schema.suppliers)
 						.where(
-							and(
-								eq(schema.suppliers.status, 'active'),
-								or(
-									like(schema.suppliers.name, term),
-									like(schema.suppliers.certifications, term)
-								)
-							)
+							match
+								? and(eq(schema.suppliers.status, 'active'), inArray(schema.suppliers.slug, sSlugs))
+								: and(
+										eq(schema.suppliers.status, 'active'),
+										or(
+											like(schema.suppliers.name, term),
+											like(schema.suppliers.certifications, term)
+										)
+									)
 						)
 						.limit(20),
 					db
@@ -58,14 +69,19 @@ export const GET: RequestHandler = async ({ url }) => {
 						.innerJoin(schema.suppliers, eq(schema.products.supplierSlug, schema.suppliers.slug))
 						.leftJoin(schema.categories, eq(schema.products.categorySlug, schema.categories.slug))
 						.where(
-							and(
-								eq(schema.products.status, 'active'),
-								or(
-									like(schema.products.name, term),
-									like(schema.suppliers.name, term),
-									like(schema.suppliers.certifications, term)
-								)
-							)
+							match
+								? and(
+										eq(schema.products.status, 'active'),
+										or(inArray(schema.products.slug, pSlugs), inArray(schema.products.supplierSlug, sSlugs))
+									)
+								: and(
+										eq(schema.products.status, 'active'),
+										or(
+											like(schema.products.name, term),
+											like(schema.suppliers.name, term),
+											like(schema.suppliers.certifications, term)
+										)
+									)
 						)
 						.limit(20)
 				]);

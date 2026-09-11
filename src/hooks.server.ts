@@ -104,9 +104,18 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 
 	// Write API endpoints — no cache (POST/PUT/DELETE)
 	// Auth endpoints — never cache (session responses are per-user)
+	// Session-scoped GETs — never cache (responses differ per user; edge
+	// cache is anonymous-shared, so a public directive here would leak one
+	// user's private data to everyone hitting the same URL).
 	if (
 		pathname.startsWith('/api/auth') ||
-		(pathname.startsWith('/api') && event.request.method !== 'GET')
+		(pathname.startsWith('/api') && event.request.method !== 'GET') ||
+		pathname.startsWith('/api/inquiries') ||
+		pathname.startsWith('/api/supplier-applications') ||
+		pathname.startsWith('/api/follows') ||
+		pathname.startsWith('/api/supplier-memberships') ||
+		pathname.startsWith('/api/views') ||
+		(pathname.startsWith('/api/success-stories') && event.url.searchParams.get('status') === 'all')
 	) {
 		const response = await resolve(event);
 		response.headers.set('Cache-Control', 'no-store');
@@ -134,9 +143,20 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	}
 
 	// Verify search API — query-dependent, short shared cache
-	if (pathname.startsWith('/api/verify')) {
+	if (pathname.startsWith('/api/verify') || pathname.startsWith('/api/search')) {
 		const response = await resolve(event);
 		response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=120, stale-while-revalidate=60');
+		return response;
+	}
+
+	// Marketplace public boards — short shared cache (high churn content)
+	if (
+		pathname.startsWith('/api/rfqs') ||
+		pathname.startsWith('/api/promotions') ||
+		pathname.startsWith('/api/success-stories')
+	) {
+		const response = await resolve(event);
+		response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=60');
 		return response;
 	}
 
@@ -161,18 +181,25 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		return response;
 	}
 
-	// Frequently-updating listing pages — moderate shared cache
+	// Frequently-updating listing pages — moderate shared cache.
+	// NOTE: s-maxage intentionally matches the worker Cache-API TTL (300s).
+	// A longer edge TTL would serve data the worker layer already considers
+	// stale for ~an hour after admin writes (invalidation only deletes
+	// path-only worker keys; edge has no purge path from the worker).
 	if (
 		pathname === '/products' ||
 		pathname === '/suppliers' ||
 		pathname === '/categories' ||
 		pathname === '/blog' ||
 		pathname === '/trade-shows' ||
+		pathname === '/rfqs' ||
+		pathname === '/promotions' ||
+		pathname === '/success-stories' ||
 		pathname.startsWith('/categories/') ||
 		pathname.startsWith('/blog/')
 	) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=3600, stale-while-revalidate=600');
+		response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=300, stale-while-revalidate=600');
 		return response;
 	}
 
@@ -201,7 +228,13 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	}
 
 	// Product/supplier detail — long-tail content
-	if (pathname.startsWith('/products/') || pathname.startsWith('/suppliers/')) {
+	if (
+		pathname.startsWith('/products/') ||
+		pathname.startsWith('/suppliers/') ||
+		pathname.startsWith('/rfqs/') ||
+		pathname.startsWith('/promotions/') ||
+		pathname.startsWith('/success-stories/')
+	) {
 		const response = await resolve(event);
 		response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=3600, stale-while-revalidate=600');
 		return response;
