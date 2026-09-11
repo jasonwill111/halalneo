@@ -297,6 +297,108 @@ export const tradeShows = sqliteTable('trade_shows', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
+// ==================== Buying Requests (public RFQ board) ====================
+// Buyer-posted sourcing needs. status: active|closed|expired|flagged.
+export const buyingRequests = sqliteTable('buying_requests', {
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => crypto.randomUUID()),
+	buyerId: text('buyer_id'),
+	buyerEmail: text('buyer_email'),
+	buyerCountry: text('buyer_country').default(''),
+	title: text('title').notNull(),
+	description: text('description').default(''),
+	categorySlug: text('category_slug'),
+	quantity: text('quantity').default(''),
+	targetPrice: text('target_price').default(''),
+	destination: text('destination').default(''),
+	status: text('status').default('active'),
+	views: integer('views').default(0),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// ==================== Promotions (Quick Deals / inventory clearance) ====================
+// Supplier-published time-boxed offers. status: active|expired|archived.
+export const promotions = sqliteTable('promotions', {
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => crypto.randomUUID()),
+	supplierSlug: text('supplier_slug').notNull(),
+	productSlug: text('product_slug'),
+	title: text('title').notNull(),
+	description: text('description').default(''),
+	discountPct: integer('discount_pct'),
+	priceMin: text('price_min'),
+	priceMax: text('price_max'),
+	priceUnit: text('price_unit'),
+	moq: text('moq'),
+	validUntil: text('valid_until'),
+	status: text('status').default('active'),
+	views: integer('views').default(0),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// ==================== Supplier Members (user <-> supplier link) ====================
+// Gates supplier-side publishing (promotions, updates). Created when a
+// supplier is activated with a matching registered user email, or by admin.
+export const supplierMembers = sqliteTable('supplier_members', {
+	userId: text('user_id').notNull(),
+	supplierSlug: text('supplier_slug').notNull(),
+	role: text('role').default('owner'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
+
+// ==================== Follows (buyers follow suppliers) ====================
+export const follows = sqliteTable('follows', {
+	userId: text('user_id').notNull(),
+	supplierSlug: text('supplier_slug').notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
+
+// ==================== Supplier Updates (supplier posts feed) ====================
+// Short posts published on the supplier detail page. status: active|archived.
+export const supplierUpdates = sqliteTable('supplier_updates', {
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => crypto.randomUUID()),
+	supplierSlug: text('supplier_slug').notNull(),
+	body: text('body').notNull(),
+	image: text('image'),
+	status: text('status').default('active'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+// ==================== Page Views (analytics beacon) ====================
+// One row per detail view (kind: supplier|product). Aggregated by dashboard.
+export const pageViews = sqliteTable('page_views', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	kind: text('kind').notNull(),
+	slug: text('slug').notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
+
+// ==================== Success Stories ====================
+// Site-level case studies + per-supplier section. status: draft|published.
+export const successStories = sqliteTable('success_stories', {
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => crypto.randomUUID()),
+	slug: text('slug').notNull().unique(),
+	title: text('title').notNull(),
+	excerpt: text('excerpt').default(''),
+	body: text('body').default(''),
+	supplierSlug: text('supplier_slug'),
+	buyerCountry: text('buyer_country').default(''),
+	dealValue: text('deal_value').default(''),
+	image: text('image'),
+	status: text('status').default('draft'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
 // ==================== Indexes ====================
 // Products
 export const productsCategoryIdx = index('idx_products_category').on(products.categorySlug);
@@ -338,6 +440,28 @@ export const categoriesParentIdx = index('idx_categories_parent').on(categories.
 export const inquiriesStatusIdx = index('idx_inquiries_status').on(inquiries.status);
 export const inquiriesBuyerIdx = index('idx_inquiries_buyer').on(inquiries.buyerSlug);
 export const inquiriesSupplierIdx = index('idx_inquiries_supplier').on(inquiries.supplierSlug);
+
+// Buying Requests
+export const rfqStatusIdx = index('idx_rfq_status').on(buyingRequests.status);
+export const rfqBuyerIdx = index('idx_rfq_buyer').on(buyingRequests.buyerId);
+export const rfqCategoryIdx = index('idx_rfq_category').on(buyingRequests.categorySlug);
+
+// Promotions
+export const promoStatusIdx = index('idx_promo_status').on(promotions.status);
+export const promoSupplierIdx = index('idx_promo_supplier').on(promotions.supplierSlug);
+
+// Supplier Members / Follows / Updates
+export const membersUserIdx = index('idx_members_user').on(supplierMembers.userId);
+export const followsUserIdx = index('idx_follows_user').on(follows.userId);
+export const updatesSupplierIdx = index('idx_updates_supplier').on(supplierUpdates.supplierSlug);
+
+// Page Views
+export const viewsSlugIdx = index('idx_views_slug').on(pageViews.kind, pageViews.slug);
+export const viewsTimeIdx = index('idx_views_time').on(pageViews.createdAt);
+
+// Success Stories
+export const storiesStatusIdx = index('idx_stories_status').on(successStories.status);
+export const storiesSupplierIdx = index('idx_stories_supplier').on(successStories.supplierSlug);
 
 // Media
 export const mediaKeyIdx = index('idx_media_key').on(media.key);

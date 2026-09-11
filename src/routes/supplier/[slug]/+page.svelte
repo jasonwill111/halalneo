@@ -36,6 +36,8 @@
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
 	import Package from '@lucide/svelte/icons/package';
+	import UserPlus from '@lucide/svelte/icons/user-plus';
+	import Megaphone from '@lucide/svelte/icons/megaphone';
 
 	let { data } = $props();
 
@@ -52,6 +54,118 @@
 		if (data.item?.slug) {
 			saved = isFavorite(data.item.slug);
 		}
+	});
+
+	// Follow state (server-backed) + follower count + owner membership.
+	// Fetched client-side: follows require a session, counts are public.
+	let following = $state(false);
+	let followerCount = $state(0);
+	let isOwner = $state(false);
+
+	async function refreshFollow() {
+		const slug = data.item?.slug;
+		if (!slug) return;
+		try {
+			const [stRes, countRes, memRes] = await Promise.all([
+				fetch(`/api/follows?supplierSlug=${encodeURIComponent(slug)}`),
+				fetch(`/api/follows?countFor=${encodeURIComponent(slug)}`),
+				fetch('/api/supplier-memberships')
+			]);
+			if (stRes.ok) following = (((await stRes.json()) as any).following ?? false);
+			if (countRes.ok) followerCount = (((await countRes.json()) as any).count ?? 0);
+			if (memRes.ok) {
+				const j = (await memRes.json()) as any;
+				isOwner = (j.items ?? []).some((m: any) => m.supplierSlug === slug);
+			}
+		} catch {
+			// follow UI degrades to signed-out state; never blocks the page
+		}
+	}
+
+	async function toggleFollow() {
+		const slug = data.item?.slug;
+		if (!slug) return;
+		try {
+			if (following) {
+				const res = await fetch(`/api/follows?supplierSlug=${encodeURIComponent(slug)}`, { method: 'DELETE' });
+				if (res.ok) {
+					following = false;
+					followerCount = Math.max(0, followerCount - 1);
+				} else if (res.status === 401) {
+					window.location.href = localizeHref('/login');
+				}
+			} else {
+				const res = await fetch('/api/follows', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ supplierSlug: slug })
+				});
+				if (res.ok) {
+					following = true;
+					followerCount += 1;
+				} else if (res.status === 401) {
+					window.location.href = localizeHref('/login');
+				}
+			}
+		} catch {
+			// silent — follow is a bonus action
+		}
+	}
+
+	// Supplier updates feed + owner composer (1 post/week on free plan).
+	let updates = $state<any[]>([]);
+	let updateBody = $state('');
+	let updateSending = $state(false);
+	let updateResult = $state<string | null>(null);
+
+	async function refreshUpdates() {
+		const slug = data.item?.slug;
+		if (!slug) return;
+		try {
+			const res = await fetch(`/api/supplier-updates?supplierSlug=${encodeURIComponent(slug)}&limit=5`);
+			if (res.ok) updates = (((await res.json()) as any).items ?? []);
+		} catch {
+			updates = [];
+		}
+	}
+
+	async function publishUpdate() {
+		const slug = data.item?.slug;
+		if (!slug || !updateBody.trim()) return;
+		updateSending = true;
+		updateResult = null;
+		try {
+			const res = await fetch('/api/supplier-updates', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ supplierSlug: slug, body: updateBody.trim() })
+			});
+			const j = (await res.json().catch(() => ({}))) as any;
+			if (res.ok) {
+				updateBody = '';
+				updateResult = null;
+				await refreshUpdates();
+			} else {
+				updateResult = j.error ?? 'Failed to publish update.';
+			}
+		} finally {
+			updateSending = false;
+		}
+	}
+
+	// Client boot: follow state, updates feed, analytics beacon. Runs in
+	// $effect (not onMount) so client-side slug changes re-fire it —
+	// SvelteKit keeps the page component mounted across /supplier/a → /b.
+	$effect(() => {
+		const slug = data.item?.slug;
+		if (!slug) return;
+		refreshFollow();
+		refreshUpdates();
+		fetch('/api/views', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ kind: 'supplier', slug })
+		}).catch(() => {});
 	});
 
 	// Inquiry dialog state
@@ -96,6 +210,12 @@
 
 	const item = $derived(data.item);
 	const products = $derived(data.products ?? []);
+
+	function fmtShortDate(v: unknown): string {
+		if (!v) return '';
+		const d = new Date(String(v));
+		return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+	}
 
 	function typeBadgeCls(type?: string | null): string {
 		if (type === 'manufacturer') return 'bg-info/10 text-info border-info/20';
@@ -363,8 +483,18 @@
 			</Button>
 		</div>
 
-		<!-- Share -->
+		<!-- Share + follow -->
 		<div class="mb-3 flex flex-wrap items-center gap-2">
+			<Button
+				variant="outline"
+				size="sm"
+				class="h-7 gap-1 text-[10px]"
+				onclick={toggleFollow}
+				aria-label={following ? 'Unfollow supplier' : 'Follow supplier'}
+			>
+				<UserPlus class="size-2.5" />
+				{following ? 'Following' : 'Follow'}{#if followerCount > 0}&nbsp;· {followerCount}{/if}
+			</Button>
 			<span class="text-[10px] text-muted-foreground">Share:</span>
 			<ShareButtons title={item.name ?? 'HalalNeo supplier'} text={item.description ?? ''} />
 		</div>
@@ -491,6 +621,55 @@
 						</div>
 					</section>
 				{/if}
+
+				<!-- Supplier updates -->
+				<section>
+					<div class="mb-1.5 flex items-center gap-1.5">
+						<Megaphone class="size-3.5 text-muted-foreground" />
+						<h2 class="text-sm font-semibold">Latest updates</h2>
+					</div>
+					{#if isOwner}
+						<div class="mb-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+							<Textarea
+								bind:value={updateBody}
+								placeholder="Share news: new products, certifications, trade shows..."
+								rows={2}
+								maxlength={2000}
+								class="text-xs"
+							/>
+							{#if updateResult}
+								<p class="mt-1.5 text-xs text-destructive">{updateResult}</p>
+							{/if}
+							<div class="mt-2 flex items-center justify-between gap-2">
+								<p class="text-[10px] text-muted-foreground">Free plan: 1 post/week</p>
+								<Button
+									size="sm"
+									class="h-7 text-[11px]"
+									disabled={updateSending || !updateBody.trim()}
+									onclick={publishUpdate}
+								>
+									{updateSending ? 'Posting...' : 'Post update'}
+								</Button>
+							</div>
+						</div>
+					{/if}
+					{#if updates.length === 0}
+						<p class="rounded-xl bg-muted/40 px-3 py-4 text-center text-[11px] text-muted-foreground">
+							No updates yet. {#if isOwner}Post the first one above.{:else}Follow this supplier to see their news here.{/if}
+						</p>
+					{:else}
+						<div class="space-y-2">
+							{#each updates as u (u.id)}
+								<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+									<p class="text-xs leading-relaxed">{u.body}</p>
+									{#if fmtShortDate(u.createdAt)}
+										<p class="mt-1.5 text-[10px] text-muted-foreground">{fmtShortDate(u.createdAt)}</p>
+									{/if}
+								</div>
+							{/each}
+						</div>
+					{/if}
+				</section>
 			</div>
 
 			<aside class="min-w-0 space-y-3 sm:space-y-4 lg:col-span-2 lg:sticky lg:top-20 lg:self-start">
@@ -637,6 +816,14 @@
 				label: s.name,
 				description: [s.businessType, s.country].filter(Boolean).join(' · '),
 				href: `/supplier/${s.slug}`
+			}))}
+		/>
+		<RelatedLinks
+			title="Success stories"
+			items={(data.supplierStories ?? []).map((s: any) => ({
+				label: s.title,
+				description: s.dealValue ?? s.buyerCountry,
+				href: `/success-stories/${s.slug}`
 			}))}
 		/>
 	</div>

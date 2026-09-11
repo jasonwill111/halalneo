@@ -26,6 +26,7 @@
 	import Handshake from '@lucide/svelte/icons/handshake';
 	import Globe from '@lucide/svelte/icons/globe';
 	import CalendarDays from '@lucide/svelte/icons/calendar-days';
+import Trophy from '@lucide/svelte/icons/trophy';
 
 	interface Props {
 		variant: 'desktop' | 'mobile';
@@ -70,6 +71,7 @@
 		{ label: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
 		{ label: 'Glossary', href: '/admin/glossary', icon: Languages },
 		{ label: 'Blog', href: '/admin/blog', icon: Newspaper },
+	{ label: 'Stories', href: '/admin/stories', icon: Trophy },
 		{ label: 'AI Tools', href: '/admin/ai-tools', icon: Bot },
 		{ label: 'Settings', href: '/admin/settings', icon: Settings }
 	];

@@ -89,7 +89,10 @@ _Avoid_: content generator, AI assistant
 | Ingredient Checker | `/tools/ingredient-checker` | ✅ AI ingredient analysis |
 | Certification Cost | `/tools/certification-cost` | ✅ Cost estimator (7 certifiers × 6 categories × 4 sizes) |
 | Landed Cost | `/tools/landed-cost` | ✅ CIF+duty+VAT+clearance+cert amortisation calculator |
-| RFQ Builder | `/tools/rfq-builder` | ✅ RFQ text generator (copy/download) |
+| RFQ Builder | `/tools/rfq-builder` | ✅ RFQ text generator (copy/download/**publish to Buying Requests**) |
+| Buying Requests | `/rfqs`, `/rfqs/[id]`, `/rfqs/new` | ✅ Public RFQ board (login to post, 1/week free quota, supplier quote dialog) |
+| Quick Deals | `/promotions`, `/promotions/[id]` | ✅ Supplier clearance board (member publish, 1/week free quota) |
+| Success Stories | `/success-stories`, `/success-stories/[slug]` | ✅ Editorial case studies (admin publish at `/admin/stories`) |
 | Search | `/search` | ✅ Full-text search across articles, glossary, suppliers, products |
 | Pricing | `/pricing` | ✅ 4-tier pricing + Brand URL add-on |
 | About | `/about` | ✅ Mission, milestones, team |
@@ -126,6 +129,15 @@ _Avoid_: content generator, AI assistant
 | `/api/trade-shows/[id]` | GET | Show detail (404s inactive for anonymous) |
 | `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache; suppliers+products filtered `status=active`) |
 | `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public); GET requires session |
+| `/api/rfqs` | GET, POST | Buying-requests board (GET defaults `status=active`); POST requires login, 1/week free quota |
+| `/api/rfqs/[id]` | GET | RFQ detail (404s non-active for anonymous) |
+| `/api/promotions` | GET, POST | Deals board (GET defaults `status=active`); POST requires supplier membership, 1/week/supplier quota |
+| `/api/promotions/[id]` | GET | Deal detail (404s non-active for anonymous) |
+| `/api/follows` | GET, POST, DELETE | Follow/unfollow suppliers (login); GET `?countFor=` public count |
+| `/api/supplier-updates` | GET, POST | Supplier posts feed (GET defaults `status=active`); POST requires membership, 1/week/supplier quota |
+| `/api/supplier-memberships` | GET | My supplier memberships (login) |
+| `/api/views` | GET, POST | POST records detail views (public beacon, increments denormalized counters); GET supplier analytics (member-only) |
+| `/api/success-stories` | GET, POST | Stories (GET defaults `status=published`, `?status=all` admin-only uncached); POST admin-only |
 | `/api/supplier-applications` | GET, POST | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET requires session |
 | `/api/verify` | GET | Certificate verification search (suppliers+products filtered `status=active`) |
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
@@ -151,6 +163,13 @@ _Avoid_: content generator, AI assistant
 | `tradeShows` | Exhibition calendar (20 rows) | id |
 | `serviceProviders` | Service provider profiles | slug |
 | `inquiries` | Buyer inquiries | id |
+| `buyingRequests` | Public RFQ board (quota: 1/week free) | id |
+| `promotions` | Quick-deal offers (quota: 1/week/supplier) | id |
+| `supplierMembers` | User↔supplier publish rights | (userId, supplierSlug) |
+| `follows` | Buyer follows on suppliers | (userId, supplierSlug) |
+| `supplierUpdates` | Supplier posts feed (quota: 1/week/supplier) | id |
+| `pageViews` | Analytics beacon rows (supplier|product) | id |
+| `successStories` | Editorial case studies (draft|published) | slug |
 | `media` | R2 media files | id |
 | `siteSettings` | KV site settings | key |
 
@@ -165,11 +184,11 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 
 | # | Feature | Shape | Status |
 |---|---------|-------|--------|
-| 1 | Buying Requests (RFQ list) | Public list; posting requires login; quota 1 free/week (or /month — TBD), paid tiers raise cap but never unlimited (anti-spam) | next |
-| 2 | Quick Deals → seller `/promotions` | Inventory-clearance list; supplier-published, time-boxed | next |
-| 3 | Follow suppliers + supplier updates | Follow extends favorites; supplier posts on own detail page, quota 1 free/week | next |
-| 4 | Supplier analytics dashboard | Profile/product view stats; reserved as paid feature | later (paid) |
-| 5 | Site-level success stories | Supplier-detail stories exist; add site-level page | later |
+| 1 | Buying Requests (RFQ list) | Public list; posting requires login; quota 1 free/week (paid tiers raise cap, never unlimited) | ✅ shipped 2026-09-11 |
+| 2 | Quick Deals → seller `/promotions` | Inventory-clearance list; supplier-published, time-boxed, 1/week free | ✅ shipped 2026-09-11 |
+| 3 | Follow suppliers + supplier updates | Follow extends favorites; supplier posts on own detail page, 1/week free | ✅ shipped 2026-09-11 |
+| 4 | Supplier analytics dashboard | Profile/product view stats via `/api/views` beacon; reserved as paid feature | ✅ beacon + dashboard live 2026-09-11 |
+| 5 | Site-level success stories | `/success-stories` + supplier-detail sections; admin publish at `/admin/stories` | ✅ shipped 2026-09-11 |
 | 6 | Tenders board | Institutional procurement; admin-published only at launch | later |
 | 7 | Trade show × supplier linkage | Exhibitor cross-links, "meet at" CTAs | backlog |
 | 8 | In-site buyer↔supplier messaging | Deferred — reply-threading on inquiries first, only if leads prove demand | backlog |

@@ -16,8 +16,9 @@
 	import FileText from '@lucide/svelte/icons/file-text';
 	import Copy from '@lucide/svelte/icons/copy';
 	import Check from '@lucide/svelte/icons/check';
-	import Download from '@lucide/svelte/icons/download';
-	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+import Download from '@lucide/svelte/icons/download';
+import Send from '@lucide/svelte/icons/send';
+import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
 	let product = $state('');
 	let specs = $state('');
@@ -98,6 +99,47 @@
 		a.click();
 		a.remove();
 		URL.revokeObjectURL(url);
+	}
+
+	let publishing = $state(false);
+	let publishResult = $state<{ type: 'success' | 'error'; message: string; needsLogin?: boolean; id?: string } | null>(null);
+
+	// Publish the built RFQ to the public Buying Requests board
+	// (1 free post/week; server enforces the quota + login).
+	async function publishRfq() {
+		if (!product.trim()) {
+			publishResult = { type: 'error', message: 'Enter a product name first.' };
+			return;
+		}
+		publishing = true;
+		publishResult = null;
+		try {
+			const res = await fetch('/api/rfqs', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					title: `${product.trim()} — ${quantity.trim() || 'sourcing request'}`.slice(0, 200),
+					description: rfqText.slice(0, 5000),
+					quantity: quantity.trim() || null,
+					targetPrice: targetPrice.trim() || null,
+					destination: `${incoterm} ${destination}`.trim() || null
+				})
+			});
+			const j = (await res.json().catch(() => ({}))) as any;
+			if (res.ok && j.id) {
+				publishResult = { type: 'success', message: 'Published! Suppliers can now quote.', id: j.id };
+			} else {
+				publishResult = {
+					type: 'error',
+					message: j.error ?? 'Failed to publish.',
+					needsLogin: res.status === 401
+				};
+			}
+		} catch {
+			publishResult = { type: 'error', message: 'Network error. Please try again.' };
+		} finally {
+			publishing = false;
+		}
 	}
 </script>
 
@@ -218,12 +260,31 @@
 									<Copy class="size-3.5" /> Copy
 								{/if}
 							</Button>
-							<Button variant="outline" size="sm" class="h-7 text-xs" onclick={downloadRfq}>
-								<Download class="size-3.5" /> .txt
-							</Button>
-						</div>
+						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={downloadRfq}>
+							<Download class="size-3.5" /> .txt
+						</Button>
+						<Button size="sm" class="h-7 text-xs" disabled={publishing} onclick={publishRfq}>
+							<Send class="size-3.5" />
+							{publishing ? 'Publishing...' : 'Publish'}
+						</Button>
 					</div>
-					<pre class="max-h-[420px] overflow-auto rounded-lg bg-muted/60 p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap">{rfqText}</pre>
+				</div>
+				<pre class="max-h-[420px] overflow-auto rounded-lg bg-muted/60 p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap">{rfqText}</pre>
+				{#if publishResult}
+					<div
+						class={`rounded-xl px-3 py-2 text-xs ${publishResult.type === 'success' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
+					>
+						{publishResult.message}
+						{#if publishResult.id}
+							<a href={localizeHref(`/rfqs/${publishResult.id}`)} class="ml-1 font-semibold underline">
+								View request
+							</a>
+						{/if}
+						{#if publishResult.needsLogin}
+							<a href={localizeHref('/login')} class="ml-1 font-semibold underline"> Sign in </a>
+						{/if}
+					</div>
+				{/if}
 				</CardContent>
 			</Card>
 			<Card class="p-4">

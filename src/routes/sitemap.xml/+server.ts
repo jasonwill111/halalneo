@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { cachedQuery } from '#lib/server/cache.js';
+import { eq } from 'drizzle-orm';
 import {
 	getProducts,
 	getSuppliers,
@@ -14,7 +15,13 @@ import {
 	getPages
 } from '#lib/server/queries/index.js';
 import { marketGuides as staticMarketGuides } from '#lib/data/market-guides.js';
-import { marketGuides as dbMarketGuides, tradeShows as dbTradeShows } from '#lib/server/db/schema.js';
+import {
+	marketGuides as dbMarketGuides,
+	tradeShows as dbTradeShows,
+	buyingRequests as dbRfqs,
+	promotions as dbPromos,
+	successStories as dbStories
+} from '#lib/server/db/schema.js';
 import { tradeShows as staticTradeShows } from '#lib/data/trade-shows.js';
 
 const BASE_URL = 'https://halalneo.com';
@@ -42,7 +49,10 @@ const staticRoutes = [
 	'/tools/certification-cost',
 	'/tools/landed-cost',
 	'/tools/rfq-builder',
-	'/tools/ai-chat'
+	'/tools/ai-chat',
+	'/rfqs',
+	'/promotions',
+	'/success-stories'
 ];
 
 function formatDate(date: Date | null | undefined): string {
@@ -137,6 +147,48 @@ export const GET: RequestHandler = async (event) => {
 			for (const show of dbShows) {
 				if (staticShowIds.has(show.id)) continue;
 				addEntry(`/trade-shows/${show.id}`, show.updatedAt, 'monthly', '0.7');
+			}
+
+			// Buying requests (public board — active only)
+			const rfqs = await cachedQuery(
+				`${cacheKey}:rfqs`,
+				() =>
+					db
+						.select({ id: dbRfqs.id, updatedAt: dbRfqs.updatedAt })
+						.from(dbRfqs)
+						.where(eq(dbRfqs.status, 'active')),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			for (const r of rfqs) {
+				addEntry(`/rfqs/${r.id}`, r.updatedAt, 'daily', '0.6');
+			}
+
+			// Promotions (active deals only)
+			const promos = await cachedQuery(
+				`${cacheKey}:promotions`,
+				() =>
+					db
+						.select({ id: dbPromos.id, updatedAt: dbPromos.updatedAt })
+						.from(dbPromos)
+						.where(eq(dbPromos.status, 'active')),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			for (const p of promos) {
+				addEntry(`/promotions/${p.id}`, p.updatedAt, 'daily', '0.6');
+			}
+
+			// Success stories (published only)
+			const stories = await cachedQuery(
+				`${cacheKey}:stories`,
+				() =>
+					db
+						.select({ slug: dbStories.slug, updatedAt: dbStories.updatedAt })
+						.from(dbStories)
+						.where(eq(dbStories.status, 'published')),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			for (const s of stories) {
+				addEntry(`/success-stories/${s.slug}`, s.updatedAt, 'monthly', '0.6');
 			}
 			const products = await cachedQuery(
 				`${cacheKey}:products`,

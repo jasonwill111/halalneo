@@ -2,7 +2,8 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
-import { suppliers } from '#lib/server/db/schema.js';
+import { suppliers, supplierMembers } from '#lib/server/db/schema.js';
+import { user as authUser } from '#lib/server/db/auth.schema.js';
 import { eq } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
@@ -109,6 +110,27 @@ export const PUT: RequestHandler = async (event) => {
 			.returning();
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 		await invalidateCache('/api/suppliers', `/api/suppliers/${params.slug}`);
+
+		// Activation hook: when a supplier flips to active, link the matching
+		// registered user (by supplier email) as an owner member so they can
+		// publish deals/updates. Best-effort — never blocks the update.
+		if ((updates as any).status === 'active' && (row as any).email) {
+			try {
+				const matched = await db
+					.select({ id: authUser.id })
+					.from(authUser)
+					.where(eq(authUser.email, (row as any).email))
+					.limit(1);
+				if (matched[0]?.id) {
+					await db
+						.insert(supplierMembers)
+						.values({ userId: matched[0].id, supplierSlug: params.slug, role: 'owner', createdAt: new Date() })
+						.onConflictDoNothing();
+				}
+			} catch {
+				// membership link is a bonus, not a requirement
+			}
+		}
 		return json(row);
 	} catch (e: any) {
 		return json({ error: e?.message ?? 'Update failed' }, { status: 500 });

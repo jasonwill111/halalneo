@@ -223,6 +223,19 @@
 		}
 	});
 
+	// Analytics beacon: record the product view (fire-and-forget POST with
+	// its own error handling — the endpoint always 200s, page never blocks).
+	// Runs in $effect (not onMount) so client-side slug changes re-fire it.
+	$effect(() => {
+		const slug = item?.slug;
+		if (!slug) return;
+		fetch('/api/views', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ kind: 'product', slug })
+		}).catch(() => {});
+	});
+
 	function handleToggleFavorite() {
 		if (!item?.slug) return;
 		favorited = toggleFavorite(item.slug);

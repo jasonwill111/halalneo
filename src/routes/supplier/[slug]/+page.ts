@@ -31,9 +31,10 @@ interface SupplierItem {
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
-		const [res, productsRes] = await Promise.all([
+		const [res, productsRes, storiesRes] = await Promise.all([
 			fetch(`/api/suppliers/${params.slug}`),
-			fetch(`/api/products?supplierSlug=${params.slug}&limit=20`)
+			fetch(`/api/products?supplierSlug=${params.slug}&limit=20`),
+			fetch(`/api/success-stories?supplierSlug=${params.slug}&limit=4`)
 		]);
 
 		if (res.ok) {
@@ -52,6 +53,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			}
 			const certificationsParsed = typeof data.certifications === 'string' ? JSON.parse(data.certifications || '[]') : data.certifications ?? [];
 			const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
+			const supplierStories = storiesRes.ok ? ((((await storiesRes.json()) as any)).items ?? []) : [];
 			// Related suppliers: same country, excluding self (list API supports ?country=).
 			let relatedSuppliers: any[] = [];
 			try {
@@ -81,7 +83,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				},
 				item: { ...data, certifications: certificationsParsed },
 				products,
-				relatedSuppliers
+				relatedSuppliers,
+				supplierStories
 			};
 		}
 	} catch {}

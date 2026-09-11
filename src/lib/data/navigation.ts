@@ -26,6 +26,7 @@ import HelpCircleIcon from '@lucide/svelte/icons/circle-question-mark';
 import HomeIcon from '@lucide/svelte/icons/home';
 import UserIcon from '@lucide/svelte/icons/user';
 import SearchIcon from '@lucide/svelte/icons/search';
+import TrophyIcon from '@lucide/svelte/icons/trophy';
 
 export interface NavItem {
 	label: string;
@@ -62,6 +63,14 @@ export const navGroups: NavGroup[] = [
 			{ label: 'Trade Shows', href: '/trade-shows', icon: CalendarIcon },
 			{ label: 'Blog', href: '/blog', icon: PenIcon },
 			{ label: 'Glossary', href: '/glossary', icon: GraduationCapIcon }
+		]
+	},
+	{
+		label: 'Trade',
+		items: [
+			{ label: 'Buying Requests', href: '/rfqs', icon: FileTextIcon },
+			{ label: 'Quick Deals', href: '/promotions', icon: TagsIcon },
+			{ label: 'Success Stories', href: '/success-stories', icon: TrophyIcon }
 		]
 	},
 	{
