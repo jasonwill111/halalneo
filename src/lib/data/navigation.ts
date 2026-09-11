@@ -54,7 +54,17 @@ export const primaryNav: NavItem[] = [
 ];
 
 /** Grouped nav — rendered as dropdowns (header) and sections (mobile menu / footer). */
+/* NOTE: group order = header dropdown order (left→right) and mobile Explore
+   popover order (top→bottom). Trade leads because it carries transactions. */
 export const navGroups: NavGroup[] = [
+	{
+		label: 'Trade',
+		items: [
+			{ label: 'Buying Requests', href: '/rfqs', icon: FileTextIcon },
+			{ label: 'Quick Deals', href: '/promotions', icon: TagsIcon },
+			{ label: 'Success Stories', href: '/success-stories', icon: TrophyIcon }
+		]
+	},
 	{
 		label: 'Resources',
 		items: [
@@ -63,14 +73,6 @@ export const navGroups: NavGroup[] = [
 			{ label: 'Trade Shows', href: '/trade-shows', icon: CalendarIcon },
 			{ label: 'Blog', href: '/blog', icon: PenIcon },
 			{ label: 'Glossary', href: '/glossary', icon: GraduationCapIcon }
-		]
-	},
-	{
-		label: 'Trade',
-		items: [
-			{ label: 'Buying Requests', href: '/rfqs', icon: FileTextIcon },
-			{ label: 'Quick Deals', href: '/promotions', icon: TagsIcon },
-			{ label: 'Success Stories', href: '/success-stories', icon: TrophyIcon }
 		]
 	},
 	{

@@ -9,18 +9,7 @@
 	import Grid2x2Icon from '@lucide/svelte/icons/grid-2x2';
 	import BoxIcon from '@lucide/svelte/icons/box';
 	import CompassIcon from '@lucide/svelte/icons/compass';
-	import BookOpenIcon from '@lucide/svelte/icons/book-open';
-	import GlobeIcon from '@lucide/svelte/icons/globe';
-	import CalendarIcon from '@lucide/svelte/icons/calendar';
-	import PenIcon from '@lucide/svelte/icons/pen';
-	import GraduationCapIcon from '@lucide/svelte/icons/graduation-cap';
 	import UsersIcon from '@lucide/svelte/icons/users';
-	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
-	import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
-	import CalculatorIcon from '@lucide/svelte/icons/calculator';
-	import FileTextIcon from '@lucide/svelte/icons/file-text';
-	import ScaleIcon from '@lucide/svelte/icons/scale';
-	import HandshakeIcon from '@lucide/svelte/icons/handshake';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
 	import HelpCircleIcon from '@lucide/svelte/icons/circle-question-mark';
 	import InfoIcon from '@lucide/svelte/icons/info';
@@ -30,6 +19,11 @@
 	import NewspaperIcon from '@lucide/svelte/icons/newspaper';
 	import MessageCircleIcon from '@lucide/svelte/icons/message-circle';
 	import TagsIcon from '@lucide/svelte/icons/tags';
+	import { navGroups } from '#lib/data/navigation.js';
+
+	// Explore popover renders the single-source navGroups (Trade first).
+	// Company group excluded — About/Contact already live in the Menu popover.
+	const exploreGroups = navGroups.filter((g) => g.label !== 'Company');
 
 	let showExplore = $state(false);
 	let showMenu = $state(false);
@@ -37,37 +31,6 @@
 	let menuBtnEl = $state<HTMLElement | null>(null);
 	let explorePos = $state({ left: 0, top: 0 });
 	let menuPos = $state({ right: 0, top: 0 });
-
-	const exploreGroups = [
-		{
-			label: 'Resources',
-			items: [
-				{ label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenIcon },
-				{ label: 'Market Guides', href: '/market-guides', icon: GlobeIcon },
-				{ label: 'Trade Shows', href: '/trade-shows', icon: CalendarIcon },
-				{ label: 'Blog', href: '/blog', icon: PenIcon },
-				{ label: 'Glossary', href: '/glossary', icon: GraduationCapIcon }
-			]
-		},
-		{
-			label: 'Halal Tools',
-			items: [
-				{ label: 'All Tools', href: '/tools', icon: CalculatorIcon },
-				{ label: 'Verify Certificate', href: '/verify', icon: ShieldCheckIcon },
-				{ label: 'Ingredient Checker', href: '/tools/ingredient-checker', icon: FlaskConicalIcon },
-				{ label: 'Certification Cost', href: '/tools/certification-cost', icon: CalculatorIcon },
-				{ label: 'Landed Cost', href: '/tools/landed-cost', icon: BanknoteIcon },
-				{ label: 'RFQ Builder', href: '/tools/rfq-builder', icon: FileTextIcon }
-			]
-		},
-		{
-			label: 'Ecosystem',
-			items: [
-				{ label: 'Certifying Bodies', href: '/certifying-bodies', icon: ScaleIcon },
-				{ label: 'Service Providers', href: '/service-providers', icon: HandshakeIcon }
-			]
-		}
-	];
 
 	const menuItems = [
 		{ label: 'Suppliers', href: '/suppliers', icon: UsersIcon },

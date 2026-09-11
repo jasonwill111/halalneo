@@ -25,12 +25,26 @@ for (const p of pages) {
 const home = await (await page.request.get(`${BASE}/`)).text();
 check('mobile tab bar uses rounded-xl', !/glass-strong[^"]*rounded-2xl/.test(home), 'popover + dock');
 
+// Desktop header: Trade dropdown sits left of Resources (navGroups order)
+const tradeIdx = home.search(/>\s*Trade\s*</);
+const resIdx = home.search(/>\s*Resources\s*</);
+check('desktop Trade left of Resources', tradeIdx !== -1 && resIdx !== -1 && tradeIdx < resIdx, 'header dropdown order');
+
 // Screenshot for visual confirmation
 await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
 await page.screenshot({ path: 'D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke\\radius-home.png', fullPage: true });
 const mob = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await mob.goto(`${BASE}/`, { waitUntil: 'networkidle' });
 await mob.screenshot({ path: 'D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke\\radius-home-mobile.png', fullPage: true });
+
+// Mobile Explore popover: Trade group with all three new entries, first
+await mob.getByText('Explore', { exact: true }).click();
+await mob.getByRole('link', { name: 'Buying Requests' }).waitFor({ timeout: 8000 });
+const popText = await mob.locator('[data-popover-panel]').innerText();
+check('mobile Explore has Buying Requests', popText.includes('Buying Requests'), 'trade group');
+check('mobile Explore has Quick Deals', popText.includes('Quick Deals'), 'trade group');
+check('mobile Explore has Success Stories', popText.includes('Success Stories'), 'trade group');
+check('mobile Explore Trade first', popText.indexOf('TRADE') !== -1 && popText.indexOf('TRADE') < popText.indexOf('RESOURCES'), 'group order');
 
 await browser.close();
 const failed = results.filter((r) => !r.ok);
