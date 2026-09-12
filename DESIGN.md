@@ -3,16 +3,16 @@ name: HalalNeo
 description: Halal trade intelligence for buyers and suppliers
 colors:
   certified-green: 'oklch(0.44 0.15 158)'
-  certified-green-dark: 'oklch(0.74 0.15 158)'
+  certified-green-dark: 'oklch(0.77 0.185 154)'
   warm-cream: 'oklch(0.978 0.01 88)'
   pure-white: 'oklch(1 0 0)'
-  deep-navy: 'oklch(0.15 0.02 248)'
-  washed-navy: 'oklch(0.185 0.024 250)'
+  deep-navy: 'oklch(0.15 0.028 205)'
+  washed-navy: 'oklch(0.185 0.032 205)'
   sage-mist: 'oklch(0.935 0.011 85)'
   sage-stone: 'oklch(0.46 0.022 60)'
   sage-border: 'oklch(0.895 0.012 85)'
   alert-red: 'oklch(0.57 0.235 27)'
-  dark-mode-text: 'oklch(0.935 0.006 250)'
+  dark-mode-text: 'oklch(0.935 0.008 210)'
 typography:
   display:
     fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
