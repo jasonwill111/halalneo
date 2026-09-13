@@ -10,6 +10,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -22,7 +23,6 @@
 		Dialog,
 		DialogContent,
 		DialogDescription,
-		DialogFooter,
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
@@ -39,6 +39,8 @@
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -72,6 +74,17 @@
 		keywords: ''
 	});
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const categorySchema = z.object({
+		name: z.string().trim().min(1, 'Name is required.'),
+		slug: z
+			.string()
+			.trim()
+			.optional()
+			.refine((s) => !s || /^[a-z0-9-]+$/.test(s), 'Slug may only contain lowercase letters, numbers and dashes.')
+	});
 
 	const filtered = $derived.by(() => {
 		const list = [...adminData.categories];
@@ -108,6 +121,7 @@
 			keywords: ''
 		};
 		formError = '';
+		fieldErrors = {};
 		seoExpanded = false;
 		dialogOpen = true;
 	}
@@ -127,15 +141,25 @@
 			keywords: c.keywords ?? ''
 		};
 		formError = '';
+		fieldErrors = {};
 		seoExpanded = false;
 		dialogOpen = true;
 	}
 
-	function save() {
-		if (!form.name.trim()) {
-			formError = 'Category name is required.';
+	function save(e?: Event) {
+		e?.preventDefault();
+		fieldErrors = {};
+
+		const result = categorySchema.safeParse(form);
+		if (!result.success) {
+			const flat = result.error.flatten().fieldErrors;
+			for (const [k, msgs] of Object.entries(flat)) {
+				if (msgs?.length) fieldErrors[k] = msgs[0];
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
+
 		if (form.slug && form.parentSlug && form.slug === form.parentSlug) {
 			formError = 'A category cannot be its own parent.';
 			return;
@@ -257,14 +281,27 @@
 			<DialogTitle>{editing ? 'Edit category' : 'New category'}</DialogTitle>
 			<DialogDescription>Create or update a product category.</DialogDescription>
 		</DialogHeader>
-		<div class="space-y-4">
+		<form bind:this={formEl} onsubmit={save} class="space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Name</Field.FieldLabel>
-				<Input bind:value={form.name} placeholder="Category name" />
+				<Input
+					bind:value={form.name}
+					placeholder="Category name"
+					aria-invalid={!!fieldErrors.name}
+					oninput={() => { fieldErrors.name = ''; formError = ''; }}
+				/>
+				{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Slug</Field.FieldLabel>
-				<Input bind:value={form.slug} placeholder="category-slug" disabled={!!editing} />
+				<Input
+					bind:value={form.slug}
+					placeholder="category-slug"
+					disabled={!!editing}
+					aria-invalid={!!fieldErrors.slug}
+					oninput={() => { fieldErrors.slug = ''; formError = ''; }}
+				/>
+				{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Parent</Field.FieldLabel>
@@ -334,13 +371,13 @@
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
-		</div>
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}
-				>{editing ? 'Save changes' : 'Create category'}</Button
-			>
-		</DialogFooter>
+			<div class="flex justify-end gap-2 pt-2">
+				<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button variant="default" type="submit"
+					>{editing ? 'Save changes' : 'Create category'}</Button
+				>
+			</div>
+		</form>
 	</DialogContent>
 </Dialog>
 

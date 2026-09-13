@@ -11,6 +11,7 @@
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -43,6 +44,8 @@
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -107,6 +110,17 @@
 		keywords: ''
 	});
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const supplierSchema = z.object({
+		name: z.string().trim().min(1, 'Name is required.'),
+		slug: z.string().trim().optional().refine(
+			(s) => !s || /^[a-z0-9-]+$/.test(s),
+			'Slug may only contain lowercase letters, numbers and dashes.'
+		),
+		country: z.string().trim().min(1, 'Country is required.')
+	});
 
 	const filtered = $derived.by(() => {
 		const list = adminData.suppliers;
@@ -236,16 +250,15 @@
 	}
 
 	function save() {
-		if (!form.name.trim()) {
-			formError = 'Supplier name is required.';
-			return;
-		}
-		if (!form.country.trim()) {
-			formError = 'Country is required.';
-			return;
-		}
-		if (form.slug && !/^[a-z0-9-]+$/.test(form.slug)) {
-			formError = 'Slug may only contain lowercase letters, numbers and dashes.';
+		fieldErrors = {};
+		formError = '';
+		const result = supplierSchema.safeParse(form);
+		if (!result.success) {
+			const flat = result.error.flatten().fieldErrors;
+			for (const [k, msgs] of Object.entries(flat)) {
+				if (msgs?.length) fieldErrors[k] = msgs[0];
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 		const base: Supplier = editing
@@ -291,7 +304,12 @@
 			metaDescription: form.metaDescription.trim() || undefined,
 			keywords: form.keywords.trim() || undefined
 		};
-		upsertItem<Supplier>('suppliers', updated, editing ?? undefined);
+		try {
+			upsertItem<Supplier>('suppliers', updated, editing ?? undefined);
+		} catch (e: any) {
+			formError = e?.message ?? 'Save failed. Please try again.';
+			return;
+		}
 		dialogOpen = false;
 	}
 
@@ -406,28 +424,46 @@
 			</DialogDescription>
 		</DialogHeader>
 
-		<div class="flex flex-col gap-4">
+		<form bind:this={formEl} onsubmit={(e) => { e.preventDefault(); save(); }} class="flex flex-col gap-4">
 			<!-- ===================== BASIC INFO (always expanded) ===================== -->
 			<CollapsibleSection title="Basic Info" bind:open={basicExpanded}>
 				<Field.Field>
 					<Field.FieldLabel>Name *</Field.FieldLabel>
 					<Input
 						value={form.name}
-						oninput={(e) => onNameInput((e.currentTarget as HTMLInputElement).value)}
+						oninput={(e) => {
+							onNameInput((e.currentTarget as HTMLInputElement).value);
+							if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+						}}
 						placeholder="Company name"
+						aria-invalid={!!fieldErrors.name}
 					/>
+					{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 				</Field.Field>
 
-				<div class="grid grid-cols-2 gap-4">
-					<Field.Field>
-						<Field.FieldLabel>Slug</Field.FieldLabel>
-						<Input bind:value={form.slug} placeholder="company-name" disabled={!!editing} />
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Country *</Field.FieldLabel>
-						<Input bind:value={form.country} placeholder="Indonesia" />
-					</Field.Field>
-				</div>
+			<div class="grid grid-cols-2 gap-4">
+				<Field.Field>
+					<Field.FieldLabel>Slug</Field.FieldLabel>
+					<Input
+						bind:value={form.slug}
+						placeholder="company-name"
+						disabled={!!editing}
+						aria-invalid={!!fieldErrors.slug}
+						oninput={() => { if (fieldErrors.slug) fieldErrors = { ...fieldErrors, slug: '' }; }}
+					/>
+					{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Country *</Field.FieldLabel>
+					<Input
+						bind:value={form.country}
+						placeholder="Indonesia"
+						aria-invalid={!!fieldErrors.country}
+						oninput={() => { if (fieldErrors.country) fieldErrors = { ...fieldErrors, country: '' }; }}
+					/>
+					{#if fieldErrors.country}<FieldError>{fieldErrors.country}</FieldError>{/if}
+				</Field.Field>
+			</div>
 
 				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
@@ -543,7 +579,7 @@
 				</Field.Field>
 			</CollapsibleSection>
 
-			{#if formError}
+				{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
 
@@ -574,13 +610,13 @@
 					/>
 				</Field.Field>
 			</CollapsibleSection>
-		</div>
+		</form>
 
 		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>
-				{editing ? 'Save changes' : 'Create supplier'}
-			</Button>
+		<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button variant="default" type="submit">
+					{editing ? 'Save changes' : 'Create supplier'}
+				</Button>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

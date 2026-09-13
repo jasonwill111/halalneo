@@ -11,6 +11,7 @@
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -43,6 +44,8 @@
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -118,6 +121,19 @@
 		keywords: ''
 	});
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const productSchema = z.object({
+		name: z.string().trim().min(1, 'Name is required.'),
+		slug: z
+			.string()
+			.trim()
+			.optional()
+			.refine((s) => !s || /^[a-z0-9-]+$/.test(s), 'Slug may only contain lowercase letters, numbers and dashes.'),
+		supplierSlug: z.string().trim().min(1, 'Supplier is required.'),
+		categorySlug: z.string().trim().min(1, 'Category is required.')
+	});
 
 	const filtered = $derived.by(() => {
 		const list = [...adminData.products];
@@ -180,6 +196,7 @@
 			keywords: ''
 		};
 		formError = '';
+		fieldErrors = {};
 		basicExpanded = true;
 		pricingExpanded = false;
 		detailsExpanded = false;
@@ -223,6 +240,7 @@
 			keywords: s.keywords ?? ''
 		};
 		formError = '';
+		fieldErrors = {};
 		basicExpanded = true;
 		pricingExpanded = false;
 		detailsExpanded = false;
@@ -292,10 +310,29 @@
 	}
 
 	function save() {
-		if (!form.name.trim()) {
-			formError = 'Product name is required.';
+		const result = productSchema.safeParse({
+			name: form.name,
+			slug: form.slug || undefined,
+			supplierSlug: form.supplierSlug,
+			categorySlug: form.categorySlug
+		});
+
+		if (!result.success) {
+			const flat = result.error.flatten().fieldErrors;
+			fieldErrors = {
+				name: flat.name?.[0] ?? '',
+				slug: flat.slug?.[0] ?? '',
+				supplierSlug: flat.supplierSlug?.[0] ?? '',
+				categorySlug: flat.categorySlug?.[0] ?? ''
+			};
+			formError = '';
+			focusFirstInvalid(formEl);
 			return;
 		}
+
+		fieldErrors = {};
+		formError = '';
+
 		const base: Product =
 			editing ??
 			({
@@ -503,45 +540,84 @@
 			<DialogDescription>Create or update a product SKU in the marketplace.</DialogDescription>
 		</DialogHeader>
 
-		<div class="flex flex-col gap-4">
+		<form
+			bind:this={formEl}
+			onsubmit={(e) => {
+				e.preventDefault();
+				save();
+			}}
+			class="flex flex-col gap-4"
+		>
 			<!-- ===================== BASIC INFO (always expanded) ===================== -->
 			<CollapsibleSection title="Basic Info" bind:open={basicExpanded}>
 				<Field.Field>
 					<Field.FieldLabel>Name *</Field.FieldLabel>
 					<Input
 						value={form.name}
-						oninput={(e) => onNameInput((e.currentTarget as HTMLInputElement).value)}
+						oninput={(e) => {
+							onNameInput((e.currentTarget as HTMLInputElement).value);
+							if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+						}}
 						placeholder="Product name"
+						aria-invalid={!!fieldErrors.name || undefined}
 					/>
+					{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 				</Field.Field>
 
 				<Field.Field>
 					<Field.FieldLabel>Slug</Field.FieldLabel>
-					<Input bind:value={form.slug} placeholder="product-name" disabled={!!editing} />
+					<Input
+						bind:value={form.slug}
+						placeholder="product-name"
+						disabled={!!editing}
+						aria-invalid={!!fieldErrors.slug || undefined}
+						oninput={() => {
+							if (fieldErrors.slug) fieldErrors = { ...fieldErrors, slug: '' };
+						}}
+					/>
+					{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 				</Field.Field>
 
 				<div class="grid grid-cols-2 gap-4">
 					<Field.Field>
 						<Field.FieldLabel>Supplier</Field.FieldLabel>
-						<Select bind:value={form.supplierSlug} type="single">
-							<SelectTrigger class="w-full">{supplierName(form.supplierSlug)}</SelectTrigger>
+						<Select
+							bind:value={form.supplierSlug}
+							type="single"
+							onOpenChange={(open) => {
+								if (!open && fieldErrors.supplierSlug) fieldErrors = { ...fieldErrors, supplierSlug: '' };
+							}}
+						>
+							<SelectTrigger class="w-full" aria-invalid={!!fieldErrors.supplierSlug || undefined}
+								>{supplierName(form.supplierSlug)}</SelectTrigger
+							>
 							<SelectContent>
 								{#each adminData.suppliers as m (m.slug)}
 									<SelectItem value={m.slug}>{m.name}</SelectItem>
 								{/each}
 							</SelectContent>
 						</Select>
+						{#if fieldErrors.supplierSlug}<FieldError>{fieldErrors.supplierSlug}</FieldError>{/if}
 					</Field.Field>
 					<Field.Field>
 						<Field.FieldLabel>Category</Field.FieldLabel>
-						<Select bind:value={form.categorySlug} type="single">
-							<SelectTrigger class="w-full">{categoryName(form.categorySlug)}</SelectTrigger>
+						<Select
+							bind:value={form.categorySlug}
+							type="single"
+							onOpenChange={(open) => {
+								if (!open && fieldErrors.categorySlug) fieldErrors = { ...fieldErrors, categorySlug: '' };
+							}}
+						>
+							<SelectTrigger class="w-full" aria-invalid={!!fieldErrors.categorySlug || undefined}
+								>{categoryName(form.categorySlug)}</SelectTrigger
+							>
 							<SelectContent>
 								{#each adminData.categories as c (c.slug)}
 									<SelectItem value={c.slug}>{c.name}</SelectItem>
 								{/each}
 							</SelectContent>
 						</Select>
+						{#if fieldErrors.categorySlug}<FieldError>{fieldErrors.categorySlug}</FieldError>{/if}
 					</Field.Field>
 				</div>
 
@@ -836,11 +912,11 @@
 			{#if formError}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
-		</div>
+		</form>
 
 		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create product'}</Button
+			<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+			<Button variant="default" type="submit">{editing ? 'Save changes' : 'Create product'}</Button
 			>
 		</DialogFooter>
 	</DialogContent>

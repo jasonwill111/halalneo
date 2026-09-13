@@ -10,6 +10,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -32,6 +33,8 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -41,6 +44,13 @@
 	type TermForm = { term: string; definition: string };
 	let form = $state<TermForm>({ term: '', definition: '' });
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const glossarySchema = z.object({
+		term: z.string().trim().min(1, 'Term is required.'),
+		definition: z.string().trim().min(1, 'Definition is required.')
+	});
 
 	const filtered = $derived.by(() => {
 		const list = [...adminData.glossary];
@@ -55,6 +65,7 @@
 		editing = null;
 		form = { term: '', definition: '' };
 		formError = '';
+		fieldErrors = {};
 		dialogOpen = true;
 	}
 
@@ -62,12 +73,19 @@
 		editing = t;
 		form = { term: t.term, definition: t.definition };
 		formError = '';
+		fieldErrors = {};
 		dialogOpen = true;
 	}
 
 	function save() {
-		if (!form.term.trim() || !form.definition.trim()) {
-			formError = 'Term and definition are required.';
+		fieldErrors = {};
+		const parsed = glossarySchema.safeParse(form);
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 		const existing = editing ?? ({ term: '', definition: '' } as GlossaryTerm);
@@ -170,23 +188,25 @@
 			<DialogTitle>{editing ? 'Edit term' : 'New term'}</DialogTitle>
 			<DialogDescription>Add or update a glossary entry.</DialogDescription>
 		</DialogHeader>
-		<div class="space-y-4">
+		<form bind:this={formEl} onsubmit={(e) => { e.preventDefault(); save(); }} class="space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Term</Field.FieldLabel>
-				<Input bind:value={form.term} placeholder="Halal" />
+				<Input bind:value={form.term} placeholder="Halal" aria-invalid={!!fieldErrors.term} oninput={() => { fieldErrors = { ...fieldErrors, term: '' }; }} />
+				{#if fieldErrors.term}<FieldError>{fieldErrors.term}</FieldError>{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Definition</Field.FieldLabel>
-				<Textarea bind:value={form.definition} rows={4} placeholder="Definition..." />
+				<Textarea bind:value={form.definition} rows={4} placeholder="Definition..." aria-invalid={!!fieldErrors.definition} oninput={() => { fieldErrors = { ...fieldErrors, definition: '' }; }} />
+				{#if fieldErrors.definition}<FieldError>{fieldErrors.definition}</FieldError>{/if}
 			</Field.Field>
-			{#if formError}
+			{#if formError && !Object.keys(fieldErrors).length}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
-		</div>
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create term'}</Button>
-		</DialogFooter>
+			<DialogFooter>
+				<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button variant="default" type="submit">{editing ? 'Save changes' : 'Create term'}</Button>
+			</DialogFooter>
+		</form>
 	</DialogContent>
 </Dialog>
 

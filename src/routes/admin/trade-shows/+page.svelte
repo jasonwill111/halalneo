@@ -6,6 +6,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -37,11 +38,21 @@
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<TradeShow | null>(null);
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const showSchema = z.object({
+		name: z.string().trim().min(1, 'Name is required.'),
+		startDate: z.string().trim().min(1, 'Start date is required.'),
+		endDate: z.string().trim().min(1, 'End date is required.')
+	});
 
 	// Collapsible section state
 	let detailsExpanded = $state(false);
@@ -180,13 +191,24 @@
 			.filter(Boolean);
 	}
 
-	function save() {
-		if (!form.name.trim()) {
-			formError = 'Show name is required.';
-			return;
-		}
-		if (form.id && !/^[a-z0-9-]+$/.test(form.id)) {
-			formError = 'ID may only contain lowercase letters, numbers and dashes.';
+	function save(e?: Event) {
+		e?.preventDefault();
+
+		fieldErrors = {};
+		formError = '';
+
+		const result = showSchema.safeParse({
+			name: form.name,
+			startDate: form.startDate,
+			endDate: form.endDate
+		});
+
+		if (!result.success) {
+			for (const issue of result.error.issues) {
+				const key = issue.path[0] as string;
+				if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 
@@ -351,14 +373,19 @@
 <Dialog bind:open={dialogOpen}>
 	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
-			<DialogTitle>{editing ? 'Edit trade show' : 'New trade show'}</DialogTitle>
-			<DialogDescription>Create or update a trade show listing.</DialogDescription>
+			<DialogTitle>{editing ? 'Edit show' : 'New show'}</DialogTitle>
+			<DialogDescription>Register or update a halal trade show.</DialogDescription>
 		</DialogHeader>
-
-		<div class="flex flex-col gap-4">
+		<form bind:this={formEl} onsubmit={save} class="flex flex-col gap-4">
 			<Field.Field>
 				<Field.FieldLabel>Name *</Field.FieldLabel>
-				<Input bind:value={form.name} placeholder="MIHAS 2026" />
+				<Input
+					bind:value={form.name}
+					placeholder="MIHAS 2026"
+					aria-invalid={!!fieldErrors.name}
+					oninput={() => { if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' }; }}
+				/>
+				{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 			</Field.Field>
 
 			<div class="grid grid-cols-2 gap-4">
@@ -425,12 +452,24 @@
 
 			<div class="grid grid-cols-2 gap-4">
 				<Field.Field>
-					<Field.FieldLabel>Start Date</Field.FieldLabel>
-					<Input bind:value={form.startDate} type="date" />
+					<Field.FieldLabel>Start Date *</Field.FieldLabel>
+					<Input
+						bind:value={form.startDate}
+						type="date"
+						aria-invalid={!!fieldErrors.startDate}
+						oninput={() => { if (fieldErrors.startDate) fieldErrors = { ...fieldErrors, startDate: '' }; }}
+					/>
+					{#if fieldErrors.startDate}<FieldError>{fieldErrors.startDate}</FieldError>{/if}
 				</Field.Field>
 				<Field.Field>
-					<Field.FieldLabel>End Date</Field.FieldLabel>
-					<Input bind:value={form.endDate} type="date" />
+					<Field.FieldLabel>End Date *</Field.FieldLabel>
+					<Input
+						bind:value={form.endDate}
+						type="date"
+						aria-invalid={!!fieldErrors.endDate}
+						oninput={() => { if (fieldErrors.endDate) fieldErrors = { ...fieldErrors, endDate: '' }; }}
+					/>
+					{#if fieldErrors.endDate}<FieldError>{fieldErrors.endDate}</FieldError>{/if}
 				</Field.Field>
 			</div>
 
@@ -494,16 +533,16 @@
 						placeholder="Comma separated: halal, trade show, malaysia"
 					/>
 				</Field.Field>
-			</CollapsibleSection>
-		</div>
+		</CollapsibleSection>
 
-		{#if formError}
-			<p class="text-sm text-destructive">{formError}</p>
-		{/if}
+			{#if formError && !Object.keys(fieldErrors).length}
+				<p class="text-sm text-destructive">{formError}</p>
+			{/if}
+		</form>
 
 		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>
+			<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+			<Button variant="default" type="submit">
 				{editing ? 'Save changes' : 'Create show'}
 			</Button>
 		</DialogFooter>

@@ -6,10 +6,19 @@
 		deleteAccount,
 		getCurrentAccount
 	} from '#lib/stores/auth.svelte.js';
+	import { z } from 'zod';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import {
 		Table,
 		TableBody,
@@ -42,13 +51,23 @@
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<DemoAccount | null>(null);
-	let form = $state<{ fullName: string; email: string; company: string; password: string }>({
+	let form = $state<{ fullName: string; email: string; company: string; password: string; role: 'buyer' | 'seller' }>({
 		fullName: '',
 		email: '',
 		company: '',
-		password: ''
+		password: '',
+		role: 'buyer'
 	});
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const userSchema = z.object({
+		fullName: z.string().trim().min(1, 'Full name is required.'),
+		email: z.string().trim().min(1, 'Email is required.').email('Please enter a valid email.'),
+		role: z.enum(['buyer', 'seller'], { message: 'Role is required.' }),
+		password: z.string().min(1, 'Password is required.')
+	});
 	let refreshTick = $state(0);
 	let confirmEmail = $state<string | null>(null);
 
@@ -67,8 +86,9 @@
 
 	function openCreate() {
 		editing = null;
-		form = { fullName: '', email: '', company: '', password: '' };
+		form = { fullName: '', email: '', company: '', password: '', role: 'buyer' };
 		formError = '';
+		fieldErrors = {};
 		dialogOpen = true;
 	}
 
@@ -78,9 +98,11 @@
 			fullName: account.fullName,
 			email: account.email,
 			company: account.company ?? '',
-			password: account.password
+			password: account.password,
+			role: 'buyer'
 		};
 		formError = '';
+		fieldErrors = {};
 		dialogOpen = true;
 	}
 
@@ -90,10 +112,28 @@
 	}
 
 	function save() {
-		if (!form.fullName.trim() || !form.email.trim() || !form.password.trim()) {
-			formError = 'Full name, email and password are required.';
+		const result = userSchema.safeParse({
+			fullName: form.fullName,
+			email: form.email,
+			role: form.role,
+			password: form.password
+		});
+
+		if (!result.success) {
+			const flat = result.error.flatten().fieldErrors;
+			fieldErrors = {
+				fullName: flat.fullName?.[0] ?? '',
+				email: flat.email?.[0] ?? '',
+				role: flat.role?.[0] ?? '',
+				password: flat.password?.[0] ?? ''
+			};
+			focusFirstInvalid(formEl);
 			return;
 		}
+
+		fieldErrors = {};
+		formError = '';
+
 		if (editing) {
 			updateAccount(editing.email, {
 				fullName: form.fullName.trim(),
@@ -106,7 +146,7 @@
 				email: form.email.trim(),
 				company: form.company.trim() || undefined,
 				password: form.password,
-				type: 'buyer'
+				type: form.role
 			});
 			if (!ok) {
 				formError = 'An account with that email already exists.';
@@ -241,36 +281,89 @@
 			</DialogDescription>
 		</DialogHeader>
 		<div class="space-y-4">
-			<Field.Field>
-				<Field.FieldLabel>Full name</Field.FieldLabel>
-				<Input bind:value={form.fullName} placeholder="Aisha Rahman" />
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Email</Field.FieldLabel>
-				<Input
-					bind:value={form.email}
-					type="email"
-					placeholder="aisha@company.com"
-					disabled={!!editing}
-				/>
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Company (optional)</Field.FieldLabel>
-				<Input bind:value={form.company} placeholder="Company name" />
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Password</Field.FieldLabel>
-				<Input bind:value={form.password} type="password" placeholder="•••••••••••••••••" />
-				<Field.FieldDescription>Demo only — stored in local storage.</Field.FieldDescription>
-			</Field.Field>
-			{#if formError}
-				<p class="text-sm text-destructive">{formError}</p>
-			{/if}
+			<form
+				bind:this={formEl}
+				onsubmit={(e) => {
+					e.preventDefault();
+					save();
+				}}
+				class="space-y-4"
+			>
+				<Field.Field>
+					<Field.FieldLabel>Full name</Field.FieldLabel>
+					<Input
+						value={form.fullName}
+						oninput={(e) => {
+							form.fullName = (e.currentTarget as HTMLInputElement).value;
+							if (fieldErrors.fullName) fieldErrors = { ...fieldErrors, fullName: '' };
+						}}
+						placeholder="Aisha Rahman"
+						aria-invalid={!!fieldErrors.fullName || undefined}
+					/>
+					{#if fieldErrors.fullName}<FieldError>{fieldErrors.fullName}</FieldError>{/if}
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Email</Field.FieldLabel>
+					<Input
+						value={form.email}
+						type="email"
+						oninput={(e) => {
+							form.email = (e.currentTarget as HTMLInputElement).value;
+							if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+						}}
+						placeholder="aisha@company.com"
+						disabled={!!editing}
+						aria-invalid={!!fieldErrors.email || undefined}
+					/>
+					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Company (optional)</Field.FieldLabel>
+					<Input bind:value={form.company} placeholder="Company name" />
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Role</Field.FieldLabel>
+					<Select
+						bind:value={form.role}
+						type="single"
+						onOpenChange={(open) => {
+							if (!open && fieldErrors.role) fieldErrors = { ...fieldErrors, role: '' };
+						}}
+					>
+						<SelectTrigger class="w-full" aria-invalid={!!fieldErrors.role || undefined}
+							>{form.role === 'seller' ? 'Seller' : 'Buyer'}</SelectTrigger
+						>
+						<SelectContent>
+							<SelectItem value="buyer">Buyer</SelectItem>
+							<SelectItem value="seller">Seller</SelectItem>
+						</SelectContent>
+					</Select>
+					{#if fieldErrors.role}<FieldError>{fieldErrors.role}</FieldError>{/if}
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Password</Field.FieldLabel>
+					<Input
+						value={form.password}
+						type="password"
+						oninput={(e) => {
+							form.password = (e.currentTarget as HTMLInputElement).value;
+							if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
+						}}
+						placeholder="•••••••••••••••••"
+						aria-invalid={!!fieldErrors.password || undefined}
+					/>
+					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}
+					<Field.FieldDescription>Demo only — stored in local storage.</Field.FieldDescription>
+				</Field.Field>
+				{#if formError}
+					<p class="text-sm text-destructive">{formError}</p>
+				{/if}
+				<DialogFooter>
+					<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+					<Button variant="default" type="submit">{editing ? 'Save changes' : 'Create buyer'}</Button>
+				</DialogFooter>
+			</form>
 		</div>
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create buyer'}</Button>
-		</DialogFooter>
 	</DialogContent>
 </Dialog>
 

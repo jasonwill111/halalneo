@@ -11,6 +11,9 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import {
 		Table,
 		TableBody,
@@ -48,7 +51,19 @@
 	let confirmSlug = $state<string | null>(null);
 	let confirmTitle = $state('');
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
 	let aiLoading = $state(false);
+
+	const blogSchema = z.object({
+		title: z.string().trim().min(1, 'Title is required.'),
+		slug: z
+			.string()
+			.trim()
+			.optional()
+			.refine((s) => !s || /^[a-z0-9-]+$/.test(s), 'Slug may only contain lowercase letters, numbers and dashes.'),
+		body: z.string().trim().min(1, 'Body is required.')
+	});
 
 	type BlogForm = {
 		slug: string;
@@ -127,8 +142,15 @@
 	}
 
 	function save() {
-		if (!form.title.trim()) {
-			formError = 'Title is required.';
+		fieldErrors = {};
+		const parsed = blogSchema.safeParse(form);
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key])
+					fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 		if (form.slug && !/^[a-z0-9-]+$/.test(form.slug)) {
@@ -294,14 +316,20 @@
 			<DialogTitle>{editing ? 'Edit blog post' : 'New blog post'}</DialogTitle>
 			<DialogDescription>Create or update a blog article.</DialogDescription>
 		</DialogHeader>
-		<div class="space-y-4">
+		<form bind:this={formEl} class="space-y-4" onsubmit={(e) => { e.preventDefault(); save(); }}>
 			<Field.Field>
 				<Field.FieldLabel>Title *</Field.FieldLabel>
-				<Input bind:value={form.title} placeholder="Blog post title" />
+				<Input bind:value={form.title} placeholder="Blog post title"
+					aria-invalid={fieldErrors.title ? true : undefined}
+					oninput={() => { if (fieldErrors.title) fieldErrors = { ...fieldErrors, title: '' }; }} />
+				{#if fieldErrors.title}<FieldError>{fieldErrors.title}</FieldError>{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Slug</Field.FieldLabel>
-				<Input bind:value={form.slug} placeholder="blog-post-slug" disabled={!!editing} />
+				<Input bind:value={form.slug} placeholder="blog-post-slug" disabled={!!editing}
+					aria-invalid={fieldErrors.slug ? true : undefined}
+					oninput={() => { if (fieldErrors.slug) fieldErrors = { ...fieldErrors, slug: '' }; }} />
+				{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 			</Field.Field>
 			<div class="grid grid-cols-2 gap-4">
 				<Field.Field>
@@ -346,18 +374,21 @@
 						{aiLoading ? 'Generating...' : 'Generate with AI'}
 					</Button>
 				</div>
-				<Textarea bind:value={form.body} rows={8} placeholder="Blog content..." />
+				<Textarea bind:value={form.body} rows={8} placeholder="Blog content..."
+					aria-invalid={fieldErrors.body ? true : undefined}
+					oninput={() => { if (fieldErrors.body) fieldErrors = { ...fieldErrors, body: '' }; }} />
+				{#if fieldErrors.body}<FieldError>{fieldErrors.body}</FieldError>{/if}
 			</Field.Field>
 
-			{#if formError}
+			{#if formError && !Object.keys(fieldErrors).length}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
-		</div>
+		</form>
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}
-				>{editing ? 'Save changes' : 'Create blog post'}</Button
-			>
+			<Button variant="default" type="submit">
+				{editing ? 'Save changes' : 'Create blog post'}
+			</Button>
 		</DialogFooter>
 	</DialogContent>
 </Dialog>

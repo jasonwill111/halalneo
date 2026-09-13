@@ -36,11 +36,11 @@
 		{#if flag}
 			<span class="text-3xl leading-none drop-shadow-md">{flag}</span>
 		{:else}
-			<Globe class="size-6 text-white/70" />
+			<Globe class="size-6 text-on-dark/70" />
 		{/if}
-		<span class="text-sm font-bold tracking-tight text-white drop-shadow-md">{country}</span>
+		<span class="text-sm font-bold tracking-tight text-on-dark drop-shadow-md">{country}</span>
 		{#if region}
-			<span class="text-[10px] font-medium tracking-wide text-white/70 uppercase">{region}</span>
+			<span class="text-[10px] font-medium tracking-wide text-on-dark/70 uppercase">{region}</span>
 		{/if}
 	</div>
 </div>

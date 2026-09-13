@@ -10,6 +10,9 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import {
 		Table,
 		TableBody,
@@ -72,6 +75,13 @@
 		keywords: ''
 	});
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const certBodySchema = z.object({
+		name: z.string().trim().min(1, 'Name is required.'),
+		country: z.string().trim().min(1, 'Country is required.')
+	});
 
 	const filtered = $derived.by(() => {
 		const list = [...adminData.certifyingBodies];
@@ -100,6 +110,7 @@
 			keywords: ''
 		};
 		formError = '';
+		fieldErrors = {};
 		seoExpanded = false;
 		dialogOpen = true;
 	}
@@ -119,6 +130,7 @@
 			keywords: b.keywords ?? ''
 		};
 		formError = '';
+		fieldErrors = {};
 		seoExpanded = false;
 		dialogOpen = true;
 	}
@@ -132,8 +144,14 @@
 	}
 
 	function save() {
-		if (!form.name.trim() || !form.country.trim()) {
-			formError = 'Name and country are required.';
+		fieldErrors = {};
+		const parsed = certBodySchema.safeParse(form);
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 		const base: CertifyingBody =
@@ -150,6 +168,7 @@
 		);
 		if (existsElsewhere) {
 			formError = 'A body with that id already exists.';
+			fieldErrors = {};
 			return;
 		}
 		upsertItem<CertifyingBody>(
@@ -170,6 +189,7 @@
 			editing ?? undefined
 		);
 		dialogOpen = false;
+		fieldErrors = {};
 	}
 
 	function remove(b: CertifyingBody) {
@@ -259,10 +279,13 @@
 			<DialogTitle>{editing ? 'Edit body' : 'New certifying body'}</DialogTitle>
 			<DialogDescription>Register or update a halal certification body.</DialogDescription>
 		</DialogHeader>
-		<div class="space-y-4">
+		<form bind:this={formEl} onsubmit={(e) => { e.preventDefault(); save(); }} class="space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Name</Field.FieldLabel>
-				<Input bind:value={form.name} placeholder="JAKIM" />
+				<Input bind:value={form.name} placeholder="JAKIM" aria-invalid={!!fieldErrors.name} oninput={() => { fieldErrors = { ...fieldErrors, name: '' }; }} />
+				{#if fieldErrors.name}
+					<FieldError>{fieldErrors.name}</FieldError>
+				{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Id</Field.FieldLabel>
@@ -271,7 +294,10 @@
 			<div class="grid grid-cols-2 gap-4">
 				<Field.Field>
 					<Field.FieldLabel>Country</Field.FieldLabel>
-					<Input bind:value={form.country} placeholder="Malaysia" />
+					<Input bind:value={form.country} placeholder="Malaysia" aria-invalid={!!fieldErrors.country} oninput={() => { fieldErrors = { ...fieldErrors, country: '' }; }} />
+					{#if fieldErrors.country}
+						<FieldError>{fieldErrors.country}</FieldError>
+					{/if}
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Standard</Field.FieldLabel>
@@ -329,14 +355,14 @@
 				</Field.Field>
 			</CollapsibleSection>
 
-			{#if formError}
+			{#if formError && !Object.keys(fieldErrors).length}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
-		</div>
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create body'}</Button>
-		</DialogFooter>
+			<DialogFooter>
+				<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button type="submit" variant="default">{editing ? 'Save changes' : 'Create body'}</Button>
+			</DialogFooter>
+		</form>
 	</DialogContent>
 </Dialog>
 

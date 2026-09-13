@@ -6,6 +6,9 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import {
 		Table,
 		TableBody,
@@ -42,6 +45,27 @@
 	let dialogOpen = $state(false);
 	let editing = $state<MarketGuide | null>(null);
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const guideSchema = z.object({
+		country: z.string().trim().min(1, 'Country is required.'),
+		slug: z.string().trim().optional().refine(
+			(s) => !s || /^[a-z0-9-]+$/.test(s),
+			'Slug may only contain lowercase letters, numbers and dashes.'
+		),
+		certifyingBodiesJson: z.string().optional().refine(
+			(s) => {
+				if (!s || s === '[]') return true;
+				try {
+					return Array.isArray(JSON.parse(s));
+				} catch {
+					return false;
+				}
+			},
+			'Certifying Bodies must be a valid JSON array.'
+		)
+	});
 
 	// Collapsible section state
 	let marketExpanded = $state(false);
@@ -166,6 +190,7 @@
 			status: 'active'
 		};
 		formError = '';
+		fieldErrors = {};
 		marketExpanded = false;
 		requirementsExpanded = false;
 		insightsExpanded = false;
@@ -201,6 +226,7 @@
 			status: g.status ?? 'active'
 		};
 		formError = '';
+		fieldErrors = {};
 		marketExpanded = false;
 		requirementsExpanded = false;
 		insightsExpanded = false;
@@ -216,23 +242,22 @@
 	}
 
 	function save() {
-		if (!form.country.trim()) {
-			formError = 'Country is required.';
-			return;
-		}
-		if (!form.slug && !form.country.trim()) {
-			formError = 'Slug or country is required to generate a slug.';
-			return;
-		}
-		if (form.slug && !/^[a-z0-9-]+$/.test(form.slug)) {
-			formError = 'Slug may only contain lowercase letters, numbers and dashes.';
+		fieldErrors = {};
+		const parsed = guideSchema.safeParse(form);
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key])
+					fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 
 		let certifyingBodies: { slug: string; name: string }[] = [];
 		try {
-			const parsed = JSON.parse(form.certifyingBodiesJson);
-			if (Array.isArray(parsed)) certifyingBodies = parsed;
+			const cbParsed = JSON.parse(form.certifyingBodiesJson);
+			if (Array.isArray(cbParsed)) certifyingBodies = cbParsed;
 		} catch {
 			formError = 'Certifying Bodies must be valid JSON array.';
 			return;
@@ -396,15 +421,28 @@
 			<DialogDescription>Create or update a country market guide.</DialogDescription>
 		</DialogHeader>
 
-		<div class="flex flex-col gap-4">
+		<form class="flex flex-col gap-4" bind:this={formEl} onsubmit={(e) => { e.preventDefault(); save(); }}>
 			<div class="grid grid-cols-2 gap-4">
 				<Field.Field>
 					<Field.FieldLabel>Country *</Field.FieldLabel>
-					<Input bind:value={form.country} placeholder="Indonesia" />
+					<Input
+						bind:value={form.country}
+						placeholder="Indonesia"
+						aria-invalid={!!fieldErrors.country}
+						oninput={() => { fieldErrors = { ...fieldErrors, country: '' }; }}
+					/>
+					{#if fieldErrors.country}<FieldError>{fieldErrors.country}</FieldError>{/if}
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Slug</Field.FieldLabel>
-					<Input bind:value={form.slug} placeholder="indonesia" disabled={!!editing} />
+					<Input
+						bind:value={form.slug}
+						placeholder="indonesia"
+						disabled={!!editing}
+						aria-invalid={!!fieldErrors.slug}
+						oninput={() => { fieldErrors = { ...fieldErrors, slug: '' }; }}
+					/>
+					{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 				</Field.Field>
 			</div>
 
@@ -512,7 +550,10 @@
 						bind:value={form.certifyingBodiesJson}
 						rows={3}
 						placeholder={'[{"slug":"bpjph","name":"BPJPH"}]'}
+						aria-invalid={!!fieldErrors.certifyingBodiesJson}
+						oninput={() => { fieldErrors = { ...fieldErrors, certifyingBodiesJson: '' }; }}
 					/>
+					{#if fieldErrors.certifyingBodiesJson}<FieldError>{fieldErrors.certifyingBodiesJson}</FieldError>{/if}
 				</Field.Field>
 			</CollapsibleSection>
 
@@ -579,18 +620,18 @@
 					/>
 				</Field.Field>
 			</CollapsibleSection>
-		</div>
+
+			<DialogFooter>
+				<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button variant="default" type="submit">
+					{editing ? 'Save changes' : 'Create guide'}
+				</Button>
+			</DialogFooter>
+		</form>
 
 		{#if formError}
 			<p class="text-sm text-destructive">{formError}</p>
 		{/if}
-
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>
-				{editing ? 'Save changes' : 'Create guide'}
-			</Button>
-		</DialogFooter>
 	</DialogContent>
 </Dialog>
 

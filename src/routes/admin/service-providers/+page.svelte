@@ -6,6 +6,9 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import {
 		Table,
 		TableBody,
@@ -42,6 +45,16 @@
 	let dialogOpen = $state(false);
 	let editing = $state<ServiceProvider | null>(null);
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const providerSchema = z.object({
+		name: z.string().trim().min(1, 'Name is required.'),
+		slug: z.string().trim().optional().refine(
+			(s) => !s || /^[a-z0-9-]+$/.test(s),
+			'Slug may only contain lowercase letters, numbers and dashes.'
+		)
+	});
 
 	// Collapsible section state
 	let contactExpanded = $state(false);
@@ -136,6 +149,7 @@
 			keywords: ''
 		};
 		formError = '';
+		fieldErrors = {};
 		contactExpanded = false;
 		seoExpanded = false;
 		dialogOpen = true;
@@ -161,22 +175,24 @@
 			keywords: sp.keywords ?? ''
 		};
 		formError = '';
+		fieldErrors = {};
 		contactExpanded = false;
 		seoExpanded = false;
 		dialogOpen = true;
 	}
 
-	function save() {
-		if (!form.name.trim()) {
-			formError = 'Provider name is required.';
-			return;
-		}
-		if (!form.country.trim()) {
-			formError = 'Country is required.';
-			return;
-		}
-		if (form.slug && !/^[a-z0-9-]+$/.test(form.slug)) {
-			formError = 'Slug may only contain lowercase letters, numbers and dashes.';
+	function save(e?: Event) {
+		e?.preventDefault();
+		fieldErrors = {};
+		formError = '';
+
+		const result = providerSchema.safeParse(form);
+		if (!result.success) {
+			for (const issue of result.error.issues) {
+				const key = issue.path[0] as string;
+				if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
 		const updated: ServiceProvider = {
@@ -334,16 +350,37 @@
 			<DialogDescription>Create or update a service provider profile.</DialogDescription>
 		</DialogHeader>
 
-		<div class="flex flex-col gap-4">
+		<form id="provider-form" bind:this={formEl} onsubmit={save} class="flex flex-col gap-4">
 			<Field.Field>
 				<Field.FieldLabel>Name *</Field.FieldLabel>
-				<Input bind:value={form.name} placeholder="Provider name" />
+				<Input
+					bind:value={form.name}
+					placeholder="Provider name"
+					aria-invalid={!!fieldErrors.name}
+					oninput={() => {
+						if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+					}}
+				/>
+				{#if fieldErrors.name}
+					<FieldError errors={[{ message: fieldErrors.name }]} />
+				{/if}
 			</Field.Field>
 
 			<div class="grid grid-cols-2 gap-4">
 				<Field.Field>
 					<Field.FieldLabel>Slug</Field.FieldLabel>
-					<Input bind:value={form.slug} placeholder="provider-name" disabled={!!editing} />
+					<Input
+						bind:value={form.slug}
+						placeholder="provider-name"
+						disabled={!!editing}
+						aria-invalid={!!fieldErrors.slug}
+						oninput={() => {
+							if (fieldErrors.slug) fieldErrors = { ...fieldErrors, slug: '' };
+						}}
+					/>
+					{#if fieldErrors.slug}
+						<FieldError errors={[{ message: fieldErrors.slug }]} />
+					{/if}
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Country *</Field.FieldLabel>
@@ -456,7 +493,7 @@
 					/>
 				</Field.Field>
 			</CollapsibleSection>
-		</div>
+		</form>
 
 		{#if formError}
 			<p class="text-sm text-destructive">{formError}</p>
@@ -464,7 +501,7 @@
 
 		<DialogFooter>
 			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>
+			<Button variant="default" type="submit" form="provider-form">
 				{editing ? 'Save changes' : 'Create provider'}
 			</Button>
 		</DialogFooter>

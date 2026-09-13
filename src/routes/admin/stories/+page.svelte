@@ -4,7 +4,7 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '#lib/components/ui/table/index.js';
 	import {
@@ -17,6 +17,8 @@
 	import { Empty } from '#lib/components/ui/empty/index.js';
 	import { toast } from 'svelte-sonner';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 
@@ -34,6 +36,15 @@
 	let image = $state('');
 	let sending = $state(false);
 	let formError = $state<string | null>(null);
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const storySchema = z.object({
+		slug: z.string().trim().min(1, 'Slug is required.').regex(/^[a-z0-9-]+$/, 'Slug may only contain lowercase letters, numbers and dashes.'),
+		title: z.string().trim().min(1, 'Title is required.'),
+		body: z.string().trim().min(1, 'Body is required.')
+	});
+
 	let confirmSlug = $state<string | null>(null);
 	let confirmTitle = $state('');
 
@@ -54,7 +65,16 @@
 	});
 
 	async function publish() {
-		if (!slug.trim() || !title.trim() || !body.trim()) return;
+		fieldErrors = {};
+		const parsed = storySchema.safeParse({ slug, title, body });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
+			return;
+		}
 		sending = true;
 		formError = null;
 		try {
@@ -196,6 +216,7 @@
 		{/if}
 		<form
 			class="space-y-2"
+			bind:this={formEl}
 			onsubmit={(e) => {
 				e.preventDefault();
 				publish();
@@ -204,7 +225,8 @@
 			<div class="grid gap-2 sm:grid-cols-2">
 				<Field>
 					<FieldLabel>Slug *</FieldLabel>
-					<Input type="text" bind:value={slug} placeholder="nusantara-foods-uae-deal" class="text-xs" />
+					<Input type="text" bind:value={slug} placeholder="nusantara-foods-uae-deal" class="text-xs" aria-invalid={!!fieldErrors.slug} oninput={() => (fieldErrors = { ...fieldErrors, slug: '' })} />
+					{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 				</Field>
 				<Field>
 					<FieldLabel>Deal value</FieldLabel>
@@ -213,7 +235,8 @@
 			</div>
 			<Field>
 				<FieldLabel>Title *</FieldLabel>
-				<Input type="text" bind:value={title} placeholder="How X won..." class="text-xs" />
+				<Input type="text" bind:value={title} placeholder="How X won..." class="text-xs" aria-invalid={!!fieldErrors.title} oninput={() => (fieldErrors = { ...fieldErrors, title: '' })} />
+				{#if fieldErrors.title}<FieldError>{fieldErrors.title}</FieldError>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Excerpt</FieldLabel>
@@ -221,7 +244,8 @@
 			</Field>
 			<Field>
 				<FieldLabel>Body (Markdown) *</FieldLabel>
-				<Textarea bind:value={body} rows={6} class="text-xs" placeholder="The story: buyer need, how the match happened, outcome..." />
+				<Textarea bind:value={body} rows={6} class="text-xs" placeholder="The story: buyer need, how the match happened, outcome..." aria-invalid={!!fieldErrors.body} oninput={() => (fieldErrors = { ...fieldErrors, body: '' })} />
+				{#if fieldErrors.body}<FieldError>{fieldErrors.body}</FieldError>{/if}
 			</Field>
 			<div class="grid gap-2 sm:grid-cols-3">
 				<Field>
@@ -238,7 +262,7 @@
 				</Field>
 			</div>
 			<DialogFooter>
-				<Button type="submit" size="sm" disabled={sending || !slug.trim() || !title.trim() || !body.trim()}>
+				<Button type="submit" size="sm" disabled={sending}>
 					{sending ? 'Publishing...' : 'Publish'}
 				</Button>
 			</DialogFooter>

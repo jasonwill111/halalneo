@@ -35,8 +35,8 @@
 					<div class="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-sm font-bold text-primary">
 						{initials}
 					</div>
-					<div class="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-						<Camera class="size-4 text-white"></Camera>
+					<div class="absolute inset-0 flex items-center justify-center rounded-xl bg-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+						<Camera class="size-4 text-background"></Camera>
 					</div>
 				</div>
 				<div>

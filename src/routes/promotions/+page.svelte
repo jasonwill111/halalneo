@@ -89,7 +89,7 @@
 					class="group relative flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					{#if p.discountPct}
-						<span class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-[10px] font-bold text-white">
+						<span class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
 							-{p.discountPct}%
 						</span>
 					{/if}

@@ -11,6 +11,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -41,6 +42,8 @@
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -73,6 +76,18 @@
 		keywords: ''
 	});
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const kbSchema = z.object({
+		title: z.string().trim().min(1, 'Title is required.'),
+		slug: z
+			.string()
+			.trim()
+			.optional()
+			.refine((s) => !s || /^[a-z0-9-]+$/.test(s), 'Slug may only contain lowercase letters, numbers and dashes.'),
+		section: z.string().trim().min(1, 'Section is required.')
+	});
 
 	const filtered = $derived.by(() => {
 		const list = [...adminData.kbArticles];
@@ -112,6 +127,7 @@
 			keywords: ''
 		};
 		formError = '';
+		fieldErrors = {};
 		seoExpanded = false;
 		dialogOpen = true;
 	}
@@ -130,15 +146,33 @@
 			keywords: a.keywords ?? ''
 		};
 		formError = '';
+		fieldErrors = {};
 		seoExpanded = false;
 		dialogOpen = true;
 	}
 
-	function save() {
-		if (!form.title.trim()) {
-			formError = 'Title is required.';
+	function save(e?: Event) {
+		e?.preventDefault();
+		formError = '';
+		fieldErrors = {};
+
+		const result = kbSchema.safeParse({
+			title: form.title,
+			slug: form.slug || undefined,
+			section: form.section
+		});
+
+		if (!result.success) {
+			const mapped: Record<string, string> = {};
+			for (const issue of result.error.issues) {
+				const key = issue.path[0] as string;
+				if (!mapped[key]) mapped[key] = issue.message;
+			}
+			fieldErrors = mapped;
+			focusFirstInvalid(formEl);
 			return;
 		}
+
 		const base: KbArticle =
 			editing ??
 			({
@@ -274,25 +308,47 @@
 			<DialogTitle>{editing ? 'Edit article' : 'New article'}</DialogTitle>
 			<DialogDescription>Create or update a knowledge base article.</DialogDescription>
 		</DialogHeader>
-		<div class="space-y-4">
+		<form bind:this={formEl} onsubmit={save} class="space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Section</Field.FieldLabel>
 				<Select bind:value={form.section} type="single">
-					<SelectTrigger class="w-full">{sectionName(form.section)}</SelectTrigger>
+					<SelectTrigger class="w-full" aria-invalid={!!fieldErrors.section}
+						>{sectionName(form.section)}</SelectTrigger
+					>
 					<SelectContent>
 						{#each adminData.kbSections as sec (sec.slug)}
 							<SelectItem value={sec.slug}>{sec.title}</SelectItem>
 						{/each}
 					</SelectContent>
 				</Select>
+				{#if fieldErrors.section}
+					<FieldError>{fieldErrors.section}</FieldError>
+				{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Title</Field.FieldLabel>
-				<Input bind:value={form.title} placeholder="Article title" />
+				<Input
+					bind:value={form.title}
+					placeholder="Article title"
+					aria-invalid={!!fieldErrors.title}
+					oninput={() => (fieldErrors.title = '')}
+				/>
+				{#if fieldErrors.title}
+					<FieldError>{fieldErrors.title}</FieldError>
+				{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Slug</Field.FieldLabel>
-				<Input bind:value={form.slug} placeholder="article-slug" disabled={!!editing} />
+				<Input
+					bind:value={form.slug}
+					placeholder="article-slug"
+					disabled={!!editing}
+					aria-invalid={!!fieldErrors.slug}
+					oninput={() => (fieldErrors.slug = '')}
+				/>
+				{#if fieldErrors.slug}
+					<FieldError>{fieldErrors.slug}</FieldError>
+				{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Summary</Field.FieldLabel>
@@ -347,15 +403,10 @@
 				</Field.Field>
 			</CollapsibleSection>
 
-			{#if formError}
+			{#if formError && !Object.keys(fieldErrors).length}
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
-		</div>
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create article'}</Button
-			>
-		</DialogFooter>
+		</form>
 	</DialogContent>
 </Dialog>
 

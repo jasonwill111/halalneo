@@ -6,6 +6,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Table,
 		TableBody,
@@ -36,12 +37,25 @@
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Page | null>(null);
 	let formError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const pageSchema = z.object({
+		title: z.string().trim().min(1, 'Title is required.'),
+		slug: z.string().trim().optional().refine(
+			(s) => !s || /^[a-z0-9-]+$/.test(s),
+			'Slug may only contain lowercase letters, numbers and dashes.'
+		)
+	});
+
 	let aiLoading = $state(false);
 	let confirmSlug = $state<string | null>(null);
 	let confirmTitle = $state('');
@@ -109,6 +123,7 @@
 			targetRegion: ''
 		};
 		formError = '';
+		fieldErrors = {};
 		dialogOpen = true;
 	}
 
@@ -127,18 +142,23 @@
 			targetRegion: (page as any).targetRegion ?? ''
 		};
 		formError = '';
+		fieldErrors = {};
 		dialogOpen = true;
 	}
 
 	function save() {
-		if (!form.title.trim()) {
-			formError = 'Title is required.';
+		const result = pageSchema.safeParse(form);
+		if (!result.success) {
+			fieldErrors = {};
+			for (const issue of result.error.issues) {
+				const key = issue.path[0] as string;
+				if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+			}
+			formError = '';
+			focusFirstInvalid(formEl);
 			return;
 		}
-		if (form.slug && !/^[a-z0-9-]+$/.test(form.slug)) {
-			formError = 'Slug may only contain lowercase letters, numbers and dashes.';
-			return;
-		}
+		fieldErrors = {};
 		const updated: Page = {
 			slug: form.slug || slugify(form.title),
 			title: form.title.trim(),
@@ -294,115 +314,119 @@
 			<DialogDescription>Create or update a page in the site.</DialogDescription>
 		</DialogHeader>
 
-		<div class="flex flex-col gap-4">
-			<Field.Field>
-				<Field.FieldLabel>Title *</Field.FieldLabel>
-				<Input bind:value={form.title} placeholder="Page title" />
-			</Field.Field>
-
-			<div class="grid grid-cols-2 gap-4">
+		<form bind:this={formEl} onsubmit={(e) => { e.preventDefault(); save(); }} class="contents">
+			<div class="flex flex-col gap-4">
 				<Field.Field>
-					<Field.FieldLabel>Slug</Field.FieldLabel>
-					<Input bind:value={form.slug} placeholder="page-slug" disabled={!!editing} />
+					<Field.FieldLabel>Title *</Field.FieldLabel>
+					<Input bind:value={form.title} placeholder="Page title" aria-invalid={!!fieldErrors.title} oninput={() => { fieldErrors.title = ''; formError = ''; }} />
+					{#if fieldErrors.title}<FieldError>{fieldErrors.title}</FieldError>{/if}
 				</Field.Field>
+
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.FieldLabel>Slug</Field.FieldLabel>
+						<Input bind:value={form.slug} placeholder="page-slug" disabled={!!editing} aria-invalid={!!fieldErrors.slug} oninput={() => { fieldErrors.slug = ''; formError = ''; }} />
+						{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
+					</Field.Field>
+					<Field.Field>
+						<Field.FieldLabel>Type</Field.FieldLabel>
+						<Select bind:value={form.type} type="single">
+							<SelectTrigger class="w-full">
+								{typeLabels[form.type]}
+							</SelectTrigger>
+							<SelectContent>
+								<SelectGroup>
+									{#each Object.entries(typeLabels) as [value, label] (value)}
+										<SelectItem {value}>{label}</SelectItem>
+									{/each}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
+					</Field.Field>
+				</div>
+
 				<Field.Field>
-					<Field.FieldLabel>Type</Field.FieldLabel>
-					<Select bind:value={form.type} type="single">
-						<SelectTrigger class="w-full">
-							{typeLabels[form.type]}
-						</SelectTrigger>
+					<Field.FieldLabel>Status</Field.FieldLabel>
+					<Select bind:value={form.status} type="single">
+						<SelectTrigger class="w-full">{form.status}</SelectTrigger>
 						<SelectContent>
 							<SelectGroup>
-								{#each Object.entries(typeLabels) as [value, label] (value)}
-									<SelectItem {value}>{label}</SelectItem>
-								{/each}
+								<SelectItem value="published">published</SelectItem>
+								<SelectItem value="draft">draft</SelectItem>
+								<SelectItem value="archived">archived</SelectItem>
 							</SelectGroup>
 						</SelectContent>
 					</Select>
 				</Field.Field>
-			</div>
 
-			<Field.Field>
-				<Field.FieldLabel>Status</Field.FieldLabel>
-				<Select bind:value={form.status} type="single">
-					<SelectTrigger class="w-full">{form.status}</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							<SelectItem value="published">published</SelectItem>
-							<SelectItem value="draft">draft</SelectItem>
-							<SelectItem value="archived">archived</SelectItem>
-						</SelectGroup>
-					</SelectContent>
-				</Select>
-			</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Excerpt</Field.FieldLabel>
+					<Input bind:value={form.excerpt} placeholder="Short description..." />
+				</Field.Field>
 
-			<Field.Field>
-				<Field.FieldLabel>Excerpt</Field.FieldLabel>
-				<Input bind:value={form.excerpt} placeholder="Short description..." />
-			</Field.Field>
-
-			{#if form.type === 'landing'}
-				<div class="space-y-3 rounded-xl border border-dashed border-border p-4">
-					<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-						Landing Page Settings
-					</p>
-					<div class="grid grid-cols-2 gap-3">
+				{#if form.type === 'landing'}
+					<div class="space-y-3 rounded-xl border border-dashed border-border p-4">
+						<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+							Landing Page Settings
+						</p>
+						<div class="grid grid-cols-2 gap-3">
+							<Field.Field>
+								<Field.FieldLabel>Target Audience</Field.FieldLabel>
+								<Input bind:value={form.targetAudience} placeholder="e.g. food importers in UAE" />
+							</Field.Field>
+							<Field.Field>
+								<Field.FieldLabel>Target Region</Field.FieldLabel>
+								<Input
+									bind:value={form.targetRegion}
+									placeholder="e.g. Middle East, Southeast Asia"
+								/>
+							</Field.Field>
+						</div>
 						<Field.Field>
-							<Field.FieldLabel>Target Audience</Field.FieldLabel>
-							<Input bind:value={form.targetAudience} placeholder="e.g. food importers in UAE" />
-						</Field.Field>
-						<Field.Field>
-							<Field.FieldLabel>Target Region</Field.FieldLabel>
+							<Field.FieldLabel>Key Selling Points</Field.FieldLabel>
 							<Input
-								bind:value={form.targetRegion}
-								placeholder="e.g. Middle East, Southeast Asia"
+								bind:value={form.keyPoints}
+								placeholder="Comma separated: quality, certification, delivery"
 							/>
 						</Field.Field>
+						<Field.Field>
+							<Field.FieldLabel>Call to Action</Field.FieldLabel>
+							<Input bind:value={form.cta} placeholder="e.g. Get a Free Quote, Contact Us" />
+						</Field.Field>
 					</div>
-					<Field.Field>
-						<Field.FieldLabel>Key Selling Points</Field.FieldLabel>
-						<Input
-							bind:value={form.keyPoints}
-							placeholder="Comma separated: quality, certification, delivery"
-						/>
-					</Field.Field>
-					<Field.Field>
-						<Field.FieldLabel>Call to Action</Field.FieldLabel>
-						<Input bind:value={form.cta} placeholder="e.g. Get a Free Quote, Contact Us" />
-					</Field.Field>
-				</div>
+				{/if}
+
+				<Field.Field>
+					<div class="flex items-center justify-between">
+						<Field.FieldLabel>Body</Field.FieldLabel>
+						{#if form.type === 'landing'}
+							<Button
+								variant="outline"
+								size="sm"
+								type="button"
+								onclick={generateLandingPage}
+								disabled={aiLoading || !form.title.trim()}
+							>
+								<Sparkles class="size-3.5" />
+								{aiLoading ? 'Generating...' : 'Generate Landing Page'}
+							</Button>
+						{/if}
+					</div>
+					<Textarea bind:value={form.body} rows={6} placeholder="Page content..." />
+				</Field.Field>
+			</div>
+
+			{#if formError}
+				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
 
-			<Field.Field>
-				<div class="flex items-center justify-between">
-					<Field.FieldLabel>Body</Field.FieldLabel>
-					{#if form.type === 'landing'}
-						<Button
-							variant="outline"
-							size="sm"
-							type="button"
-							onclick={generateLandingPage}
-							disabled={aiLoading || !form.title.trim()}
-						>
-							<Sparkles class="size-3.5" />
-							{aiLoading ? 'Generating...' : 'Generate Landing Page'}
-						</Button>
-					{/if}
-				</div>
-				<Textarea bind:value={form.body} rows={6} placeholder="Page content..." />
-			</Field.Field>
-		</div>
-
-		{#if formError}
-			<p class="text-sm text-destructive">{formError}</p>
-		{/if}
-
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>
-				{editing ? 'Save changes' : 'Create page'}
-			</Button>
-		</DialogFooter>
+			<DialogFooter>
+				<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button variant="default" type="submit">
+					{editing ? 'Save changes' : 'Create page'}
+				</Button>
+			</DialogFooter>
+		</form>
 	</DialogContent>
 </Dialog>
 
