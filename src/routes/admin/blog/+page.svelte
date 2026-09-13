@@ -39,10 +39,14 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Page | null>(null);
+	let confirmSlug = $state<string | null>(null);
+	let confirmTitle = $state('');
 	let formError = $state('');
 	let aiLoading = $state(false);
 
@@ -148,12 +152,19 @@
 		};
 		upsertItem<Page>('pages', updated, editing ?? undefined);
 		dialogOpen = false;
+		toast.success(editing ? 'Blog post updated' : 'Blog post created');
 	}
 
 	function remove(page: Page) {
-		if (window.confirm(`Delete blog post "${page.title}"?`)) {
-			deleteItem('pages', page.slug);
-		}
+		confirmSlug = page.slug;
+		confirmTitle = page.title;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('pages', confirmSlug);
+		toast.success('Blog post deleted');
+		confirmSlug = null;
 	}
 
 	async function generateBlogBody() {
@@ -350,3 +361,11 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete blog post?"
+	description={`Delete blog post "${confirmTitle}"? This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

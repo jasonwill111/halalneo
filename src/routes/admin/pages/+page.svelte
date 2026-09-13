@@ -35,12 +35,16 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Page | null>(null);
 	let formError = $state('');
 	let aiLoading = $state(false);
+	let confirmSlug = $state<string | null>(null);
+	let confirmTitle = $state('');
 
 	type PageForm = {
 		slug: string;
@@ -146,12 +150,19 @@
 		};
 		upsertItem<Page>('pages', updated, editing ?? undefined);
 		dialogOpen = false;
+		toast.success(editing ? 'Page updated' : 'Page created');
 	}
 
 	function remove(page: Page) {
-		if (window.confirm(`Delete page "${page.title}"?`)) {
-			deleteItem('pages', page.slug);
-		}
+		confirmSlug = page.slug;
+		confirmTitle = page.title;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('pages', confirmSlug);
+		toast.success('Page deleted');
+		confirmSlug = null;
 	}
 
 	function typeLabel(t: string): string {
@@ -394,3 +405,11 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete page?"
+	description={`Delete page "${confirmTitle}"? This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

@@ -41,10 +41,14 @@
 	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import X from '@lucide/svelte/icons/x';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Product | null>(null);
+	let confirmSlug = $state<string | null>(null);
+	let confirmName = $state('');
 
 	// Collapsible section state
 	let basicExpanded = $state(true);
@@ -384,9 +388,16 @@
 	}
 
 	function remove(s: Product) {
-		if (window.confirm(`Delete product ${s.name}?`)) {
-			deleteItem('products', s.slug);
-		}
+		confirmSlug = s.slug;
+		confirmName = s.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('products', confirmSlug);
+		toast.success('Product deleted');
+		confirmSlug = null;
+		confirmName = '';
 	}
 </script>
 
@@ -834,3 +845,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete product?"
+	description={confirmSlug
+		? `Delete product ${confirmName}? This cannot be undone.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

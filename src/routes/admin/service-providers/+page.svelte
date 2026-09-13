@@ -35,6 +35,8 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -44,6 +46,9 @@
 	// Collapsible section state
 	let contactExpanded = $state(false);
 	let seoExpanded = $state(false);
+
+	let confirmSlug = $state<string | null>(null);
+	let confirmName = $state('');
 
 	type ProviderForm = {
 		slug: string;
@@ -196,9 +201,16 @@
 	}
 
 	function remove(sp: ServiceProvider) {
-		if (window.confirm(`Delete provider ${sp.name}?`)) {
-			deleteItem('serviceProviders', sp.slug);
-		}
+		confirmSlug = sp.slug;
+		confirmName = sp.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('serviceProviders', confirmSlug);
+		toast.success('Provider deleted');
+		confirmSlug = null;
+		confirmName = '';
 	}
 
 	function statusColor(s: string): string {
@@ -458,3 +470,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete provider?"
+	description={confirmSlug
+		? `Delete provider ${confirmName}? This cannot be undone.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

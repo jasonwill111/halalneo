@@ -21,11 +21,14 @@
 	import FolderOpen from '@lucide/svelte/icons/folder-open';
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let { data } = $props();
 
 	let search = $state('');
 	let activeTab = $state<'articles' | 'sections'>('articles');
+	let confirmSlug = $state<string | null>(null);
 
 	const articles = $derived(data.articles as any[]);
 	const error = $derived(data.error as string | null);
@@ -68,9 +71,14 @@
 	}
 
 	function deleteArticle(slug: string) {
-		if (window.confirm('Delete this article? This cannot be undone.')) {
-			deleteItem('kbArticles', slug);
-		}
+		confirmSlug = slug;
+	}
+
+	function confirmedDelete() {
+		if (!confirmSlug) return;
+		deleteItem('kbArticles', confirmSlug);
+		toast.success('Article deleted');
+		confirmSlug = null;
 	}
 </script>
 
@@ -263,3 +271,11 @@
 		</div>
 	{/if}
 </div>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete article?"
+	description="Delete this article? This cannot be undone."
+	confirmLabel="Delete"
+	onconfirm={confirmedDelete}
+/>

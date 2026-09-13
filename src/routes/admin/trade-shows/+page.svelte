@@ -35,6 +35,8 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -44,6 +46,9 @@
 	// Collapsible section state
 	let detailsExpanded = $state(false);
 	let seoExpanded = $state(false);
+
+	let confirmId = $state<string | null>(null);
+	let confirmName = $state('');
 
 	type ShowForm = {
 		id: string;
@@ -210,9 +215,16 @@
 	}
 
 	function remove(s: TradeShow) {
-		if (window.confirm(`Delete trade show ${s.name}?`)) {
-			deleteItem('tradeShows', s.id);
-		}
+		confirmId = s.id;
+		confirmName = s.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmId) return;
+		deleteItem('tradeShows', confirmId);
+		toast.success('Trade show deleted');
+		confirmId = null;
+		confirmName = '';
 	}
 
 	function statusColor(s: string): string {
@@ -497,3 +509,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmId !== null}
+	title="Delete trade show?"
+	description={confirmId
+		? `Delete trade show ${confirmName}? This cannot be undone.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

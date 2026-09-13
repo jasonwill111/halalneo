@@ -35,6 +35,8 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -46,6 +48,9 @@
 	let requirementsExpanded = $state(false);
 	let insightsExpanded = $state(false);
 	let seoExpanded = $state(false);
+
+	let confirmSlug = $state<string | null>(null);
+	let confirmCountry = $state('');
 
 	type GuideForm = {
 		slug: string;
@@ -263,9 +268,16 @@
 	}
 
 	function remove(g: MarketGuide) {
-		if (window.confirm(`Delete market guide for ${g.country}?`)) {
-			deleteItem('marketGuides', g.slug);
-		}
+		confirmSlug = g.slug;
+		confirmCountry = g.country;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('marketGuides', confirmSlug);
+		toast.success('Market guide deleted');
+		confirmSlug = null;
+		confirmCountry = '';
 	}
 
 	function statusColor(s: string): string {
@@ -581,3 +593,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete market guide?"
+	description={confirmSlug
+		? `Delete market guide for ${confirmCountry}? This cannot be undone.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

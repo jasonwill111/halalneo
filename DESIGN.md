@@ -13,6 +13,12 @@ colors:
   sage-border: 'oklch(0.895 0.012 85)'
   alert-red: 'oklch(0.57 0.235 27)'
   dark-mode-text: 'oklch(0.935 0.008 210)'
+semantic:
+  info: 'light oklch(0.52 0.15 255) / dark oklch(0.72 0.14 255)'
+  warn: 'light oklch(0.52 0.15 75) / dark oklch(0.75 0.14 80)'
+  success: 'light oklch(0.5 0.16 150) / dark oklch(0.72 0.17 152)'
+  accent-purple: 'light oklch(0.55 0.18 300) / dark oklch(0.72 0.16 300)'
+  accent-rose: 'light oklch(0.55 0.19 12) / dark oklch(0.72 0.16 12)'
 typography:
   display:
     fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
@@ -45,6 +51,30 @@ rounded:
   md: '8px'
   lg: '10px (icon/avatar/stat tiles only)'
   xl: '14px (cards, popovers, panels)'
+shadows:
+  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)'
+  md: '0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04)'
+  lg: '0 12px 32px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.05)'
+  xl: '0 24px 56px -8px rgb(0 0 0 / 0.16), 0 8px 16px -8px rgb(0 0 0 / 0.06)'
+  glass: '0 8px 32px -4px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset'
+opacity:
+  disabled: 0.5
+  subtle: 0.1
+  noticeable: 0.2
+animation:
+  duration-fast: '120ms'
+  duration-base: '200ms'
+  duration-slow: '320ms'
+  duration-deliberate: '550ms'
+  ease-in: 'cubic-bezier(0.4, 0, 1, 1)'
+  ease-out: 'cubic-bezier(0, 0, 0.2, 1)'
+  ease-in-out: 'cubic-bezier(0.4, 0, 0.2, 1)'
+  ease-spring: 'cubic-bezier(0.22, 1, 0.36, 1)'
+screens:
+  base: '<640px (mobile)'
+  sm: '>=640px (tablet)'
+  lg: '>=1024px (desktop)'
+  xl: '>=1280px (4-col large screens only)'
 spacing:
   base: '8px'
   card: '16px'
@@ -89,17 +119,17 @@ Density is tighter than a consumer app — controls are compact (32px), corners 
 - Translucent floating surfaces (sticky header, popovers, sheets, hero accents) with backdrop blur — never on list grids (performance).
 - Compact, ledger-like controls: 32px buttons/inputs, 8px control radius, 12px card radius.
 - Mobile density: 2-column listing grids, capped imagery, truncated titles, stepped-down padding — phones show more, not less.
-- Light/dark as equal first-class themes; warm cream light, navy-blue dark; everything centered in `max-w-7xl`.
+- Light/dark as equal first-class themes; warm cream light, deep-teal ink dark; everything centered in `max-w-7xl`.
 - Type set in Space Grotesk (headings) and Almarai (body), both self-hosted.
 
 ## Colors
 
-Sage-tinted green family — neutrals carry a warm cast (hue ~85–88 light) or deep-navy cast (hue ~250 dark), so nothing ever reads as cold grey. Primary green is the single saturated accent; its rarity is the point.
+Sage-tinted green family — neutrals carry a warm cast (hue ~85–88 light) or deep-teal cast (hue ~205 dark), so nothing ever reads as cold grey. Primary green is the single saturated accent; its rarity is the point.
 
 ### Primary
 
 - **Certified Green** (`oklch(0.44 0.15 158)`, light `--primary`): primary buttons, links, active nav, verified badges, focus rings, icons marking certification. The only saturated hue on a screen. (WCAG: 6.56:1 white-on-green.)
-- **Certified Green (Dark)** (`oklch(0.74 0.15 158)`, dark `--primary`): same role in dark mode — brighter to hold contrast on dark surfaces. (WCAG: 9.19:1.)
+- **Certified Green (Dark)** (`oklch(0.77 0.185 154)`, dark `--primary`): same role in dark mode — brighter to hold contrast on dark surfaces. (WCAG: 9.19:1.)
 - **Chart Emerald** (`oklch(0.55 0.12 185)`, `--chart-2`): secondary chart/graph accent.
 
 ### Neutral
@@ -107,9 +137,9 @@ Sage-tinted green family — neutrals carry a warm cast (hue ~85–88 light) or 
 - **Warm Cream** (`oklch(0.978 0.01 88)`, light `--background`): page surface in light mode — a warm off-white, not pure white.
 - **Pure White** (`oklch(1 0 0)`, light `--card`): card surface in light mode.
 - **Light Mode Text** (`oklch(0.21 0.022 55)`, light `--foreground`): primary text and icons. (16.69:1 on cream.)
-- **Deep Navy** (`oklch(0.15 0.02 248)`, dark `--background`): page surface in dark mode.
-- **Washed Navy** (`oklch(0.185 0.024 250)`, dark `--card`): card surface in dark mode.
-- **Dark Mode Text** (`oklch(0.935 0.006 250)`, dark `--foreground`): primary text in dark mode. (16.25:1.)
+- **Deep Teal Ink** (`oklch(0.15 0.028 205)`, dark `--background`): page surface in dark mode — a deep-teal ink scale (MongoDB-ink inspired, hue 205), lightness values tuned so every contrast ratio is preserved.
+- **Washed Navy** (`oklch(0.185 0.032 205)`, dark `--card`): card surface in dark mode.
+- **Dark Mode Text** (`oklch(0.935 0.008 210)`, dark `--foreground`): primary text in dark mode. (16.25:1.)
 - **Sage Mist** (`oklch(0.935 0.011 85)`, `--muted` / `--secondary`): muted fill, secondary buttons, table striping.
 - **Sage Stone** (`oklch(0.46 0.022 60)`, `--muted-foreground`): secondary text, placeholders, captions — darkened until 10px labels pass AA (6.73:1 light / 6.58:1 dark).
 - **Sage Border** (`oklch(0.895 0.012 85)`, `--border` / `--input`): hairline borders and input strokes — visible, not whisper-thin.
@@ -120,7 +150,7 @@ Five muted-role colors for wayfinding, never for large surfaces. Each has a ligh
 
 - **Info Blue** (`--info`: light `oklch(0.52 0.15 255)` / dark `oklch(0.72 0.14 255)`): tools, links-out, informational badges.
 - **Warn Amber** (`--warn`: light `oklch(0.52 0.15 75)` / dark `oklch(0.75 0.14 80)`): pending states, caution badges.
-- **Success Green** (`--success`: light `oklch(0.5 0.16 150)` / dark `oklch(0.7 0.15 150)`): certified/verified-positive states distinct from primary buttons.
+- **Success Green** (`--success`: light `oklch(0.5 0.16 150)` / dark `oklch(0.72 0.17 152)`): certified/verified-positive states distinct from primary buttons.
 - **Accent Purple** (`--accent-purple`: light `oklch(0.55 0.18 300)` / dark `oklch(0.72 0.16 300)`): consultants/services, fourth category slot.
 - **Accent Rose** (`--accent-rose`: light `oklch(0.55 0.19 12)` / dark `oklch(0.72 0.16 12)`): editorial/blog, fifth category slot.
 
@@ -226,7 +256,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 ### Cards / Containers
 
 - **Corner Style:** `rounded-xl` (14px), `overflow-hidden`.
-- **Background:** `bg-card` (Pure White light / Washed Sage dark).
+- **Background:** `bg-card` (Pure White light / Washed Teal dark).
 - **Shadow Strategy:** ring-only at rest; `hoverable` cards lift with `shadow-md` on hover (200ms).
 - **Border:** `ring-1 ring-foreground/10` instead of a border — the ring is the outline.
 - **Internal Padding:** `16px` (`--card-spacing`), `12px` for `size="sm"`.
@@ -275,3 +305,59 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - **Don't** use gradient text, system display faces. Space Grotesk (headings) and Almarai (body) self-hosted are the type voices.
 - **Don't** use glassmorphism outside floating surfaces (header, tab bar, popovers, sheets, hero accents) — list grids stay flat for GPU performance.
 - **Don't** invent testimonials, market statistics, or real-data claims beyond the labelled demo dataset — present demo data as demo.
+
+## States & Feedback (统一状态反馈)
+
+Every data surface implements the same three states — loading, empty, and error — using shared primitives. No ad-hoc "Loading…" text blocks.
+
+### Loading (Skeleton)
+
+- Skeletons (`ui/skeleton`) mirror the loaded layout: grid pages render 8–12 skeleton cards with the same grid classes; table pages render 4–6 skeleton rows.
+- Skeleton blocks use `animate-pulse rounded-md bg-muted` (the primitive default); never spinners for full-page loads. Inline button submissions may use `Loader2` icon swap + `disabled` state instead.
+- Stat tiles already ship a `loading` prop that swaps the numeral for a pulsing block — reuse it.
+
+### Empty
+
+- Use `ui/empty` (`Empty`, `EmptyTitle`, `EmptyDescription`) with a muted icon and one clear next action (e.g. "Clear filters", "Publish the first story"). Match the list's grid width; don't stretch a full-width card.
+- Empty states must state *why* it's empty when it isn't obviously zero: "No products match these filters" not just "No products".
+
+### Error
+
+- Fetch/render errors surface an inline Alert (`ui/alert` variant="destructive") with the failure summary and a retry action where the operation is idempotent. Never silent `catch`.
+- API mutations that fail must show feedback (Toast error, see below) — a dead button after a failed request is a bug.
+
+### Operation feedback (操作反馈)
+
+- **Toast (sonner)**: light success/notice feedback for create/update/delete — "Supplier approved", "Story published". Mount the `Toaster` once per layout; call `toast.success()` / `toast.error()` from the mutation site. Toasts are brief (≤5s), self-dismiss, and never carry the only copy of an error message.
+- **AlertDialog (`ui/alert-dialog`)**: required gate before any destructive action (delete supplier/product/article/etc.) — destructive-styled confirm button, cancel primary. `window.confirm()` is banned in admin/portal code.
+- In admin tables, after a mutation succeeds: toast + optimistic list update (or refetch), so the row reflects the new state without a full reload.
+
+## Forms (表单体验)
+
+- Validation is Zod schemas, shared between API layer (`safeParse` in `+server.ts`) and client. Server returns field errors as `{ errors: { field: message } }`; the client maps them onto Field errors.
+- Errors render via `ui/field` (`FieldError`) under the input, `aria-invalid` styling from the primitives; focus jumps to the first invalid field on submit.
+- Never wipe the user's input on failed submit. Inline validation on blur for format checks (email/URL), submit-time for the rest.
+- Submit buttons disable + swap icon while pending (no double submit); success feedback via Toast; failure keeps values and shows field errors.
+
+## Accessibility (a11y)
+
+- Every interactive element is keyboard reachable: visible `focus-visible` ring (green, ring-3/50) on all controls; nothing `outline-none` without a replacement ring.
+- Icon-only buttons carry `aria-label` (the admin delete/enable buttons already do). Links with icons have visually-hidden or plain text.
+- Touch targets ≥44px effective on mobile — compact 32px controls must gain padding/margin slack on `sm` and below via size bump (or keep 32px only where a larger fallback exists nearby).
+- Color is never the sole signal: status badges pair color with icon/text (Certified ✓, Pending clock, Expired ✕) — the badge vocabulary already enforces this.
+- All contrast: text ≥4.5:1, verified in both themes (the palette was darkened for exactly this — see Colors).
+- `prefers-reduced-motion` kills all animation globally (already wired in `layout.css`).
+
+## Front-site vs Admin differentiation (前后台差异化)
+
+- **Front site** (`src/routes/+layout.svelte` shell): marketing-grade polish — sticky glass header, hero moments, `max-w-7xl` container, scroll-reveal choreography, footer grid. Motion and flourish live here.
+- **Admin/portal** (`src/routes/admin/`, `supplier/`): efficiency-first — fixed-height shell (`h-dvh overflow-hidden`), persistent sidebar, dense tables, `max-w-6xl` content, no reveal animations, no hero. Every extra pixel serves scanning speed.
+- Shared primitives keep both portals visually one system; density and motion differ, not palette or radius.
+- Admin stays `noindex` (robots meta already set in `admin/+layout.svelte`).
+
+## Performance & Cost (性能与成本)
+
+- GPU-only animation (`opacity`/`transform`); `backdrop-blur` allowlisted to header/floaters/hero — never on list grids (GPU cost).
+- List APIs: limit ≤100 + column projection; `cacheKey: queryCacheKey(url)` wherever query params change results; WHERE columns covered by D1 indexes; `LIKE '%…%'` only for small tables (<500 rows), FTS otherwise.
+- Imagery: `srcset` + `sizes`, lazy below-the-fold, eager + `fetchpriority="high"` for LCP images, explicit width/height (no CLS).
+- R2 media served with compression; Workers cache for immutable assets. PageSpeed targets: LCP <2.5s, CLS <0.1, INP <200ms.

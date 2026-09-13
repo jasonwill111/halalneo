@@ -30,10 +30,13 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<GlossaryTerm | null>(null);
+	let confirmTerm = $state<string | null>(null);
 
 	type TermForm = { term: string; definition: string };
 	let form = $state<TermForm>({ term: '', definition: '' });
@@ -81,12 +84,18 @@
 			editing ?? undefined
 		);
 		dialogOpen = false;
+		toast.success(editing ? 'Term updated' : 'Term created');
 	}
 
 	function remove(t: GlossaryTerm) {
-		if (window.confirm(`Delete term "${t.term}"?`)) {
-			deleteItem('glossary', t.term);
-		}
+		confirmTerm = t.term;
+	}
+
+	function confirmedRemove() {
+		if (!confirmTerm) return;
+		deleteItem('glossary', confirmTerm);
+		toast.success('Term deleted');
+		confirmTerm = null;
 	}
 </script>
 
@@ -180,3 +189,11 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmTerm !== null}
+	title="Delete term?"
+	description={`Delete term "${confirmTerm}"? This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

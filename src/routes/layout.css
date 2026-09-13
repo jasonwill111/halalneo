@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
@@ -82,10 +83,20 @@
 	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 	--shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
 	--shadow-lg: 0 12px 32px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.05);
+	--shadow-xl: 0 24px 56px -8px rgb(0 0 0 / 0.16), 0 8px 16px -8px rgb(0 0 0 / 0.06);
 	--shadow-glass: 0 8px 32px -4px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset;
 	--animate-fade-in: fade-in 0.3s ease-out;
 	--animate-slide-up: slide-up 0.4s ease-out;
 	--animate-scale-in: scale-in 0.2s ease-out;
+	/* Motion vocabulary — durations/easings shared by transitions & primitives */
+	--duration-fast: 120ms;
+	--duration-base: 200ms;
+	--duration-slow: 320ms;
+	--duration-deliberate: 550ms;
+	--ease-in: cubic-bezier(0.4, 0, 1, 1);
+	--ease-out: cubic-bezier(0, 0, 0.2, 1);
+	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
@@ -127,6 +138,10 @@
 	--sidebar-accent-foreground: oklch(0.24 0.022 55);
 	--sidebar-border: oklch(0.895 0.012 85);
 	--sidebar-ring: oklch(0.44 0.15 158);
+	/* Semantic opacities — state feedback layer */
+	--opacity-disabled: 0.5;
+	--opacity-subtle: 0.1;
+	--opacity-noticeable: 0.2;
 }
 
 .dark {

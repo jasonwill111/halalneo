@@ -39,9 +39,13 @@
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Bot from '@lucide/svelte/icons/bot';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let dialogOpen = $state(false);
 	let editing = $state<AiTool | null>(null);
+	let confirmSlug = $state<string | null>(null);
+	let confirmName = $state('');
 
 	type ToolForm = {
 		id: string;
@@ -176,12 +180,19 @@
 			editing ?? undefined
 		);
 		dialogOpen = false;
+		toast.success(editing ? 'Tool updated' : 'Tool created');
 	}
 
 	function remove(t: AiTool) {
-		if (window.confirm(`Delete tool ${t.name}?`)) {
-			deleteItem('aiTools', t.slug);
-		}
+		confirmSlug = t.slug;
+		confirmName = t.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('aiTools', confirmSlug);
+		toast.success('Tool deleted');
+		confirmSlug = null;
 	}
 </script>
 
@@ -341,3 +352,11 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete AI tool?"
+	description={`Delete tool "${confirmName}"? This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

@@ -5,6 +5,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '#lib/components/ui/table/index.js';
 	import {
 		Dialog,
@@ -13,7 +14,11 @@
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import { toast } from 'svelte-sonner';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import Plus from '@lucide/svelte/icons/plus';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
 
 	let stories = $state<any[]>([]);
 	let loading = $state(true);
@@ -29,6 +34,8 @@
 	let image = $state('');
 	let sending = $state(false);
 	let formError = $state<string | null>(null);
+	let confirmSlug = $state<string | null>(null);
+	let confirmTitle = $state('');
 
 	async function refresh() {
 		loading = true;
@@ -77,11 +84,34 @@
 				dealValue = '';
 				image = '';
 				await refresh();
+				toast.success('Story published');
 			} else {
 				formError = j.error ?? 'Failed to publish.';
+				toast.error(formError ?? 'Failed to publish.');
 			}
 		} finally {
 			sending = false;
+		}
+	}
+
+	async function remove(slug: string) {
+		confirmSlug = slug;
+		confirmTitle = stories.find((s) => s.slug === slug)?.title ?? slug;
+	}
+
+	async function confirmedRemove() {
+		if (!confirmSlug) return;
+		try {
+			const res = await fetch(`/api/success-stories/${confirmSlug}`, { method: 'DELETE' });
+			if (res.ok) {
+				toast.success('Story deleted');
+				await refresh();
+			} else {
+				const j = (await res.json().catch(() => ({}))) as any;
+				toast.error(j.error ?? 'Failed to delete.');
+			}
+		} finally {
+			confirmSlug = null;
 		}
 	}
 </script>
@@ -104,9 +134,20 @@
 
 <Card class="p-0">
 	{#if loading}
-		<p class="p-6 text-center text-xs text-muted-foreground">Loading…</p>
+		<div class="space-y-2 p-4">
+			{#each Array(4) as _}
+				<Skeleton class="h-9 w-full" />
+			{/each}
+		</div>
 	{:else if stories.length === 0}
-		<p class="p-6 text-center text-xs text-muted-foreground">No stories yet — publish the first one.</p>
+		<div class="p-6">
+			<Empty>
+				<div class="space-y-1 text-center">
+					<p class="font-medium">No stories yet</p>
+					<p class="text-sm text-muted-foreground">Publish the first success story.</p>
+				</div>
+			</Empty>
+		</div>
 	{:else}
 		<Table>
 			<TableHeader>
@@ -115,6 +156,7 @@
 					<TableHead class="text-[10px]">Supplier</TableHead>
 					<TableHead class="text-[10px]">Deal</TableHead>
 					<TableHead class="text-[10px]">Status</TableHead>
+					<TableHead class="text-[10px] text-right">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -125,6 +167,17 @@
 						<TableCell class="text-[10px] text-muted-foreground">{s.dealValue ?? '—'}</TableCell>
 						<TableCell>
 							<Badge variant="secondary" class="text-[10px]">{s.status ?? 'draft'}</Badge>
+						</TableCell>
+						<TableCell class="text-right">
+							<Button
+								variant="ghost"
+								size="icon"
+								aria-label="Delete"
+								class="hover:bg-destructive/10 hover:text-destructive"
+								onclick={() => remove(s.slug)}
+							>
+								<Trash2 class="size-4" />
+							</Button>
 						</TableCell>
 					</TableRow>
 				{/each}
@@ -192,3 +245,11 @@
 		</form>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete story?"
+	description={`Delete story "${confirmTitle}"? This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

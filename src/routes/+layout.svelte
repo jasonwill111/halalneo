@@ -13,6 +13,7 @@
 	import UserIcon from '@lucide/svelte/icons/user';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
+	import { Toaster } from '#lib/components/ui/sonner/index.js';
 	import MobileTab from '#lib/components/mobile-tab.svelte';
 	import BackToTop from '#lib/components/site/back-to-top.svelte';
 	import { initWebVitals } from '#lib/vitals.js';
@@ -120,6 +121,7 @@
 </script>
 
 <ModeWatcher />
+<Toaster />
 
 <svelte:head>
 	<link rel="icon" href={favicon} />

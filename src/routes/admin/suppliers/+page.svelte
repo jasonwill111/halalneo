@@ -41,10 +41,14 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Supplier | null>(null);
+	let confirmSlug = $state<string | null>(null);
+	let confirmName = $state('');
 
 	// Collapsible section state
 	let basicExpanded = $state(true);
@@ -292,10 +296,17 @@
 	}
 
 	function remove(m: Supplier) {
-		if (window.confirm(`Delete supplier ${m.name}? This also hides their products.`)) {
-			deleteItem('suppliers', m.slug);
-			adminData.products = adminData.products.filter((s) => s.supplierSlug !== m.slug);
-		}
+		confirmSlug = m.slug;
+		confirmName = m.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('suppliers', confirmSlug);
+		adminData.products = adminData.products.filter((s) => s.supplierSlug !== confirmSlug);
+		toast.success('Supplier deleted');
+		confirmSlug = null;
+		confirmName = '';
 	}
 </script>
 
@@ -573,3 +584,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete supplier?"
+	description={confirmSlug
+		? `Delete supplier ${confirmName}? This also hides their products.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

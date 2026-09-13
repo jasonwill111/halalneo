@@ -27,6 +27,8 @@
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
 	import { Empty } from '#lib/components/ui/empty/index.js';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 	import type { DemoAccount } from '#lib/stores/auth.svelte.js';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
@@ -48,6 +50,7 @@
 	});
 	let formError = $state('');
 	let refreshTick = $state(0);
+	let confirmEmail = $state<string | null>(null);
 
 	let filtered = $derived.by(() => {
 		void refreshTick;
@@ -112,14 +115,20 @@
 		}
 		refreshAccounts();
 		dialogOpen = false;
+		toast.success(editing ? 'Buyer updated' : 'Buyer created');
 	}
 
 	function remove(email: string) {
 		if (email === currentAccount?.email) return;
-		if (window.confirm(`Delete buyer ${email}? This cannot be undone.`)) {
-			deleteAccount(email);
-			refreshAccounts();
-		}
+		confirmEmail = email;
+	}
+
+	function confirmedRemove() {
+		if (!confirmEmail) return;
+		deleteAccount(confirmEmail);
+		refreshAccounts();
+		toast.success(`Buyer ${confirmEmail} deleted`);
+		confirmEmail = null;
 	}
 </script>
 
@@ -264,3 +273,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmEmail !== null}
+	title="Delete buyer?"
+	description={confirmEmail
+		? `Delete ${confirmEmail}? This cannot be undone.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

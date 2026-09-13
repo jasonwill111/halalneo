@@ -37,11 +37,15 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<CertifyingBody | null>(null);
 	let seoExpanded = $state(false);
+	let confirmId = $state<string | null>(null);
+	let confirmName = $state('');
 
 	type BodyForm = {
 		id: string;
@@ -169,9 +173,16 @@
 	}
 
 	function remove(b: CertifyingBody) {
-		if (window.confirm(`Delete certifying body ${b.name}?`)) {
-			deleteItem('certifyingBodies', b.id);
-		}
+		confirmId = b.id;
+		confirmName = b.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmId) return;
+		deleteItem('certifyingBodies', confirmId);
+		toast.success('Certifying body deleted');
+		confirmId = null;
+		confirmName = '';
 	}
 </script>
 
@@ -328,3 +339,13 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmId !== null}
+	title="Delete certifying body?"
+	description={confirmId
+		? `Delete certifying body ${confirmName}? This cannot be undone.`
+		: undefined}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

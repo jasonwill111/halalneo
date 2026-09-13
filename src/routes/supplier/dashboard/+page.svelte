@@ -11,6 +11,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
 	import Tag from '@lucide/svelte/icons/tag';
 
@@ -217,7 +218,15 @@
 			your company after approval.
 		</p>
 	{:else if !analytics}
-		<p class="px-1 py-3 text-center text-[11px] text-muted-foreground">Loading analytics…</p>
+		<div class="grid grid-cols-2 gap-2" aria-label="Loading analytics">
+			{#each [0, 1] as i (i)}
+				<div class="space-y-1.5 rounded-xl bg-muted/50 px-3 py-2">
+					<Skeleton class="h-3 w-20" />
+					<Skeleton class="h-6 w-14" />
+				</div>
+			{/each}
+			<Skeleton class="col-span-2 h-16 w-full" />
+		</div>
 	{:else}
 		<div class="mb-2 grid grid-cols-2 gap-2">
 			<div class="rounded-xl bg-muted/50 px-3 py-2">

@@ -39,10 +39,14 @@
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<KbArticle | null>(null);
+	let confirmSlug = $state<string | null>(null);
+	let confirmTitle = $state('');
 	let aiLoading = $state(false);
 	let seoExpanded = $state(false);
 
@@ -165,9 +169,15 @@
 	}
 
 	function remove(a: KbArticle) {
-		if (window.confirm(`Delete article ${a.title}?`)) {
-			deleteItem('kbArticles', a.slug);
-		}
+		confirmSlug = a.slug;
+		confirmTitle = a.title;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('kbArticles', confirmSlug);
+		toast.success('Article deleted');
+		confirmSlug = null;
 	}
 
 	async function generateBody() {
@@ -348,3 +358,11 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete article?"
+	description={`Delete article "${confirmTitle}"? This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>

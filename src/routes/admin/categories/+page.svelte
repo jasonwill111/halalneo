@@ -37,11 +37,15 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
 	let editing = $state<Category | null>(null);
 	let seoExpanded = $state(false);
+	let confirmSlug = $state<string | null>(null);
+	let confirmName = $state('');
 
 	type CategoryForm = {
 		slug: string;
@@ -159,15 +163,22 @@
 		};
 		upsertItem<Category>('categories', updated, editing ?? undefined);
 		dialogOpen = false;
+		toast.success(editing ? 'Category updated' : 'Category created');
 	}
 
 	function remove(c: Category) {
-		if (window.confirm(`Delete category ${c.name}? Children become top-level.`)) {
-			deleteItem('categories', c.slug);
-			adminData.categories = adminData.categories.map((cat) =>
-				cat.parentSlug === c.slug ? { ...cat, parentSlug: undefined } : cat
-			);
-		}
+		confirmSlug = c.slug;
+		confirmName = c.name;
+	}
+
+	function confirmedRemove() {
+		if (!confirmSlug) return;
+		deleteItem('categories', confirmSlug);
+		adminData.categories = adminData.categories.map((cat) =>
+			cat.parentSlug === confirmSlug ? { ...cat, parentSlug: undefined } : cat
+		);
+		toast.success('Category deleted');
+		confirmSlug = null;
 	}
 </script>
 
@@ -332,3 +343,11 @@
 		</DialogFooter>
 	</DialogContent>
 </Dialog>
+
+<ConfirmDialog
+	open={confirmSlug !== null}
+	title="Delete category?"
+	description={`Delete category "${confirmName}"? Children become top-level. This cannot be undone.`}
+	confirmLabel="Delete"
+	onconfirm={confirmedRemove}
+/>
