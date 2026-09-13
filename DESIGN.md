@@ -334,8 +334,8 @@ Every data surface implements the same three states — loading, empty, and erro
 
 ## Forms (表单体验)
 
-- Validation is Zod schemas, shared between API layer (`safeParse` in `+server.ts`) and client. Server returns field errors as `{ errors: { field: message } }`; the client maps them onto Field errors.
-- Errors render via `ui/field` (`FieldError`) under the input, `aria-invalid` styling from the primitives; focus jumps to the first invalid field on submit.
+- Validation is Zod schemas, shared between API layer (`safeParse` in `+server.ts`) and client (Zod runs in the browser too — same library, field-level schemas per form). Server returns field errors as `{ error: 'Validation failed', details: { field: [message] } }` (Zod `flatten().fieldErrors`); the client merges them via `mergeServerDetails` (`#lib/utils/forms.ts`) onto per-field messages.
+- Errors render via `ui/field` (`FieldError`, conditional `{#if}` — never render an empty error slot) under the input, `aria-invalid` styling from the primitives; focus jumps to the first invalid field on submit via shared `focusFirstInvalid(formEl)` (same file). Exemplars: `/contact`, `/rfqs/new`. New forms must reuse this helper, not hand-roll error mapping.
 - Never wipe the user's input on failed submit. Inline validation on blur for format checks (email/URL), submit-time for the rest.
 - Submit buttons disable + swap icon while pending (no double submit); success feedback via Toast; failure keeps values and shows field errors.
 

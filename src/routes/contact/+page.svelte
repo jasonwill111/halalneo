@@ -2,7 +2,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldDescription, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldDescription, FieldError, FieldLabel } from '#lib/components/ui/field/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
 	import {
 		Card,
@@ -17,6 +17,8 @@
 	import Send from '@lucide/svelte/icons/send';
 	import CheckCircle from '@lucide/svelte/icons/check-circle';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	const offices = [
 		{ city: 'Dubai, UAE', address: 'Business Bay', email: 'dubai@halalneo.com' },
@@ -32,6 +34,14 @@
 	let sent = $state(false);
 	let sending = $state(false);
 	let submitError = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const contactSchema = z.object({
+		name: z.string().trim().min(1, 'Please enter your name.'),
+		email: z.string().trim().min(1, 'Please enter your email.').email('Please enter a valid email.'),
+		message: z.string().trim().min(1, 'Please tell us what you need.')
+	});
 
 	const topics = [
 		'Sourcing a product',
@@ -42,7 +52,16 @@
 	];
 
 	async function submit() {
-		if (!name.trim() || !email.trim() || !message.trim()) return;
+		fieldErrors = {};
+		const parsed = contactSchema.safeParse({ name, email, message });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
+			}
+			focusFirstInvalid(formEl);
+			return;
+		}
 		sending = true;
 		submitError = '';
 		try {
@@ -195,6 +214,7 @@
 				{/if}
 				<form
 					class="space-y-4"
+					bind:this={formEl}
 					onsubmit={(e) => {
 						e.preventDefault();
 						submit();
@@ -203,11 +223,30 @@
 					<div class="grid gap-4 sm:grid-cols-2">
 						<Field>
 							<FieldLabel>Full name</FieldLabel>
-							<Input bind:value={name} placeholder="Jane Doe" required />
+							<Input
+								bind:value={name}
+								placeholder="Jane Doe"
+								required
+								aria-invalid={fieldErrors.name ? true : undefined}
+								oninput={() => {
+									if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+								}}
+							/>
+							{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 						</Field>
 						<Field>
 							<FieldLabel>Work email</FieldLabel>
-							<Input type="email" bind:value={email} placeholder="jane@company.com" required />
+							<Input
+								type="email"
+								bind:value={email}
+								placeholder="jane@company.com"
+								required
+								aria-invalid={fieldErrors.email ? true : undefined}
+								oninput={() => {
+									if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+								}}
+							/>
+							{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
 						</Field>
 					</div>
 					<Field>
@@ -229,7 +268,17 @@
 					</Field>
 					<Field>
 						<FieldLabel>Message</FieldLabel>
-						<Textarea bind:value={message} rows={5} placeholder="Tell us what you need..." required />
+						<Textarea
+							bind:value={message}
+							rows={5}
+							placeholder="Tell us what you need..."
+							required
+							aria-invalid={fieldErrors.message ? true : undefined}
+							oninput={() => {
+								if (fieldErrors.message) fieldErrors = { ...fieldErrors, message: '' };
+							}}
+						/>
+						{#if fieldErrors.message}<FieldError>{fieldErrors.message}</FieldError>{/if}
 						<FieldDescription>
 							Include your certifying body or standard if your question is about verification.
 						</FieldDescription>

@@ -218,6 +218,8 @@ transactions or certifiers expose anchorable APIs.
 | Storage | Cloudflare R2 |
 | Auth | Better Auth 1.7.4 (schema regenerated — byte-identical to 1.7.3, no migration) |
 | ORM | Drizzle ORM 0.45.2 + FTS5 side tables (`products_fts`, `suppliers_fts` with triggers) |
+| Validation | Zod 4.x — `safeParse` in every mutating API (`+server.ts` returns `{ error, details }` on 400) + client field schemas per form (`#lib/utils/forms.ts` shared error mapping) |
+| Icons | Lucide for Svelte (per-icon imports, 16px `size-4` in buttons via `data-icon` slots) |
 | AI | Mastra 1.65.0 + Vercel AI SDK 7.0.97 |
 | Hosting | Cloudflare Workers (adapter-cloudflare 8.0.0-next.7) |
 | Runtime | `compatibility_date 2026-09-09` + `nodejs_compat` (explicit). `new_module_registry` REJECTED 2026-09-10: hangs every request ~61s → 500 on adapter-8 output (preview-verified); revisit when Cloudflare sets a default date |

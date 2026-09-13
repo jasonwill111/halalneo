@@ -48,7 +48,7 @@
 {#if compact}
 	<div class="flex flex-wrap items-center gap-1">
 		{#if verified}
-			<span class="inline-flex items-center gap-1 rounded-md bg-green-500/15 px-1.5 py-0.5 text-[10px] font-medium text-green-600 dark:text-green-400">
+			<span class="inline-flex items-center gap-1 rounded-md bg-success/15 px-1.5 py-0.5 text-[10px] font-medium text-success">
 				<ShieldCheckIcon class="size-3" />
 				Verified
 			</span>
@@ -68,7 +68,7 @@
 {:else}
 	<div class="flex flex-wrap items-center gap-1.5">
 		{#if verified}
-			<Badge class="bg-green-500/15 text-green-600 dark:text-green-400 hover:bg-green-500/25">
+			<Badge class="bg-success/15 text-success hover:bg-success/25">
 				<ShieldCheckIcon class="size-3" />
 				Verified Supplier
 			</Badge>

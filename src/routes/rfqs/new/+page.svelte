@@ -5,9 +5,11 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import { Field, FieldError, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 
 	let { data } = $props();
 
@@ -20,9 +22,25 @@
 	let description = $state('');
 	let sending = $state(false);
 	let result = $state<{ type: 'success' | 'error'; message: string; needsLogin?: boolean } | null>(null);
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const rfqClientSchema = z.object({
+		title: z.string().trim().min(1, 'Please describe what you need.'),
+		description: z.string().trim().min(1, 'Please add specs, certifications and timeline.')
+	});
 
 	async function submit() {
-		if (!title.trim() || !description.trim()) return;
+		fieldErrors = {};
+		const parsed = rfqClientSchema.safeParse({ title, description });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
+			return;
+		}
 		sending = true;
 		result = null;
 		try {
@@ -49,6 +67,10 @@
 				message: j.error ?? 'Failed to publish.',
 				needsLogin: res.status === 401
 			};
+			if (res.status === 400 && j.details) {
+				fieldErrors = mergeServerDetails(fieldErrors, j.details);
+				focusFirstInvalid(formEl);
+			}
 		} catch {
 			result = { type: 'error', message: 'Network error. Please try again.' };
 		} finally {
@@ -83,6 +105,7 @@
 	<Card class="p-4 sm:p-5">
 		<form
 			class="space-y-3"
+			bind:this={formEl}
 			onsubmit={(e) => {
 				e.preventDefault();
 				submit();
@@ -90,7 +113,17 @@
 		>
 			<Field>
 				<FieldLabel>What do you need? *</FieldLabel>
-				<Input type="text" bind:value={title} placeholder="e.g. Frozen halal chicken, 500 cartons monthly" maxlength={200} />
+				<Input
+					type="text"
+					bind:value={title}
+					placeholder="e.g. Frozen halal chicken, 500 cartons monthly"
+					maxlength={200}
+					aria-invalid={fieldErrors.title ? true : undefined}
+					oninput={() => {
+						if (fieldErrors.title) fieldErrors = { ...fieldErrors, title: '' };
+					}}
+				/>
+				{#if fieldErrors.title}<FieldError>{fieldErrors.title}</FieldError>{/if}
 			</Field>
 			<div class="grid gap-3 sm:grid-cols-2">
 				<Field>
@@ -130,7 +163,12 @@
 					bind:value={description}
 					placeholder="Grade, specs, required certifications (JAKIM/ESMA/...), packaging, delivery timeline..."
 					rows={5}
+					aria-invalid={fieldErrors.description ? true : undefined}
+					oninput={() => {
+						if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' };
+					}}
 				/>
+				{#if fieldErrors.description}<FieldError>{fieldErrors.description}</FieldError>{/if}
 			</Field>
 			<Button type="submit" class="w-full" disabled={sending || !title.trim() || !description.trim()}>
 				{sending ? 'Publishing...' : 'Publish request'}
