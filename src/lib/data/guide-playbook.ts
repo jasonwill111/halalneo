@@ -116,9 +116,9 @@ export const PHASE_TONES: Record<RequirementPhase | 'Requirement', string> = {
 
 export function classifyRequirement(req: string): RequirementPhase | 'Requirement' {
 	const s = req.toLowerCase();
+	if (/(label|logo|arabic|bahasa|urdu|english|packaging|nutrition|mark)/.test(s)) return 'Labelling';
 	if (/(certif|recogni|fhcb|jakim|audit|standard|halal scheme|accredit)/.test(s)) return 'Certification';
 	if (/(regist|sihalal|portal|saber|licen|authoriz|approval|psw|e-portal)/.test(s)) return 'Registration';
-	if (/(label|logo|arabic|bahasa|urdu|english|packaging|nutrition|mark)/.test(s)) return 'Labelling';
 	if (/(custom|shipment|port|clearance|coc|conformity|slaughter|countersign|import)/.test(s))
 		return 'Customs';
 	return 'Requirement';
