@@ -78,7 +78,7 @@ _Avoid_: content generator, AI assistant
 | Categories | `/categories` (listing), `/category/[slug]` (detail) | ✅ Product taxonomy; old `/categories/[slug]` 301s to `/category/[slug]` |
 | Knowledge Base | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]` | ✅ 6 sections, 125 articles (Markdown bodies, rendered + TOC) |
 | Blog | `/blog`, `/blog/[slug]` | ✅ 8 posts (7 published + 1 evergreen) |
-| Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt) |
+| Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt); detail pages ship an entry-steps timeline, SME/Growth/Enterprise cost estimator, two-way recognition matrix, regulatory signals, key links and win plays (all derived via `#lib/data/guide-playbook.ts`) |
 | Glossary | `/glossary` | ✅ 83 terms, A-Z letter-pill pagination + search |
 | Trade Shows | `/trade-shows`, `/trade-shows/[id]` | ✅ 20 events with region filter + pagination, detail pages with Event JSON-LD |
 | Certifying Bodies | `/certifying-bodies`, `/certifying-bodies/[slug]` | ✅ 15 bodies with recognition data |

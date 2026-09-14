@@ -9,14 +9,60 @@
 	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
 	import { cn } from '#lib/utils.js';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
+	import {
+		costTiers,
+		classifyRequirement,
+		PHASE_TONES,
+		recognitionForGuide,
+		relatedPosts,
+		upcomingShowsInMarket,
+		storiesInMarket,
+		keyLinks,
+		winPlays,
+		type GuideShow
+	} from '#lib/data/guide-playbook.js';
+	import { recognitionStatusClasses, recognitionStatusLabel } from '#lib/data/recognition.js';
 	import FileCheckIcon from '@lucide/svelte/icons/file-check';
 	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
 	import ShieldAlertIcon from '@lucide/svelte/icons/shield-alert';
+	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import LightbulbIcon from '@lucide/svelte/icons/lightbulb';
 	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
+	import CalculatorIcon from '@lucide/svelte/icons/calculator';
+	import Link2Icon from '@lucide/svelte/icons/link-2';
+	import NewspaperIcon from '@lucide/svelte/icons/newspaper';
+	import TrophyIcon from '@lucide/svelte/icons/trophy';
+	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
+	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 
 	let { data } = $props();
 	const guide = $derived(data.guide);
+
+	// ---- Playbook derivations (all computed from the guide row + shared data)
+	const bodySlugs = $derived(
+		((guide.certifyingBodies ?? []) as { slug?: string }[])
+			.map((b) => String(b.slug ?? '').trim())
+			.filter(Boolean)
+	);
+	const tiers = $derived(costTiers(guide.estimatedCostUsd, guide.processingTime, guide.certificateValidity));
+	let activeTier = $state('growth');
+	const activeTierData = $derived(
+		(tiers ?? []).find((t) => t.id === activeTier) ?? (tiers ?? [])[0]
+	);
+	const steps = $derived(
+		((guide.importRequirements ?? []) as string[]).map((req) => ({
+			text: req,
+			phase: classifyRequirement(req)
+		}))
+	);
+	const recognition = $derived(recognitionForGuide(guide.country, bodySlugs));
+	const signals = $derived(relatedPosts(guide.slug, guide.country, data.posts ?? []));
+	const marketShows = $derived(upcomingShowsInMarket(guide.country, (data.shows ?? []) as GuideShow[]));
+	const marketStories = $derived(
+		storiesInMarket(guide.country, data.stories ?? [])
+	);
+	const links = keyLinks();
+	const plays = $derived(winPlays(guide.opportunities));
 
 	const countryImages = COUNTRY_IMAGES;
 
@@ -138,16 +184,31 @@
 			<CardContent class="space-y-3 p-5">
 				<div class="flex items-center gap-2">
 					<FileCheckIcon class="size-4 text-primary" />
-					<CardTitle class="text-base">Import Requirements</CardTitle>
+					<CardTitle class="text-base">Market entry steps</CardTitle>
 				</div>
-				<ul class="space-y-2">
-					{#each guide.importRequirements as req (req)}
-						<li class="flex items-start gap-2 text-sm text-foreground/80">
-							<span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"></span>
-							{req}
+				<ol class="space-y-0">
+					{#each steps as step, i (step.text)}
+						<li class="relative flex gap-3 pb-4 last:pb-0">
+							{#if i < steps.length - 1}
+								<span class="absolute top-7 left-[13px] h-[calc(100%-1.75rem)] w-px bg-border" aria-hidden="true"></span>
+							{/if}
+							<span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary ring-1 ring-foreground/10">
+								{i + 1}
+							</span>
+							<div class="min-w-0 space-y-1">
+								<span class={`inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium ${PHASE_TONES[step.phase]}`}>
+									{step.phase}
+								</span>
+								<p class="text-sm leading-relaxed text-foreground/80">{step.text}</p>
+							</div>
 						</li>
 					{/each}
-				</ul>
+				</ol>
+				{#if guide.challenges?.[0]}
+					<p class="rounded-lg bg-warn/10 px-3 py-2 text-xs leading-relaxed text-warn">
+						Watch out: {guide.challenges[0]}
+					</p>
+				{/if}
 			</CardContent>
 		</Card>
 
@@ -201,6 +262,107 @@
 		</Card>
 	</div>
 
+	{#if tiers && activeTierData}
+		<Card class="bg-card">
+			<CardContent class="space-y-3 p-5">
+				<div class="flex flex-wrap items-center justify-between gap-2">
+					<div class="flex items-center gap-2">
+						<CalculatorIcon class="size-4 text-primary" />
+						<CardTitle class="text-base">Cost estimator</CardTitle>
+					</div>
+					<div class="flex gap-1.5" role="group" aria-label="Business size">
+						{#each tiers as tier (tier.id)}
+							<Button
+								variant={activeTier === tier.id ? 'default' : 'outline'}
+								size="sm"
+								class="h-7 text-xs"
+								onclick={() => (activeTier = tier.id)}
+								aria-pressed={activeTier === tier.id}
+							>
+								{tier.id === 'sme' ? 'SME' : tier.id === 'growth' ? 'Growth' : 'Enterprise'}
+							</Button>
+						{/each}
+					</div>
+				</div>
+				<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+					<StatTile value={activeTierData.range} label={activeTierData.label} tone="success" />
+					<StatTile value={guide.processingTime} label="Processing time" tone="warn" />
+					<StatTile value={guide.certificateValidity} label="Certificate validity" tone="accent-purple" />
+				</div>
+				<p class="text-xs leading-relaxed text-muted-foreground">
+					{activeTierData.note} Guide figure: {guide.estimatedCostUsd}
+				</p>
+				<Button
+					href={localizeHref('/tools/certification-cost')}
+					variant="outline"
+					size="sm"
+					class="w-full sm:w-auto"
+				>
+					Open full cost estimator
+					<ArrowRightIcon class="size-3" />
+				</Button>
+			</CardContent>
+		</Card>
+	{/if}
+
+	{#if recognition.outbound.length > 0 || recognition.inbound.length > 0}
+		<Card class="bg-card">
+			<CardContent class="space-y-4 p-5">
+				<div class="flex items-center gap-2">
+					<ShieldCheckIcon class="size-4 text-primary" />
+					<CardTitle class="text-base">Will this certificate travel?</CardTitle>
+				</div>
+				<div class="grid gap-4 sm:grid-cols-2">
+					<div class="space-y-2">
+						<h3 class="text-xs font-semibold text-foreground">This market's bodies, accepted in</h3>
+						{#if recognition.outbound.length === 0}
+							<p class="text-xs text-muted-foreground">No mapped recognition yet.</p>
+						{:else}
+							<ul class="space-y-1.5">
+								{#each recognition.outbound.slice(0, 8) as row (row.bodySlug + row.country)}
+									<li class="flex items-center justify-between gap-2 text-xs">
+										<span class="truncate text-foreground/80">
+											<span class="font-medium">{row.bodyName}</span> → {row.country}
+										</span>
+										<span class={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${recognitionStatusClasses(row.status)}`}>
+											{recognitionStatusLabel(row.status)}
+										</span>
+									</li>
+								{/each}
+							</ul>
+							{#if recognition.outbound.length > 8}
+								<p class="text-[11px] text-muted-foreground">+{recognition.outbound.length - 8} more markets</p>
+							{/if}
+						{/if}
+					</div>
+					<div class="space-y-2">
+						<h3 class="text-xs font-semibold text-foreground">Foreign bodies this market accepts</h3>
+						{#if recognition.inbound.length === 0}
+							<p class="text-xs text-muted-foreground">No mapped recognition yet.</p>
+						{:else}
+							<ul class="space-y-1.5">
+								{#each recognition.inbound.slice(0, 8) as row (row.bodySlug + row.country)}
+									<li class="flex items-center justify-between gap-2 text-xs">
+										<span class="truncate font-medium text-foreground/80">{row.bodyName}</span>
+										<span class={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${recognitionStatusClasses(row.status)}`}>
+											{recognitionStatusLabel(row.status)}
+										</span>
+									</li>
+								{/each}
+							</ul>
+							{#if recognition.inbound.length > 8}
+								<p class="text-[11px] text-muted-foreground">+{recognition.inbound.length - 8} more bodies</p>
+							{/if}
+						{/if}
+					</div>
+				</div>
+				<p class="text-[11px] leading-relaxed text-muted-foreground">
+					Statuses are indicative — confirm with the issuing body before shipping.
+				</p>
+			</CardContent>
+		</Card>
+	{/if}
+
 	<div class="grid gap-4 lg:grid-cols-3">
 		<Card class="bg-card">
 			<CardContent class="space-y-3 p-5">
@@ -250,6 +412,136 @@
 						</li>
 					{/each}
 				</ul>
+			</CardContent>
+		</Card>
+	</div>
+
+	<div class="grid gap-4 lg:grid-cols-3">
+		<Card class="bg-card">
+			<CardContent class="space-y-3 p-5">
+				<div class="flex items-center gap-2">
+					<NewspaperIcon class="size-4 text-primary" />
+					<CardTitle class="text-sm">Regulatory signals</CardTitle>
+				</div>
+				{#if signals.length === 0 && marketShows.length === 0}
+					<p class="text-xs leading-relaxed text-muted-foreground">
+						No tagged updates for this market yet — the latest industry analysis is on the blog.
+					</p>
+				{:else}
+					<ul class="space-y-2.5">
+						{#each signals as post (post.slug)}
+							<li>
+								<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
+									<p class="line-clamp-2 text-xs font-medium leading-snug transition-colors group-hover:text-primary">
+										{post.title}
+									</p>
+								</a>
+							</li>
+						{/each}
+						{#each marketShows as show (show.id)}
+							<li class="flex items-start gap-2 text-xs text-foreground/80">
+								<CalendarDaysIcon class="mt-0.5 size-3.5 shrink-0 text-info" />
+								<span>
+									<a href={localizeHref(`/trade-shows/${show.id}`)} class="font-medium hover:text-primary">
+										{show.name}
+									</a>
+									<span class="text-muted-foreground"> · {show.city}, {show.country}</span>
+								</span>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+				<div class="flex flex-wrap gap-1.5">
+					<Button href={localizeHref('/blog')} variant="outline" size="sm" class="h-7 text-xs">
+						All analysis
+					</Button>
+					<Button href={localizeHref('/trade-shows')} variant="outline" size="sm" class="h-7 text-xs">
+						Trade shows
+					</Button>
+				</div>
+			</CardContent>
+		</Card>
+
+		<Card class="bg-card">
+			<CardContent class="space-y-3 p-5">
+				<div class="flex items-center gap-2">
+					<Link2Icon class="size-4 text-primary" />
+					<CardTitle class="text-sm">Key links</CardTitle>
+				</div>
+				<ul class="space-y-1.5">
+					{#each links as link (link.href)}
+						<li>
+							{#if link.external}
+								<a
+									href={link.href}
+									target="_blank"
+									rel="noopener"
+									class="group flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs ring-1 ring-transparent transition-all hover:bg-muted hover:ring-foreground/10"
+								>
+									<span>
+										<span class="block font-medium transition-colors group-hover:text-primary">{link.label}</span>
+										<span class="block text-[10px] text-muted-foreground">{link.description}</span>
+									</span>
+									<ExternalLinkIcon class="size-3.5 shrink-0 text-muted-foreground" />
+								</a>
+							{:else}
+								<a
+									href={localizeHref(link.href)}
+									class="group flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs ring-1 ring-transparent transition-all hover:bg-muted hover:ring-foreground/10"
+								>
+									<span>
+										<span class="block font-medium transition-colors group-hover:text-primary">{link.label}</span>
+										<span class="block text-[10px] text-muted-foreground">{link.description}</span>
+									</span>
+									<ArrowRightIcon class="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+								</a>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			</CardContent>
+		</Card>
+
+		<Card class="bg-card">
+			<CardContent class="space-y-3 p-5">
+				<div class="flex items-center gap-2">
+					<TrophyIcon class="size-4 text-success" />
+					<CardTitle class="text-sm">How exporters win here</CardTitle>
+				</div>
+				{#if plays.length === 0 && marketStories.length === 0}
+					<p class="text-xs leading-relaxed text-muted-foreground">
+						No recorded wins for this market yet — be the first story we feature.
+					</p>
+				{:else}
+					<ul class="space-y-2">
+						{#each plays as play (play)}
+							<li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
+								<span class="mt-1.5 size-1 shrink-0 rounded-full bg-success"></span>
+								{play}
+							</li>
+						{/each}
+						{#each marketStories as story (story.slug)}
+							<li>
+								<a href={localizeHref(`/success-stories/${story.slug}`)} class="group block rounded-lg bg-muted/50 px-2.5 py-2 ring-1 ring-transparent transition-all hover:ring-foreground/10">
+									<p class="line-clamp-2 text-xs font-medium leading-snug transition-colors group-hover:text-primary">
+										{story.title}
+									</p>
+									{#if story.dealValue}
+										<p class="mt-0.5 text-[10px] font-semibold text-success">{story.dealValue}</p>
+									{/if}
+								</a>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+				<div class="flex flex-wrap gap-1.5">
+					<Button href={localizeHref('/tools/rfq-builder')} variant="outline" size="sm" class="h-7 text-xs">
+						Build an RFQ
+					</Button>
+					<Button href={localizeHref('/success-stories')} variant="outline" size="sm" class="h-7 text-xs">
+						All stories
+					</Button>
+				</div>
 			</CardContent>
 		</Card>
 	</div>

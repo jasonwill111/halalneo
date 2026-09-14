@@ -2,10 +2,13 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
-	const [guideRes, allGuidesRes, certifiersRes] = await Promise.all([
+	const [guideRes, allGuidesRes, certifiersRes, postsRes, showsRes, storiesRes] = await Promise.all([
 		fetch(`/api/market-guides/${params.country}`),
 		fetch('/api/market-guides?limit=50'),
-		fetch('/api/certifying-bodies?limit=50')
+		fetch('/api/certifying-bodies?limit=50'),
+		fetch('/api/blog?limit=10&status=published'),
+		fetch('/api/trade-shows?limit=50'),
+		fetch('/api/success-stories?limit=20')
 	]);
 
 	if (!guideRes.ok) {
@@ -15,6 +18,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 	const guide: any = await guideRes.json();
 	const allGuides: any[] = allGuidesRes.ok ? ((((await allGuidesRes.json()) as any)).items ?? []) : [];
 	const allCertifiers: any[] = certifiersRes.ok ? ((((await certifiersRes.json()) as any)).items ?? []) : [];
+	const posts: any[] = postsRes.ok ? ((((await postsRes.json()) as any)).items ?? []) : [];
+	const shows: any[] = showsRes.ok ? ((((await showsRes.json()) as any)).items ?? []) : [];
+	const stories: any[] = storiesRes.ok ? ((((await storiesRes.json()) as any)).items ?? []) : [];
 
 	// certifying_bodies.id IS a slug ("bpjph"), matching guide JSON entries'
 	// {slug, name}. Slug match is primary; name match covers entries whose
@@ -29,6 +35,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 	return {
 		guide,
 		allGuides,
+		posts,
+		shows,
+		stories,
 		validCertifierIds: Array.from(validCertifierIds),
 		certifierLinksByName,
 		seo: {
