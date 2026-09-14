@@ -3,6 +3,7 @@
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { ToggleGroup, ToggleGroupItem } from '#lib/components/ui/toggle-group/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { cn } from '#lib/utils.js';
@@ -11,6 +12,8 @@
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
+	import LayoutGridIcon from '@lucide/svelte/icons/layout-grid';
+	import MapIcon from '@lucide/svelte/icons/map';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
@@ -18,6 +21,7 @@
 	let { data } = $props();
 
 	let selectedRegion = $state('all');
+	let viewMode = $state<'list' | 'map'>('list');
 
 	// Regions derived from data — sorted unique region values with counts, 'all' first
 	const regionOptions = $derived.by<{ value: string; label: string; count: number }[]>(() => {
@@ -130,6 +134,18 @@
 		Africa: '🌍',
 		Oceania: '🌏'
 	};
+
+	// Convert lat/lng to SVG map coordinates (world map)
+	function latLngToXY(lat: number, lng: number): { x: number; y: number } {
+		const mapWidth = 480;
+		const mapHeight = 280;
+		const x = ((lng + 180) / 360) * mapWidth;
+		const y = ((90 - lat) / 180) * mapHeight;
+		return { x, y };
+	}
+	
+	// Shows with coordinates for map view
+	const mappedShows = $derived((filtered ?? []).filter((s: any) => s.lat && s.lng));
 </script>
 
 <svelte:head>
@@ -167,6 +183,14 @@
 			bind:value={selectedRegion}
 			ariaLabel="Filter trade shows by region"
 		/>
+		<ToggleGroup type="single" bind:value={viewMode} variant="outline" aria-label="View mode">
+			<ToggleGroupItem value="list" aria-label="List view">
+				<LayoutGridIcon class="size-4" />
+			</ToggleGroupItem>
+			<ToggleGroupItem value="map" aria-label="Map view">
+				<MapIcon class="size-4" />
+			</ToggleGroupItem>
+		</ToggleGroup>
 	</div>
 
 	{#if filtered.length === 0}
@@ -176,7 +200,7 @@
 			<CalendarDaysIcon class="mx-auto mb-3 size-10 opacity-40" />
 			<p class="text-sm">No events found matching your criteria.</p>
 		</div>
-	{:else}
+	{:else if viewMode === 'list'}
 		<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
 			{#each paged as show (show.id)}
 				{@const ongoing = isOngoing(show.startDate, show.endDate)}
@@ -244,5 +268,77 @@
 			{/each}
 		</div>
 		<Paginator bind:page {totalPages} />
+	{:else}
+		<!-- MAP VIEW -->
+		<div class="relative mb-4 overflow-x-auto pb-4">
+			<div class="flex flex-wrap gap-2 mb-3">
+				{#each mappedShows as show (show.id)}
+					{@const ongoing = isOngoing(show.startDate, show.endDate)}
+					{@const upcoming = isUpcoming(show.startDate)}
+					<Card class="w-64 max-w-xs cursor-pointer p-3 text-xs hover:shadow-md" onclick={() => (viewMode = 'list')}>
+						<div class="flex items-center gap-1.5 mb-1">
+							<span class={cn('h-2.5 w-2.5 flex-shrink-0 rounded-full', ongoing ? 'bg-success' : upcoming ? 'bg-info' : 'bg-muted-foreground/40')}></span>
+							<CardTitle class="text-xs font-medium">{show.name}</CardTitle>
+						</div>
+						<p class="text-xs text-muted-foreground truncate">{show.city}, {show.country}</p>
+						<div class="mt-1 flex items-center gap-1.5">
+							<CalendarDaysIcon class="size-3" />
+							<span class="text-xs">{formatDateRange(show.startDate, show.endDate)}</span>
+						</div>
+					</Card>
+				{/each}
+			</div>
+			{#if mappedShows.length === 0}
+				<div class="rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">
+					<GlobeIcon class="mx-auto mb-3 size-10 opacity-40" />
+					<p class="text-sm">No coordinates available for current filters.</p>
+					<p class="mt-1 text-xs">Showing events with lat/lng data. Switch to list view for full details.</p>
+				</div>
+			{:else}
+				<div class="mx-auto overflow-hidden rounded-xl border border-border bg-card">
+					<svg
+						viewBox="0 0 480 280"
+						class="block h-auto w-full"
+						role="img"
+						aria-label="World map showing halal trade show locations"
+					>
+						<rect width="480" height="280" class="fill-muted/20" />
+						<!-- Simplified world map outline -->
+						<path
+							d="M20,40 L60,35 L80,55 L120,45 L140,70 L200,65 L240,90 L280,85 L300,65 L340,75 L380,60 L420,70 L460,55 L470,80 L450,120 L420,140 L380,135 L340,155 L300,145 L260,170 L220,165 L180,190 L140,180 L100,200 L60,195 L30,180 L10,155 Z"
+							class="fill-transparent stroke-border/20 stroke-[0.5]"
+						/>
+						<!-- Event markers -->
+						{#each mappedShows as show (show.id)}
+							{@const pos = latLngToXY(show.lat, show.lng)}
+							{@const ongoing = isOngoing(show.startDate, show.endDate)}
+							{@const upcoming = isUpcoming(show.startDate)}
+							{@const past = isPast(show.endDate)}
+							<g>
+								<circle
+									cx={pos.x}
+									cy={pos.y}
+									r={ongoing ? 6 : 4}
+									class={cn(
+										"stroke-background stroke-[0.5]",
+										ongoing ? 'fill-success' : upcoming ? 'fill-info' : 'fill-muted-foreground/50'
+									)}
+								>
+									<title>{show.name} — {show.city}, {show.country}</title>
+								</circle>
+								{#if ongoing}
+									<circle cx={pos.x} cy={pos.y} r={11} class="fill-success/15" />
+								{/if}
+							</g>
+						{/each}
+					</svg>
+					<div class="p-3 text-center text-xs text-muted-foreground">
+						<span class="inline-block h-2.5 w-2.5 rounded-full bg-success mr-1"></span> Happening now ·
+						<span class="inline-block h-2.5 w-2.5 rounded-full bg-info ml-1 mr-1"></span> Upcoming ·
+						<span class="inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50 ml-1 mr-1"></span> Past
+					</div>
+				</div>
+			{/if}
+		</div>
 	{/if}
 </section>
