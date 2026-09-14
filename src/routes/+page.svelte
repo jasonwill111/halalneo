@@ -307,6 +307,43 @@
 	</div>
 </section>
 
+<!-- HALAL TOOLS -->
+<section {@attach reveal}>
+	<SectionHead
+		number="02"
+		title="Halal trade tools"
+		href="/tools"
+		linkLabel="See all tools"
+	/>
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+		{#each [
+			{ href: '/tools/ingredient-checker', name: 'Ingredient Checker', desc: 'AI verdict on halal, haram, mashbooh', icon: FlaskConical, tone: 'info' },
+			{ href: '/tools/certification-cost', name: 'Cost Estimator', desc: 'Estimate registration fees by certifier', icon: Calculator, tone: 'warn' },
+			{ href: '/tools/landed-cost', name: 'Landed Cost', desc: 'True per-unit cost with duties & fees', icon: Banknote, tone: 'success' },
+			{ href: '/tools/rfq-builder', name: 'RFQ Builder', desc: 'Draft sourcing documents', icon: FileText, tone: 'accent-purple' },
+			{ href: '/export-docs', name: 'Export Docs', desc: 'Templates for suppliers & importers', icon: FileText, tone: 'info' }
+		] as tool (tool.href)}
+			<a
+				href={localizeHref(tool.href)}
+				class="group flex flex-col gap-1.5 rounded-xl bg-card p-3 transition-all hover:shadow-md hover:-translate-y-0.5 sm:p-4"
+			>
+				<div class="flex items-center justify-between">
+					<div class={`flex size-8 items-center justify-center rounded-lg ${tool.tone === 'info' ? 'bg-info/15 text-info' : tool.tone === 'warn' ? 'bg-warn/15 text-warn' : tool.tone === 'success' ? 'bg-success/15 text-success' : 'bg-accent-purple/15 text-accent-purple'}`}>
+						<tool.icon class="size-4" />
+					</div>
+					<Badge variant={tool.tone === 'info' ? 'secondary' : 'outline'} class="text-[10px]">{tool.tone}</Badge>
+				</div>
+				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+					{tool.name}
+				</h3>
+				<p class="line-clamp-2 text-[10px] text-muted-foreground sm:text-xs">
+					{tool.desc}
+				</p>
+			</a>
+		{/each}
+	</div>
+</section>
+
 <!-- KB PREVIEW -->
 <section {@attach reveal}>
 	<SectionHead

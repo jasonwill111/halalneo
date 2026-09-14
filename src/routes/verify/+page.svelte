@@ -1,19 +1,58 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+	import { recognitionStatusLabel } from '#lib/data/recognition.js';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import ShieldCheckIcon from '@lucide/svelte/icons/shield-check';
 	import CheckCircleIcon from '@lucide/svelte/icons/circle-check';
 	import XCircleIcon from '@lucide/svelte/icons/circle-x';
 	import ClockIcon from '@lucide/svelte/icons/clock';
+	import CopyIcon from '@lucide/svelte/icons/copy';
+	import FileDownIcon from '@lucide/svelte/icons/file-down';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 
 	let { data } = $props();
 	let query = $state(data.q ?? '');
+
+	const copyToClipboard = async (text: string) => {
+		try {
+			await navigator.clipboard.writeText(text);
+		} catch {
+			// Fallback for older browsers
+			const el = document.createElement('textarea');
+			el.value = text;
+			document.body.appendChild(el);
+			el.select();
+			document.execCommand('copy');
+			document.body.removeChild(el);
+		}
+	};
+
+	const exportResults = () => {
+		const data = {
+			timestamp: new Date().toISOString(),
+			query: query.trim(),
+			count: results.length,
+			results: results.map((r) => ({
+				name: r.name,
+				type: r.type,
+				certStatus: r.certStatus,
+				certifications: r.certifications
+			}))
+		};
+		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `halalneo-results-${new Date().toISOString().split('T')[0]}.json`;
+		a.click();
+		URL.revokeObjectURL(url);
+	};
 
 	// Resync when navigating between ?q= values (same component instance)
 	$effect(() => {
@@ -111,7 +150,7 @@
 		</div>
 	</div>
 
-	{#if searched}
+		{#if searched}
 		{#if loading}
 			<div class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
 				<div class="mx-auto mb-3 size-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
@@ -125,27 +164,68 @@
 			</div>
 		{:else}
 			<div class="space-y-2">
-				<p class="text-sm text-muted-foreground">{results.length} result{results.length !== 1 ? 's' : ''} found</p>
+				<div class="flex items-center justify-between">
+					<p class="text-sm text-muted-foreground">{results.length} result{results.length !== 1 ? 's' : ''} found</p>
+					<div class="flex items-center gap-2">
+						<Button
+							variant="outline" size="sm" class="h-7 text-xs"
+							onclick={() => copyToClipboard(results.map((r) => r.name).join(', '))}
+						>
+							Copy results<CopyIcon class="size-3 ml-1" />
+						</Button>
+						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={exportResults}>
+							Export<FileDownIcon class="size-3 ml-1" />
+						</Button>
+					</div>
+				</div>
 				<div class="grid gap-3 sm:grid-cols-2">
 					{#each results as r (r.type + ':' + r.slug)}
 						<Card class="bg-card transition-shadow hover:shadow-md">
 							<CardContent class="space-y-2 p-4">
 								<div class="flex items-start justify-between gap-2">
-									<div class="space-y-1">
-										<CardTitle class="text-sm leading-snug">{r.name}</CardTitle>
+									<div class="space-y-1 min-w-0 flex-1">
+										<div class="flex items-center gap-1.5 min-w-0">
+											<CardTitle class="text-sm leading-snug truncate">{r.name}</CardTitle>
+											{#if r.certStatus === 'certified'}
+												<CheckCircleIcon class="size-4 shrink-0 text-success" />
+											{:else if r.certStatus === 'pending'}
+												<ClockIcon class="size-4 shrink-0 text-warn" />
+											{:else}
+												<XCircleIcon class="size-4 shrink-0 text-destructive" />
+											{/if}
+										</div>
 										{#if r.type === 'supplier'}
-											<p class="text-xs text-muted-foreground">{r.country} · {r.businessType}</p>
+											<p class="text-xs text-muted-foreground truncate">{r.country} · {r.businessType}</p>
+											{#if r.recognitions?.length}
+												<div class="flex flex-wrap gap-1 mt-1">
+													{#each r.recognitions as rec (rec.bodyId)}
+														<Badge
+															variant="secondary"
+															class={`text-[9px] ${
+																rec.status === 'recognised'
+																	? 'bg-success/15 text-success'
+																	: rec.status === 'mutual'
+																		? 'bg-warn/15 text-warn'
+																		: 'bg-info/15 text-info'
+															}`}
+														>
+															{rec.bodyName}: {recognitionStatusLabel(rec.status)}
+														</Badge>
+													{/each}
+												</div>
+											{/if}
 										{:else}
-											<p class="text-xs text-muted-foreground">{r.category} · {r.supplierName}</p>
+											<p class="text-xs text-muted-foreground truncate">{r.category} · {r.supplierName}</p>
 										{/if}
 									</div>
-									{#if r.certStatus === 'certified'}
-										<CheckCircleIcon class="size-5 shrink-0 text-success" />
-									{:else if r.certStatus === 'pending'}
-										<ClockIcon class="size-5 shrink-0 text-warn" />
-									{:else}
-										<XCircleIcon class="size-5 shrink-0 text-destructive" />
-									{/if}
+									<button
+										type="button"
+										class="shrink-0 rounded p-1 text-muted-foreground hover:text-foreground"
+										onclick={() => copyToClipboard(r.name)}
+										aria-label="Copy name"
+									>
+										<CopyIcon class="size-3" />
+									</button>
 								</div>
 
 								<div class="flex flex-wrap gap-1">
@@ -163,7 +243,7 @@
 										<Badge variant="secondary">Uncertified</Badge>
 									{/if}
 									<Button
-										href={r.type === 'supplier' ? `/supplier/${r.slug}` : `/product/${r.slug}`}
+										href={localizeHref(r.type === 'supplier' ? `/supplier/${r.slug}` : `/product/${r.slug}`)}
 										variant="outline"
 										size="sm"
 										class="ml-auto h-7 text-xs"

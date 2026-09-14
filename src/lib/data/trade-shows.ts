@@ -13,6 +13,8 @@ export interface TradeShow {
 	focus: string[];
 	exhibitors?: string;
 	visitors?: string;
+	lat?: number;
+	lng?: number;
 }
 
 export const tradeShows: TradeShow[] = [
@@ -30,7 +32,9 @@ export const tradeShows: TradeShow[] = [
 		description: 'World\'s largest halal trade fair. Hosted by Malaysia\'s MITI and organised by MATRADE with JAKIM and HDC. Covers 14 halal industry clusters including food, pharma, Islamic finance, modest fashion, technology, and logistics.',
 		focus: ['Food & Beverage', 'Pharmaceuticals', 'Islamic Finance', 'Modest Fashion', 'Technology', 'Logistics'],
 		exhibitors: '1,200+',
-		visitors: '50,000+'
+		visitors: '50,000+',
+		lat: 3.1392,
+		lng: 101.7833
 	},
 	{
 		id: 'gulfood-2027',
@@ -46,7 +50,9 @@ export const tradeShows: TradeShow[] = [
 		description: 'World\'s largest food and beverage exhibition. Major halal sourcing hub connecting buyers from Middle East, Africa, and South Asia with global suppliers.',
 		focus: ['Food & Beverage', 'Halal Products', 'Dairy', 'Meat', 'Confectionery'],
 		exhibitors: '5,000+',
-		visitors: '100,000+'
+		visitors: '100,000+',
+		lat: 25.0989,
+		lng: 55.1341
 	},
 	{
 		id: 'halal-expo-istanbul-2026',
@@ -62,7 +68,9 @@ export const tradeShows: TradeShow[] = [
 		description: 'Most politically significant halal industry event. Co-located with World Halal Summit and World Halal Council general assembly. Türkiye holds OIC/SMIIC secretariat. Covers mutual recognition agreements between certification bodies globally.',
 		focus: ['Certification', 'Standards', 'OIC Trade', 'Food', 'Cosmetics', 'Pharmaceuticals'],
 		exhibitors: '500+',
-		visitors: '50,000+'
+		visitors: '50,000+',
+		lat: 41.0297,
+		lng: 28.9607
 	},
 	{
 		id: 'saudi-halal-expo-2026',
@@ -76,7 +84,9 @@ export const tradeShows: TradeShow[] = [
 		website: 'https://saudihalalexp.com',
 		scale: 'large',
 		description: 'MENA region\'s largest dedicated halal industry exhibition. Covers food, pharmaceuticals, cosmetics, modest fashion, tourism, and Islamic finance.',
-		focus: ['Food', 'Pharmaceuticals', 'Cosmetics', 'Modest Fashion', 'Islamic Finance']
+		focus: ['Food', 'Pharmaceuticals', 'Cosmetics', 'Modest Fashion', 'Islamic Finance'],
+		lat: 24.7136,
+		lng: 46.6753
 	},
 	{
 		id: 'halal-expo-canada-2026',
@@ -90,7 +100,9 @@ export const tradeShows: TradeShow[] = [
 		website: 'https://halalexpo.ca',
 		scale: 'large',
 		description: 'North America\'s core halal B2B platform. Attracts exhibitors from Malaysia, Turkey, UAE, Pakistan alongside North American producers targeting 1.4 million Muslim-majority households.',
-		focus: ['Food & Beverage', 'B2B Matching', 'North American Market']
+		focus: ['Food & Beverage', 'B2B Matching', 'North American Market'],
+		lat: 43.6532,
+		lng: -79.3832
 	},
 	{
 		id: 'jakarta-halal-expo-2026',
@@ -104,7 +116,9 @@ export const tradeShows: TradeShow[] = [
 		website: 'https://jakartahalalexp.com',
 		scale: 'large',
 		description: 'Indonesia\'s flagship halal trade event. World\'s largest Muslim population market. Covers fashion, halal products, tourism, lifestyle, and Islamic finance.',
-		focus: ['Fashion', 'Halal Products', 'Tourism', 'Lifestyle', 'Islamic Finance']
+		focus: ['Fashion', 'Halal Products', 'Tourism', 'Lifestyle', 'Islamic Finance'],
+		lat: -6.2250,
+		lng: 106.6500
 	},
 	{
 		id: 'mihas-dubai-2026',
@@ -118,7 +132,9 @@ export const tradeShows: TradeShow[] = [
 		website: 'https://mihasdubai.com',
 		scale: 'large',
 		description: 'International edition of MIHAS. Showcases 200+ Malaysian halal suppliers to GCC and Middle Eastern buyers.',
-		focus: ['Malaysian Products', 'GCC Market', 'B2B Matching']
+		focus: ['Malaysian Products', 'GCC Market', 'B2B Matching'],
+		lat: 25.0989,
+		lng: 55.1341
 	},
 	{
 		id: 'qatar-halal-expo-2026',
