@@ -28,12 +28,12 @@
 
 <Breadcrumb items={[{ label: 'About', href: '/about' }]} />
 
-<section class="space-y-4 sm:space-y-8">
-	<div class="max-w-3xl space-y-4">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-5xl">
+<section class="space-y-4 sm:space-y-6">
+	<div class="max-w-3xl space-y-3">
+		<h1 class="text-2xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
 			Halal trade, without the guesswork
 		</h1>
-		<p class="text-lg text-muted-foreground">
+		<p class="text-sm text-muted-foreground sm:text-base">
 			HalalNeo is a trade-intelligence layer for the halal economy. We connect certified suppliers
 			with B2B buyers, and back every listing with a knowledge base on certification, logistics and
 			market entry.
@@ -54,7 +54,7 @@
 		</p>
 	</Card>
 
-	<div class="grid gap-4 sm:grid-cols-3">
+	<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 		<Card>
 			<CardHeader class="gap-2">
 				<ShieldCheck class="size-8 text-primary" data-icon="header" />
@@ -102,7 +102,7 @@
 				are genuinely certified, and vetted suppliers struggle to stand out.
 			</p>
 		</div>
-		<div class="grid gap-4 sm:grid-cols-3">
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 			<Card>
 				<CardHeader class="gap-3">
 					<Search class="size-6 text-primary" data-icon="header" />

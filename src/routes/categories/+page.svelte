@@ -14,6 +14,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 	let search = $state('');
@@ -84,10 +85,11 @@
 				</Card>
 				</article>
 			{:else}
-				<div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
-					<p class="text-lg font-medium text-muted-foreground">No categories found</p>
-					<p class="text-sm text-muted-foreground">Try adjusting your search.</p>
-				</div>
+				<Empty class="col-span-full">
+					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+					<EmptyTitle>No categories found</EmptyTitle>
+					<EmptyDescription>Try adjusting your search.</EmptyDescription>
+				</Empty>
 			{/each}
 	</div>
 

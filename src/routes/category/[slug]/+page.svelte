@@ -55,7 +55,7 @@
 	items={[{ label: 'Categories', href: '/categories' }, { label: category?.name ?? data.slug }]}
 />
 
-<div class="py-8">
+<div class="mx-auto max-w-6xl py-8">
 	<header class="mb-6 space-y-2">
 		<h1 class="text-3xl font-bold tracking-tight">{category?.name ?? data.slug}</h1>
 		{#if category?.description}

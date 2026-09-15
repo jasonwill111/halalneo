@@ -133,7 +133,7 @@
 	]}
 />
 
-<section class="space-y-4 sm:space-y-8">
+<section class="space-y-4 sm:space-y-6">
 	{#if countryImages[guide.country]}
 		<div class="relative overflow-hidden rounded-xl">
 			<img
@@ -312,7 +312,7 @@
 					<ShieldCheckIcon class="size-4 text-primary" />
 					<CardTitle class="text-base">Will this certificate travel?</CardTitle>
 				</div>
-				<div class="grid gap-4 sm:grid-cols-2">
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-2">
 					<div class="space-y-2">
 						<h3 class="text-xs font-semibold text-foreground">This market's bodies, accepted in</h3>
 						{#if recognition.outbound.length === 0}
@@ -549,7 +549,7 @@
 	{#if relatedGuides.length > 0}
 		<div class="space-y-3">
 			<h2 class="text-lg font-semibold tracking-tight">Related markets</h2>
-			<div class="grid gap-3 sm:grid-cols-3">
+			<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 				{#each relatedGuides as rel (rel.slug)}
 					<Button
 						href={localizeHref(`/market-guides/${rel.slug}`)}

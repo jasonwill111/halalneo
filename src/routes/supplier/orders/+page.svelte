@@ -35,13 +35,13 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<Card class="p-3">
+<Card class="p-3 ring-1 ring-foreground/10">
 	<div class="mb-2 flex items-center justify-between">
 		<h2 class="text-sm font-bold">Orders</h2>
 		<Button variant="ghost" size="sm" class="text-[10px]">Filter</Button>
 	</div>
 
-	<div class="space-y-1.5">
+	<div class="space-y-2">
 		{#if orders.length === 0}
 			<div class="flex flex-col items-center justify-center py-12 text-center">
 				<p class="text-sm font-medium text-muted-foreground">No orders yet</p>
@@ -49,7 +49,7 @@
 			</div>
 		{:else}
 				{#each orders as order (order.id)}
-				<Card class="bg-muted/40 px-2.5 py-2">
+				<Card class="bg-muted/50 px-2.5 py-2">
 					<div class="flex items-center justify-between">
 						<div>
 							<p class="text-[11px] font-semibold">{order.id}</p>

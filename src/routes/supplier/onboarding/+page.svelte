@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { Label } from '#lib/components/ui/field/index.js';
+	import { Label, FieldError } from '#lib/components/ui/field/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import {
 		Select,
@@ -16,6 +16,8 @@
 	import Users from '@lucide/svelte/icons/users';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 
 	const benefits = [
 		{ icon: Globe, title: 'Global buyer reach', desc: 'Connect with certified buyers across ASEAN, Gulf and Europe.', color: 'bg-info/10 text-info' },
@@ -43,6 +45,8 @@
 	let cert = $state('');
 	let regNo = $state('');
 	let website = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLDivElement | undefined>(undefined);
 
 	const canContinue = $derived(
 		step === 1
@@ -54,16 +58,84 @@
 		step === 1 && bizType && !businessTypes.some((t) => t.value === bizType) ? 'Choose manufacturer, wholesaler, or trader.' : ''
 	);
 
+	const step1Schema = z.object({
+		company: z.string().trim().min(2, 'Please enter your company legal name.').max(200, 'Company name must be at most 200 characters.'),
+		country: z.string().trim().min(2, 'Please enter your country.').max(100, 'Country must be at most 100 characters.'),
+		bizType: z
+			.string()
+			.min(1, 'Please choose a business type.')
+			.refine((v) => businessTypes.some((t) => t.value === v), 'Choose manufacturer, wholesaler, or trader.'),
+		products: z.string().trim().max(300, 'Primary products must be at most 300 characters.'),
+		email: z
+			.string()
+			.trim()
+			.min(1, 'Contact email is required so we can follow up.')
+			.email('Please enter a valid email.')
+			.max(200, 'Email must be at most 200 characters.')
+	});
+
+	const step2Schema = z.object({
+		cert: z.string().trim().max(200, 'Certification must be at most 200 characters.'),
+		regNo: z.string().trim().max(100, 'Registration number must be at most 100 characters.'),
+		website: z.string().trim().max(300, 'Website must be at most 300 characters.')
+	});
+
+	const STEP1_KEYS = new Set(['company', 'country', 'bizType', 'products', 'email']);
+
+	// Server `details` use API field names — remap to the client state keys above.
+	const SERVER_TO_CLIENT: Record<string, string> = {
+		company: 'company',
+		country: 'country',
+		businessType: 'bizType',
+		primaryProducts: 'products',
+		contactEmail: 'email',
+		halalCertification: 'cert',
+		registrationNo: 'regNo',
+		website: 'website'
+	};
+
+	function applyIssues(issues: Array<{ key: string; message: string }>) {
+		for (const { key, message } of issues) {
+			if (key && message && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: message };
+		}
+	}
+
+	function validateStep1(): boolean {
+		fieldErrors = {};
+		const parsed = step1Schema.safeParse({ company, country, bizType, products, email });
+		if (parsed.success) return true;
+		applyIssues(parsed.error.issues.map((i) => ({ key: String(i.path[0] ?? ''), message: i.message })));
+		focusFirstInvalid(formEl);
+		return false;
+	}
+
+	function validateStep2(): boolean {
+		fieldErrors = {};
+		const parsed = step2Schema.safeParse({ cert, regNo, website });
+		if (parsed.success) return true;
+		applyIssues(parsed.error.issues.map((i) => ({ key: String(i.path[0] ?? ''), message: i.message })));
+		focusFirstInvalid(formEl);
+		return false;
+	}
+
 	async function next() {
 		submitError = '';
+		if (step === 1 && !validateStep1()) return;
+		if (step === 2 && !validateStep2()) return;
 		if (step < 3) {
 			step += 1;
 			return;
 		}
 		if (step > 3 || sending) return;
-		if (!email.trim()) {
-			submitError = 'Please add a contact email so we can follow up.';
-			step = 1;
+		fieldErrors = {};
+		const issues = [
+			...step1Schema.safeParse({ company, country, bizType, products, email }).error?.issues.map((i) => ({ key: String(i.path[0] ?? ''), message: i.message })) ?? [],
+			...step2Schema.safeParse({ cert, regNo, website }).error?.issues.map((i) => ({ key: String(i.path[0] ?? ''), message: i.message })) ?? []
+		];
+		if (issues.length > 0) {
+			applyIssues(issues);
+			step = issues.some((i) => STEP1_KEYS.has(i.key)) ? 1 : 2;
+			focusFirstInvalid(formEl);
 			return;
 		}
 		sending = true;
@@ -83,7 +155,14 @@
 				})
 			});
 			if (!res.ok) {
-				const data = (await res.json().catch(() => ({}))) as { error?: string };
+				const data = (await res.json().catch(() => ({}))) as { error?: string; details?: Record<string, string[] | string> };
+				if (res.status === 400 && data?.details) {
+					const remapped: Record<string, string[] | string> = {};
+					for (const [k, v] of Object.entries(data.details)) remapped[SERVER_TO_CLIENT[k] ?? k] = v;
+					fieldErrors = mergeServerDetails(fieldErrors, remapped);
+					step = Object.keys(fieldErrors).some((k) => STEP1_KEYS.has(k)) ? 1 : 2;
+					focusFirstInvalid(formEl);
+				}
 				throw new Error(data?.error ?? 'submit failed');
 			}
 			step = 4;
@@ -100,7 +179,7 @@
 	<meta name="description" content="Apply to list your halal-certified products on HalalNeo and reach global buyers.">
 </svelte:head>
 
-<section class="mx-auto max-w-3xl">
+<section class="mx-auto max-w-6xl">
 		<div class="mb-4 text-center">
 		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Become a HalalNeo supplier</h1>
 		<p class="mx-auto mt-1 max-w-xl text-sm text-muted-foreground">
@@ -112,11 +191,11 @@
 		</p>
 	</div>
 
-	<section class="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+	<section class="mb-4 grid grid-cols-2 sm:grid-cols-2 gap-3">
 		{#each benefits as b}
 			<Card class="p-3">
 				<CardContent class="space-y-1 p-0">
-				<div class="mx-auto mb-1 flex size-7 items-center justify-center rounded-lg {b.color}">
+				<div class="mx-auto mb-1 flex size-8 items-center justify-center rounded-lg {b.color}">
 					<b.icon class="size-4"></b.icon>
 				</div>
 					<h3 class="text-[11px] font-semibold leading-tight text-center">{b.title}</h3>
@@ -144,21 +223,37 @@
 				{/each}
 			</div>
 
+			<div bind:this={formEl}>
 			{#if step === 1}
 				<div class="space-y-2">
 					<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">Company Legal Name <span class="text-destructive">*</span></Label>
-						<Input type="text" class="w-full" placeholder="e.g. Nusantara Foods Sdn Bhd" bind:value={company} />
+						<Input
+							type="text"
+							class="w-full"
+							placeholder="e.g. Nusantara Foods Sdn Bhd"
+							bind:value={company}
+							aria-invalid={fieldErrors.company ? true : undefined}
+							oninput={() => { if (fieldErrors.company) fieldErrors = { ...fieldErrors, company: '' }; }}
+						/>
+						{#if fieldErrors.company}<FieldError class="text-[10px]">{fieldErrors.company}</FieldError>{/if}
 					</div>
 					<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 						<div class="space-y-0.5">
 							<Label class="mb-1 block text-[10px]">Country <span class="text-destructive">*</span></Label>
-							<Input type="text" placeholder="Country" bind:value={country} />
+							<Input
+								type="text"
+								placeholder="Country"
+								bind:value={country}
+								aria-invalid={fieldErrors.country ? true : undefined}
+								oninput={() => { if (fieldErrors.country) fieldErrors = { ...fieldErrors, country: '' }; }}
+							/>
+							{#if fieldErrors.country}<FieldError class="text-[10px]">{fieldErrors.country}</FieldError>{/if}
 						</div>
 				<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">Business Type <span class="text-destructive">*</span></Label>
 						<Select type="single" bind:value={bizType}>
-							<SelectTrigger class="w-full">
+							<SelectTrigger class="w-full" aria-invalid={fieldErrors.bizType ? true : undefined}>
 								{bizType ? businessTypes.find((t) => t.value === bizType)?.label : 'Select…'}
 							</SelectTrigger>
 							<SelectContent>
@@ -169,33 +264,70 @@
 								</SelectGroup>
 							</SelectContent>
 						</Select>
-						{#if businessTypeError}
+						{#if fieldErrors.bizType}
+							<p class="text-[10px] text-destructive">{fieldErrors.bizType}</p>
+						{:else if businessTypeError}
 							<p class="text-[10px] text-destructive">{businessTypeError}</p>
 						{/if}
 					</div>
 					</div>
 					<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">Primary Products</Label>
-						<Input type="text" placeholder="e.g. Food ingredients, cosmetics, pharmaceuticals" bind:value={products} />
+						<Input
+							type="text"
+							placeholder="e.g. Food ingredients, cosmetics, pharmaceuticals"
+							bind:value={products}
+							aria-invalid={fieldErrors.products ? true : undefined}
+							oninput={() => { if (fieldErrors.products) fieldErrors = { ...fieldErrors, products: '' }; }}
+						/>
+						{#if fieldErrors.products}<FieldError class="text-[10px]">{fieldErrors.products}</FieldError>{/if}
 					</div>
 					<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">Contact Email <span class="text-destructive">*</span></Label>
-						<Input type="email" placeholder="you@company.com" bind:value={email} />
+						<Input
+							type="email"
+							placeholder="you@company.com"
+							bind:value={email}
+							aria-invalid={fieldErrors.email ? true : undefined}
+							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+						/>
+						{#if fieldErrors.email}<FieldError class="text-[10px]">{fieldErrors.email}</FieldError>{/if}
 					</div>
 				</div>
 			{:else if step === 2}
 				<div class="space-y-2">
 					<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">Halal Certification</Label>
-						<Input type="text" placeholder="e.g. JAKIM, MUI, MUIS, IFANCA" bind:value={cert} />
+						<Input
+							type="text"
+							placeholder="e.g. JAKIM, MUI, MUIS, IFANCA"
+							bind:value={cert}
+							aria-invalid={fieldErrors.cert ? true : undefined}
+							oninput={() => { if (fieldErrors.cert) fieldErrors = { ...fieldErrors, cert: '' }; }}
+						/>
+						{#if fieldErrors.cert}<FieldError class="text-[10px]">{fieldErrors.cert}</FieldError>{/if}
 					</div>
 					<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">License / Registration No.</Label>
-						<Input type="text" placeholder="Business registration number" bind:value={regNo} />
+						<Input
+							type="text"
+							placeholder="Business registration number"
+							bind:value={regNo}
+							aria-invalid={fieldErrors.regNo ? true : undefined}
+							oninput={() => { if (fieldErrors.regNo) fieldErrors = { ...fieldErrors, regNo: '' }; }}
+						/>
+						{#if fieldErrors.regNo}<FieldError class="text-[10px]">{fieldErrors.regNo}</FieldError>{/if}
 					</div>
 					<div class="space-y-0.5">
 						<Label class="mb-1 block text-[10px]">Website</Label>
-						<Input type="text" placeholder="https://" bind:value={website} />
+						<Input
+							type="text"
+							placeholder="https://"
+							bind:value={website}
+							aria-invalid={fieldErrors.website ? true : undefined}
+							oninput={() => { if (fieldErrors.website) fieldErrors = { ...fieldErrors, website: '' }; }}
+						/>
+						{#if fieldErrors.website}<FieldError class="text-[10px]">{fieldErrors.website}</FieldError>{/if}
 					</div>
 				</div>
 			{:else if step === 3}
@@ -224,6 +356,7 @@
 					</div>
 				</div>
 			{/if}
+			</div>
 
 			{#if submitError}
 				<p class="text-center text-xs text-destructive">{submitError}</p>
@@ -232,7 +365,7 @@
 			{#if step < 4}
 				<div class="flex items-center justify-end gap-2">
 					{#if step > 1}
-						<Button variant="outline" size="sm" onclick={() => (step -= 1)}>Back</Button>
+						<Button variant="outline" size="sm" onclick={() => { fieldErrors = {}; step -= 1; }}>Back</Button>
 					{/if}
 					<Button size="sm" onclick={next} disabled={sending || !canContinue}>
 						{sending ? 'Submitting...' : step === 3 ? 'Submit Application' : 'Continue'}

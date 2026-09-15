@@ -24,7 +24,7 @@
 </svelte:head>
 
 {#if story}
-	<div class="mx-auto max-w-3xl space-y-4 sm:space-y-6">
+	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
 		<Breadcrumb items={[{ label: 'Success Stories', href: '/success-stories' }, { label: story.title ?? 'Story' }]} />
 
 		<header class="space-y-3">

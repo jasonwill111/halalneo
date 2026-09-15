@@ -358,13 +358,13 @@
 			</div>
 		</header>
 
-		<main class="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 pt-3 pb-12 sm:space-y-8 sm:px-6 sm:pt-4 sm:pb-8">
+		<main class="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 pt-3 pb-12 sm:space-y-6 sm:px-6 sm:pt-4 sm:pb-8">
 			{@render children()}
 		</main>
 
 		<footer class="border-t border-border/50 bg-muted/30">
 			<div class="mx-auto max-w-7xl px-4 pt-3 pb-16 sm:px-6 sm:pt-6 sm:pb-6">
-				<div class="hidden grid-cols-2 gap-6 sm:grid sm:grid-cols-3 lg:grid-cols-6">
+				<div class="grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-3 lg:grid-cols-6">
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
 						<a href={localizeHref('/')} class="flex items-center gap-2">

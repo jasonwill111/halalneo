@@ -102,7 +102,7 @@
 				<p class="mt-2 text-[11px] text-muted-foreground">You're not following any suppliers yet.</p>
 			</div>
 		{:else}
-			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+			<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 				{#each following as f (f.supplierSlug)}
 					<article class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md">
 						<a href={`/supplier/${f.supplierSlug}`} class="block">
@@ -132,7 +132,7 @@
 			<p class="mt-2 text-[11px] text-muted-foreground">No saved items yet.</p>
 		</div>
 	{:else}
-		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 			{#each filtered as item (item.slug)}
 				<article class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md">
 					<a href={item.href} class="block">

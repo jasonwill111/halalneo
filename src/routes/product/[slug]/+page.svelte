@@ -7,7 +7,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Tabs, TabsList, TabsTrigger, TabsContent } from '#lib/components/ui/tabs/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -30,6 +30,8 @@
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
 	import { sanitizeHtml } from '#lib/sanitize.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 	import { page } from '$app/state';
 
 	let { data } = $props();
@@ -41,12 +43,37 @@
 	let inquiryEmail = $state('');
 	let inquirySending = $state(false);
 	let inquiryResult = $state<{ type: 'success' | 'error'; message: string } | null>(null);
+	let inquiryFieldErrors = $state<Record<string, string>>({});
+	let inquiryFormEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const inquirySchema = z.object({
+		inquiryEmail: z
+			.string()
+			.trim()
+			.optional()
+			.refine((v) => !v || z.string().email().safeParse(v).success, {
+				message: 'Please enter a valid email.'
+			}),
+		inquirySubject: z.string().trim().min(1, 'Subject is required.'),
+		inquiryMessage: z.string().trim().min(10, 'Message must be at least 10 characters.')
+	});
 
 	// Favorite state — initialized client-side to avoid SSR/CSR mismatch
 	let favorited = $state(false);
 
 	async function submitInquiry() {
-		if (!inquirySubject.trim() || !inquiryMessage.trim()) return;
+		if (inquirySending) return;
+		inquiryFieldErrors = {};
+		const parsed = inquirySchema.safeParse({ inquiryEmail, inquirySubject, inquiryMessage });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !inquiryFieldErrors[key])
+					inquiryFieldErrors = { ...inquiryFieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(inquiryFormEl);
+			return;
+		}
 		inquirySending = true;
 		inquiryResult = null;
 		try {
@@ -66,9 +93,18 @@
 				inquirySubject = '';
 				inquiryMessage = '';
 				inquiryEmail = '';
+				inquiryFieldErrors = {};
 			} else {
 				const errBody = ((await res.json()) as any);
 				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
+				if (res.status === 400 && errBody.details) {
+					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
+						inquirySubject: errBody.details.subject,
+						inquiryMessage: errBody.details.message,
+						inquiryEmail: errBody.details.buyerSlug
+					});
+					focusFirstInvalid(inquiryFormEl);
+				}
 			}
 		} catch {
 			inquiryResult = { type: 'error', message: 'Network error. Please try again.' };
@@ -299,13 +335,13 @@
 </svelte:head>
 
 {#if item}
-	<div class="mx-auto max-w-5xl space-y-4 sm:space-y-6">
+	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
 		<Breadcrumb
 			items={[{ label: 'Products', href: '/products' }, { label: item.name ?? 'Product' }]}
 		/>
 
 		<!-- Top: Image + Info -->
-		<div class="grid gap-6 lg:grid-cols-5">
+		<div class="grid gap-4 lg:gap-6 lg:grid-cols-5">
 			<!-- Image gallery -->
 			<div class="lg:col-span-2">
 				<div
@@ -418,6 +454,7 @@
 							class="flex-1 gap-2"
 							onclick={() => {
 								inquiryResult = null;
+								inquiryFieldErrors = {};
 								inquiryOpen = true;
 							}}
 						>
@@ -462,7 +499,7 @@
 		</Tabs>
 
 		<!-- Tab Content -->
-		<div class="flex flex-col gap-6 lg:grid lg:grid-cols-3 lg:gap-8">
+		<div class="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6">
 			<div class="space-y-4 lg:col-span-2">
 				{#if activeTab === 'description'}
 					<h2 class="text-base font-semibold">Product Description</h2>
@@ -742,6 +779,7 @@
 		{/if}
 
 		<form
+			bind:this={inquiryFormEl}
 			class="space-y-3"
 			onsubmit={(e) => {
 				e.preventDefault();
@@ -750,11 +788,35 @@
 		>
 			<Field>
 				<FieldLabel>Email (optional)</FieldLabel>
-				<Input type="email" bind:value={inquiryEmail} placeholder="you@company.com" />
+				<Input
+					type="email"
+					bind:value={inquiryEmail}
+					placeholder="you@company.com"
+					aria-invalid={inquiryFieldErrors.inquiryEmail ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquiryEmail)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquiryEmail: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquiryEmail}<FieldError
+					>{inquiryFieldErrors.inquiryEmail}</FieldError
+				>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Subject</FieldLabel>
-				<Input type="text" bind:value={inquirySubject} placeholder="Inquiry about product..." />
+				<Input
+					type="text"
+					bind:value={inquirySubject}
+					placeholder="Inquiry about product..."
+					aria-invalid={inquiryFieldErrors.inquirySubject ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquirySubject)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquirySubject: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquirySubject}<FieldError
+					>{inquiryFieldErrors.inquirySubject}</FieldError
+				>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Message</FieldLabel>
@@ -762,7 +824,15 @@
 					bind:value={inquiryMessage}
 					placeholder="I'm interested in..."
 					rows={4}
+					aria-invalid={inquiryFieldErrors.inquiryMessage ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquiryMessage)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquiryMessage: '' };
+					}}
 				/>
+				{#if inquiryFieldErrors.inquiryMessage}<FieldError
+					>{inquiryFieldErrors.inquiryMessage}</FieldError
+				>{/if}
 			</Field>
 			<DialogFooter>
 				<Button

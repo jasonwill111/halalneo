@@ -10,7 +10,7 @@
 
 	<AccountNav variant="mobile" />
 
-	<div class="flex gap-4">
+	<div class="flex gap-3 sm:gap-4">
 		<AccountNav variant="desktop" />
 
 		<div class="flex-1 min-w-0">

@@ -14,6 +14,7 @@
 	import MapPin from '@lucide/svelte/icons/map-pin';
 	import Package from '@lucide/svelte/icons/package';
 	import SearchIcon from '@lucide/svelte/icons/search';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -179,13 +180,11 @@
 		</div>
 
 		{#if paged.length === 0}
-			<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
-				<Package class="mx-auto mb-2 size-6 text-muted-foreground"></Package>
-				<p class="text-sm font-medium">
-					{query.trim() || activeCategory !== 'all' ? 'No products match these filters' : 'No products in this category yet'}
-				</p>
-				<p class="mt-1 text-xs text-muted-foreground">New listings are added as suppliers onboard during test mode.</p>
-			</div>
+			<Empty>
+				<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
+				<EmptyTitle>{query.trim() || activeCategory !== 'all' ? 'No products match these filters' : 'No products in this category yet'}</EmptyTitle>
+				<EmptyDescription>New listings are added as suppliers onboard during test mode.</EmptyDescription>
+			</Empty>
 		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
 				{#each paged as p (p.slug)}

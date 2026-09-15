@@ -14,6 +14,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -117,7 +118,7 @@
 
 	<!-- Business type cards (also act as filters) -->
 	<div class="space-y-4">
-		<div class="grid gap-2 sm:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 			{#each typeCards as t (t.value)}
 				{@const meta = typeMeta[t.value]}
 				<button
@@ -185,10 +186,11 @@
 		</div>
 
 		{#if pagedSuppliers.length === 0}
-			<div class="rounded-xl bg-card p-8 text-center ring-1 ring-foreground/10">
-				<p class="text-sm font-medium">No suppliers match these filters</p>
-				<p class="mt-1 text-xs text-muted-foreground">New suppliers are joining during test mode — check back soon.</p>
-			</div>
+			<Empty>
+				<EmptyMedia><ShieldCheck class="size-6 text-muted-foreground"></ShieldCheck></EmptyMedia>
+				<EmptyTitle>No suppliers match these filters</EmptyTitle>
+				<EmptyDescription>New suppliers are joining during test mode — check back soon.</EmptyDescription>
+			</Empty>
 		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 				{#each pagedSuppliers as s, i (s.slug)}

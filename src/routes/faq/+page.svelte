@@ -108,10 +108,17 @@
 
 <Breadcrumb items={[{ label: 'FAQ', href: '/faq' }]} />
 
-<section class="mx-auto max-w-3xl space-y-4 sm:space-y-6">
-	<div class="rounded-xl bg-card p-6 text-center space-y-4">
-		<h2 class="text-lg font-semibold">How can we help?</h2>
-		<div class="relative mx-auto max-w-md">
+<section class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
+	<div class="mx-auto max-w-2xl space-y-2 text-center">
+		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Frequently asked questions</h1>
+		<p class="text-sm text-muted-foreground sm:text-base">
+			Everything buyers ask us about certification, verification and how HalalNeo works.
+		</p>
+	</div>
+
+	<div class="rounded-xl bg-card p-4 text-center sm:p-6">
+		<h2 class="text-base font-semibold sm:text-lg">How can we help?</h2>
+		<div class="relative mx-auto mt-3 max-w-md">
 			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
@@ -122,29 +129,24 @@
 		</div>
 	</div>
 
-	<div class="space-y-2 text-center">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Frequently asked questions</h1>
-		<p class="text-muted-foreground">
-			Everything buyers ask us about certification, verification and how HalalNeo works.
-		</p>
-	</div>
-
 	<div class="flex justify-center">
 		<FilterPills options={filterOptions} bind:value={category} ariaLabel="Filter questions by category" />
 	</div>
 
-	<Accordion type="multiple">
-		{#each filteredFaqs as faq (faq.q)}
-			<AccordionItem value={faq.q}>
-				<AccordionTrigger>{faq.q}</AccordionTrigger>
-				<AccordionContent>{faq.a}</AccordionContent>
-			</AccordionItem>
-		{/each}
-	</Accordion>
+	<div class="mx-auto max-w-2xl">
+		<Accordion type="multiple">
+			{#each filteredFaqs as faq (faq.q)}
+				<AccordionItem value={faq.q}>
+					<AccordionTrigger>{faq.q}</AccordionTrigger>
+					<AccordionContent>{faq.a}</AccordionContent>
+				</AccordionItem>
+			{/each}
+		</Accordion>
+	</div>
 
-	<div class="rounded-xl border border-border p-6 text-center">
+	<div class="mx-auto max-w-md rounded-xl border border-border p-4 text-center sm:p-6">
 		<MessageCircle class="mx-auto size-7 text-primary" data-icon="header" />
-		<h2 class="mt-3 text-lg font-semibold">Still have a question?</h2>
+		<h2 class="mt-3 text-base font-semibold sm:text-lg">Still have a question?</h2>
 		<p class="mt-1 text-sm text-muted-foreground">
 			Talk to our team —we reply within one business day.
 		</p>

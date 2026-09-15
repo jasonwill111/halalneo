@@ -13,6 +13,7 @@
 	import PackageIcon from '@lucide/svelte/icons/package';
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import ClockIcon from '@lucide/svelte/icons/clock';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -99,14 +100,12 @@
 	</div>
 
 	{#if paged.length === 0}
-		<div class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
-			<PackageIcon class="mx-auto mb-3 size-10 opacity-40" />
-			<p class="text-sm font-medium">No buying requests match these filters</p>
-			<p class="mt-1 text-xs">Be the first — post your sourcing need and let suppliers quote.</p>
-			<Button href={localizeHref('/rfqs/new')} variant="outline" size="sm" class="mt-4">
-				Post a request
-			</Button>
-		</div>
+		<Empty>
+			<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
+			<EmptyTitle>No buying requests match these filters</EmptyTitle>
+			<EmptyDescription>Be the first — post your sourcing need and let suppliers quote.</EmptyDescription>
+			<Button href={localizeHref('/rfqs/new')} variant="outline" size="sm">Post a request</Button>
+		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as r (r.id)}

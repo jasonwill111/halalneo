@@ -173,7 +173,7 @@
 			<StatTile value={yearEst} label="Est." tone="success" />
 		</div>
 
-		<div class="grid gap-4 sm:gap-6 lg:grid-cols-[1fr_320px]">
+		<div class="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_320px]">
 			<div class="min-w-0 space-y-4 sm:space-y-6">
 				<!-- About -->
 				<section>

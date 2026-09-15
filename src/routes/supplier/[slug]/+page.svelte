@@ -6,7 +6,7 @@
 	import { Separator } from '#lib/components/ui/separator/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
@@ -35,6 +35,8 @@
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 	import Package from '@lucide/svelte/icons/package';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
 	import Megaphone from '@lucide/svelte/icons/megaphone';
@@ -175,9 +177,34 @@
 	let inquiryEmail = $state('');
 	let inquirySending = $state(false);
 	let inquiryResult = $state<{ type: 'success' | 'error'; message: string } | null>(null);
+	let inquiryFieldErrors = $state<Record<string, string>>({});
+	let inquiryFormEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const inquirySchema = z.object({
+		inquiryEmail: z
+			.string()
+			.trim()
+			.optional()
+			.refine((v) => !v || z.string().email().safeParse(v).success, {
+				message: 'Please enter a valid email.'
+			}),
+		inquirySubject: z.string().trim().min(1, 'Subject is required.'),
+		inquiryMessage: z.string().trim().min(10, 'Message must be at least 10 characters.')
+	});
 
 	async function submitInquiry() {
-		if (!inquirySubject.trim() || !inquiryMessage.trim()) return;
+		if (inquirySending) return;
+		inquiryFieldErrors = {};
+		const parsed = inquirySchema.safeParse({ inquiryEmail, inquirySubject, inquiryMessage });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !inquiryFieldErrors[key])
+					inquiryFieldErrors = { ...inquiryFieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(inquiryFormEl);
+			return;
+		}
 		inquirySending = true;
 		inquiryResult = null;
 		try {
@@ -197,9 +224,18 @@
 				inquirySubject = '';
 				inquiryMessage = '';
 				inquiryEmail = '';
+				inquiryFieldErrors = {};
 			} else {
 				const errBody = ((await res.json()) as any);
 				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
+				if (res.status === 400 && errBody.details) {
+					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
+						inquirySubject: errBody.details.subject,
+						inquiryMessage: errBody.details.message,
+						inquiryEmail: errBody.details.buyerSlug
+					});
+					focusFirstInvalid(inquiryFormEl);
+				}
 			}
 		} catch {
 			inquiryResult = { type: 'error', message: 'Network error. Please try again.' };
@@ -392,7 +428,7 @@
 	<div class="relative mx-auto -mt-8 max-w-6xl">
 		<div class="mb-3 flex items-end gap-4">
 			<div
-				class="flex size-12 items-center justify-center rounded-xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm"
+				class="flex size-12 items-center justify-center rounded-xl border-4 border-background bg-primary/10 text-lg font-bold text-primary"
 			>
 				{item.logoInitials ?? item.name?.slice(0, 2) ?? '?'}
 			</div>
@@ -475,6 +511,7 @@
 				class="h-7 flex-[2] text-[10px]"
 				onclick={() => {
 					inquiryResult = null;
+					inquiryFieldErrors = {};
 					inquiryOpen = true;
 				}}
 			>
@@ -521,7 +558,7 @@
 				{#if certifications.length > 0}
 					<section id="certifications" class="scroll-mt-24">
 						<h2 class="mb-1.5 text-sm font-semibold">Certifications</h2>
-						<div class="grid gap-1.5 sm:grid-cols-2">
+						<div class="grid grid-cols-2 gap-1.5 sm:grid-cols-2">
 							{#each certifications as cert (cert.bodyId || cert.name)}
 								{@const expired = isExpired(cert.expiry)}
 								<Card class="p-3">
@@ -603,7 +640,7 @@
 											</span>
 										{/if}
 									</div>
-									<div class="flex flex-1 flex-col gap-1 p-2">
+									<div class="flex flex-1 flex-col gap-1 p-2.5">
 										<h3 class="line-clamp-2 text-[11px] font-medium leading-snug transition-colors group-hover:text-primary">
 											{product.name}
 										</h3>
@@ -799,6 +836,7 @@
 							class="mt-1 w-full text-[11px]"
 							onclick={() => {
 								inquiryResult = null;
+								inquiryFieldErrors = {};
 								inquiryOpen = true;
 							}}
 						>
@@ -855,6 +893,7 @@
 		{/if}
 
 		<form
+			bind:this={inquiryFormEl}
 			class="space-y-3"
 			onsubmit={(e) => {
 				e.preventDefault();
@@ -863,11 +902,35 @@
 		>
 			<Field>
 				<FieldLabel>Email (optional)</FieldLabel>
-				<Input type="email" bind:value={inquiryEmail} placeholder="you@company.com" />
+				<Input
+					type="email"
+					bind:value={inquiryEmail}
+					placeholder="you@company.com"
+					aria-invalid={inquiryFieldErrors.inquiryEmail ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquiryEmail)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquiryEmail: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquiryEmail}<FieldError
+					>{inquiryFieldErrors.inquiryEmail}</FieldError
+				>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Subject</FieldLabel>
-				<Input type="text" bind:value={inquirySubject} placeholder="Inquiry about products..." />
+				<Input
+					type="text"
+					bind:value={inquirySubject}
+					placeholder="Inquiry about products..."
+					aria-invalid={inquiryFieldErrors.inquirySubject ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquirySubject)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquirySubject: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquirySubject}<FieldError
+					>{inquiryFieldErrors.inquirySubject}</FieldError
+				>{/if}
 			</Field>
 		<Field>
 			<FieldLabel>Message</FieldLabel>
@@ -875,7 +938,15 @@
 				bind:value={inquiryMessage}
 				placeholder="I'm interested in..."
 				rows={4}
+				aria-invalid={inquiryFieldErrors.inquiryMessage ? true : undefined}
+				oninput={() => {
+					if (inquiryFieldErrors.inquiryMessage)
+						inquiryFieldErrors = { ...inquiryFieldErrors, inquiryMessage: '' };
+				}}
 			/>
+			{#if inquiryFieldErrors.inquiryMessage}<FieldError
+				>{inquiryFieldErrors.inquiryMessage}</FieldError
+			>{/if}
 		</Field>
 			<DialogFooter>
 				<Button

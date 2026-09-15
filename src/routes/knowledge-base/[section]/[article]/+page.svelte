@@ -160,7 +160,7 @@
 	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
-<div class="py-8">
+<div class="mx-auto max-w-6xl py-8">
 	{#if data.item}
 		<Breadcrumb
 			items={[
@@ -173,7 +173,7 @@
 			]}
 		/>
 
-		<div class="flex gap-6">
+		<div class="flex gap-3 sm:gap-4 lg:gap-6">
 			<aside class="hidden w-56 shrink-0 lg:block">
 				<div class="sticky top-20 space-y-4 sm:space-y-6">
 					<Card>
@@ -252,7 +252,7 @@
 				{#if related.length > 0}
 					<section class="space-y-4 border-t border-border pt-8">
 						<h2 class="text-xl font-semibold tracking-tight">Related Articles</h2>
-						<div class="grid gap-3 sm:grid-cols-3">
+						<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 						{#each related as rel (rel.slug)}
 							<a
 								href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}

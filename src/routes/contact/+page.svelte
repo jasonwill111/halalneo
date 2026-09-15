@@ -131,7 +131,7 @@
 		</p>
 	</div>
 
-	<div class="grid gap-8 lg:grid-cols-5">
+	<div class="grid gap-4 sm:gap-6 lg:grid-cols-5">
 		<div class="space-y-4 lg:col-span-2">
 			<!-- Global Headquarters -->
 			<Card>

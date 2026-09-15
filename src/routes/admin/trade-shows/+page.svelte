@@ -275,7 +275,7 @@ import { FieldError } from '#lib/components/ui/field/index.js';
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="flex flex-col gap-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
 			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Trade Shows</h1>
@@ -296,7 +296,7 @@ import { FieldError } from '#lib/components/ui/field/index.js';
 		<Input bind:value={search} placeholder="Search shows..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 		<StatTile value={shows.length} label="Total Shows" />
 		<StatTile value={shows.filter((s) => s.status === 'active').length} label="Active" />
 		<StatTile value={shows.filter((s) => s.scale === 'mega').length} label="Mega Shows" />

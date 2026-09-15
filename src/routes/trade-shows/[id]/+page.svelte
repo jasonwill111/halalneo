@@ -88,7 +88,7 @@
 />
 
 <div class="mx-auto w-full max-w-6xl space-y-4 sm:space-y-6">
-	<div class="max-w-3xl space-y-2">
+		<div class="max-w-2xl space-y-2">
 		<h1 class="text-2xl font-semibold tracking-tight sm:text-4xl">{show.name}</h1>
 		<div class="flex items-center gap-1.5 text-sm text-muted-foreground">
 			<MapPinIcon class="size-4 shrink-0" />
@@ -119,7 +119,7 @@
 		<StatTile value={show.visitors ?? '—'} label="Visitors" tone="success" />
 	</div>
 
-	<div class="grid gap-4 sm:gap-6 lg:grid-cols-[1fr_320px]">
+	<div class="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_320px]">
 		<div class="min-w-0 space-y-4 sm:space-y-6">
 			<Card class="bg-card">
 				<CardContent class="space-y-3 p-4 sm:p-5">

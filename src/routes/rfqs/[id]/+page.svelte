@@ -5,7 +5,7 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldDescription, FieldError } from '#lib/components/ui/field/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
 	import {
 		Dialog,
@@ -19,6 +19,8 @@
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { sanitizeHtml } from '#lib/sanitize.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 
 	let { data } = $props();
 	const rfq = $derived(data.rfq);
@@ -29,6 +31,17 @@
 	let quoteMessage = $state('');
 	let quoteSending = $state(false);
 	let quoteResult = $state<{ type: 'success' | 'error'; message: string } | null>(null);
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const quoteClientSchema = z.object({
+		supplierSlug: z.string().min(1, 'Select the supplier profile to quote as.'),
+		message: z
+			.string()
+			.trim()
+			.min(10, 'Please add at least 10 characters — price, MOQ, lead time.')
+			.max(5000, 'Quote must be at most 5000 characters.')
+	});
 
 	async function openQuote() {
 		quoteResult = null;
@@ -47,7 +60,17 @@
 	}
 
 	async function submitQuote() {
-		if (!quoteSupplier || !quoteMessage.trim()) return;
+		if (quoteSending) return;
+		fieldErrors = {};
+		const parsed = quoteClientSchema.safeParse({ supplierSlug: quoteSupplier, message: quoteMessage });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
+			return;
+		}
 		quoteSending = true;
 		quoteResult = null;
 		try {
@@ -68,6 +91,10 @@
 				quoteMessage = '';
 			} else {
 				quoteResult = { type: 'error', message: j.error ?? 'Failed to send quote.' };
+				if (res.status === 400 && j.details) {
+					fieldErrors = mergeServerDetails(fieldErrors, j.details);
+					focusFirstInvalid(formEl);
+				}
 			}
 		} catch {
 			quoteResult = { type: 'error', message: 'Network error. Please try again.' };
@@ -197,6 +224,7 @@
 		{:else}
 			<form
 				class="space-y-3"
+				bind:this={formEl}
 				onsubmit={(e) => {
 					e.preventDefault();
 					submitQuote();
@@ -205,7 +233,10 @@
 				<Field>
 					<FieldLabel>Quoting as</FieldLabel>
 					<Select type="single" bind:value={quoteSupplier}>
-						<SelectTrigger class="w-full text-sm">
+						<SelectTrigger
+							class="w-full text-sm"
+							aria-invalid={fieldErrors.supplierSlug ? true : undefined}
+						>
 							{quoteSupplier || 'Select supplier profile'}
 						</SelectTrigger>
 						<SelectContent>
@@ -214,6 +245,7 @@
 							{/each}
 						</SelectContent>
 					</Select>
+					{#if fieldErrors.supplierSlug}<FieldError>{fieldErrors.supplierSlug}</FieldError>{/if}
 				</Field>
 				<Field>
 					<FieldLabel>Your quote</FieldLabel>
@@ -221,7 +253,12 @@
 						bind:value={quoteMessage}
 						placeholder="Price, MOQ, lead time, certifications..."
 						rows={4}
+						aria-invalid={fieldErrors.message ? true : undefined}
+						oninput={() => {
+							if (fieldErrors.message) fieldErrors = { ...fieldErrors, message: '' };
+						}}
 					/>
+					{#if fieldErrors.message}<FieldError>{fieldErrors.message}</FieldError>{/if}
 				</Field>
 				<DialogFooter>
 					<Button type="submit" disabled={quoteSending || !quoteMessage.trim()}>

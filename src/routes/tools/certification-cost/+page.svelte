@@ -136,7 +136,7 @@
 		</p>
 	</div>
 
-	<div class="grid gap-6 lg:grid-cols-[1fr_auto]">
+	<div class="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_auto]">
 		<div class="space-y-4 sm:space-y-6">
 			<div class="space-y-2">
 				<span class="text-sm font-medium" id="certifier-label">Certifying Body</span>

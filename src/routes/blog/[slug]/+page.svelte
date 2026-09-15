@@ -88,7 +88,7 @@
 	{/if}
 </svelte:head>
 
-<div class="mx-auto max-w-3xl py-8">
+<div class="mx-auto max-w-6xl py-8">
 	{#if data.item}
 		<Breadcrumb
 			items={[{ label: 'Blog', href: '/blog' }, { label: data.item.title ?? 'Blog Post' }]}
@@ -130,7 +130,7 @@
 				<img
 					src={data.item.image}
 					alt={data.item.title}
-					class="aspect-[2/1] w-full rounded-xl object-cover"
+					class="aspect-[16/10] w-full rounded-xl object-cover"
 					loading="eager"
 					fetchpriority="high"
 					decoding="async"
@@ -142,7 +142,7 @@
 				/>
 			{:else}
 				<div class="relative overflow-hidden rounded-xl border border-border">
-					<div class="aspect-[2/1] w-full">
+					<div class="aspect-[16/10] w-full">
 						<img
 							src={blogImages[0]}
 							alt={data.item.title}
@@ -177,11 +177,11 @@
 			{#if data.related?.length}
 				<section class="space-y-4 border-t border-border pt-8">
 					<h2 class="text-xl font-semibold tracking-tight">Related articles</h2>
-					<div class="grid gap-3 sm:grid-cols-3">
+					<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 						{#each data.related as related (related.slug)}
 							<a
 								href={localizeHref(`/blog/${related.slug}`)}
-								class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
+								class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
 							>
 								<div class="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
 									<span class="font-medium text-foreground/80">{related.author.name}</span>
@@ -220,7 +220,7 @@
 
 			<div class="mt-8 border-t border-border pt-6">
 				<h2 class="mb-4 text-xl font-semibold tracking-tight">Explore Related Resources</h2>
-				<div class="grid gap-4 sm:grid-cols-3">
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 					{#each [
 						{ href: '/products', title: 'Browse Halal Products', desc: 'Explore our catalog of certified halal products.', cta: 'Browse Products', icon: ShoppingCart },
 						{ href: '/suppliers', title: 'Find Certified Suppliers', desc: 'Connect with verified halal-certified suppliers.', cta: 'Find Suppliers', icon: Store },
@@ -228,7 +228,7 @@
 					] as item (item.href)}
 						<a
 							href={localizeHref(item.href)}
-							class="group block rounded-xl border border-border bg-card p-4 transition-all hover:shadow-md"
+							class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
 						>
 							<div class="mb-2">
 								<item.icon class="size-5 text-primary/60 transition-colors group-hover:text-primary" />

@@ -22,8 +22,8 @@
 	import Store from '@lucide/svelte/icons/store';
 	import Star from '@lucide/svelte/icons/star';
 	import SlidersHorizontal from '@lucide/svelte/icons/sliders-horizontal';
-	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 	let query = $state('');
@@ -277,7 +277,7 @@
 		</p>
 	</div>
 
-	<div class="flex gap-5">
+	<div class="flex gap-3 sm:gap-4 lg:gap-5">
 	{#snippet filterPanel()}
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
@@ -420,7 +420,7 @@
 					>
 				</Empty>
 			{:else}
-				<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
+				<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
 					{#each paginatedResults as result (result.kind + ':' + (result.kind === 'term' ? result.term : result.slug))}
 						{#if result.kind === 'sku'}
 							<a
@@ -505,43 +505,7 @@
 					{/each}
 				</div>
 
-			{#if totalPages > 1}
-				<div class="mt-5 flex items-center justify-center gap-1">
-					<Button
-						variant="outline"
-						size="icon"
-						class="size-7"
-						disabled={currentPage === 1}
-						onclick={() => (currentPage = Math.max(1, currentPage - 1))}
-					>
-						<ChevronLeft class="size-3" />
-					</Button>
-						{#each Array.from({ length: totalPages }, (_, i) => i + 1) as page}
-							{#if page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)}
-								<Button
-									variant={page === currentPage ? 'default' : 'outline'}
-									size="icon"
-									class="size-7"
-									onclick={() => (currentPage = page)}>{page}</Button
-								>
-							{:else if page === currentPage - 2 || page === currentPage + 2}
-								<span
-									class="flex size-7 items-center justify-center text-[10px] text-muted-foreground"
-									>...</span
-								>
-							{/if}
-						{/each}
-					<Button
-						variant="outline"
-						size="icon"
-						class="size-7"
-						disabled={currentPage === totalPages}
-						onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
-					>
-						<ChevronRight class="size-3" />
-					</Button>
-					</div>
-				{/if}
+			<Paginator bind:page={currentPage} {totalPages} />
 			{/if}
 		</div>
 	</div>

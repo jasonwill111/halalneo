@@ -10,7 +10,7 @@
 	import FileText from '@lucide/svelte/icons/file-text';
 </script>
 
-<div class="grid items-center gap-8 py-10 lg:grid-cols-2 lg:gap-12 lg:py-16">
+<div class="grid items-center gap-4 py-10 sm:gap-6 lg:grid-cols-2 lg:gap-12 lg:py-16">
 	<div class="flex flex-col items-start gap-4 text-left">
 		<Badge variant="secondary" class="gap-1.5">
 			<SparklesIcon class="size-3" />

@@ -4,6 +4,8 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { recognitionStatusLabel } from '#lib/data/recognition.js';
@@ -152,16 +154,36 @@
 
 		{#if searched}
 		{#if loading}
-			<div class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
-				<div class="mx-auto mb-3 size-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-				<p class="text-sm">Searching across suppliers and products...</p>
+			<div class="grid grid-cols-2 gap-3 sm:grid-cols-2" aria-label="Searching certificates" aria-busy="true">
+				{#each Array(4) as _, i (i)}
+					<Card class="bg-card">
+						<CardContent class="space-y-2 p-4">
+							<div class="flex items-start justify-between gap-2">
+								<div class="flex-1 space-y-1.5">
+									<Skeleton class="h-4 w-3/4" />
+									<Skeleton class="h-3 w-1/2" />
+								</div>
+								<Skeleton class="size-5 shrink-0 rounded-full" />
+							</div>
+							<div class="flex gap-1">
+								<Skeleton class="h-5 w-16 rounded-full" />
+								<Skeleton class="h-5 w-20 rounded-full" />
+							</div>
+							<div class="flex items-center gap-2 pt-1">
+								<Skeleton class="h-5 w-20 rounded-full" />
+								<Skeleton class="ml-auto h-7 w-16 rounded-md" />
+							</div>
+						</CardContent>
+					</Card>
+				{/each}
+				<p class="sr-only">Searching across suppliers and products…</p>
 			</div>
 		{:else if results.length === 0}
-			<div class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
-				<XCircleIcon class="mx-auto mb-3 size-10 opacity-40" />
-				<p class="text-sm font-medium">No certificates found</p>
-				<p class="mt-1 text-xs">Try a different search term or browse certifiers below.</p>
-			</div>
+			<Empty>
+				<EmptyMedia><XCircleIcon class="size-6 text-muted-foreground"></XCircleIcon></EmptyMedia>
+				<EmptyTitle>No certificates found</EmptyTitle>
+				<EmptyDescription>Try a different search term or browse certifiers below.</EmptyDescription>
+			</Empty>
 		{:else}
 			<div class="space-y-2">
 				<div class="flex items-center justify-between">
@@ -178,7 +200,7 @@
 						</Button>
 					</div>
 				</div>
-				<div class="grid gap-3 sm:grid-cols-2">
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-2">
 					{#each results as r (r.type + ':' + r.slug)}
 						<Card class="bg-card transition-shadow hover:shadow-md">
 							<CardContent class="space-y-2 p-4">

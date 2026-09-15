@@ -37,10 +37,10 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="mb-3 flex items-center justify-between">
+<div class="flex items-center justify-between gap-3">
 	<div>
-		<h2 class="text-sm font-bold">My Products</h2>
-		<p class="text-[10px] text-muted-foreground">{products.length} listings</p>
+		<h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">My Products</h2>
+		<p class="text-sm text-muted-foreground">{products.length} listings</p>
 	</div>
 	<Button size="sm" class="text-[10px]">
 		<Plus class="size-3"></Plus>

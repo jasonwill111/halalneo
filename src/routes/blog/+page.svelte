@@ -8,6 +8,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
+	import { Empty, EmptyMedia, EmptyTitle } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 	let search = $state('');
@@ -90,18 +91,17 @@
 	{/if}
 
 	{#if published.length === 0}
-		<div
-			class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground"
-		>
-			No published posts yet.
-		</div>
+		<Empty>
+			<EmptyMedia><Newspaper class="size-6 text-muted-foreground"></Newspaper></EmptyMedia>
+			<EmptyTitle>No published posts yet.</EmptyTitle>
+		</Empty>
 	{:else}
-		<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-2">
+		<div class="grid grid-cols-2 gap-3 sm:gap-3 lg:grid-cols-2">
 			{#each paged as post, idx (post.slug)}
 				<Card class="overflow-hidden">
 					<article>
 						<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
-							<div class="aspect-[2/1] overflow-hidden bg-muted">
+							<div class="aspect-[16/10] overflow-hidden bg-muted">
 								<img src={post.featuredImage || blogImages[idx % blogImages.length]} srcset={`${post.featuredImage || blogImages[idx % blogImages.length]}?w=480 480w, ${post.featuredImage || blogImages[idx % blogImages.length]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="300" />
 							</div>
 							<CardContent class="space-y-2 pt-3">

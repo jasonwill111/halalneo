@@ -76,11 +76,11 @@
 		<span>/</span>
 		<span class="text-foreground font-medium">Manage</span>
 	</nav>
-	<h1 class="text-2xl font-bold tracking-tight">Company Profile</h1>
+	<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Company Profile</h1>
 	<p class="text-sm text-muted-foreground">Manage your company information and team members.</p>
 </div>
 
-<div class="grid gap-4 lg:grid-cols-3">
+<div class="grid gap-3 sm:gap-4 lg:grid-cols-3">
 	<div class="lg:col-span-2 space-y-4">
 		<Card>
 			<CardHeader class="pb-3">

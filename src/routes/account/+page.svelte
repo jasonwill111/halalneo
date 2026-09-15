@@ -56,7 +56,7 @@
 			</p>
 		</div>
 
-		<div class="grid gap-3 sm:grid-cols-3">
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 			{#each links as link (link.href)}
 				<a href={localizeHref(link.href)} class="group block">
 					<Card class="h-full transition-colors group-hover:border-primary/30 group-hover:shadow-md">

@@ -349,18 +349,3 @@ export function getMarketGuide(slug: string): MarketGuide | undefined {
 export function getGuidesByRegion(region: string): MarketGuide[] {
 	return marketGuides.filter((g) => g.region === region);
 }
-
-export const mandateStatuses: Record<string, { label: string; class: string }> = {
-	mandatory: {
-		label: 'Mandatory',
-		class: 'bg-red-500/15 text-red-600 dark:text-red-400'
-	},
-	'phasing-in': {
-		label: 'Phasing In',
-		class: 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-	},
-	voluntary: {
-		label: 'Voluntary',
-		class: 'bg-green-500/15 text-green-600 dark:text-green-400'
-	}
-};

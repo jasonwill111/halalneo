@@ -74,11 +74,11 @@
 		</p>
 	</div>
 
-	<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 		{#each templates as template (template.id)}
 			<Card class="group hover:shadow-md transition-shadow">
 				<CardHeader class="p-4">
-					<CardTitle class="text-sm font-medium">{template.title}</CardTitle>
+					<CardTitle class="truncate text-sm font-medium">{template.title}</CardTitle>
 					<p class="mt-1 text-xs text-muted-foreground line-clamp-2">
 						{template.description}
 					</p>

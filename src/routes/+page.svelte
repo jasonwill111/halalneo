@@ -275,11 +275,11 @@
 <!-- MARKETPLACE COMING SOON -->
 <section
 	{@attach reveal}
-	class="rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
+	class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
 >
 	<div class="text-center">
 		<Badge variant="secondary" class="mb-2 sm:mb-3">Launching 2026</Badge>
-		<h2 class="text-xl font-semibold tracking-tight sm:text-2xl sm:text-3xl">Verified Supplier Marketplace</h2>
+		<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">Verified Supplier Marketplace</h2>
 		<p class="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
 			Every supplier listing backed by real halal certification data — certifying body, standard, scope and
 			expiry shown up front. No unverifiable claims.
@@ -413,9 +413,9 @@
 <!-- CTA -->
 <section
 	{@attach reveal}
-	class="rounded-xl bg-card p-4 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-6"
+	class="rounded-xl bg-card p-3 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
 >
-	<h2 class="text-xl font-semibold tracking-tight sm:text-2xl sm:text-3xl">
+	<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">
 		Navigate halal trade with confidence
 	</h2>
 	<p class="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">

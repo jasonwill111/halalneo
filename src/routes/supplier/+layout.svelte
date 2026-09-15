@@ -18,7 +18,7 @@
 	}
 </script>
 
-<div class="mx-auto flex w-full max-w-7xl flex-1 gap-4 px-4 pb-24 pt-3 sm:px-6 sm:pb-10">
+<div class="mx-auto flex w-full max-w-6xl flex-1 gap-4 px-4 pb-24 pt-3 sm:px-6 sm:pb-10">
 	<!-- Desktop sidebar -->
 	<aside class="hidden w-60 shrink-0 lg:block">
 		<div class="sticky top-20 space-y-0.5 rounded-xl bg-card p-1.5 ring-1 ring-foreground/10">

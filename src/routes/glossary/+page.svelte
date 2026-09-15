@@ -5,6 +5,7 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 	let search = $state('');
@@ -109,7 +110,7 @@
 		{#each letters as letter, i (letter)}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
-				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 					{#each grouped[letter] as term, j (term.term)}
 						<Card>
 							<CardContent class="space-y-1 pt-4">
@@ -121,10 +122,11 @@
 				</div>
 			</div>
 		{:else}
-			<div class="flex flex-col items-center justify-center py-12 text-center">
-				<p class="text-lg font-medium text-muted-foreground">No glossary terms found</p>
-				<p class="text-sm text-muted-foreground">Try adjusting your search.</p>
-			</div>
+			<Empty>
+				<EmptyMedia><BookText class="size-6 text-muted-foreground"></BookText></EmptyMedia>
+				<EmptyTitle>No glossary terms found</EmptyTitle>
+				<EmptyDescription>Try adjusting your search.</EmptyDescription>
+			</Empty>
 		{/each}
 	</div>
 </section>

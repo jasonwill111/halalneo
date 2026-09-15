@@ -6,6 +6,7 @@
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import GuideHero from '#lib/components/site/guide-hero.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
 	import { cn } from '#lib/utils.js';
@@ -53,7 +54,7 @@
 
 <Breadcrumb items={[{ label: 'Market Guides', href: '/market-guides' }]} />
 
-<section class="space-y-4">
+<section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-1">
 		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 			<GlobeIcon class="size-3.5"></GlobeIcon>
@@ -78,7 +79,7 @@
 			<a href={localizeHref(`/market-guides/${guide.slug}`)} class="group h-full">
 			<Card class="h-full bg-card ring-1 ring-foreground/10 transition-shadow group-hover:shadow-md overflow-hidden">
 				{#if countryImages[guide.country]}
-					<div class="relative -mx-4 -mt-4 aspect-[16/9] overflow-hidden sm:-mx-5 sm:-mt-4">
+					<div class="relative -mx-4 -mt-4 aspect-[16/10] overflow-hidden sm:-mx-5 sm:-mt-4">
 						<img src={countryImages[guide.country]} srcset={`${countryImages[guide.country]}?w=480 480w, ${countryImages[guide.country]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={guide.country} class="h-full w-full object-cover" loading="lazy" decoding="async" width="600" height="400" />
 					</div>
 				{:else}
@@ -87,16 +88,16 @@
 							country={guide.country}
 							flag={guide.flag}
 							rounded="rounded-none"
-							class="aspect-[16/9] w-full"
+							class="aspect-[16/10] w-full"
 						/>
 					</div>
 				{/if}
 				<CardContent class="flex flex-1 flex-col gap-2 p-3 sm:p-4">
 					<div class="flex items-start justify-between gap-2">
 						<div class="space-y-0.5">
-							<CardTitle class="flex items-center gap-1.5 text-sm font-semibold transition-colors group-hover:text-primary">
-								<span class="text-base">{guide.flag}</span>
-								{guide.country}
+							<CardTitle class="flex min-w-0 items-center gap-1.5 truncate text-sm font-semibold transition-colors group-hover:text-primary">
+								<span class="text-base shrink-0">{guide.flag}</span>
+								<span class="truncate">{guide.country}</span>
 							</CardTitle>
 							<p class="text-[11px] text-muted-foreground">{guide.region}</p>
 						</div>
@@ -135,10 +136,11 @@
 			</a>
 			</article>
 		{:else}
-			<div class="col-span-full flex flex-col items-center justify-center py-12 text-center">
-				<p class="text-lg font-medium text-muted-foreground">No market guides found</p>
-				<p class="text-sm text-muted-foreground">Try selecting a different region.</p>
-			</div>
+			<Empty class="col-span-full">
+				<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
+				<EmptyTitle>No market guides found</EmptyTitle>
+				<EmptyDescription>Try selecting a different region.</EmptyDescription>
+			</Empty>
 		{/each}
 	</div>
 	<Paginator bind:page {totalPages} />

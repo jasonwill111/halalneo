@@ -10,10 +10,12 @@
 	import { adminData } from '#lib/stores/admin-data.svelte.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
 	import Tag from '@lucide/svelte/icons/tag';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 
 	// TODO: Replace with authenticated user's supplier slug from session/load function
 	const SUPPLIER_SLUG = 'nusantara-foods';
@@ -75,9 +77,54 @@
 	let dealValid = $state('');
 	let dealSending = $state(false);
 	let dealResult = $state<string | null>(null);
+	let dealFieldErrors = $state<Record<string, string>>({});
+	let dealFormEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const dealClientSchema = z.object({
+		title: z
+			.string()
+			.trim()
+			.min(5, 'Deal title needs at least 5 characters.')
+			.max(200, 'Deal title must be at most 200 characters.'),
+		description: z.string().trim().max(5000, 'Details must be at most 5000 characters.'),
+		discountPct: z.preprocess(
+			(v) => (v === '' || v == null ? null : Number(v)),
+			z.number().int('Discount must be a whole number.').min(1, 'Discount must be between 1 and 99.').max(99, 'Discount must be between 1 and 99.').nullable()
+		),
+		priceMin: z.string().trim().max(50, 'Price must be at most 50 characters.'),
+		moq: z.string().trim().max(200, 'MOQ must be at most 200 characters.'),
+		validUntil: z.string().max(30, 'Date must be at most 30 characters.')
+	});
+
+	// Server `details` use API field names — remap to the deal form state keys.
+	const DEAL_SERVER_TO_CLIENT: Record<string, string> = {
+		title: 'dealTitle',
+		description: 'dealDesc',
+		discountPct: 'dealDiscount',
+		priceMin: 'dealPrice',
+		moq: 'dealMoq',
+		validUntil: 'dealValid'
+	};
 
 	async function publishDeal() {
-		if (!mySlug || !dealTitle.trim()) return;
+		if (!mySlug || dealSending) return;
+		dealFieldErrors = {};
+		const parsed = dealClientSchema.safeParse({
+			title: dealTitle,
+			description: dealDesc,
+			discountPct: dealDiscount,
+			priceMin: dealPrice,
+			moq: dealMoq,
+			validUntil: dealValid
+		});
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = DEAL_SERVER_TO_CLIENT[String(issue.path[0] ?? '')] ?? '';
+				if (key && !dealFieldErrors[key]) dealFieldErrors = { ...dealFieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(dealFormEl);
+			return;
+		}
 		dealSending = true;
 		dealResult = null;
 		try {
@@ -105,6 +152,13 @@
 				dealResult = null;
 			} else {
 				dealResult = j.error ?? 'Failed to publish deal.';
+				if (res.status === 400 && j.details) {
+					const remapped: Record<string, string[] | string> = {};
+					for (const [k, v] of Object.entries(j.details as Record<string, string[] | string>))
+						remapped[DEAL_SERVER_TO_CLIENT[k] ?? k] = v;
+					dealFieldErrors = mergeServerDetails(dealFieldErrors, remapped);
+					focusFirstInvalid(dealFormEl);
+				}
 			}
 		} finally {
 			dealSending = false;
@@ -117,7 +171,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="mb-3 rounded-xl border border-success/20 bg-success/5 p-3">
+<div class="rounded-xl border border-success/20 bg-success/5 p-3">
 	<div class="flex items-center gap-2">
 		<TrendingUp class="size-4 text-success"></TrendingUp>
 		<span class="text-[10px] font-medium text-success">Welcome back, {supplier?.name ?? 'Supplier'}!</span>
@@ -125,7 +179,7 @@
 	</div>
 </div>
 
-<div class="mb-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+<div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
 				{#each stats as s (s.label)}
 		<Card class="p-3">
 			<CardContent class="p-0">
@@ -274,11 +328,12 @@
 			Link your supplier account to publish clearance deals to the public board.
 		</p>
 	{:else}
-		{#if dealResult}
+		{#if dealResult && Object.keys(dealFieldErrors).length === 0}
 			<p class="mb-2 rounded-xl bg-destructive/10 px-3 py-2 text-xs text-destructive">{dealResult}</p>
 		{/if}
 		<form
 			class="space-y-2"
+			bind:this={dealFormEl}
 			onsubmit={(e) => {
 				e.preventDefault();
 				publishDeal();
@@ -286,28 +341,78 @@
 		>
 			<Field>
 				<FieldLabel>Deal title *</FieldLabel>
-				<Input type="text" bind:value={dealTitle} placeholder="e.g. 20% off frozen chicken cartons" maxlength={200} class="text-xs" />
+				<Input
+					type="text"
+					bind:value={dealTitle}
+					placeholder="e.g. 20% off frozen chicken cartons"
+					maxlength={200}
+					class="text-xs"
+					aria-invalid={dealFieldErrors.dealTitle ? true : undefined}
+					oninput={() => { if (dealFieldErrors.dealTitle) dealFieldErrors = { ...dealFieldErrors, dealTitle: '' }; }}
+				/>
+				{#if dealFieldErrors.dealTitle}<FieldError>{dealFieldErrors.dealTitle}</FieldError>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Details</FieldLabel>
-				<Textarea bind:value={dealDesc} placeholder="Stock quantity, terms..." rows={2} class="text-xs" />
+				<Textarea
+					bind:value={dealDesc}
+					placeholder="Stock quantity, terms..."
+					rows={2}
+					class="text-xs"
+					aria-invalid={dealFieldErrors.dealDesc ? true : undefined}
+					oninput={() => { if (dealFieldErrors.dealDesc) dealFieldErrors = { ...dealFieldErrors, dealDesc: '' }; }}
+				/>
+				{#if dealFieldErrors.dealDesc}<FieldError>{dealFieldErrors.dealDesc}</FieldError>{/if}
 			</Field>
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
 				<Field>
 					<FieldLabel>Discount %</FieldLabel>
-					<Input type="number" min={1} max={99} bind:value={dealDiscount} placeholder="20" class="text-xs" />
+					<Input
+						type="number"
+						min={1}
+						max={99}
+						bind:value={dealDiscount}
+						placeholder="20"
+						class="text-xs"
+						aria-invalid={dealFieldErrors.dealDiscount ? true : undefined}
+						oninput={() => { if (dealFieldErrors.dealDiscount) dealFieldErrors = { ...dealFieldErrors, dealDiscount: '' }; }}
+					/>
+					{#if dealFieldErrors.dealDiscount}<FieldError>{dealFieldErrors.dealDiscount}</FieldError>{/if}
 				</Field>
 				<Field>
 					<FieldLabel>Price</FieldLabel>
-					<Input type="text" bind:value={dealPrice} placeholder="$4.10/kg" class="text-xs" />
+					<Input
+						type="text"
+						bind:value={dealPrice}
+						placeholder="$4.10/kg"
+						class="text-xs"
+						aria-invalid={dealFieldErrors.dealPrice ? true : undefined}
+						oninput={() => { if (dealFieldErrors.dealPrice) dealFieldErrors = { ...dealFieldErrors, dealPrice: '' }; }}
+					/>
+					{#if dealFieldErrors.dealPrice}<FieldError>{dealFieldErrors.dealPrice}</FieldError>{/if}
 				</Field>
 				<Field>
 					<FieldLabel>MOQ</FieldLabel>
-					<Input type="text" bind:value={dealMoq} placeholder="100 cartons" class="text-xs" />
+					<Input
+						type="text"
+						bind:value={dealMoq}
+						placeholder="100 cartons"
+						class="text-xs"
+						aria-invalid={dealFieldErrors.dealMoq ? true : undefined}
+						oninput={() => { if (dealFieldErrors.dealMoq) dealFieldErrors = { ...dealFieldErrors, dealMoq: '' }; }}
+					/>
+					{#if dealFieldErrors.dealMoq}<FieldError>{dealFieldErrors.dealMoq}</FieldError>{/if}
 				</Field>
 				<Field>
 					<FieldLabel>Valid until</FieldLabel>
-					<Input type="date" bind:value={dealValid} class="text-xs" />
+					<Input
+						type="date"
+						bind:value={dealValid}
+						class="text-xs"
+						aria-invalid={dealFieldErrors.dealValid ? true : undefined}
+						oninput={() => { if (dealFieldErrors.dealValid) dealFieldErrors = { ...dealFieldErrors, dealValid: '' }; }}
+					/>
+					{#if dealFieldErrors.dealValid}<FieldError>{dealFieldErrors.dealValid}</FieldError>{/if}
 				</Field>
 			</div>
 			<div class="flex items-center justify-between gap-2">

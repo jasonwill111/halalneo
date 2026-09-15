@@ -213,7 +213,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="flex flex-col gap-6">
+<div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
 			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Pages</h1>
@@ -232,7 +232,7 @@
 		<Input bind:value={search} placeholder="Search pages..." class="pl-9" />
 	</div>
 
-	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 		<StatTile value={pages.length} label="Total Pages" />
 		<StatTile
 			value={`${pages.length > 0 ? Math.round((published / pages.length) * 100) : 0}%`}

@@ -236,7 +236,7 @@
 			0 0 0 1px rgb(255 255 255 / 0.4) inset;
 	}
 	.dark .glass-strong {
-		@apply border-white/10 bg-[#141b2e]/80;
+		@apply border-white/10 bg-card/80;
 		box-shadow:
 			0 12px 40px -8px rgb(0 0 0 / 0.5),
 			0 0 0 1px rgb(255 255 255 / 0.06) inset;

@@ -2,12 +2,38 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { Label } from '#lib/components/ui/field/index.js';
+	import { Label, FieldError } from '#lib/components/ui/field/index.js';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import Building2 from '@lucide/svelte/icons/building-2';
 	import Mail from '@lucide/svelte/icons/mail';
 	import Lock from '@lucide/svelte/icons/lock';
+
+	let email = $state('');
+	let password = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const loginSchema = z.object({
+		email: z.string().trim().min(1, 'Email is required.').email('Please enter a valid email.'),
+		password: z.string().min(1, 'Password is required.')
+	});
+
+	function submit() {
+		fieldErrors = {};
+		const parsed = loginSchema.safeParse({ email, password });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
+			return;
+		}
+		return;
+	}
 </script>
 
 <svelte:head>
@@ -26,13 +52,21 @@
 
 	<Card class="p-5">
 		<CardContent class="space-y-3 p-0">
-			<form class="space-y-3">
+			<form bind:this={formEl} class="space-y-3" onsubmit={(e) => { e.preventDefault(); submit(); }}>
 				<div class="space-y-1">
 					<Label class="text-[10px] font-medium">Email</Label>
 					<div class="relative">
 						<Mail class="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></Mail>
-						<Input type="email" placeholder="you@company.com" class="h-9 pl-9 text-[11px]" />
+						<Input
+							bind:value={email}
+							type="email"
+							placeholder="you@company.com"
+							class="h-9 pl-9 text-[11px]"
+							aria-invalid={fieldErrors.email ? true : undefined}
+							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+						/>
 					</div>
+					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
 				</div>
 				<div class="space-y-1">
 					<div class="flex items-center justify-between">
@@ -41,8 +75,16 @@
 					</div>
 					<div class="relative">
 						<Lock class="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"></Lock>
-						<Input type="password" placeholder="••••••••" class="h-9 pl-9 text-[11px]" />
+						<Input
+							bind:value={password}
+							type="password"
+							placeholder="••••••••"
+							class="h-9 pl-9 text-[11px]"
+							aria-invalid={fieldErrors.password ? true : undefined}
+							oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
+						/>
 					</div>
+					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}
 				</div>
 				<div class="flex items-center gap-2">
 					<Checkbox id="remember" />

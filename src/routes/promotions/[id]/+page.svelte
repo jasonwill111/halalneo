@@ -5,7 +5,7 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -16,6 +16,8 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 	import TagIcon from '@lucide/svelte/icons/tag';
 	import Send from '@lucide/svelte/icons/send';
 
@@ -28,9 +30,34 @@
 	let inquiryMessage = $state('');
 	let inquirySending = $state(false);
 	let inquiryResult = $state<{ type: 'success' | 'error'; message: string } | null>(null);
+	let inquiryFieldErrors = $state<Record<string, string>>({});
+	let inquiryFormEl = $state<HTMLFormElement | undefined>(undefined);
+
+	const inquirySchema = z.object({
+		inquiryEmail: z
+			.string()
+			.trim()
+			.optional()
+			.refine((v) => !v || z.string().email().safeParse(v).success, {
+				message: 'Please enter a valid email.'
+			}),
+		inquirySubject: z.string().trim().min(1, 'Subject is required.'),
+		inquiryMessage: z.string().trim().min(10, 'Message must be at least 10 characters.')
+	});
 
 	async function submitInquiry() {
-		if (!inquirySubject.trim() || !inquiryMessage.trim()) return;
+		if (inquirySending) return;
+		inquiryFieldErrors = {};
+		const parsed = inquirySchema.safeParse({ inquiryEmail, inquirySubject, inquiryMessage });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !inquiryFieldErrors[key])
+					inquiryFieldErrors = { ...inquiryFieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(inquiryFormEl);
+			return;
+		}
 		inquirySending = true;
 		inquiryResult = null;
 		try {
@@ -51,8 +78,17 @@
 				inquirySubject = '';
 				inquiryMessage = '';
 				inquiryEmail = '';
+				inquiryFieldErrors = {};
 			} else {
 				inquiryResult = { type: 'error', message: j.error ?? 'Failed to send inquiry.' };
+				if (res.status === 400 && j.details) {
+					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
+						inquirySubject: j.details.subject,
+						inquiryMessage: j.details.message,
+						inquiryEmail: j.details.buyerSlug
+					});
+					focusFirstInvalid(inquiryFormEl);
+				}
 			}
 		} catch {
 			inquiryResult = { type: 'error', message: 'Network error. Please try again.' };
@@ -102,6 +138,7 @@
 						class="w-full gap-2"
 						onclick={() => {
 							inquiryResult = null;
+							inquiryFieldErrors = {};
 							inquiryOpen = true;
 						}}
 					>
@@ -159,6 +196,7 @@
 		{/if}
 
 		<form
+			bind:this={inquiryFormEl}
 			class="space-y-3"
 			onsubmit={(e) => {
 				e.preventDefault();
@@ -167,15 +205,51 @@
 		>
 			<Field>
 				<FieldLabel>Email (optional)</FieldLabel>
-				<Input type="email" bind:value={inquiryEmail} placeholder="you@company.com" />
+				<Input
+					type="email"
+					bind:value={inquiryEmail}
+					placeholder="you@company.com"
+					aria-invalid={inquiryFieldErrors.inquiryEmail ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquiryEmail)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquiryEmail: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquiryEmail}<FieldError
+					>{inquiryFieldErrors.inquiryEmail}</FieldError
+				>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Subject</FieldLabel>
-				<Input type="text" bind:value={inquirySubject} placeholder="Interested in this deal..." />
+				<Input
+					type="text"
+					bind:value={inquirySubject}
+					placeholder="Interested in this deal..."
+					aria-invalid={inquiryFieldErrors.inquirySubject ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquirySubject)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquirySubject: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquirySubject}<FieldError
+					>{inquiryFieldErrors.inquirySubject}</FieldError
+				>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Message</FieldLabel>
-				<Textarea bind:value={inquiryMessage} placeholder="Quantity, delivery terms..." rows={4} />
+				<Textarea
+					bind:value={inquiryMessage}
+					placeholder="Quantity, delivery terms..."
+					rows={4}
+					aria-invalid={inquiryFieldErrors.inquiryMessage ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquiryMessage)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquiryMessage: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquiryMessage}<FieldError
+					>{inquiryFieldErrors.inquiryMessage}</FieldError
+				>{/if}
 			</Field>
 			<DialogFooter>
 				<Button

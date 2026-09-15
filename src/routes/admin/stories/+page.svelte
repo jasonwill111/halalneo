@@ -141,10 +141,10 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="mb-3 flex items-center justify-between gap-2">
+<div class="flex items-center justify-between gap-2">
 	<div>
-		<h1 class="text-lg font-bold">Success Stories</h1>
-		<p class="text-[11px] text-muted-foreground">Editorial case studies — site page + supplier sections.</p>
+		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Success Stories</h1>
+		<p class="text-sm text-muted-foreground">Editorial case studies — site page + supplier sections.</p>
 	</div>
 	<Button size="sm" class="gap-1 text-xs" onclick={() => ((formError = null), (dialogOpen = true))}>
 		<Plus class="size-3.5" />
@@ -152,7 +152,8 @@
 	</Button>
 </div>
 
-<Card class="p-0">
+<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+<Card class="p-0 ring-0">
 	{#if loading}
 		<div class="space-y-2 p-4">
 			{#each Array(4) as _}
@@ -205,6 +206,7 @@
 		</Table>
 	{/if}
 </Card>
+</div>
 
 <Dialog bind:open={dialogOpen}>
 	<DialogContent class="max-h-[90vh] overflow-y-auto sm:max-w-lg">

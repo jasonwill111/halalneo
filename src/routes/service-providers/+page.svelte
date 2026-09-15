@@ -167,7 +167,7 @@
 	</div>
 </div>
 
-<div class="flex flex-col gap-5 lg:flex-row">
+<div class="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:gap-5">
 	<aside class="w-full shrink-0 lg:w-56">
 		<div class="rounded-xl bg-card p-4 ring-1 ring-foreground/10 lg:sticky lg:top-20">
 			<div class="mb-4 flex items-center justify-between">
@@ -281,7 +281,7 @@
 			</div>
 		{/if}
 
-		<div class="grid grid-cols-2 gap-2 sm:gap-4 xl:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-3">
 			{#each paged as provider (provider.slug)}
 				<article
 					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md sm:p-4"

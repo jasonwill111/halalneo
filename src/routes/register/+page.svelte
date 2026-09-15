@@ -9,7 +9,9 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import MailIcon from '@lucide/svelte/icons/mail';
 	import LockIcon from '@lucide/svelte/icons/lock';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
@@ -21,24 +23,46 @@
 	let password = $state('');
 	let termsAccepted = $state(false);
 	let error = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
+	let busy = $state(false);
+
+	const registerSchema = z.object({
+		firstName: z.string().trim().min(1, 'First name is required.'),
+		lastName: z.string().trim().min(1, 'Last name is required.'),
+		email: z.string().trim().min(1, 'Email is required.').email('Please enter a valid email.'),
+		password: z.string().min(8, 'Password must be at least 8 characters.'),
+		termsAccepted: z.literal(true, {
+			error: 'Please agree to the Terms of Service and Privacy Policy.'
+		})
+	});
 
 	function submit() {
-		if (!firstName.trim() || !lastName.trim() || !email.trim() || !password) {
-			error = 'Please fill in all required fields.';
+		if (busy) return;
+		fieldErrors = {};
+		const parsed = registerSchema.safeParse({ firstName, lastName, email, password, termsAccepted });
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
 			return;
 		}
-		if (!termsAccepted) {
-			error = 'Please agree to the Terms of Service and Privacy Policy.';
-			return;
+		error = '';
+		busy = true;
+		try {
+			registerAccount({
+				email: email.trim(),
+				fullName: `${firstName.trim()} ${lastName.trim()}`.trim(),
+				company: company.trim() || undefined,
+				password,
+				type: 'buyer'
+			});
+			goto(localizeHref('/account'));
+		} finally {
+			busy = false;
 		}
-		registerAccount({
-			email: email.trim(),
-			fullName: `${firstName.trim()} ${lastName.trim()}`.trim(),
-			company: company.trim() || undefined,
-			password,
-			type: 'buyer'
-		});
-		goto(localizeHref('/account'));
 	}
 </script>
 
@@ -91,15 +115,29 @@
 				</p>
 			</div>
 
-			<form class="space-y-2.5" onsubmit={(e) => { e.preventDefault(); submit(); }}>
+			<form bind:this={formEl} class="space-y-2.5" onsubmit={(e) => { e.preventDefault(); submit(); }}>
 				<div class="grid grid-cols-2 gap-2.5">
 					<Field>
 						<FieldLabel>First Name</FieldLabel>
-						<Input bind:value={firstName} type="text" placeholder="John" />
+						<Input
+							bind:value={firstName}
+							type="text"
+							placeholder="John"
+							aria-invalid={fieldErrors.firstName ? true : undefined}
+							oninput={() => { if (fieldErrors.firstName) fieldErrors = { ...fieldErrors, firstName: '' }; }}
+						/>
+						{#if fieldErrors.firstName}<FieldError>{fieldErrors.firstName}</FieldError>{/if}
 					</Field>
 					<Field>
 						<FieldLabel>Last Name</FieldLabel>
-						<Input bind:value={lastName} type="text" placeholder="Doe" />
+						<Input
+							bind:value={lastName}
+							type="text"
+							placeholder="Doe"
+							aria-invalid={fieldErrors.lastName ? true : undefined}
+							oninput={() => { if (fieldErrors.lastName) fieldErrors = { ...fieldErrors, lastName: '' }; }}
+						/>
+						{#if fieldErrors.lastName}<FieldError>{fieldErrors.lastName}</FieldError>{/if}
 					</Field>
 				</div>
 
@@ -114,8 +152,16 @@
 						<MailIcon
 							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></MailIcon>
-						<Input bind:value={email} type="email" placeholder="you@company.com" class="pl-9" />
+						<Input
+							bind:value={email}
+							type="email"
+							placeholder="you@company.com"
+							class="pl-9"
+							aria-invalid={fieldErrors.email ? true : undefined}
+							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+						/>
 					</div>
+					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
 				</Field>
 
 				<Field>
@@ -129,12 +175,20 @@
 							type="password"
 							placeholder="Min. 8 characters"
 							class="pl-9"
+							aria-invalid={fieldErrors.password ? true : undefined}
+							oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
 						/>
 					</div>
+					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}
 				</Field>
 
 				<div class="flex items-start gap-2">
-					<Checkbox bind:checked={termsAccepted} class="mt-0.5" />
+					<Checkbox
+						bind:checked={termsAccepted}
+						class="mt-0.5"
+						aria-invalid={fieldErrors.termsAccepted ? true : undefined}
+						onCheckedChange={() => { if (fieldErrors.termsAccepted) fieldErrors = { ...fieldErrors, termsAccepted: '' }; }}
+					/>
 					<label for="terms" class="text-xs leading-snug text-muted-foreground">
 						I agree to the
 						<span class="text-primary font-medium">Terms of Service</span>
@@ -142,14 +196,15 @@
 						<span class="text-primary font-medium">Privacy Policy</span>
 					</label>
 				</div>
+				{#if fieldErrors.termsAccepted}<FieldError>{fieldErrors.termsAccepted}</FieldError>{/if}
 
-				{#if error}
+				{#if error && !Object.keys(fieldErrors).length}
 					<p class="text-center text-sm text-destructive">{error}</p>
 				{/if}
 
-				<Button type="submit" class="w-full" onclick={submit}>
+				<Button type="submit" class="w-full" disabled={busy}>
 					<span class="inline-flex items-center gap-2">
-						Create Account
+						{busy ? 'Creating…' : 'Create Account'}
 						<ArrowRight class="size-3.5" />
 					</span>
 				</Button>

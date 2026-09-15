@@ -25,7 +25,7 @@
 	})}</script>`}
 </svelte:head>
 
-<div class="py-8">
+<div class="mx-auto max-w-6xl py-8">
 	{#if data.item}
 		<header class="mb-8 space-y-2">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.name}</h1>
@@ -38,7 +38,7 @@
 		{#if paged.length === 0}
 			<p class="text-sm text-muted-foreground">No articles in this section yet.</p>
 		{:else}
-			<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
+			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 				{#each paged as article (article.slug)}
 					<Card>
 						<CardHeader>

@@ -70,7 +70,7 @@
 	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
-<div class="py-8">
+<div class="mx-auto max-w-6xl py-8">
 	{#if body}
 		<Breadcrumb
 			items={[
@@ -78,7 +78,7 @@
 				{ label: body.name ?? 'Certifying Body' }
 			]}
 		/>
-		<article class="space-y-4 sm:space-y-8">
+		<article class="space-y-4 sm:space-y-6">
 			<header class="space-y-3">
 				<div class="flex items-center gap-3">
 					<div
@@ -110,7 +110,7 @@
 				</div>
 			</header>
 
-			<div class="grid gap-4 md:grid-cols-2">
+			<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 				<Card>
 					<CardHeader>
 						<CardTitle>About</CardTitle>
@@ -204,7 +204,7 @@
 			<section class="space-y-4">
 				<h2 class="text-xl font-semibold">Certified suppliers</h2>
 				{#if (data.certifiedSuppliers ?? []).length > 0}
-					<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+					<div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 						{#each data.certifiedSuppliers as supplier (supplier.slug)}
 							<Card>
 								<CardContent class="flex items-center justify-between p-4">

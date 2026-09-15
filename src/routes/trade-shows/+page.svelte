@@ -17,6 +17,7 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -194,14 +195,12 @@
 	</div>
 
 	{#if filtered.length === 0}
-		<div
-			class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground"
-		>
-			<CalendarDaysIcon class="mx-auto mb-3 size-10 opacity-40" />
-			<p class="text-sm">No events found matching your criteria.</p>
-		</div>
+		<Empty>
+			<EmptyMedia><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></EmptyMedia>
+			<EmptyTitle>No events found matching your criteria.</EmptyTitle>
+		</Empty>
 	{:else if viewMode === 'list'}
-		<div class="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as show (show.id)}
 				{@const ongoing = isOngoing(show.startDate, show.endDate)}
 				{@const upcoming = isUpcoming(show.startDate)}
@@ -211,7 +210,7 @@
 						<div class="flex items-start justify-between gap-2">
 							<div class="min-w-0 flex-1 space-y-1">
 								<a href={localizeHref(`/trade-shows/${show.id}`)} class="hover:text-primary">
-									<CardTitle class="text-sm leading-snug sm:text-base">{show.name}</CardTitle>
+									<CardTitle class="truncate text-sm leading-snug sm:text-base">{show.name}</CardTitle>
 								</a>
 								<div class="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
 									<MapPinIcon class="size-3.5 shrink-0" />
@@ -289,11 +288,11 @@
 				{/each}
 			</div>
 			{#if mappedShows.length === 0}
-				<div class="rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">
-					<GlobeIcon class="mx-auto mb-3 size-10 opacity-40" />
-					<p class="text-sm">No coordinates available for current filters.</p>
-					<p class="mt-1 text-xs">Showing events with lat/lng data. Switch to list view for full details.</p>
-				</div>
+				<Empty>
+					<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
+					<EmptyTitle>No coordinates available for current filters.</EmptyTitle>
+					<EmptyDescription>Showing events with lat/lng data. Switch to list view for full details.</EmptyDescription>
+				</Empty>
 			{:else}
 				<div class="mx-auto overflow-hidden rounded-xl border border-border bg-card">
 					<svg

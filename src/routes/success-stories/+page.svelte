@@ -5,6 +5,7 @@
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import TrophyIcon from '@lucide/svelte/icons/trophy';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
+	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -31,11 +32,11 @@
 	</div>
 
 	{#if paged.length === 0}
-		<div class="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
-			<TrophyIcon class="mx-auto mb-3 size-10 opacity-40" />
-			<p class="text-sm font-medium">First success stories are on the way</p>
-			<p class="mt-1 text-xs">Closed a deal through HalalNeo? Tell us — we feature real trades.</p>
-		</div>
+		<Empty>
+			<EmptyMedia><TrophyIcon class="size-6 text-muted-foreground"></TrophyIcon></EmptyMedia>
+			<EmptyTitle>First success stories are on the way</EmptyTitle>
+			<EmptyDescription>Closed a deal through HalalNeo? Tell us — we feature real trades.</EmptyDescription>
+		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as s (s.slug)}
