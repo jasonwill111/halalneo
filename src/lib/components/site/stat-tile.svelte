@@ -27,7 +27,7 @@
 </script>
 
 <div
-	class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:px-3 sm:py-3"
+	class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 transition-all duration-200 ease-out hover:shadow-sm sm:rounded-xl sm:px-3 sm:py-3"
 >
 	<div class="flex items-center justify-center gap-1.5">
 		{#if icon}
@@ -36,7 +36,7 @@
 			</span>
 		{/if}
 		{#if loading}
-			<div class="h-6 w-12 animate-pulse rounded bg-muted"></div>
+			<div class="skeleton h-6 w-12 rounded"></div>
 		{:else}
 			<div class="text-base font-bold sm:text-2xl {toneClass}">{value}</div>
 		{/if}

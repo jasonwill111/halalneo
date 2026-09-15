@@ -119,26 +119,6 @@
 	const baseUrl = 'https://halalneo.com';
 	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 
-	const breadcrumbs = $derived.by(() => {
-		const items = [
-			{ name: 'Home', url: baseUrl },
-			{ name: 'Products', url: `${baseUrl}/products` }
-		];
-		if (item?.name) items.push({ name: item.name, url: `${baseUrl}/product/${data.slug}` });
-		return items;
-	});
-
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: breadcrumbs.map((b, i) => ({
-			'@type': 'ListItem',
-			position: i + 1,
-			name: b.name,
-			item: b.url
-		}))
-	});
-
 	const priceDisplay = $derived(
 		item?.priceMin
 			? `$${item.priceMin}${item.priceMax ? ` - $${item.priceMax}` : ''}${item.priceUnit ? ` / ${item.priceUnit}` : ''}`
@@ -331,7 +311,6 @@
 			}))
 		})}</script>`}
 	{/if}
-	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
 {#if item}

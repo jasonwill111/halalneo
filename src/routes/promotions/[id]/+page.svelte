@@ -104,6 +104,18 @@
 	}
 </script>
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'Offer',
+		name: promo?.title ?? '',
+		description: promo?.description ?? '',
+		price: promo?.priceMin ?? '',
+		priceCurrency: 'USD',
+		url: `https://halalneo.com/promotions/${promo?.id ?? ''}`
+	})}</script>`}
+</svelte:head>
+
 {#if promo}
 	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
 		<Breadcrumb items={[{ label: 'Quick Deals', href: '/promotions' }, { label: promo.title ?? 'Deal' }]} />

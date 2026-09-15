@@ -19,16 +19,6 @@
 
 	const baseUrl = 'https://halalneo.com';
 
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
-			{ '@type': 'ListItem', position: 2, name: 'Service Providers', item: `${baseUrl}/service-providers` },
-			{ '@type': 'ListItem', position: 3, name: provider?.name ?? '', item: `${baseUrl}/service-providers/${data.slug}` }
-		]
-	});
-
 	type ProviderType =
 		| 'certification'
 		| 'logistics'
@@ -97,7 +87,6 @@
 			memberOf: { '@type': 'Organization', name: 'HalalNeo' }
 		})}</script>`}
 	{/if}
-	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
 <div class="mx-auto w-full max-w-6xl space-y-4 sm:space-y-6">

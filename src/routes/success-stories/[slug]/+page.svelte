@@ -18,8 +18,12 @@
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: story?.title ?? '',
-		description: story?.excerpt ?? '',
-		url: `https://halalneo.com/success-stories/${data.slug}`
+		description: story?.excerpt ?? story?.body?.slice(0, 200) ?? '',
+		url: `https://halalneo.com/success-stories/${data.slug}`,
+		image: story?.image || undefined,
+		author: story?.supplierSlug ? { '@type': 'Organization', name: data.supplierName ?? story.supplierSlug } : undefined,
+		datePublished: story?.createdAt ? new Date(story.createdAt).toISOString() : undefined,
+		publisher: { '@type': 'Organization', name: 'HalalNeo', url: 'https://halalneo.com' }
 	})}</script>`}
 </svelte:head>
 

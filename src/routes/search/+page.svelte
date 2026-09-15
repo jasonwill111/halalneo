@@ -420,7 +420,7 @@
 					>
 				</Empty>
 			{:else}
-				<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
+				<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 					{#each paginatedResults as result (result.kind + ':' + (result.kind === 'term' ? result.term : result.slug))}
 						{#if result.kind === 'sku'}
 							<a

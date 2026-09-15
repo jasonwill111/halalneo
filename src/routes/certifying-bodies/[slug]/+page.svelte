@@ -36,26 +36,6 @@
 			: null
 	);
 
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
-			{
-				'@type': 'ListItem',
-				position: 2,
-				name: 'Certifying Bodies',
-				item: `${baseUrl}/certifying-bodies`
-			},
-			{
-				'@type': 'ListItem',
-				position: 3,
-				name: body?.name ?? '',
-				item: `${baseUrl}/certifying-bodies/${data.slug}`
-			}
-		]
-	});
-
 	const recognitionEntries = $derived(
 		RECOGNITION_DATA[slug] ?? RECOGNITION_DATA[body?.id] ?? []
 	);
@@ -67,7 +47,6 @@
 	{#if certBodySchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(certBodySchema)}</script>`}
 	{/if}
-	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">

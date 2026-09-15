@@ -110,7 +110,7 @@
 		{#each letters as letter, i (letter)}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
-				<div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				<div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
 					{#each grouped[letter] as term, j (term.term)}
 						<Card>
 							<CardContent class="space-y-1 pt-4">

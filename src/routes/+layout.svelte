@@ -100,6 +100,7 @@
 
 	let lastScrollY = 0;
 	let headerHidden = $state(false);
+	let headerHasContent = $state(false);
 
 	// Real-user Core Web Vitals -> /api/vitals -> Analytics Engine (once per load).
 	// $effect only runs in the browser, so no browser guard is needed.
@@ -109,6 +110,7 @@
 
 	function onScroll() {
 		const scrollY = window.scrollY;
+		headerHasContent = scrollY > 4;
 		if (scrollY < 10) {
 			headerHidden = false;
 		} else if (scrollY > lastScrollY + 5) {
@@ -176,9 +178,9 @@
 		{@render children()}
 	{:else}
 		<header
-			class="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-transform duration-300 supports-[backdrop-filter]:bg-background/90 max-md:transition-transform max-md:duration-300 {headerHidden
+			class="header-scroll-edge sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-transform duration-300 supports-[backdrop-filter]:bg-background/90 max-md:transition-transform max-md:duration-300 {headerHidden
 				? 'max-md:-translate-y-full'
-				: 'max-md:translate-y-0'}"
+				: 'max-md:translate-y-0'} {headerHasContent ? 'has-content' : ''}"
 		>
 			<div
 				class="mx-auto flex h-12 w-full max-w-7xl items-center justify-between gap-2 px-4 sm:h-14 sm:gap-4 sm:px-6"
@@ -252,7 +254,11 @@
 						variant="ghost"
 						size="icon"
 						aria-label="Toggle theme"
-						onclick={() => toggleMode()}
+						onclick={() => {
+							document.documentElement.classList.add('theme-transitioning');
+							toggleMode();
+							setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+						}}
 					>
 						{#if mode.current === 'dark'}
 							<Sun class="size-4" />

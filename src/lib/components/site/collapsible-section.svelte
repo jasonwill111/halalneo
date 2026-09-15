@@ -23,6 +23,15 @@
 		headerAction,
 		children
 	}: Props = $props();
+
+	let contentEl = $state<HTMLDivElement | undefined>(undefined);
+	let height = $state(0);
+
+	$effect(() => {
+		if (contentEl) {
+			height = contentEl.scrollHeight;
+		}
+	});
 </script>
 
 <section class="rounded-lg border border-border/60 bg-card/50">
@@ -43,16 +52,19 @@
 		</span>
 		<span class="flex items-center gap-2">
 			{#if headerAction}{@render headerAction()}{/if}
-			{#if open}
+			<span class="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]" class:rotate-180={open}>
 				<ChevronDown class="size-4 text-muted-foreground" />
-			{:else}
-				<ChevronRight class="size-4 text-muted-foreground" />
-			{/if}
+			</span>
 		</span>
 	</Button>
-	{#if open}
+	<div
+		bind:this={contentEl}
+		style:--content-height="{height}px"
+		class="content-animate overflow-hidden transition-[height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+		data-state={open ? 'open' : 'closed'}
+	>
 		<div class="space-y-3 border-t border-border/60 p-3">
 			{@render children()}
 		</div>
-	{/if}
+	</div>
 </section>

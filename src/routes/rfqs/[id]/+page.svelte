@@ -112,6 +112,16 @@
 	}
 </script>
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'BuyAction',
+		name: rfq?.title ?? '',
+		description: rfq?.description ?? '',
+		url: `https://halalneo.com/rfqs/${rfq?.id ?? ''}`
+	})}</script>`}
+</svelte:head>
+
 {#if rfq}
 	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
 		<Breadcrumb items={[{ label: 'Buying Requests', href: '/rfqs' }, { label: rfq.title ?? 'Request' }]} />

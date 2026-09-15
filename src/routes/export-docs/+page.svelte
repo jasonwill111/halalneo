@@ -74,7 +74,7 @@
 		</p>
 	</div>
 
-	<div class="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
 		{#each templates as template (template.id)}
 			<Card class="group hover:shadow-md transition-shadow">
 				<CardHeader class="p-4">

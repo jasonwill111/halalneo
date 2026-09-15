@@ -21,8 +21,6 @@
 	import TagsIcon from '@lucide/svelte/icons/tags';
 	import { navGroups } from '#lib/data/navigation.js';
 
-	// Explore popover renders the single-source navGroups (Trade first).
-	// Company group excluded — About/Contact already live in the Menu popover.
 	const exploreGroups = navGroups.filter((g) => g.label !== 'Company');
 
 	let showExplore = $state(false);
@@ -31,6 +29,9 @@
 	let menuBtnEl = $state<HTMLElement | null>(null);
 	let explorePos = $state({ left: 0, top: 0 });
 	let menuPos = $state({ right: 0, top: 0 });
+	let indicatorX = $state(0);
+	let indicatorWidth = $state(0);
+	let tabRefs = $state<Record<string, HTMLElement | null>>({});
 
 	const menuItems = [
 		{ label: 'Suppliers', href: '/suppliers', icon: UsersIcon },
@@ -60,6 +61,16 @@
 		};
 	}
 
+	function updateIndicator(key: string) {
+		const el = tabRefs[key];
+		if (el) {
+			const rect = el.getBoundingClientRect();
+			const parentRect = el.parentElement!.getBoundingClientRect();
+			indicatorX = rect.left - parentRect.left;
+			indicatorWidth = rect.width;
+		}
+	}
+
 	function toggleExplore() {
 		if (showExplore) {
 			showExplore = false;
@@ -67,6 +78,7 @@
 			showMenu = false;
 			if (exploreBtnEl) explorePos = calcPos(exploreBtnEl);
 			showExplore = true;
+			updateIndicator('explore');
 		}
 	}
 
@@ -80,6 +92,7 @@
 				menuPos = { right: pos.right, top: pos.top };
 			}
 			showMenu = true;
+			updateIndicator('menu');
 		}
 	}
 
@@ -94,6 +107,17 @@
 			closeAll();
 		}
 	}
+
+	$effect(() => {
+		const path = page.url.pathname;
+		const keys = ['/', '/categories', '/products', 'explore', 'menu'];
+		for (const key of keys) {
+			if (key === '/' && path === '/') { updateIndicator(key); break; }
+			if (key !== '/' && key !== 'explore' && key !== 'menu' && path.startsWith(key)) { updateIndicator(key); break; }
+			if (key === 'explore' && showExplore) { updateIndicator(key); break; }
+			if (key === 'menu' && showMenu) { updateIndicator(key); break; }
+		}
+	});
 </script>
 
 <svelte:document onclickcapture={handleClickOutside} />
@@ -104,13 +128,13 @@
 <!-- Backdrop -->
 {#if showExplore || showMenu}
 	<div
-		class="fixed inset-0 z-40 md:hidden"
+		class="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs md:hidden"
 		onclick={closeAll}
 		transition:fade={{ duration: 150 }}
 	></div>
 {/if}
 
-<!-- Explore Popover (fixed, rendered outside tab bar) -->
+<!-- Explore Popover -->
 {#if showExplore}
 	<div
 		class="glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-xl p-2 md:hidden"
@@ -146,7 +170,7 @@
 	</div>
 {/if}
 
-<!-- Menu Popover (fixed, rendered outside tab bar) -->
+<!-- Menu Popover -->
 {#if showMenu}
 	<div
 		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl p-2 md:hidden"
@@ -173,22 +197,29 @@
 	</div>
 {/if}
 
-<!-- Bottom Tab Bar (App Dock �?all breakpoints) -->
+<!-- Bottom Tab Bar with Apple-style sliding indicator -->
 <nav
 	class="fixed bottom-1.5 left-1/2 z-50 -translate-x-1/2 md:hidden"
 	aria-label="Mobile navigation"
 >
 	<div
-		class="flex items-center justify-evenly rounded-xl border border-white/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-white/10"
+		class="relative flex items-center justify-evenly rounded-xl border border-white/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-white/10"
 		style="width: min(90vw, 360px);"
 	>
+		<!-- Sliding indicator pill (Apple signature pattern) -->
+		<div
+			class="tab-indicator pointer-events-none absolute top-0.5 h-[calc(100%-4px)] rounded-lg bg-primary/12"
+			style="transform: translateX({indicatorX}px); width: {indicatorWidth}px;"
+		></div>
+
 		<!-- Home -->
 		<a
 			href={localizeHref('/')}
 			onclick={closeAll}
+			bind:this={tabRefs['/']}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
-				isActive('/') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				isActive('/') ? 'text-primary' : 'text-muted-foreground'
 			)}
 		>
 			<HomeIcon class="size-4" strokeWidth={isActive('/') ? 2.2 : 1.8} />
@@ -199,9 +230,10 @@
 		<a
 			href={localizeHref('/categories')}
 			onclick={closeAll}
+			bind:this={tabRefs['/categories']}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
-				isActive('/categories') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				isActive('/categories') ? 'text-primary' : 'text-muted-foreground'
 			)}
 		>
 			<Grid2x2Icon class="size-4" strokeWidth={isActive('/categories') ? 2.2 : 1.8} />
@@ -212,9 +244,10 @@
 		<a
 			href={localizeHref('/products')}
 			onclick={closeAll}
+			bind:this={tabRefs['/products']}
 			class={cn(
-				'flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
-				isActive('/products') ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				isActive('/products') ? 'text-primary' : 'text-muted-foreground'
 			)}
 		>
 			<BoxIcon class="size-4" strokeWidth={isActive('/products') ? 2.2 : 1.8} />
@@ -227,8 +260,8 @@
 			bind:ref={exploreBtnEl}
 			onclick={(e) => { e.stopPropagation(); toggleExplore(); }}
 			class={cn(
-				'h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
-				showExplore ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				showExplore ? 'text-primary' : 'text-muted-foreground'
 			)}
 			data-popover
 		>
@@ -242,8 +275,8 @@
 			bind:ref={menuBtnEl}
 			onclick={(e) => { e.stopPropagation(); toggleMenu(); }}
 			class={cn(
-				'h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-all duration-200',
-				showMenu ? 'bg-primary/15 text-primary' : 'text-muted-foreground'
+				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				showMenu ? 'text-primary' : 'text-muted-foreground'
 			)}
 			data-popover
 		>

@@ -287,21 +287,6 @@
 			: null
 	);
 
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
-			{ '@type': 'ListItem', position: 2, name: 'Suppliers', item: `${baseUrl}/suppliers` },
-			{
-				'@type': 'ListItem',
-				position: 3,
-				name: item?.name ?? 'Supplier',
-				item: `${baseUrl}/supplier/${data.slug}`
-			}
-		]
-	});
-
 	const certifications = $derived.by(() => {
 		const raw = item?.certifications;
 		if (!raw) return [];
@@ -395,7 +380,6 @@
 	{#if item?.coverImage}
 		<link rel="preload" as="image" href={item.coverImage} fetchpriority="high" />
 	{/if}
-	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
 {#if item}

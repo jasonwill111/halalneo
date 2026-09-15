@@ -154,7 +154,7 @@
 
 		{#if searched}
 		{#if loading}
-			<div class="grid grid-cols-2 gap-3 sm:grid-cols-2" aria-label="Searching certificates" aria-busy="true">
+			<div class="grid grid-cols-2 gap-3" aria-label="Searching certificates" aria-busy="true">
 				{#each Array(4) as _, i (i)}
 					<Card class="bg-card">
 						<CardContent class="space-y-2 p-4">
@@ -200,7 +200,7 @@
 						</Button>
 					</div>
 				</div>
-				<div class="grid grid-cols-2 gap-3 sm:grid-cols-2">
+				<div class="grid grid-cols-2 gap-3">
 					{#each results as r (r.type + ':' + r.slug)}
 						<Card class="bg-card transition-shadow hover:shadow-md">
 							<CardContent class="space-y-2 p-4">
