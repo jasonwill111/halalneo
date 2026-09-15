@@ -9,9 +9,6 @@
 	import Grid2x2Icon from '@lucide/svelte/icons/grid-2x2';
 	import BoxIcon from '@lucide/svelte/icons/box';
 	import CompassIcon from '@lucide/svelte/icons/compass';
-	import UsersIcon from '@lucide/svelte/icons/users';
-	import BanknoteIcon from '@lucide/svelte/icons/banknote';
-	import HelpCircleIcon from '@lucide/svelte/icons/circle-question-mark';
 	import InfoIcon from '@lucide/svelte/icons/info';
 	import MailIcon from '@lucide/svelte/icons/mail';
 	import LogInIcon from '@lucide/svelte/icons/log-in';
@@ -34,9 +31,6 @@
 	let tabRefs = $state<Record<string, HTMLElement | null>>({});
 
 	const menuItems = [
-		{ label: 'Suppliers', href: '/suppliers', icon: UsersIcon },
-		{ label: 'Pricing', href: '/pricing', icon: BanknoteIcon },
-		{ label: 'FAQ', href: '/faq', icon: HelpCircleIcon },
 		{ label: 'About', href: '/about', icon: InfoIcon },
 		{ label: 'Contact', href: '/contact', icon: MailIcon },
 		{ label: 'Sign in', href: '/login', icon: LogInIcon },
