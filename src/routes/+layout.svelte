@@ -1,34 +1,71 @@
 <script lang="ts">
-	import './layout.css';
-	import favicon from '#lib/assets/favicon.svg';
-	import { localizeHref, deLocalizeUrl, localizeUrl } from '#lib/paraglide/runtime.js';
-	import { cn } from '#lib/utils.js';
-	import { mode, toggleMode } from 'mode-watcher';
-	import { ModeWatcher } from 'mode-watcher';
-	import { page } from '$app/state';
-	import Sun from '@lucide/svelte/icons/sun';
-	import Moon from '@lucide/svelte/icons/moon';
-	import MenuIcon from '@lucide/svelte/icons/menu';
-	import SearchIcon from '@lucide/svelte/icons/search';
-	import UserIcon from '@lucide/svelte/icons/user';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
-	import { Toaster } from '#lib/components/ui/sonner/index.js';
-	import MobileTab from '#lib/components/mobile-tab.svelte';
-	import BackToTop from '#lib/components/site/back-to-top.svelte';
-	import { initWebVitals } from '#lib/vitals.js';
-	import {
-		NavigationMenuRoot,
-		NavigationMenuItem,
-		NavigationMenuLink,
-		NavigationMenuList,
-		NavigationMenuTrigger,
-		NavigationMenuContent,
-		navigationMenuTriggerStyle
-	} from '#lib/components/ui/navigation-menu/index.js';
-	import { primaryNav, navGroups } from '#lib/data/navigation.js';
+  import './layout.css';
+  import favicon from '#lib/assets/favicon.svg';
+  import { localizeHref, deLocalizeUrl, localizeUrl } from '#lib/paraglide/runtime.js';
+  import { cn } from '#lib/utils.js';
+  import { mode, toggleMode } from 'mode-watcher';
+  import { ModeWatcher } from 'mode-watcher';
+  import { page } from '$app/state';
+  import Sun from '@lucide/svelte/icons/sun';
+  import Moon from '@lucide/svelte/icons/moon';
+  import MenuIcon from '@lucide/svelte/icons/menu';
+  import SearchIcon from '@lucide/svelte/icons/search';
+  import UserIcon from '@lucide/svelte/icons/user';
+  import { Button } from '#lib/components/ui/button/index.js';
+  import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
+  import { Toaster } from '#lib/components/ui/sonner/index.js';
+  import MobileTab from '#lib/components/mobile-tab.svelte';
+  import BackToTop from '#lib/components/site/back-to-top.svelte';
+  import { initWebVitals } from '#lib/vitals.js';
+  import {
+    NavigationMenuRoot,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    NavigationMenuContent,
+    navigationMenuTriggerStyle
+  } from '#lib/components/ui/navigation-menu/index.js';
+  import { primaryNav, navGroups } from '#lib/data/navigation.js';
 
 	let { children } = $props();
+
+  // 增强运动效果的初始化
+  function enhanceMotion() {
+    if (typeof document === 'undefined') return;
+    
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReduced) return;
+    
+    // 为按钮添加按压缩放
+    document.querySelectorAll('button, [role="button"], a').forEach((el) => {
+      el.addEventListener('pointerdown', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        // 简单的按压缩放
+        target.style.transform = 'scale(0.97)';
+        target.style.transition = 'transform 100ms ease-out';
+        
+        // 自动恢复
+        setTimeout(() => {
+          target.style.transform = '';
+          target.style.transition = '';
+        }, 100);
+      });
+    });
+    
+    // 为卡片添加悬停效果
+    document.querySelectorAll('.card').forEach((card) => {
+      card.addEventListener('mouseenter', () => {
+        (card as HTMLElement).style.transform = 'translateY(-2px)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        (card as HTMLElement).style.transform = '';
+      });
+    });
+  }
+
 
 	const isAdminRoute = $derived(deLocalizeUrl(page.url.href).pathname.startsWith('/admin'));
 
@@ -99,9 +136,15 @@
 		return items.some((i) => isActive(pathname, i.href));
 	}
 
-	let lastScrollY = 0;
-	let headerHidden = $state(false);
-	let headerHasContent = $state(false);
+  let lastScrollY = 0;
+  let headerHidden = $state(false);
+  let headerHasContent = $state(false);
+
+  // 增强运动效果的初始化
+  $effect(() => {
+    enhanceMotion();
+  });
+
 
 	// Real-user Core Web Vitals -> /api/vitals -> Analytics Engine (once per load).
 	// $effect only runs in the browser, so no browser guard is needed.
