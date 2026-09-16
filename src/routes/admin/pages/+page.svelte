@@ -30,16 +30,18 @@
 		SelectItem,
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
-	import Search from '@lucide/svelte/icons/search';
-	import Plus from '@lucide/svelte/icons/plus';
-	import Pencil from '@lucide/svelte/icons/pencil';
-	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import Sparkles from '@lucide/svelte/icons/sparkles';
-	import StatTile from '#lib/components/site/stat-tile.svelte';
-	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
-	import { z } from 'zod';
-	import { focusFirstInvalid } from '#lib/utils/forms.js';
-	import { toast } from 'svelte-sonner';
+ 	import Search from '@lucide/svelte/icons/search';
+ 	import Plus from '@lucide/svelte/icons/plus';
+ 	import Pencil from '@lucide/svelte/icons/pencil';
+ 	import Trash2 from '@lucide/svelte/icons/trash-2';
+ 	import Sparkles from '@lucide/svelte/icons/sparkles';
+ 	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+ 	import StatTile from '#lib/components/site/stat-tile.svelte';
+ 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+ 	import { z } from 'zod';
+ 	import { focusFirstInvalid } from '#lib/utils/forms.js';
+ 	import { toast } from 'svelte-sonner';
+ 	import FileText from '@lucide/svelte/icons/file-text';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -297,8 +299,14 @@
 					</TableRow>
 				{:else}
 					<TableRow>
-						<TableCell colspan={5} class="py-8 text-center text-sm text-muted-foreground">
-							No pages found.
+						<TableCell colspan={5} class="py-8">
+							<Empty>
+								<EmptyMedia><FileText class="size-6 text-muted-foreground" /></EmptyMedia>
+								<div class="space-y-1">
+									<p class="font-medium">No pages found</p>
+									<p class="text-sm text-muted-foreground">No content pages to display.</p>
+								</div>
+							</Empty>
 						</TableCell>
 					</TableRow>
 				{/each}

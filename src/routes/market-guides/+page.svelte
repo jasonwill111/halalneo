@@ -15,7 +15,7 @@
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
 	import ScaleIcon from '@lucide/svelte/icons/scale';
 
-	let { data } = $props();
+	let { data, itemList } = $props();
 
 	let selectedRegion = $state('all');
 
@@ -51,6 +51,10 @@
 		page = 1;
 	});
 </script>
+
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+</svelte:head>
 
 <Breadcrumb items={[{ label: 'Market Guides', href: '/market-guides' }]} />
 

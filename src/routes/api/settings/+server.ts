@@ -10,8 +10,14 @@ import { getSession } from '#lib/server/auth.js';
 const PUBLIC_SETTING_KEYS = ['siteName', 'siteDescription', 'logoUrl', 'contactEmail'];
 
 const ALLOWED_SETTINGS_KEYS = new Set([
-	'siteName', 'siteDescription', 'logoUrl', 'contactEmail',
-	'contactPhone', 'businessAddress', 'businessHours', 'businessEmail'
+	'siteName',
+	'siteDescription',
+	'logoUrl',
+	'contactEmail',
+	'contactPhone',
+	'businessAddress',
+	'businessHours',
+	'businessEmail'
 ]);
 
 export const GET: RequestHandler = async (event) => {
@@ -25,7 +31,15 @@ export const GET: RequestHandler = async (event) => {
 		const row = await cachedQuery(
 			url.toString(),
 			async () => {
-				const [row] = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1);
+				const [row] = await db
+					.select({
+						key: siteSettings.key,
+						value: siteSettings.value,
+						updatedAt: siteSettings.updatedAt
+					})
+					.from(siteSettings)
+					.where(eq(siteSettings.key, key))
+					.limit(1);
 				return row ?? null;
 			},
 			{ ...cacheLong(), cacheKey: `settings:${key}` }
@@ -38,7 +52,13 @@ export const GET: RequestHandler = async (event) => {
 	const data = await cachedQuery(
 		url.toString(),
 		async () => {
-			const rows = await db.select().from(siteSettings);
+			const rows = await db
+				.select({
+					key: siteSettings.key,
+					value: siteSettings.value,
+					updatedAt: siteSettings.updatedAt
+				})
+				.from(siteSettings);
 			if (session) return { items: rows };
 			return { items: rows.filter((r: any) => PUBLIC_SETTING_KEYS.includes(r.key)) };
 		},

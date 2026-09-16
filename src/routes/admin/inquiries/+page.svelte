@@ -27,9 +27,11 @@
 		SelectItem,
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
-	import * as Field from '#lib/components/ui/field/index.js';
-	import Search from '@lucide/svelte/icons/search';
-	import StatTile from '#lib/components/site/stat-tile.svelte';
+ 	import * as Field from '#lib/components/ui/field/index.js';
+ 	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+ 	import Search from '@lucide/svelte/icons/search';
+ 	import StatTile from '#lib/components/site/stat-tile.svelte';
+ 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 
 	let search = $state('');
 	let dialogOpen = $state(false);
@@ -141,8 +143,14 @@
 					</TableRow>
 				{:else}
 					<TableRow>
-						<TableCell colspan={6} class="py-8 text-center text-sm text-muted-foreground">
-							No inquiries found.
+						<TableCell colspan={6} class="py-8">
+							<Empty>
+								<EmptyMedia><MessageCircle class="size-6 text-muted-foreground" /></EmptyMedia>
+								<div class="space-y-1">
+									<p class="font-medium">No inquiries found</p>
+									<p class="text-sm text-muted-foreground">No buyer messages to display.</p>
+								</div>
+							</Empty>
 						</TableCell>
 					</TableRow>
 				{/each}

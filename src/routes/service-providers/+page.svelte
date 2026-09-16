@@ -18,7 +18,7 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import X from '@lucide/svelte/icons/x';
 
-	let { data } = $props();
+	let { data, itemList } = $props();
 
 	type ProviderType =
 		'certification' | 'logistics' | 'finance' | 'payment' | 'insurance' | 'consulting';
@@ -139,6 +139,10 @@
 		currentPage = 1;
 	});
 </script>
+
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+</svelte:head>
 
 <Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }]} />
 

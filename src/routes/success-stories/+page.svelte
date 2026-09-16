@@ -7,15 +7,19 @@
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
 	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
 
-	let { data } = $props();
+	let { data, itemList } = $props();
 
 	let page = $state(1);
 	const PAGE_SIZE = 9;
 
 	const stories = $derived((data.stories ?? []) as any[]);
 	const totalPages = $derived(Math.max(1, Math.ceil(stories.length / PAGE_SIZE)));
-	const paged = $derived(stories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+		const paged = $derived(stories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 </script>
+
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+</svelte:head>
 
 <Breadcrumb items={[{ label: 'Success Stories', href: '/success-stories' }]} />
 

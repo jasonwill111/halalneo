@@ -45,7 +45,7 @@
 		<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 	</div>
 
-	<Card class="p-6">
+	<Card class="p-3 sm:p-6">
 		<h2 class="mb-2 text-lg font-bold text-foreground">Our Mission</h2>
 		<p class="text-sm text-muted-foreground leading-relaxed">
 			HalalNeo simplifies halal trade by providing verified supplier profiles, certified product
@@ -54,8 +54,8 @@
 		</p>
 	</Card>
 
-	<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-		<Card>
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
+		<Card class="p-3 sm:p-4">
 			<CardHeader class="gap-2">
 				<ShieldCheck class="size-8 text-primary" data-icon="header" />
 				<CardTitle class="text-base">Verification first</CardTitle>
@@ -67,7 +67,7 @@
 				</p>
 			</CardContent>
 		</Card>
-		<Card>
+		<Card class="p-3 sm:p-4">
 			<CardHeader class="gap-2">
 				<BookOpen class="size-8 text-primary" data-icon="header" />
 				<CardTitle class="text-base">Knowledge, not noise</CardTitle>
@@ -79,7 +79,7 @@
 				</p>
 			</CardContent>
 		</Card>
-		<Card>
+		<Card class="p-3 sm:p-4">
 			<CardHeader class="gap-2">
 				<Globe class="size-8 text-primary" data-icon="header" />
 				<CardTitle class="text-base">Built for cross-border</CardTitle>
@@ -102,8 +102,8 @@
 				are genuinely certified, and vetted suppliers struggle to stand out.
 			</p>
 		</div>
-		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-			<Card>
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
+			<Card class="p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<Search class="size-6 text-primary" data-icon="header" />
 					<CardTitle class="text-base">01 · Source</CardTitle>
@@ -112,7 +112,7 @@
 					>
 				</CardHeader>
 			</Card>
-			<Card>
+			<Card class="p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<Target class="size-6 text-primary" data-icon="header" />
 					<CardTitle class="text-base">02 · Verify</CardTitle>
@@ -122,7 +122,7 @@
 					>
 				</CardHeader>
 			</Card>
-			<Card>
+			<Card class="p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<Package class="size-6 text-primary" data-icon="header" />
 					<CardTitle class="text-base">03 · Ship</CardTitle>
@@ -134,7 +134,7 @@
 		</div>
 	</div>
 
-	<div class="rounded-xl bg-muted/40 p-6 sm:p-10">
+	<div class="rounded-xl bg-muted/40 p-3 sm:p-10">
 		<div class="grid gap-8 sm:grid-cols-2 sm:items-center">
 			<div class="space-y-3">
 				<h2 class="text-2xl font-semibold tracking-tight">What's on the platform</h2>
@@ -142,7 +142,7 @@
 					Researched knowledge base, trade tools, and market intelligence — built for halal B2B buyers and suppliers.
 				</p>
 			</div>
-			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+			<div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
 			<StatTile value={data.stats.kbSectionCount} label="knowledge sections" tone="info" />
 			<StatTile value={data.stats.certifierCount} label="certifying bodies" tone="warn" />
 			<StatTile value={3} label="trade tools" tone="success" />
@@ -153,7 +153,7 @@
 		</div>
 	</div>
 
-	<Card class="p-6">
+	<Card class="p-3 sm:p-6">
 		<h2 class="mb-2 text-lg font-bold text-foreground">How we source data</h2>
 		<p class="text-sm text-muted-foreground leading-relaxed">
 			All certification data on HalalNeo is sourced from publicly available registers of accredited halal
@@ -179,7 +179,7 @@
 		</div>
 	</div>
 
-	<div class="rounded-xl p-6 text-center sm:p-10">
+	<div class="rounded-xl p-3 sm:p-10 text-center">
 		<Users class="mx-auto size-8 text-primary" data-icon="header" />
 		<h2 class="mt-4 text-2xl font-semibold tracking-tight">Ready to source with confidence?</h2>
 		<p class="mx-auto mt-2 max-w-xl text-muted-foreground">

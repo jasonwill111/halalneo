@@ -14,13 +14,14 @@
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
-	import { Empty } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
 	import { toast } from 'svelte-sonner';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { z } from 'zod';
 	import { focusFirstInvalid } from '#lib/utils/forms.js';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import FileText from '@lucide/svelte/icons/file-text';
 
 	let stories = $state<any[]>([]);
 	let loading = $state(true);
@@ -163,6 +164,7 @@
 	{:else if stories.length === 0}
 		<div class="p-6">
 			<Empty>
+				<EmptyMedia><FileText class="size-6 text-muted-foreground" /></EmptyMedia>
 				<div class="space-y-1 text-center">
 					<p class="font-medium">No stories yet</p>
 					<p class="text-sm text-muted-foreground">Publish the first success story.</p>

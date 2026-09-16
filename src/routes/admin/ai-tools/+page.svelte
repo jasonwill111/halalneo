@@ -41,6 +41,8 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 
 	let dialogOpen = $state(false);
 	let editing = $state<AiTool | null>(null);
@@ -67,7 +69,9 @@
 		category: 'assistant',
 		status: 'disabled'
 	});
-	let formError = $state('');
+	let errors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | null>(null);
+	let busy = $state(false);
 
 	const categoryLabels: Record<AiTool['category'], string> = {
 		assistant: 'Assistant',
@@ -75,6 +79,17 @@
 		sourcing: 'Sourcing',
 		documentation: 'Documentation'
 	};
+
+	// Zod schema for AI tool validation
+	const toolSchema = z.object({
+		name: z.string().min(1, 'Tool name is required'),
+		slug: z.string().min(1, 'Slug is required'),
+		category: z.enum(['assistant', 'compliance', 'sourcing', 'documentation']),
+		status: z.enum(['active', 'disabled']),
+		description: z.string().optional(),
+		longDescription: z.string().optional(),
+		features: z.string().optional()
+	});
 
 	function openCreate() {
 		editing = null;
@@ -88,7 +103,7 @@
 			category: 'assistant',
 			status: 'disabled'
 		};
-		formError = '';
+		errors = {};
 		dialogOpen = true;
 	}
 
@@ -104,7 +119,7 @@
 			category: t.category,
 			status: t.status
 		};
-		formError = '';
+		errors = {};
 		dialogOpen = true;
 	}
 
@@ -135,20 +150,49 @@
 	];
 
 	function save() {
-		if (!form.name.trim()) {
-			formError = 'Tool name is required.';
+		// Reset errors
+		errors = {};
+
+		// Validate with Zod
+		const result = toolSchema.safeParse(form);
+
+		if (!result.success) {
+			// Map Zod errors to field errors
+			const fieldErrors: Record<string, string> = {};
+			for (const issue of result.error.issues) {
+				// Only handle issues where the first path segment is a string
+				if (issue.path.length > 0 && typeof issue.path[0] === 'string') {
+					fieldErrors[issue.path[0]] = issue.message;
+				}
+			}
+			errors = fieldErrors;
+
+			if (formEl) {
+				focusFirstInvalid(formEl);
+			}
 			return;
 		}
+
+		// Additional manual validations
 		const slug = form.slug || normalizeId(form.name);
 		if (reservedSlugs.includes(slug)) {
-			formError = `"${slug}" is a reserved route and cannot be used as a tool slug.`;
+			errors.slug = `"${slug}" is a reserved route and cannot be used as a tool slug.`;
+			if (formEl) {
+				focusFirstInvalid(formEl);
+			}
 			return;
 		}
+
 		const dup = adminData.aiTools.some((t) => t.slug === slug && t.slug !== editing?.slug);
 		if (dup) {
-			formError = 'A tool with that slug already exists.';
+			errors.slug = 'A tool with that slug already exists.';
+			if (formEl) {
+				focusFirstInvalid(formEl);
+			}
 			return;
 		}
+
+		busy = true;
 		const base: AiTool =
 			editing ??
 			({
@@ -161,26 +205,31 @@
 				category: 'assistant',
 				status: 'disabled'
 			} as AiTool);
-		upsertItem<AiTool>(
-			'aiTools',
-			{
-				...base,
-				id: editing ? base.id : slug,
-				slug,
-				name: form.name.trim(),
-				description: form.description.trim(),
-				longDescription: form.longDescription.trim(),
-				features: form.features
-					.split(',')
-					.map((f) => f.trim())
-					.filter(Boolean),
-				category: form.category,
-				status: form.status
-			},
-			editing ?? undefined
-		);
-		dialogOpen = false;
-		toast.success(editing ? 'Tool updated' : 'Tool created');
+
+		// Simulate async operation
+		setTimeout(() => {
+			upsertItem<AiTool>(
+				'aiTools',
+				{
+					...base,
+					id: editing ? base.id : slug,
+					slug,
+					name: form.name.trim(),
+					description: form.description.trim(),
+					longDescription: form.longDescription.trim(),
+					features: form.features
+						.split(',')
+						.map((f) => f.trim())
+						.filter(Boolean),
+					category: form.category,
+					status: form.status
+				},
+				editing ?? undefined
+			);
+			dialogOpen = false;
+			toast.success(editing ? 'Tool updated' : 'Tool created');
+			busy = false;
+		}, 300);
 	}
 
 	function remove(t: AiTool) {
@@ -289,67 +338,91 @@
 			<DialogTitle>{editing ? 'Edit tool' : 'New tool'}</DialogTitle>
 			<DialogDescription>Register or update an AI tool offered on the platform.</DialogDescription>
 		</DialogHeader>
-		<div class="space-y-4">
-			<Field.Field>
-				<Field.FieldLabel>Name</Field.FieldLabel>
-				<Input bind:value={form.name} placeholder="Certification Checker" />
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Slug</Field.FieldLabel>
-				<Input bind:value={form.slug} placeholder="certification-checker" disabled={!!editing} />
-				<p class="text-xs text-muted-foreground">
-					Unique URL segment —auto-derived from the name when left blank.
-				</p>
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Category</Field.FieldLabel>
-				<Select bind:value={form.category} type="single">
-					<SelectTrigger class="w-full">{categoryLabels[form.category]}</SelectTrigger>
-					<SelectContent>
-						{#each Object.entries(categoryLabels) as [value, label] (value)}
-							<SelectItem {value}>{label}</SelectItem>
-						{/each}
-					</SelectContent>
-				</Select>
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Status</Field.FieldLabel>
-				<Select bind:value={form.status} type="single">
-					<SelectTrigger class="w-full">{form.status}</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="active">active</SelectItem>
-						<SelectItem value="disabled">disabled</SelectItem>
-					</SelectContent>
-				</Select>
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Short description</Field.FieldLabel>
-				<Textarea bind:value={form.description} rows={2} placeholder="What the tool does..." />
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Long description</Field.FieldLabel>
-				<Textarea
-					bind:value={form.longDescription}
-					rows={3}
-					placeholder="Page-level description shown on the tool's dedicated page"
-				/>
-			</Field.Field>
-			<Field.Field>
-				<Field.FieldLabel>Features</Field.FieldLabel>
-				<Textarea
-					bind:value={form.features}
-					rows={3}
-					placeholder="Comma-separated features shown on the tool page..."
-				/>
-			</Field.Field>
-			{#if formError}
-				<p class="text-sm text-destructive">{formError}</p>
-			{/if}
-		</div>
-		<DialogFooter>
-			<Button variant="outline" onclick={() => (dialogOpen = false)}>Cancel</Button>
-			<Button variant="default" onclick={save}>{editing ? 'Save changes' : 'Create tool'}</Button>
-		</DialogFooter>
+		<form
+			onsubmit={save}
+			class="space-y-4"
+			bind:this={formEl}
+		>
+			<div class="space-y-4">
+				<Field.Field>
+					<Field.FieldLabel>Name</Field.FieldLabel>
+					<Input
+						bind:value={form.name}
+						placeholder="Certification Checker"
+						aria-invalid={!!errors.name}
+						aria-describedby={errors.name ? 'name-error' : undefined}
+					/>
+					{#if errors.name}
+						<span id="name-error" class="text-sm text-destructive">{errors.name}</span>
+					{/if}
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Slug</Field.FieldLabel>
+					<Input
+						bind:value={form.slug}
+						placeholder="certification-checker"
+						disabled={!!editing}
+						aria-invalid={!!errors.slug}
+						aria-describedby={errors.slug ? 'slug-error' : undefined}
+					/>
+					<p class="text-xs text-muted-foreground">
+						Unique URL segment —auto-derived from the name when left blank.
+					</p>
+					{#if errors.slug}
+						<span id="slug-error" class="text-sm text-destructive">{errors.slug}</span>
+					{/if}
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Category</Field.FieldLabel>
+					<Select bind:value={form.category} type="single">
+						<SelectTrigger class="w-full">{categoryLabels[form.category]}</SelectTrigger>
+						<SelectContent>
+							{#each Object.entries(categoryLabels) as [value, label] (value)}
+								<SelectItem {value}>{label}</SelectItem>
+							{/each}
+						</SelectContent>
+					</Select>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Status</Field.FieldLabel>
+					<Select bind:value={form.status} type="single">
+						<SelectTrigger class="w-full">{form.status}</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="active">active</SelectItem>
+							<SelectItem value="disabled">disabled</SelectItem>
+						</SelectContent>
+					</Select>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Short description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.description}
+						rows={2}
+						placeholder="What the tool does..."
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Long description</Field.FieldLabel>
+					<Textarea
+						bind:value={form.longDescription}
+						rows={3}
+						placeholder="Page-level description shown on the tool's dedicated page"
+					/>
+				</Field.Field>
+				<Field.Field>
+					<Field.FieldLabel>Features</Field.FieldLabel>
+					<Textarea
+						bind:value={form.features}
+						rows={3}
+						placeholder="Comma-separated features shown on the tool page..."
+					/>
+				</Field.Field>
+			</div>
+			<DialogFooter>
+				<Button variant="outline" type="button" onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button variant="default" type="submit" disabled={busy}>{editing ? 'Save changes' : 'Create tool'}</Button>
+			</DialogFooter>
+		</form>
 	</DialogContent>
 </Dialog>
 

@@ -11,7 +11,7 @@
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import Wrench from '@lucide/svelte/icons/wrench';
 
-	let { data } = $props();
+	let { data, itemList } = $props();
 
 	const tools = [
 		{
@@ -63,13 +63,13 @@
 			badge: 'Soon'
 		}
 	];
-</script>
+	</script>
 
-<svelte:head>
-	<!-- Title + description render once via root layout from loader `seo`. -->
-</svelte:head>
+	<svelte:head>
+		{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+	</svelte:head>
 
-<Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
+	<Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
 
 <section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">

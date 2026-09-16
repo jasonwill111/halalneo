@@ -614,7 +614,7 @@
 
 			<!-- Quick Info sidebar -->
 			<div class="space-y-4 lg:sticky lg:top-20 lg:self-start">
-				<Card class="p-4">
+				<Card class="p-3 sm:p-4">
 					<h3 class="mb-3 text-sm font-semibold">Quick Info</h3>
 					<dl class="space-y-2 text-sm">
 						<div class="flex justify-between">
@@ -652,7 +652,7 @@
 				</Card>
 
 				<!-- Supplier card -->
-				<Card class="p-4">
+				<Card class="p-3 sm:p-4">
 					<h3 class="mb-3 text-sm font-semibold">Supplier</h3>
 					<div class="flex items-center gap-2.5">
 						<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">

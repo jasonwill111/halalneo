@@ -1,31 +1,33 @@
 <script lang="ts">
- 	import { Button } from '#lib/components/ui/button/index.js';
- 	import { Badge } from '#lib/components/ui/badge/index.js';
- 	import { Input } from '#lib/components/ui/input/index.js';
- 	import {
- 		Table,
- 		TableBody,
- 		TableCell,
- 		TableHead,
- 		TableHeader,
- 		TableRow
- 	} from '#lib/components/ui/table/index.js';
- 	import {
- 		Dialog,
- 		DialogContent,
- 		DialogDescription,
- 		DialogFooter,
- 		DialogHeader,
- 		DialogTitle
- 	} from '#lib/components/ui/dialog/index.js';
- 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
- 	import Search from '@lucide/svelte/icons/search';
- 	import Eye from '@lucide/svelte/icons/eye';
- 	import Trash2 from '@lucide/svelte/icons/trash-2';
- 	import StatTile from '#lib/components/site/stat-tile.svelte';
- 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
- 	import { toast } from 'svelte-sonner';
- 	import { focusFirstInvalid } from '#lib/utils/forms.js';
+  	import { Button } from '#lib/components/ui/button/index.js';
+  	import { Badge } from '#lib/components/ui/badge/index.js';
+  	import { Input } from '#lib/components/ui/input/index.js';
+  	import {
+  		Table,
+  		TableBody,
+  		TableCell,
+  		TableHead,
+  		TableHeader,
+  		TableRow
+  	} from '#lib/components/ui/table/index.js';
+  	import {
+  		Dialog,
+  		DialogContent,
+  		DialogDescription,
+  		DialogFooter,
+  		DialogHeader,
+  		DialogTitle
+  	} from '#lib/components/ui/dialog/index.js';
+  	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+  	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+  	import Search from '@lucide/svelte/icons/search';
+  	import Eye from '@lucide/svelte/icons/eye';
+  	import Trash2 from '@lucide/svelte/icons/trash-2';
+  	import Inbox from '@lucide/svelte/icons/inbox';
+  	import StatTile from '#lib/components/site/stat-tile.svelte';
+  	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+  	import { toast } from 'svelte-sonner';
+  	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let items = $state<any[]>([]);
@@ -174,7 +176,15 @@
 					</TableRow>
 				{:else if items.length === 0}
 					<TableRow>
-						<TableCell colspan={6} class="py-8 text-center text-sm text-muted-foreground">No RFQs found.</TableCell>
+						<TableCell colspan={6} class="py-8">
+							<Empty>
+								<EmptyMedia><Inbox class="size-6 text-muted-foreground" /></EmptyMedia>
+								<div class="space-y-1">
+									<p class="font-medium">No RFQs found</p>
+									<p class="text-sm text-muted-foreground">No buying requests to display.</p>
+								</div>
+							</Empty>
+						</TableCell>
 					</TableRow>
 				{:else}
 					{#each items as r (r.id)}

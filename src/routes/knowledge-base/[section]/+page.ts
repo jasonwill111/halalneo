@@ -1,6 +1,8 @@
 import type { PageLoad } from './$types';
 import { getSection } from '#lib/data/kb-sections.js';
 
+const BASE_URL = 'https://halalneo.com';
+
 export const prerender = false;
 
 interface KbSectionResponse {
@@ -22,11 +24,48 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				...a,
 				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
 			}));
+
+			// ItemList for articles within this section
+			const itemList = {
+				'@context': 'https://schema.org',
+				'@type': 'ItemList',
+				name: `${sectionTitle} Articles`,
+				description: `Collection of articles within ${sectionTitle} section on HalalNeo Knowledge Base`,
+				itemListElement: articles.slice(0, 50).map((article: any, i: number) => ({
+					'@type': 'ListItem',
+					position: i + 1,
+					item: {
+						'@type': 'NewsArticle',
+						name: article.title,
+						description: article.summary,
+						url: `${BASE_URL}/knowledge-base/${params.section}/${article.slug}`,
+						datePublished: article.publishedAt,
+						dateModified: article.updatedAt
+					}
+				}))
+			};
+
+			// CollectionPage for the section
+			const collectionPage = {
+				'@context': 'https://schema.org',
+				'@type': 'CollectionPage',
+				name: `${sectionTitle} — HalalNeo Knowledge Base`,
+				description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
+				url: `${BASE_URL}/knowledge-base/${params.section}`,
+				isPartOf: { '@type': 'WebSite', name: 'HalalNeo', url: 'https://halalneo.com' },
+				hasPart: articles.map((article: any) => ({
+					'@type': 'NewsArticle',
+					name: article.title,
+					url: `${BASE_URL}/knowledge-base/${params.section}/${article.slug}`
+				}))
+			};
+
 			return {
 				seo: {
 					title: `${sectionTitle} — HalalNeo Knowledge Base`,
 					description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
 					ogImage: 'https://halalneo.com/api/media/og-kb.png',
+					ogType: 'article',
 					keywords: [sectionTitle, 'halal knowledge base', 'certification guide', 'compliance']
 				},
 				item: {
@@ -35,7 +74,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					description: `Explore ${sectionTitle.toLowerCase()} articles and guides on halal certification and compliance.`,
 					articleCount: articles.length,
 					articles
-				}
+				},
+				itemList,
+				collectionPage
 			};
 		}
 	} catch {}
@@ -44,8 +85,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `${sectionTitle} — HalalNeo Knowledge Base`,
 			description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
-			ogImage: 'https://halalneo.com/api/media/og-kb.png'
+			ogImage: 'https://halalneo.com/api/media/og-kb.png',
+			ogType: 'article'
 		},
-		item: null
+		item: null,
+		itemList: {},
+		collectionPage: {}
 	};
 };

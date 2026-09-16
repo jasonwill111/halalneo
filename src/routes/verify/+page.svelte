@@ -17,9 +17,19 @@
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import FileDownIcon from '@lucide/svelte/icons/file-down';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
+	import { z } from 'zod';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
+
+	// Zod schema for search validation
+	const searchSchema = z.object({
+		q: z.string().min(1, 'Search term is required')
+	});
 
 	let { data } = $props();
 	let query = $state(data.q ?? '');
+	let errors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | null>(null);
+	let busy = $state(false); // Renamed from loading to align with form discipline
 
 	const copyToClipboard = async (text: string) => {
 		try {
@@ -65,6 +75,11 @@
 	let results = $state.raw<any[]>([]);
 	let searched = $state(false);
 
+	// Sync busy state with loading for form discipline
+	$effect(() => {
+		busy = loading;
+	});
+
 	const fallbackCertifiers = [
 		{ id: 'jakim', name: 'JAKIM', country: 'Malaysia' },
 		{ id: 'mui', name: 'MUI / LPPOM', country: 'Indonesia' },
@@ -86,8 +101,28 @@
 
 	async function handleSearch(e: Event) {
 		e.preventDefault();
-		if (!query.trim()) return;
-		loading = true;
+		// Reset errors
+		errors = {};
+
+		// Validate with Zod
+		const result = searchSchema.safeParse({ q: query });
+
+		if (!result.success) {
+			const fieldErrors: Record<string, string> = {};
+			for (const issue of result.error.issues) {
+				if (issue.path.length > 0 && typeof issue.path[0] === 'string') {
+					fieldErrors[issue.path[0]] = issue.message;
+				}
+			}
+			errors = fieldErrors;
+
+			if (formEl) {
+				focusFirstInvalid(formEl);
+			}
+			return;
+		}
+
+		busy = true;
 		searched = true;
 		try {
 			const res = await fetch(`/api/verify?q=${encodeURIComponent(query.trim())}`);
@@ -97,6 +132,7 @@
 			results = [];
 		} finally {
 			loading = false;
+			busy = false;
 		}
 	}
 </script>
@@ -116,7 +152,7 @@
 		</p>
 	</div>
 
-	<form onsubmit={handleSearch} class="flex gap-2">
+	<form onsubmit={handleSearch} class="flex gap-2" bind:this={formEl}>
 		<div class="relative flex-1">
 			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
@@ -124,10 +160,15 @@
 				placeholder="Search certificates, brands, products..."
 				class="pl-9"
 				bind:value={query}
+				aria-invalid={!!errors.q}
+				aria-describedby={errors.q ? 'search-error' : undefined}
 			/>
+			{#if errors.q}
+				<span id="search-error" class="sr-only">{errors.q}</span>
+			{/if}
 		</div>
-		<Button type="submit" disabled={loading || !query.trim()}>
-			{#if loading}
+		<Button type="submit" disabled={busy}>
+			{#if busy}
 				Searching...
 			{:else}
 				Verify

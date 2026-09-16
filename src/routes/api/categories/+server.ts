@@ -33,7 +33,20 @@ export const GET: RequestHandler = async ({ url }) => {
 					.where(where);
 
 				const rows = await db
-					.select()
+					.select({
+						slug: categories.slug,
+						name: categories.name,
+						description: categories.description,
+						parentSlug: categories.parentSlug,
+						icon: categories.icon,
+						status: categories.status,
+						sortOrder: categories.sortOrder,
+						metaTitle: categories.metaTitle,
+						metaDescription: categories.metaDescription,
+						keywords: categories.keywords,
+						createdAt: categories.createdAt,
+						updatedAt: categories.updatedAt
+					})
 					.from(categories)
 					.where(where)
 					.limit(limit)
@@ -66,7 +79,10 @@ export const POST: RequestHandler = async (event) => {
 	}
 
 	try {
-		const [row] = await db.insert(categories).values(body as any).returning();
+		const [row] = await db
+			.insert(categories)
+			.values(body as any)
+			.returning();
 		await invalidateCache('/api/categories');
 		return json(row, { status: 201 });
 	} catch (e: any) {

@@ -21,7 +21,7 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
 
-	let { data } = $props();
+	let { data, itemList, collectionPage } = $props();
 	let search = $state('');
 	const PAGE_SIZE = 9;
 	let page = $state(1);
@@ -78,6 +78,11 @@
 	});
 </script>
 
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(collectionPage ?? {})}</script>`}
+</svelte:head>
+
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
 
 <section class="space-y-4 sm:space-y-6">
@@ -119,7 +124,7 @@
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each subForms as form, i (form.href)}
 				<a href={localizeHref(form.href)} class="group h-full">
-					<Card hoverable class="h-full transition-shadow group-hover:shadow-md">
+					<Card hoverable class="h-full transition-shadow group-hover:shadow-md p-3 sm:p-4">
 						<CardHeader class="gap-3">
 							<div
 								class="flex size-10 items-center justify-center rounded-lg {tileColors[
@@ -154,7 +159,7 @@
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each pagedSections as section, i (section.slug)}
 			<article>
-			<Card hoverable class="h-full overflow-hidden">
+			<Card hoverable class="h-full overflow-hidden p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<div
 						class="flex size-10 items-center justify-center rounded-lg {tileColors[

@@ -5,7 +5,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
 
-	let { data } = $props();
+	let { data, itemList, collectionPage } = $props();
 
 	const PAGE_SIZE = 9;
 	let page = $state(1);
@@ -15,14 +15,8 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'CollectionPage',
-		name: data.seo.title,
-		description: data.seo.description,
-		url: `https://halalneo.com/knowledge-base/${data.item?.slug ?? ''}`,
-		isPartOf: { '@type': 'WebSite', name: 'HalalNeo', url: 'https://halalneo.com' }
-	})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(collectionPage ?? {})}</script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">
@@ -40,7 +34,7 @@
 		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 				{#each paged as article (article.slug)}
-					<Card>
+					<Card class="p-3 sm:p-4">
 						<CardHeader>
 							<CardTitle class="text-sm sm:text-lg">{article.title}</CardTitle>
 						</CardHeader>

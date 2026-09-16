@@ -48,7 +48,8 @@
 		const robots =
 			page.data?.seo?.robots ??
 			'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
-		return { title, description, canonical, ogImage, path, robots };
+		const ogType = page.data?.seo?.ogType ?? 'website';
+		return { title, description, canonical, ogImage, path, robots, ogType };
 	});
 
 	const supportedLocales = ['en'] as const;

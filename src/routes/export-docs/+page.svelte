@@ -74,16 +74,16 @@
 		</p>
 	</div>
 
-	<div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each templates as template (template.id)}
-			<Card class="group hover:shadow-md transition-shadow">
-				<CardHeader class="p-4">
+			<Card class="group hover:shadow-md transition-shadow p-3 sm:p-4">
+				<CardHeader class="p-4 sm:p-3 sm:pt-4">
 					<CardTitle class="truncate text-sm font-medium">{template.title}</CardTitle>
 					<p class="mt-1 text-xs text-muted-foreground line-clamp-2">
 						{template.description}
 					</p>
 				</CardHeader>
-				<CardContent class="px-4 pb-4">
+				<CardContent class="px-4 pb-4 sm:px-3 sm:pb-3">
 					<Button
 						size="sm"
 						class="w-full justify-start text-xs"

@@ -35,7 +35,7 @@
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
-	import { Empty } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
 	import type { DemoAccount } from '#lib/stores/auth.svelte.js';
@@ -44,6 +44,7 @@
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import Users from '@lucide/svelte/icons/users';
 
 	let accounts = $state(listAccounts().filter((a) => a.type === 'buyer'));
 	let currentAccount = $derived(getCurrentAccount());
@@ -202,6 +203,7 @@
 
 	{#if filtered.length === 0}
 		<Empty>
+			<EmptyMedia><Users class="size-6 text-muted-foreground" /></EmptyMedia>
 			<div class="space-y-1">
 				<p class="font-medium">No buyers found</p>
 				<p class="text-sm text-muted-foreground">

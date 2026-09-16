@@ -14,7 +14,7 @@
 	import { getRegion } from '#lib/utils/region.js';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 
-	let { data } = $props();
+	let { data, itemList } = $props();
 
 	const regions = [
 		{ label: 'All regions', value: '' },
@@ -58,6 +58,10 @@
 	// Initials tile palette — shared with homepage/categories/KB for cross-page consistency
 	const tileColors = TILE_COLORS;
 </script>
+
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+</svelte:head>
 
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
 

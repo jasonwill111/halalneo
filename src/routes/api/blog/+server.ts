@@ -33,7 +33,24 @@ export const GET: RequestHandler = async ({ url }) => {
 					.where(where);
 
 				const rows = await db
-					.select()
+					.select({
+						slug: pages.slug,
+						title: pages.title,
+						type: pages.type,
+						excerpt: pages.excerpt,
+						author: pages.author,
+						category: pages.category,
+						featuredImage: pages.featuredImage,
+						tags: pages.tags,
+						metaTitle: pages.metaTitle,
+						metaDescription: pages.metaDescription,
+						keywords: pages.keywords,
+						status: pages.status,
+						views: pages.views,
+						publishedAt: pages.publishedAt,
+						createdAt: pages.createdAt,
+						updatedAt: pages.updatedAt
+					})
 					.from(pages)
 					.where(where)
 					.limit(limit)
@@ -67,7 +84,10 @@ export const POST: RequestHandler = async (event) => {
 	body.type = 'blog';
 
 	try {
-		const [row] = await db.insert(pages).values(body as any).returning();
+		const [row] = await db
+			.insert(pages)
+			.values(body as any)
+			.returning();
 		await invalidateCache('/api/blog');
 		return json(row, { status: 201 });
 	} catch (e: any) {
