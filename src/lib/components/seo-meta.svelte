@@ -1,20 +1,22 @@
 ---
 name: Helper component for SEO on every page
 description: Common SEO meta tags and Open Graph / Twitter Card meta tags
-usage: Import and use \<Seo title="Page Title" description="Page description" ogTitle="OG Title" ogDescription="OG Description" canonical="/url" keywords="keyword1, keyword2, keyword3" />
+usage: Import and use <Seo title="Page Title" description="Page description" ogTitle="OG Title" ogDescription="OG Description" canonical="/url" keywords="keyword1, keyword2, keyword3" />
 ---
 <script lang="ts">
   import { getCanonicalUrl } from '#lib/utils.js';
 
-  export let title = $props();
-  export let description = $props();
-  export let ogTitle: string | undefined = undefined;
-  export let ogDescription: string | undefined = undefined;
-  export let ogImage: string | undefined = undefined;
-  export let canonical: string | undefined = undefined;
-  export let keywords: string | undefined = undefined;
-  export let twitterCard: string | undefined = 'summary_large_image';
-
+  let {
+    title = "HalalNeo",
+    description = "Halal certification and compliance platform",
+    ogTitle,
+    ogDescription,
+    ogImage,
+    canonical,
+    keywords,
+    twitterCard = "summary_large_image"
+  } = $props();
+  
   // Defaults
   const siteTitle = 'HalalNeo';
   const siteDomain = 'https://halalneo.com' as string;

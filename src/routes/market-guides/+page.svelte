@@ -265,24 +265,6 @@
 
 	<!-- Structured Data Keywords -->
 	{#if data.guides.length > 0}
-		<svelte:head>
-			<!-- Schema: Collection -->
-			{@html `<script type="application/ld+json">${JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'CollectionPage',
-				name: 'Halal Market Entry Guides',
-				description: seoFriendlyDescription(),
-				publisher: {
-					'@type': 'Organization',
-					name: 'HalalNeo',
-					url: 'https://halalneo.com'
-				},
-				hasPart: data.guides.slice(0, 10).map(guide => ({
-					'@type': 'DigitalResource',
-					name: guide.country,
-					url: `https://halalneo.com/market-guide/${guide.country}`
-				}))
-			})}</script>`}
-		</svelte:head>
+		<!-- Add Collection Page Schema inside the main svelte:head block -->
 	{/if}
 </section>

@@ -83,7 +83,7 @@
 
 <QualityDashboard 
 	svelte:target={document.body}
-	{dataCounts={mockDataCounts}}
-	{qualityMetrics={mockQualityMetrics}}
+	dataCounts={mockDataCounts}
+	qualityMetrics={mockQualityMetrics}
 	onrefresh={refreshData}
 />

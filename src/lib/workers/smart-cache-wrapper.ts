@@ -4,7 +4,7 @@
  */
 
 import { IntelligentCacheSystem } from '../workers/cache-optimization.js';
-import { getBindings } from './bindings.js';
+import { getBindings } from '../server/bindings.js';
 
 // 创建智能缓存单例
 const smartCache = new IntelligentCacheSystem();

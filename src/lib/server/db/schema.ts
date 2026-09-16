@@ -340,12 +340,6 @@ export const promotions = sqliteTable('promotions', {
 	views: integer('views').default(0)
 });
 
-export const promoStatusIdx = index('idx_promo_status').on(promotions.status);
-export const promoSupplierIdx = index('idx_promo_supplier').on(promotions.supplierSlug);
-export const promoProductIdx = index('idx_promo_product').on(promotions.productSlug);
-export const promoFeaturedIdx = index('idx_promo_featured').on(promotions.featured);
-export const promoTypeIdx = index('idx_promo_type').on(promotions.promotionType);
-
 // ==================== Supplier Members (user <-> supplier link) ====================
 // Gates supplier-side publishing (promotions, updates). Created when a
 // supplier is activated with a matching registered user email, or by admin.
@@ -405,7 +399,7 @@ export const successStories = sqliteTable('success_stories', {
 	testimonial: text('testimonial'),
 	metrics: text('metrics', { mode: 'json' }).default('[]'),
 	timeline: text('timeline', { mode: 'json' }).default('[]'),
-	indirect-benefits: text('indirect_benefits', { mode: 'json' }).default('[]'),
+	indirect_benefits: text('indirect_benefits', { mode: 'json' }).default('[]'),
 	status: text('status').default('draft'),
 	views: integer('views').default(0),
 	featured: integer('featured', { mode: 'boolean' }).default(false),
@@ -415,12 +409,6 @@ export const successStories = sqliteTable('success_stories', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
-
-export const storiesBuyerIdx = index('idx_stories_buyer').on(successStories.buyerCountry);
-export const storiesIndustryIdx = index('idx_stories_industry').on(successStories.buyerIndustry);
-export const storiesFeaturedIdx = index('idx_stories_featured').on(successStories.featured);
-export const storiesStatusIdx = index('idx_stories_status').on(successStories.status);
-export const storiesSupplierIdx = index('idx_stories_supplier').on(successStories.supplierSlug);
 
 // Products
 export const productsCategoryIdx = index('idx_products_category').on(products.categorySlug);

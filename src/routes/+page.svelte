@@ -140,7 +140,7 @@
 				<div class="w-full shrink-0 sm:w-1/2">
 					<div class="relative min-h-[200px]">
 						<img
-							{slide.image}
+							src={slide.image}
 							alt={slide.title}
 							class="h-full w-full object-cover"
 							loading="lazy"

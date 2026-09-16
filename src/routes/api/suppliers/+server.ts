@@ -1,10 +1,10 @@
-﻿import { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { suppliers } from '#lib/server/db/schema.js';
-import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey }
-import { smartQuery, smartInvalidate } from '#lib/server/cache.js';
+import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
+import { smartQuery, smartInvalidate } from '#lib/workers/cache-warming.js';
 import { getSupplierListItems } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 

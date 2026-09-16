@@ -1,12 +1,12 @@
-﻿import { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { parseQuery } from '#lib/server/db/api-helpers.js';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { marketGuides as dbMarketGuides } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
-import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey }
-import { smartQuery, smartInvalidate } from '#lib/server/cache.js';
+import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
+import { smartQuery, smartInvalidate } from '#lib/workers/cache-warming.js';
 import { getSession } from '#lib/server/auth.js';
 import { marketGuides as staticMarketGuides } from '#lib/data/market-guides.js';
 

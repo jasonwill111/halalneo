@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import './layout.css';
   import favicon from '#lib/assets/favicon.svg';
   import { localizeHref, deLocalizeUrl, localizeUrl } from '#lib/paraglide/runtime.js';
@@ -38,7 +38,8 @@
     
     if (prefersReduced) return;
     
-    // 为按钮添加按压缩�?    document.querySelectorAll('button, [role="button"], a').forEach((el) => {
+    // 为按钮添加按压缩放效果
+    document.querySelectorAll('button, [role="button"], a').forEach((el) => {
       el.addEventListener('pointerdown', (e) => {
         const target = e.currentTarget as HTMLElement;
         // 简单的按压缩放
@@ -53,7 +54,8 @@
       });
     });
     
-    // 为卡片添加悬停效�?    document.querySelectorAll('.card').forEach((card) => {
+    // 为卡片添加悬停效果
+    document.querySelectorAll('.card').forEach((card) => {
       card.addEventListener('mouseenter', () => {
         (card as HTMLElement).style.transform = 'translateY(-2px)';
       });

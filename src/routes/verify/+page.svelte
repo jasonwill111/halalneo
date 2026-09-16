@@ -26,7 +26,7 @@
 	});
 
 	let { data } = $props();
-	let query = $state(data.q ?? '');
+	let query = $derived(data.q ?? '');
 	let errors = $state<Record<string, string>>({});
 	let formEl = $state<HTMLFormElement | null>(null);
 	let busy = $state(false); // Renamed from loading to align with form discipline
