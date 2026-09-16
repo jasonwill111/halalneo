@@ -1,0 +1,27 @@
+{
+  "budgets": {
+    "workers": {
+      "limit": 100,
+      "currency": "USD"
+    },
+    "d1": {
+      "limit": 50,
+      "currency": "USD"
+    },
+    "r2": {
+      "limit": 30,
+      "currency": "USD"
+    }
+  },
+  "alerts": {
+    "threshold": 80,
+    "channels": [
+      "email",
+      "slack"
+    ]
+  },
+  "tracking": {
+    "enabled": true,
+    "frequency": "daily"
+  }
+}

@@ -1,4 +1,4 @@
-﻿import { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
@@ -6,6 +6,7 @@ import { products } from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getProductListItems, getProducts } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
+import { smartQuery, smartInvalidate } from '#lib/workers/smart-cache-wrapper.js';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const db = getDb(getBindings().DB);
@@ -15,8 +16,10 @@ export const GET: RequestHandler = async ({ url }) => {
 		// List view: project only the columns the UI needs (10 cols, not all 24).
 		// Drops description/features/specifications/faqs/resources/images/videos
 		// and other heavy TEXT/JSON fields from D1 rows-read + cache payload.
-		const data = await cachedQuery(
-			url.toString(),
+		
+		const cacheKey = queryCacheKey(url).encodeURIComponent();
+		const data = await smartQuery(
+			cacheKey,
 			async () => {
 				const { limit, offset, search } = (() => {
 					const n = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
@@ -33,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					status: url.searchParams.get('status') || 'active'
 				});
 			},
-			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
+			{ ttl: 3600, priority: 'medium' }
 		);
 
 		return json(data);
@@ -59,7 +62,8 @@ export const POST: RequestHandler = async (event) => {
 
 	try {
 		const [row] = await db.insert(products).values(body as any).returning();
-		await invalidateCache('/api/products');
+		// 使用智能缓存无效化
+		await smartInvalidate('/api/products', '/products');
 		return json(row, { status: 201 });
 	} catch (e: any) {
 		if (e?.message?.includes('UNIQUE constraint')) {

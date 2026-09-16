@@ -102,7 +102,7 @@
 								<CardTitle class="truncate text-sm transition-colors group-hover:text-primary">
 									<a
 										href={localizeHref(`/certifying-bodies/${body.id}`)}
-										class="after:absolute after:inset-0"
+										class="block h-full"
 									>
 										{body.name}
 									</a>
@@ -113,8 +113,8 @@
 											href={body.website}
 											target="_blank"
 											rel="noopener"
-											class="relative z-10 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-											aria-label="Visit {body.name} website"
+											class="relative z-10 rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+											aria-label={`Visit ${body.name} website`}
 										>
 											<GlobeIcon class="size-4" />
 										</a>

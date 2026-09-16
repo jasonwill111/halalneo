@@ -96,15 +96,15 @@
 			<EmptyTitle>No published posts yet.</EmptyTitle>
 		</Empty>
 	{:else}
-		<div class="grid grid-cols-2 gap-3 sm:gap-3 lg:grid-cols-2">
+		<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-3">
 			{#each paged as post, idx (post.slug)}
 				<Card class="overflow-hidden">
 					<article>
 						<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
-							<div class="aspect-[16/10] overflow-hidden bg-muted">
-								<img src={post.featuredImage || blogImages[idx % blogImages.length]} srcset={`${post.featuredImage || blogImages[idx % blogImages.length]}?w=480 480w, ${post.featuredImage || blogImages[idx % blogImages.length]} 1200w`} sizes="(max-width: 640px) 100vw, 600px" alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="300" />
+							<div class="aspect-[16/10] overflow-hidden bg-muted sm:aspect-[4/3]">
+								<img src={post.featuredImage || blogImages[idx % blogImages.length]} srcset={`${post.featuredImage || blogImages[idx % blogImages.length]}?w=480 480w, ${post.featuredImage || blogImages[idx % blogImages.length]}?w=1200 1200w`} sizes="(max-width: 640px) 100vw, 400px" alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="400" />
 							</div>
-							<CardContent class="space-y-2 pt-3">
+							<CardContent class="space-y-2 pt-3 sm:space-y-3 sm:pt-4">
 								<div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 									{#if post.category}
 										<Badge variant="outline" class="text-[10px]">{post.category}</Badge>
@@ -124,10 +124,19 @@
 								<CardTitle class="line-clamp-2 text-sm leading-snug group-hover:text-primary sm:text-lg">
 									{post.title}
 								</CardTitle>
-								<p class="hidden text-sm text-muted-foreground sm:line-clamp-2 sm:block">{post.excerpt}</p>
+								{#if post.excerpt && post.excerpt.trim()}
+									<p 
+										class="hidden text-sm text-muted-foreground line-clamp-2 sm:block"
+										title={post.excerpt}
+									>
+										{post.excerpt}
+									</p>
+								{/if}
 								<div class="flex flex-wrap gap-1.5 pt-1">
 									{#each post.tags as tag (tag)}
-										<Badge variant="secondary">{tag}</Badge>
+										<Badge variant="secondary" class="text-[10px] max-w-[60px] truncate">
+											{tag}
+										</Badge>
 									{/each}
 								</div>
 							</CardContent>

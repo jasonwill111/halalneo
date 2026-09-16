@@ -1,21 +1,22 @@
 <script lang="ts">
-	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import Icon from '#lib/components/site/icon.svelte';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import {
-		Card,
-		CardHeader,
-		CardTitle,
-		CardDescription,
-		CardContent
-	} from '#lib/components/ui/card/index.js';
-	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
-	import SearchIcon from '@lucide/svelte/icons/search';
-	import { Input } from '#lib/components/ui/input/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
-	import Paginator from '#lib/components/site/paginator.svelte';
+ 	import { localizeHref } from '#lib/paraglide/runtime.js';
+ 	import Icon from '#lib/components/site/icon.svelte';
+ 	import { Button } from '#lib/components/ui/button/index.js';
+ 	import {
+ 		Card,
+ 		CardHeader,
+ 		CardTitle,
+ 		CardDescription,
+ 		CardContent
+ 	} from '#lib/components/ui/card/index.js';
+ 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
+ 	import SearchIcon from '@lucide/svelte/icons/search';
+ 	import { Input } from '#lib/components/ui/input/index.js';
+ 	import { Badge } from '#lib/components/ui/badge/index.js';
+ 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+ 	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+ 	import Paginator from '#lib/components/site/paginator.svelte';
+ 	import SeoMeta from '#lib/components/seo-meta.svelte';
 
  	let { data, itemList } = $props();
  	let search = $state('');
@@ -27,100 +28,118 @@
  		search.trim()
  			? (data.categories ?? []).filter((c: any) =>
  					c.name.toLowerCase().includes(search.toLowerCase())
- 				)
- 			: data.categories ?? []
+  				)
+ 			: data.categories
  	);
 
-	const totalPages = $derived(Math.max(1, Math.ceil(filteredCategories.length / PAGE_SIZE)));
-	const pagedCategories = $derived(
-		filteredCategories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-	);
+ 	const pagedCategories = $derived(filteredCategories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+ 	const totalPages = $derived(Math.max(1, Math.ceil(filteredCategories.length / PAGE_SIZE)));
 
-	// Subcategories derived from the parentSlug hierarchy (no hardcoded list)
-	const subcategories = $derived(
-		(data.categories ?? []).filter((c: any) => c.parentSlug != null)
-	);
-
-	// Icon tile palette — shared with homepage/certifiers/KB for cross-page consistency
-	const tileColors = TILE_COLORS;
+ 	function seoDescription(): string {
+ 		return `Explore ${data.categories.length} halal product categories with detailed descriptions, certification requirements, and supplier networks for global halal trade.`;
+ 	}
 </script>
 
-<svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
-</svelte:head>
+<!-- SEO Meta Tags -->
+<SeoMeta 
+ 	title="Halal Product Categories - Global Halal Certification & Sourcing Guide"
+ 	description="Browse 50+ defined halal product categories with detailed descriptions, certification standards, and supplier directories for global halal trade."
+ 	ogTitle="HalalNeo - Halal Product Categories Directory"
+ 	ogDescription="Comprehensive guide to halal product categories. Certification requirements, sourcing opportunities, and market insights for each category."
+ 	keywords="halal categories, halal product categories, halal certification types, food safety standards, halal product standards, import categories, halal product classification, haram versus halal products, islamic dietary laws, halal certification process"
+ 	canonical="/categories"
+/>
 
-<section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Product categories</h1>
+<section class="space-y-4 sm:space-y-6 py-8">
+	<div class="max-w-3xl space-y-2 text-center sm:text-left">
+		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product categories</h1>
 		<p class="text-muted-foreground">
-			Browse certified halal products by vertical. Each category lists certified SKUs across
-			suppliers.
+			{data.categories.length} categorized product groups with detailed certification, sourcing, and market information.
 		</p>
 	</div>
 
-	<div class="relative">
-		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input
-			type="search"
-			placeholder="Search categories..."
-			class="pl-9"
-			bind:value={search}
-		/>
+	<div class="space-y-4">
+		<div class="relative w-full max-w-sm">
+			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<Input
+				bind:value={search}
+				type="search"
+				placeholder="Search categories..."
+				class="pl-9"
+			/>
+		</div>
 	</div>
 
-	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-			{#each pagedCategories as category, i (category.slug)}
-				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
-				<article>
-				<Card hoverable>
-					<CardHeader class="gap-2 sm:gap-3">
-						<div
-							class="flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-10 {tileColors[
-								i % tileColors.length
-							]}"
-						>
-							<Icon name={category.icon} class="size-4 sm:size-5"></Icon>
-						</div>
-						<div class="min-w-0 space-y-0.5 sm:space-y-1">
-							<CardTitle class="truncate text-sm sm:text-lg">{category.name}</CardTitle>
-							<CardDescription class="hidden sm:block">{category.description}</CardDescription>
+	<div class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
+		{#if pagedCategories.length === 0}
+			<Empty>
+				<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+				<EmptyTitle>No categories found</EmptyTitle>
+				<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
+			</Empty>
+		{:else}
+			{#each pagedCategories as category, i}
+				<a
+					href={localizeHref(`/category/${category.slug}`)}
+					class="group flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
+				>
+					<CardHeader class="pb-3">
+						<div class="flex items-start gap-3">
+							<div class="flex size-11 shrink-0 items-center justify-center rounded-lg {TILE_COLORS[i % TILE_COLORS.length]}">
+								<Icon name={category.icon} class="size-5" />
+							</div>
+							<div class="flex-1">
+								<CardTitle class="text-base group-hover:text-primary">{category.name}</CardTitle>
+								<CardDescription class="mt-1 line-clamp-2">
+									{category.shortDescription || category.description?.substring(0, 120) || `Detailed information about ${category.name} halal requirements`}
+								</CardDescription>
+							</div>
 						</div>
 					</CardHeader>
-					<CardContent class="space-y-2 sm:space-y-3">
-						<p class="text-xs text-muted-foreground sm:text-sm">
-							{count} product{count === 1 ? '' : 's'}
-						</p>
-						<Button href={localizeHref(`/category/${category.slug}`)} variant="outline" size="sm" class="w-full text-xs sm:w-auto">
-							View products
-							<ArrowUpRight class="size-3.5 sm:size-4" data-icon="inline-end"></ArrowUpRight>
-						</Button>
+					<CardContent class="flex items-center justify-between pt-0">
+						<div class="flex flex-wrap gap-2">
+							{#if category.requirements?.length}
+								<Badge variant="outline" class="text-[10px]">{category.requirements.length.toLocaleLowerCase()} cert. req.</Badge>
+							{/if}
+							{#if category.certifications?.length}
+								<Badge variant="secondary" class="text-[10px]">{category.certifications.length.toLocaleLowerCase()} certs. recognized</Badge>
+							{/if}
+						</div>
+						<ArrowUpRight class="size-4 text-muted-foreground group-hover:text-primary group-hover:rotate-45 transition-transform" />
 					</CardContent>
-				</Card>
-				</article>
-			{:else}
-				<Empty class="col-span-full">
-					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-					<EmptyTitle>No categories found</EmptyTitle>
-					<EmptyDescription>Try adjusting your search.</EmptyDescription>
-				</Empty>
+				</a>
 			{/each}
+		{/if}
 	</div>
 
-	<Paginator page={page} totalPages={totalPages} />
-
-	{#if subcategories.length > 0}
-		<!-- Popular Subcategories (data-driven from parentSlug hierarchy) -->
-		<div class="mt-4">
-			<h2 class="mb-2 text-sm font-semibold text-foreground">Popular Subcategories</h2>
-			<div class="flex flex-wrap gap-1.5">
-				{#each subcategories as sub (sub.slug)}
-					<a href={localizeHref(`/category/${sub.slug}`)}>
-						<Badge variant="secondary" class="font-medium transition-colors hover:text-primary"
-							>{sub.name}</Badge
-						>
-					</a>
-				{/each}
-			</div>
-		</div>
+	{#if totalPages > 1}
+		<Paginator bind:page {totalPages} />
 	{/if}
 </section>
+
+<svelte:head>
+	<!-- Structured Data: Breadcrumb -->
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://halalneo.com/' },
+			{ '@type': 'ListItem', position: 2, name: 'Categories', item: 'https://halalneo.com/categories' }
+		]
+	})}</script>`}
+	
+	<!-- Structured Data: Collection -->
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'CollectionPage',
+		name: 'Halal Product Categories',
+		description: seoDescription(),
+		hasPart: filteredCategories.slice(0, 10).map(cat => ({
+			'@type': 'Product',
+			name: cat.name,
+			description: cat.shortDescription || cat.description,
+			sku: cat.slug,
+			category: 'Halal Products'
+		}))
+	})}</script>`}
+</svelte:head>

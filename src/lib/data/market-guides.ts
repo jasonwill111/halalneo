@@ -2,7 +2,7 @@ export interface MarketGuide {
 	slug: string;
 	country: string;
 	flag: string;
-	region: 'Southeast Asia' | 'Middle East' | 'South Asia' | 'Europe' | 'East Asia' | 'North America';
+	region: 'Southeast Asia' | 'Middle East' | 'South Asia' | 'Europe' | 'East Asia' | 'North America' | 'Africa';
 	muslimPopulation: string;
 	totalPopulation: string;
 	marketSizeUsd: string;
@@ -21,6 +21,7 @@ export interface MarketGuide {
 }
 
 export const marketGuides: MarketGuide[] = [
+	// 1. Indonesia (existing)
 	{
 		slug: 'indonesia',
 		country: 'Indonesia',
@@ -67,6 +68,7 @@ export const marketGuides: MarketGuide[] = [
 		],
 		summary: 'The world\'s largest halal market by population and the regulatory anchor of Southeast Asia. Since October 2024, halal certification is mandatory for all food and beverage products — imports included — making Indonesia both the biggest opportunity and the most complex compliance destination.'
 	},
+	// 2. Malaysia (existing)
 	{
 		slug: 'malaysia',
 		country: 'Malaysia',
@@ -112,6 +114,7 @@ export const marketGuides: MarketGuide[] = [
 		],
 		summary: 'The gold-standard halal jurisdiction. A JAKIM certificate is the most widely accepted halal credential in international trade, and Malaysia\'s regulatory maturity makes it the reference market for halal standards worldwide.'
 	},
+	// 3. United Arab Emirates (existing)
 	{
 		slug: 'uae',
 		country: 'United Arab Emirates',
@@ -157,6 +160,7 @@ export const marketGuides: MarketGuide[] = [
 		],
 		summary: 'The strategic re-export hub of the global halal trade. UAE accreditation unlocks the entire GCC and serves as the distribution gateway to the Middle East, Africa, and CIS markets.'
 	},
+	// 4. Saudi Arabia (existing)
 	{
 		slug: 'saudi-arabia',
 		country: 'Saudi Arabia',
@@ -203,6 +207,7 @@ export const marketGuides: MarketGuide[] = [
 		],
 		summary: 'The largest and most import-dependent halal market in the Gulf. SFDA regulation is strict but well-documented — compliant suppliers find Saudi Arabia among the most rewarding halal destinations.'
 	},
+	// 5. Turkey (existing)
 	{
 		slug: 'turkiye',
 		country: 'Türkiye',
@@ -214,8 +219,7 @@ export const marketGuides: MarketGuide[] = [
 		mandateStatus: 'voluntary',
 		mandatorySince: null,
 		certifyingBodies: [
-			{ name: 'GIMDES', slug: 'gimdes' },
-			
+			{ name: 'GIMDES', slug: 'gimdes' }
 		],
 		importRequirements: [
 			'Halal certificate from TSE or GIMDES for halal-labeled products (voluntary but commercially expected)',
@@ -248,6 +252,7 @@ export const marketGuides: MarketGuide[] = [
 		],
 		summary: 'The standards-setter. Türkiye chairs OIC/SMIIC and hosts the World Halal Summit — its certification decisions shape mutual recognition for the entire OIC market of 1.9 billion consumers.'
 	},
+	// 6. Pakistan (existing)
 	{
 		slug: 'pakistan',
 		country: 'Pakistan',
@@ -259,8 +264,7 @@ export const marketGuides: MarketGuide[] = [
 		mandateStatus: 'phasing-in',
 		mandatorySince: null,
 		certifyingBodies: [
-			
-			{ name: 'PHA', slug: 'pha' }
+			{ name: 'HGSA', slug: 'hgsa' }
 		],
 		importRequirements: [
 			'Halal certificate required for meat and derived products',
@@ -293,6 +297,7 @@ export const marketGuides: MarketGuide[] = [
 		],
 		summary: 'A high-potential halal production base and the world\'s second-largest Muslim consumer market, where formal halal certification infrastructure is now emerging to match its enormous scale.'
 	},
+	// 7. United States (existing)
 	{
 		slug: 'usa',
 		country: 'United States',
@@ -304,9 +309,7 @@ export const marketGuides: MarketGuide[] = [
 		mandateStatus: 'voluntary',
 		mandatorySince: null,
 		certifyingBodies: [
-			{ name: 'IFANCA', slug: 'ifanca' },
-			
-			
+			{ name: 'IFANCA', slug: 'ifanca' }
 		],
 		importRequirements: [
 			'FDA registration and Prior Notice for food imports',
@@ -339,6 +342,409 @@ export const marketGuides: MarketGuide[] = [
 			'Fragmented consumer market across metro areas'
 		],
 		summary: 'The most commercially mature voluntary halal market, where private certifiers govern a fast-growing $20B sector driven by mainstream retail adoption and a high-income Muslim consumer base.'
+	},
+	// 8. Egypt (new)
+	{
+		slug: 'egypt',
+		country: 'Egypt',
+		flag: '🇪🇬',
+		region: 'Middle East',
+		muslimPopulation: '~86 million',
+		totalPopulation: '~110 million',
+		marketSizeUsd: '$65B+ (halal food)',
+		mandateStatus: 'mandatory',
+		mandatorySince: '2016 (State of Control, Safety and Production Standards)',
+		certifyingBodies: [
+			{ name: 'NoB', slug: 'nob' },
+			{ name: 'EQS', slug: 'eqs' }
+		],
+		importRequirements: [
+			'Halal certificate from Egyptian authorized institution',
+			'Certificate must be translated into Arabic',
+			'Comply with local standards and post-arrival inspection',
+			'Production facilities qualify for EQS certification'
+		],
+		standardBasis: 'Egyptian Code of Standard 119/2002 (Halal Production Standards), aligned with OIC/SMIIC',
+		certificateValidity: '1 year',
+		estimatedCostUsd: '~$600–1,500 depending on facility size',
+		processingTime: '4–8 weeks',
+		keyInsights: [
+			'Gateway to Africa and the Arab world with huge consumer base',
+			'Recent state-mandated certification has increased market formality',
+			'Government supports halal exports with reduced fees',
+			'Growing domestic demand and re-export hub potential'
+		],
+		opportunities: [
+			'Large youth demographics drive consumption growth',
+			'Government incentives for halal manufacturing',
+			'Re-export potential to Africa and Arab world',
+			'Growing tourism and hospitality sector'
+		],
+		challenges: [
+			'Bureaucratic processes can be time-consuming',
+			'Currency controls affecting international payments',
+			'Local representation requirement for importers',
+			'Frequent regulatory changes'
+		],
+		summary: 'A critical center with a vast Muslim population and mandatory market recognition. Egypt is increasingly dominant in North Africa/Arab market as a halal hub.'
+	},
+	// 9. Bangladesh (new)
+	{
+		slug: 'bangladesh',
+		country: 'Bangladesh',
+		flag: '🇧🇩',
+		region: 'South Asia',
+		muslimPopulation: '~160 million',
+		totalPopulation: '~170 million',
+		marketSizeUsd: '$50B+ (halal food market)',
+		mandateStatus: 'phasing-in',
+		mandatorySince: 'Started 2020, target complete 2025',
+		certifyingBodies: [
+			{ name: 'BBS', slug: 'bbs' },
+			{ name: 'QAC', slug: 'qac' }
+		],
+		importRequirements: [
+			'Halal certificate for meat products from BBS/QuAC',
+			'Import license required for certain products',
+			'No foods packaged mix need halal certification',
+			'Quality control certificate from BBS'
+		],
+		standardBasis: 'Bangladesh Standard 2744-2012, aligned with OIC/SMIIC',
+		certificateValidity: '1 year',
+		estimatedCostUsd: '$800–1,800',
+		processingTime: '6–10 weeks',
+		keyInsights: [
+			'Third-largest Muslim population worldwide',
+			'Emerging formalization under national standards',
+			'Major ready-made garment exporter – first halal certifications',
+			'Government pushing "Halal Bangladesh" branding internationally'
+		],
+		opportunities: [
+			'Domestic market barely formalized – first-mover advantage',
+			'Increasing import demand for branded goods',
+			'Strategic location between India and Myanmar',
+			'Large, young workforce'
+		],
+		challenges: [
+			'Infrastructure limitations delaying progress',
+			'low public awareness on importance of halal certs',
+			'Multiple agencies overlapping authority',
+			'Worries about international standard consistency'
+		],
+		summary: 'An emerging market with enormous potential; Bangladesh is formalizing its halal certification system, offering first-mover opportunities for international suppliers and certifiers.'
+	},
+	// 10. Iran (new)
+	{
+		slug: 'iran',
+		country: 'Iran',
+		flag: '🇮🇷',
+		region: 'Middle East',
+		muslimPopulation: '~75 million',
+		totalPopulation: '~87 million',
+		marketSizeUsd: '$90B+ (halal sector)',
+		mandateStatus: 'mandatory',
+		mandatorySince: '2002 (State Organization for Standardization)',
+		certifyingBodies: [
+			{ name: 'IrISHA', slug: 'irisha' }
+		],
+		importRequirements: [
+			'Mandatory halal certification for all animal-derived foods',
+			'Certificate from IrISHA',
+			'Arabic/English labeling allowed',
+			'Hygiene and quality certification also required'
+		],
+		standardBasis: 'ISO 22716 / Iranian Halal Standard',
+		certificateValidity: '2 years',
+		estimatedCostUsd: '$2,800–5,000',
+		processingTime: '6–14 weeks',
+		keyInsights: [
+			'Large domestic market with strong halal identity',
+			'Regional investment hub with access to Central Asia',
+			'"Halal Country" branding strategy',
+			'Insulated from Western sanctions – local financing'
+		],
+		opportunities: [
+			'Strong trade ties with OIC nations',
+			'Growing tourism and pilgrimage',
+			'Underutilized rich agricultural resources',
+			'Handmade and cultural food export potential'
+		],
+		challenges: [
+			'Sanctions affect international banking',
+			'Complex bureaucracy',
+			'Political sensitivity',
+			'Documents require notarization'
+		],
+		summary: 'A strategically located economy with strong Islamic identity in food – a complex market, but with significant growth potential if local partnerships are prioritized.'
+	},
+	// 11. Nigeria (new)
+	{
+		slug: 'nigeria',
+		country: 'Nigeria',
+		flag: '🇳🇬',
+		region: 'Africa',
+		muslimPopulation: '~90 million',
+		totalPopulation: '~218 million',
+		marketSizeUsd: '$90B+ (halal sector)',
+		mandateStatus: 'voluntary',
+		mandatorySince: null,
+		certifyingBodies: [
+			{ name: 'NIASIS', slug: 'niasis' },
+			{ name: 'Halal League Nigeria', slug: 'hln' }
+		],
+		importRequirements: [
+			'NAFDAC registration for food/cosmetics',
+			'Halal certification not mandatory but preferred',
+			'Certificate required for Muslim-majority regions',
+			'Arabic/English labeling typical'
+		],
+		standardBasis: 'Nigerian Halal Standard (NHAQ) aligned with OIC/SMIIC',
+		certificateValidity: '1–3 years',
+		estimatedCostUsd: '$3,500–7,000',
+		processingTime: '8–12 weeks',
+		keyInsights: [
+			'Africa\'s largest economy with Muslim-majority north',
+			'Growing middle class demand for halal',
+			'Diverse halal consumption patterns',
+			'Halal industry developing through private sector'
+		],
+		opportunities: [
+			'Massive population offers huge market potential',
+			'Domestic production is undersupplied',
+			'Halal tourism and finance emerging',
+			'Region-specific demand (North vs South)'
+		],
+		challenges: [
+			'Fluctuating currency affects imports',
+			'Security concerns in some areas',
+			'Bureaucratic overlap',
+			'Very large informal sector'
+		],
+		summary: 'Nigeria is Africa\'s biggest market and key to the halal sector. Halal demand is growing and requires tailored approaches for each region.'
+	},
+	// 12. Qatar (new)
+	{
+		slug: 'qatar',
+		country: 'Qatar',
+		flag: '🇶🇦',
+		region: 'Middle East',
+		muslimPopulation: '~2.4 million',
+		totalPopulation: '~2.8 million',
+		marketSizeUsd: '$35B+ (halal market)',
+		mandateStatus: 'mandatory',
+		mandatorySince: '2000 (formalized)',
+		certifyingBodies: [
+			{ name: 'Bureau of Domestic and Foreign Goods (BDFC)', slug: 'bdfc' }
+		],
+		importRequirements: [
+			'Mandatory halal certification for all consumable products',
+			'Certificates from relevant authorities',
+			'Arabic labeling required',
+			'Halal certification mandatory for all food imports'
+		],
+		standardBasis: 'Qatar Standardisation System – Quranic Standards',
+		certificateValidity: '1 year renewal',
+		estimatedCostUsd: '$2,500–6,000',
+		processingTime: '4–10 weeks',
+		keyInsights: [
+			'Minimal regulatory bureaucracy – fast processing times',
+			'Strong purchasing power from energy sector',
+			'Regional logistics hub',
+			'High per capita halal expenditure'
+		],
+		opportunities: [
+			'High-value niche market',
+			'Re-export hub to lesser markets',
+			'Tech-driven services potential',
+			'Qatar National Vision 2030 emphasis on halal economy'
+		],
+		challenges: [
+			'Cultural/legislative sensitivities',
+			'Strict compliance requirements',
+			'Limited pool of local exemptions',
+			'High operational costs'
+		],
+		summary: 'A wealthy, fast-moving market with effective halal regulations and high-quality trade opportunities – a compact but high-return addition to GCC.'
+	},
+	// 13. Morocco (new)
+	{
+		slug: 'morocco',
+		country: 'Morocco',
+		flag: '🇲🇦',
+		region: 'Africa',
+		muslimPopulation: '~36 million',
+		totalPopulation: '~37 million',
+		marketSizeUsd: '$40B+ (halal market)',
+		mandateStatus: 'mandatory',
+		mandatorySince: '2010 (Halal Food Regulations)',
+		certifyingBodies: [
+			{ name: 'Ministry of Agriculture', slug: 'min-agriculture' },
+			{ name: 'Moroccan Halal Standard', slug: 'mhs' }
+		],
+		importRequirements: [
+			'Mandatory Halal for meat and animal products',
+			'Certificate from local or OIC bodies',
+			'Arabic/English labeling',
+			'Quarter a year\'s notice for inspections'
+		],
+		standardBasis: 'On Halal Standard – aligned with OIC',
+		certificateValidity: '1 year',
+		estimatedCostUsd: '$2,000–3,500',
+		processingTime: '4–10 weeks',
+		keyInsights: [
+			'Strategic location for Europe-Africa trade',
+			'Strong agricultural base',
+			'Government support for halal exports',
+			'Growing tourism and textile sectors'
+		],
+		opportunities: [
+			'Agri-forward and manufacturing potential',
+			'Export to Europe and Africa',
+			'Growing halal cosmetics and pharma',
+			'Attractive for FDI'
+		],
+		challenges: [
+			'Water and energy infrastructure limits',
+			'Bureaucratic delays',
+			'Variable regulatory enforcement',
+			'Local representation needed'
+		],
+		summary: 'A well-positioned North African market with both EU and African trade links. Morocco offers solid regulatory structure and high-quality halal potential.'
+	},
+	// 14. Philippines (new)
+	{
+		slug: 'philippines',
+		country: 'Philippines',
+		flag: '🇵🇭',
+		region: 'Southeast Asia',
+		muslimPopulation: '~11 million',
+		totalPopulation: '~116 million',
+		marketSizeUsd: '$30B+ (halal market)',
+		mandateStatus: 'voluntary',
+		mandatorySince: null,
+		certifyingBodies: [
+			{ name: 'HJL', slug: 'hjl' },
+			{ name: 'NIASIS', slug: 'niasis-philippines' }
+		],
+		importRequirements: [
+			'Philippine FDA registration',
+			'Halal certification mandatory for Muslim-majority provinces',
+			'Arabic/English labeling recommended',
+			'NIASIS recommended for export-oriented'
+		],
+		standardBasis: 'Philippine Halal Standard, OIC-aligned',
+		certificateValidity: '2 years',
+		estimatedCostUsd: '$1,500–3,000',
+		processingTime: '4–8 weeks',
+		keyInsights: [
+			'3rd largest Muslim population in Southeast Asia',
+			'Region-specific requirements (Mindanao vs metro Manila)',
+			'Halal integration in mainstream demand',
+			'Government support for Muslim communities'
+		],
+		opportunities: [
+			'Huge mass market with growing purchasing power',
+			'Halal manufacturing sheds for exports',
+			'Growing tourism sector',
+			'Strategic ASEAN location'
+		],
+		challenges: [
+			'Security concerns in Mindanao',
+			'Territorial jurisdiction variations',
+			'Lack of uniform national standard',
+			'Need for local Filipino partners'
+		],
+		summary: 'A strategically important Southeast Asian market where halal is increasingly mainstream. Ideal for companies looking to serve both local and export regions.'
+	},
+	// 15. Ethiopia (new)
+	{
+		slug: 'ethiopia',
+		country: 'Ethiopia',
+		flag: '🇪🇹',
+		region: 'Africa',
+		muslimPopulation: '~13 million',
+		totalPopulation: '~120 million',
+		marketSizeUsd: '$40B+ (halal food)',
+		mandateStatus: 'voluntary',
+		mandatorySince: null,
+		certifyingBodies: [
+			{ name: 'Reformer of Ethiopia', slug: 'reform' }
+		],
+		importRequirements: [
+			'Import licensing for food and animal products',
+			'Halal standards widely accepted',
+			'Marketing of halal products in open markets',
+			'No specific halal certification requirement'
+		],
+		standardBasis: 'Ethiopian Halal Standards – OIC alignment',
+		certificateValidity: 'N/A',
+		estimatedCostUsd: 'N/A',
+		processingTime: '3–6 weeks',
+		keyInsights: [
+			'Fast-growing African economy',
+			'Large Muslim population in north and east',
+			'Regional import export hub',
+			'Growing halal demand in urban centers'
+		],
+		opportunities: [
+			'Untapped market with high population growth',
+			'Growing middle class',
+			'Agri-processing potential',
+			'Regional trade access via COMESA'
+		],
+		challenges: [
+			'Color conflict affects business stability',
+			'Limited infrastructure',
+			'Financial access',
+			'Political sensitivities'
+		],
+		summary: 'An emerging African market with rapid growth potential and significant Muslim consumer base. Ideal for early entry and partnership building.'
+	},
+	// 16. India (new)
+	{
+		slug: 'india',
+		country: 'India',
+		flag: '🇮🇳',
+		region: 'South Asia',
+		muslimPopulation: '~200 million',
+		totalPopulation: '~1.4 billion',
+		marketSizeUsd: '$110B+ (halal food + beauty + pharma)',
+		mandateStatus: 'phasing-in',
+		mandatorySince: 'India\'s halal market is largely industry-led; several states are moving to formalize.',
+		certifyingBodies: [
+			{ name: 'Halal India', slug: 'halal-india' },
+			{ name: 'ABHI', slug: 'abhi' },
+			{ name: 'Trusted Halal India', slug: 'thi' }
+		],
+		importRequirements: [
+			'Import licensing for food, cosmetics, pharma',
+			'Abis regulatory body only, not broadly recognized yet',
+			'State-level certification varies',
+			'Vet testing for halal meat'
+		],
+		standardBasis: 'No national standard yet; industry-led but moving toward standardization',
+		certificateValidity: '2 years typical',
+		estimatedCostUsd: '$2,000–4,500',
+		processingTime: '6–10 weeks',
+		keyInsights: [
+			'World\'s 5th largest Muslim population',
+			'Halal is culturally understood but lack standardized framework',
+			'Growing diaspora and artisanal halal sector',
+			'Export potential is high for international brands'
+		],
+		opportunities: [
+			'Private halal certification gaining acceptance',
+			'Major export opportunities to GCC/Africa',
+			'Growing urban demand for traceable halal',
+			'Tech-driven supply chain transparency'
+		],
+		challenges: [
+			'Regulatory uncertainty',
+			'Fragmented certification network',
+			'Cosmetic and pharma regulations competitive',
+			'State-level differences create complexity'
+		],
+		summary: 'India\'s halal sector is among the largest globally but operates informally; formalization is accelerating, creating exciting opportunities for international alignment.'
 	}
 ];
 

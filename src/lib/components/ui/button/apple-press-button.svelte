@@ -38,8 +38,8 @@
 		{size}
 		{disabled}
 		{loading}
-		on:pointerdown={handlePressStart}
-		on:touchstart={handlePressStart}
+		onpointerdown={handlePressStart}
+		ontouchstart={handlePressStart}
 		{isApple}
 		variant={variant}
 		size={size}
@@ -68,8 +68,8 @@
 		{size}
 		{disabled}
 		{loading}
-		on:pointerdown={handlePressStart}
-		on:touchstart={handlePressStart}
+		onpointerdown={handlePressStart}
+		ontouchstart={handlePressStart}
 		{$props.class}
 		{$props.disabled}
 		disabled={disabled}

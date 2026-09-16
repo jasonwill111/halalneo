@@ -122,9 +122,8 @@
 <!-- Backdrop -->
 {#if showExplore || showMenu}
 	<div
-		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs md:hidden"
+		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs md:hidden animate-fade-in"
 		onclick={closeAll}
-		transition:fade={{ duration: 150 }}
 	></div>
 {/if}
 
