@@ -79,12 +79,15 @@
 			name: provider.name,
 			description: provider.description,
 			url: provider.website ?? `${baseUrl}/service-providers/${data.slug}`,
+			image: `${baseUrl}/api/media/og-services.png`,
 			address: provider.country ? { '@type': 'PostalAddress', addressCountry: provider.country } : undefined,
 			contactPoint: [
 				...(provider.email ? [{ '@type': 'ContactPoint', contactType: 'email', email: provider.email }] : []),
 				...(provider.phone ? [{ '@type': 'ContactPoint', contactType: 'telephone', telephone: provider.phone }] : [])
 			],
-			memberOf: { '@type': 'Organization', name: 'HalalNeo' }
+			parentOrganization: { '@type': 'Organization', name: 'HalalNeo' },
+			sameAs: [provider.website],
+			...(provider.rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: provider.rating, ratingCount: 1 } } : {})
 		})}</script>`}
 	{/if}
 </svelte:head>

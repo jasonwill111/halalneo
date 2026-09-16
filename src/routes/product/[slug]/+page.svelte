@@ -264,7 +264,7 @@
 					'@type': 'Product',
 					name: item.name ?? '',
 					description: item.shortDescription ?? item.description ?? '',
-					image: item.image ?? ogImage,
+					image: item.image ? [item.image] : [ogImage],
 					url: `${baseUrl}/product/${item.slug}`,
 					brand: { '@type': 'Brand', name: item.supplierSlug ?? '' },
 					category: item.categorySlug ?? '',
@@ -275,11 +275,13 @@
 									url: `${baseUrl}/product/${item.slug}`,
 									itemCondition: 'https://schema.org/NewCondition',
 									priceCurrency: 'USD',
-									price: item.priceMin
+									price: item.priceMin,
+									...(item.priceMax ? { priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() } : {})
 								}
 							}
 						: {}),
-					manufacturer: { '@type': 'Organization', name: item.supplierSlug ?? '' }
+					manufacturer: { '@type': 'Organization', name: item.supplierSlug ?? '' },
+					...(item.originCountry ? { countryOfOrigin: { '@type': 'Country', name: item.originCountry } } : {})
 				}
 			: null
 	);
