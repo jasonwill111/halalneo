@@ -15,16 +15,25 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
-	let { data } = $props();
-	let search = $state('');
+ 	let { data, itemList } = $props();
+ 	let search = $state('');
+ 	const PAGE_SIZE = 8;
+ 	let page = $state(1);
+ 	$effect(() => { page = 1; });
 
-	const filteredCategories = $derived(
-		search.trim()
-			? (data.categories ?? []).filter((c: any) =>
-					c.name.toLowerCase().includes(search.toLowerCase())
-				)
-			: data.categories ?? []
+ 	const filteredCategories = $derived(
+ 		search.trim()
+ 			? (data.categories ?? []).filter((c: any) =>
+ 					c.name.toLowerCase().includes(search.toLowerCase())
+ 				)
+ 			: data.categories ?? []
+ 	);
+
+	const totalPages = $derived(Math.max(1, Math.ceil(filteredCategories.length / PAGE_SIZE)));
+	const pagedCategories = $derived(
+		filteredCategories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 	);
 
 	// Subcategories derived from the parentSlug hierarchy (no hardcoded list)
@@ -35,6 +44,10 @@
 	// Icon tile palette — shared with homepage/certifiers/KB for cross-page consistency
 	const tileColors = TILE_COLORS;
 </script>
+
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+</svelte:head>
 
 <section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
@@ -56,7 +69,7 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-			{#each filteredCategories as category, i (category.slug)}
+			{#each pagedCategories as category, i (category.slug)}
 				{@const count = (data.products ?? []).filter((s: any) => s.categorySlug === category.slug).length}
 				<article>
 				<Card hoverable>
@@ -92,6 +105,8 @@
 				</Empty>
 			{/each}
 	</div>
+
+	<Paginator page={page} totalPages={totalPages} />
 
 	{#if subcategories.length > 0}
 		<!-- Popular Subcategories (data-driven from parentSlug hierarchy) -->

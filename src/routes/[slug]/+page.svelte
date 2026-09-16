@@ -19,7 +19,7 @@
 	{@html `<script type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@type":"WebPage","name":pageTitle,"description":pageDescription,"url":pageUrl})}</script>`}
 </svelte:head>
 
-<div class="mx-auto max-w-4xl py-8">
+<div class="mx-auto max-w-6xl py-8">
 	{#if data.item}
 		<article class="space-y-4 sm:space-y-6">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.title}</h1>

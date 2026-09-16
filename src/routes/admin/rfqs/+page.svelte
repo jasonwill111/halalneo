@@ -1,30 +1,31 @@
 <script lang="ts">
-	import { Button } from '#lib/components/ui/button/index.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
-	import { Input } from '#lib/components/ui/input/index.js';
-	import {
-		Table,
-		TableBody,
-		TableCell,
-		TableHead,
-		TableHeader,
-		TableRow
-	} from '#lib/components/ui/table/index.js';
-	import {
-		Dialog,
-		DialogContent,
-		DialogDescription,
-		DialogFooter,
-		DialogHeader,
-		DialogTitle
-	} from '#lib/components/ui/dialog/index.js';
-	import Search from '@lucide/svelte/icons/search';
-	import Eye from '@lucide/svelte/icons/eye';
-	import Trash2 from '@lucide/svelte/icons/trash-2';
-	import StatTile from '#lib/components/site/stat-tile.svelte';
-	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
-	import { toast } from 'svelte-sonner';
-	import { focusFirstInvalid } from '#lib/utils/forms.js';
+ 	import { Button } from '#lib/components/ui/button/index.js';
+ 	import { Badge } from '#lib/components/ui/badge/index.js';
+ 	import { Input } from '#lib/components/ui/input/index.js';
+ 	import {
+ 		Table,
+ 		TableBody,
+ 		TableCell,
+ 		TableHead,
+ 		TableHeader,
+ 		TableRow
+ 	} from '#lib/components/ui/table/index.js';
+ 	import {
+ 		Dialog,
+ 		DialogContent,
+ 		DialogDescription,
+ 		DialogFooter,
+ 		DialogHeader,
+ 		DialogTitle
+ 	} from '#lib/components/ui/dialog/index.js';
+ 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+ 	import Search from '@lucide/svelte/icons/search';
+ 	import Eye from '@lucide/svelte/icons/eye';
+ 	import Trash2 from '@lucide/svelte/icons/trash-2';
+ 	import StatTile from '#lib/components/site/stat-tile.svelte';
+ 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+ 	import { toast } from 'svelte-sonner';
+ 	import { focusFirstInvalid } from '#lib/utils/forms.js';
 
 	let search = $state('');
 	let items = $state<any[]>([]);
@@ -167,7 +168,9 @@
 			<TableBody>
 				{#if loading}
 					<TableRow>
-						<TableCell colspan={6} class="py-8 text-center text-sm text-muted-foreground">Loading...</TableCell>
+						<TableCell colspan={6} class="py-8 text-center">
+							<Skeleton class="h-5 w-32 mx-auto" />
+						</TableCell>
 					</TableRow>
 				{:else if items.length === 0}
 					<TableRow>

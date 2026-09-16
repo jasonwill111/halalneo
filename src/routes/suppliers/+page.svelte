@@ -121,7 +121,8 @@
 		<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
 			{#each typeCards as t (t.value)}
 				{@const meta = typeMeta[t.value]}
-				<button
+					<Button
+					variant="outline"
 					type="button"
 					onclick={() => (activeType = activeType === t.value ? 'all' : t.value)}
 					aria-pressed={activeType === t.value}
@@ -138,7 +139,7 @@
 							</div>
 						</div>
 					</Card>
-				</button>
+				</Button>
 			{/each}
 		</div>
 	</div>

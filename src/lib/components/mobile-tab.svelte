@@ -122,7 +122,7 @@
 <!-- Backdrop -->
 {#if showExplore || showMenu}
 	<div
-		class="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs md:hidden"
+		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs md:hidden"
 		onclick={closeAll}
 		transition:fade={{ duration: 150 }}
 	></div>
@@ -197,7 +197,7 @@
 	aria-label="Mobile navigation"
 >
 	<div
-		class="relative flex items-center justify-evenly rounded-xl border border-white/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-white/10"
+		class="relative flex items-center justify-evenly rounded-xl border border-foreground/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-foreground/10"
 		style="width: min(90vw, 360px);"
 	>
 		<!-- Sliding indicator pill (Apple signature pattern) -->

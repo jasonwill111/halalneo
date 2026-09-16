@@ -77,7 +77,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 						data.metaDescription || data.excerpt ||
 						`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
 					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-blog.png',
-					keywords: data.keywords || ['halal blog', 'certification insights', 'trade news']
+					keywords: data.keywords || ['halal blog', 'certification insights', 'trade news'],
+					ogType: 'article'
 				},
 				item,
 				related
@@ -90,7 +91,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `${params.slug} — HalalNeo Blog`,
 			description: `Read about ${params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
-			robots: 'noindex, nofollow'
+			robots: 'noindex, nofollow',
+			ogType: 'article'
 		},
 		item: null as any,
 		related: []

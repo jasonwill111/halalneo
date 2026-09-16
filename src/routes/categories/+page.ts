@@ -14,15 +14,29 @@ export const load: PageLoad = async ({ fetch }) => {
 		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
 	}));
 
-	return {
-		seo: {
-			title: 'Product Categories — HalalNeo',
-			description:
-				'Browse halal-certified product categories —food, beverages, cosmetics, nutritional supplements and more.',
-			ogImage: 'https://halalneo.com/api/media/og-categories.png',
-			keywords: ['halal product categories', 'certified product types', 'halal food', 'halal cosmetics']
-		},
-		categories,
-		products
-	};
+ 	return {
+ 		seo: {
+ 			title: 'Product Categories — HalalNeo',
+ 			description:
+ 				'Browse halal-certified product categories —food, beverages, cosmetics, nutritional supplements and more.',
+ 			ogImage: 'https://halalneo.com/api/media/og-categories.png',
+ 			keywords: ['halal product categories', 'certified product types', 'halal food', 'halal cosmetics']
+ 		},
+ 		categories,
+ 		products,
+ 		itemList: {
+ 			'@context': 'https://schema.org',
+ 			'@type': 'ItemList',
+ 			'itemListElement': categories.map((cat, i) => ({
+ 				'@type': 'ListItem',
+ 				'position': i + 1,
+ 				'item': {
+ 					'@type': 'Thing',
+ 					'name': cat.name,
+ 					'description': cat.description,
+ 					'url': `/category/${cat.slug}`
+ 				}
+ 			}))
+ 		}
+ 	};
 };

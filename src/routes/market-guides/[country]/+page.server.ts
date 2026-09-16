@@ -46,7 +46,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 			description:
 				guide.metaDescription ||
 				(guide.summary || `Halal market guide for ${guide.country} — certification requirements, market size, and compliance insights.`).slice(0, 155),
-			ogImage: 'https://halalneo.com/api/media/og-default.png'
+			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogType: 'article'
 		}
 	};
 };

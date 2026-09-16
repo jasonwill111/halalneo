@@ -240,14 +240,15 @@
 											<p class="text-xs text-muted-foreground truncate">{r.category} · {r.supplierName}</p>
 										{/if}
 									</div>
-									<button
+									<Button
+										variant="outline"
 										type="button"
 										class="shrink-0 rounded p-1 text-muted-foreground hover:text-foreground"
 										onclick={() => copyToClipboard(r.name)}
 										aria-label="Copy name"
 									>
 										<CopyIcon class="size-3" />
-									</button>
+									</Button>
 								</div>
 
 								<div class="flex flex-wrap gap-1">

@@ -99,32 +99,6 @@
 	const baseUrl = 'https://halalneo.com';
 	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 
-	const breadcrumbSchema = $derived({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
-			{
-				'@type': 'ListItem',
-				position: 2,
-				name: 'Knowledge Base',
-				item: `${baseUrl}/knowledge-base`
-			},
-			{
-				'@type': 'ListItem',
-				position: 3,
-				name: data.section ?? '',
-				item: `${baseUrl}/knowledge-base/${data.section}`
-			},
-			{
-				'@type': 'ListItem',
-				position: 4,
-				name: item?.title ?? '',
-				item: `${baseUrl}/knowledge-base/${data.section}/${data.article}`
-			}
-		]
-	});
-
 	const articleSchema = $derived(
 		item
 			? {
@@ -157,7 +131,6 @@
 	{#if articleSchema}
 		{@html `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>`}
 	{/if}
-	{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">

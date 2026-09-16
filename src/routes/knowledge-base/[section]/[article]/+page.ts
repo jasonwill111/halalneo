@@ -94,7 +94,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					ogImage: 'https://halalneo.com/api/media/og-kb.png',
 					keywords: tagsParsed.length
 						? tagsParsed
-						: ['halal certification', 'compliance guide', 'trade knowledge']
+						: ['halal certification', 'compliance guide', 'trade knowledge'],
+					ogType: 'article'
 				},
 				item: { ...data, tags: tagsParsed },
 				related
@@ -109,7 +110,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `${params.article} — HalalNeo`,
 			description: `Read about ${params.article} on HalalNeo — halal certification and compliance guide.`,
-			robots: 'noindex, nofollow'
+			robots: 'noindex, nofollow',
+			ogType: 'article'
 		},
 		item: null,
 		related: [] as RelatedArticle[]

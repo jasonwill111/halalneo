@@ -6,10 +6,14 @@
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 	let search = $state('');
 	let activeLetter = $state('all');
+	const PAGE_SIZE = 3;
+	let page = $state(1);
+	$effect(() => { page = 1; });
 
 	const definedTermSet = $derived(
 		JSON.stringify({
@@ -66,6 +70,10 @@
 
 	const grouped = $derived(Object.groupBy(sorted, (t: any) => t.term[0].toUpperCase()));
 	const letters = $derived(Object.keys(grouped).toSorted());
+	const totalPages = $derived(Math.max(1, Math.ceil(letters.length / PAGE_SIZE)));
+	const paginatedLetters = $derived(
+		letters.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+	);
 
 	const isSearching = $derived(search.trim().length > 0);
 </script>
@@ -107,7 +115,7 @@
 	{/if}
 
 	<div class="space-y-4 sm:space-y-6">
-		{#each letters as letter, i (letter)}
+		{#each paginatedLetters as letter, i (letter)}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
 				<div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
@@ -129,4 +137,6 @@
 			</Empty>
 		{/each}
 	</div>
+
+	<Paginator page={page} totalPages={totalPages} />
 </section>

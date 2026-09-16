@@ -19,9 +19,13 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import Paginator from '#lib/components/site/paginator.svelte';
 
 	let { data } = $props();
 	let search = $state('');
+	const PAGE_SIZE = 9;
+	let page = $state(1);
+	$effect(() => { page = 1; });
 
 	const filteredSections = $derived(
 		search.trim()
@@ -29,6 +33,10 @@
 					s.title.toLowerCase().includes(search.toLowerCase())
 				)
 			: data.sections ?? []
+	);
+	const totalPages = $derived(Math.max(1, Math.ceil(filteredSections.length / PAGE_SIZE)));
+	const pagedSections = $derived(
+		filteredSections.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 	);
 
 	const subForms = $derived([
@@ -144,7 +152,7 @@
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-		{#each filteredSections as section, i (section.slug)}
+		{#each pagedSections as section, i (section.slug)}
 			<article>
 			<Card hoverable class="h-full overflow-hidden">
 				<CardHeader class="gap-3">
@@ -179,6 +187,8 @@
 		{/each}
 		</div>
 	</div>
+
+	<Paginator page={page} totalPages={totalPages} />
 
 	<!-- Popular Articles -->
 	{#if popularArticles.length > 0}

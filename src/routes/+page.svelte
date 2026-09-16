@@ -248,7 +248,7 @@
 <!-- CATEGORIES -->
 <section {@attach reveal}>
 	<SectionHead number="02" title="Browse by category" href="/categories" linkLabel="View all" />
-	<div class="grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
 		{#each data.categories.slice(0, 6) as category, i}
 			<a
 				href={localizeHref(`/category/${category.slug}`)}

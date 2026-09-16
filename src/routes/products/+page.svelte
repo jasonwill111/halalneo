@@ -120,8 +120,9 @@
 		</div>
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
 			{#each productCategories as cat, i (cat.slug)}
-				<button
+				<Button
 					type="button"
+					variant="outline"
 					onclick={() => (activeCategory = activeCategory === cat.slug ? 'all' : cat.slug)}
 					aria-pressed={activeCategory === cat.slug}
 					class="group h-full text-left"
@@ -141,7 +142,7 @@
 							</div>
 						</CardContent>
 					</Card>
-				</button>
+				</Button>
 			{/each}
 		</div>
 	</div>
@@ -210,7 +211,7 @@
 								</div>
 							{/if}
 							{#if cert}
-								<span class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold backdrop-blur-sm {cert.cls} bg-background/80">
+								<span class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold {cert.cls} bg-background/80">
 									<cert.icon class="size-2.5"></cert.icon>
 									{cert.text}
 								</span>
