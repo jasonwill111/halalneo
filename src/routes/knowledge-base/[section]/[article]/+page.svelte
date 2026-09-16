@@ -185,7 +185,7 @@
           {/each}
         </div>
 
-        <div class="space-y-3 rounded-xl border border-border bg-muted/40 p-4">
+        <div class="space-y-3 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
           <span class="text-sm text-muted-foreground">Found this helpful? Share it with your network.</span>
           <ShareButtons title={data.item.title ?? ''} text={data.item.summary ?? ''} />
         </div>
@@ -228,7 +228,7 @@
       </main>
 
       <aside class="hidden lg:block shrink-0">
-        <div class="space-y-4 sticky top-24">
+        <div class="space-y-4 sticky top-24 z-10">
           <Card>
             <CardContent class="p-4">
               <h3 class="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">

@@ -521,7 +521,7 @@
     </main>
 
     <aside class="hidden lg:block shrink-0">
-      <div class="space-y-4 sticky top-24">
+      <div class="space-y-4 sticky top-24 z-10">
         <Card class="bg-card">
           <CardContent class="space-y-3 p-5">
             <div class="flex items-center gap-2">

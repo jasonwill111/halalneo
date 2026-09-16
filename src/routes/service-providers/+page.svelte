@@ -173,7 +173,7 @@
 
 <div class="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:gap-5">
 	<aside class="w-full shrink-0 lg:w-56">
-		<div class="rounded-xl bg-card p-4 ring-1 ring-foreground/10 lg:sticky lg:top-20">
+		<div class="rounded-xl bg-card p-3 sm:p-4 ring-1 ring-foreground/10 lg:sticky lg:top-20">
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-sm font-semibold">Filters</h2>
 				<Button

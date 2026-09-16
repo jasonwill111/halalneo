@@ -56,8 +56,7 @@
 				? { '@type': 'PostalAddress', addressCountry: body.country }
 				: undefined,
 			parentOrganization: { '@type': 'Organization', name: 'HalalNeo' },
-			sameAs: [body.website, `${baseUrl}/certifying-bodies/${data.slug}`],
-			...(body.standard ? { sameAs: [...(certBodySchema.sameAs ?? []), `https://schema.org/${body.standard}`] } : {})
+			...(body.website ? { sameAs: [body.website, `${baseUrl}/certifying-bodies/${data.slug}`] } : {})
 		})}</script>`}
 	{/if}
 </svelte:head>
@@ -232,7 +231,7 @@
       </main>
 
       <aside class="hidden lg:block shrink-0">
-        <div class="space-y-4 sticky top-24">
+        <div class="space-y-4 sticky top-24 z-10">
           <Card class="bg-card">
             <CardContent class="space-y-4 p-5">
               <div class="space-y-3">

@@ -38,7 +38,7 @@
 	</div>
 {:else}
 	<aside class="hidden w-52 shrink-0 lg:block">
-		<div class="sticky top-20 space-y-0.5 rounded-xl bg-card p-1.5 ring-1 ring-foreground/10">
+		<div class="sticky top-20 z-10 space-y-0.5 rounded-xl bg-card p-1.5 ring-1 ring-foreground/10">
 			{#each navItems as item (item.href)}
 				<a
 					href={localizeHref(item.href)}

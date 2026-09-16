@@ -411,7 +411,7 @@
 				</div>
 
 				<!-- Price card -->
-				<div class="space-y-3 rounded-xl bg-card p-4">
+				<div class="space-y-3 rounded-xl bg-card p-3 sm:p-4">
 					<div>
 						<div class="text-2xl font-bold text-primary">{priceDisplay}</div>
 						{#if item.moq}
@@ -615,7 +615,7 @@
 			</div>
 
 			<!-- Quick Info sidebar -->
-			<div class="space-y-4 lg:sticky lg:top-20 lg:self-start">
+			<div class="space-y-4 lg:sticky lg:top-20 lg:self-start lg:z-10">
 				<Card class="p-3 sm:p-4">
 					<h3 class="mb-3 text-sm font-semibold">Quick Info</h3>
 					<dl class="space-y-2 text-sm">

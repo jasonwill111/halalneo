@@ -116,7 +116,7 @@
 		</p>
 	</div>
 
-	<div class="rounded-xl bg-card p-4 text-center sm:p-6">
+	<div class="rounded-xl bg-card p-3 sm:p-4 text-center">
 		<h2 class="text-base font-semibold sm:text-lg">How can we help?</h2>
 		<div class="relative mx-auto mt-3 max-w-md">
 			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -144,7 +144,7 @@
 		</Accordion>
 	</div>
 
-	<div class="mx-auto max-w-md rounded-xl border border-border p-4 text-center sm:p-6">
+	<div class="mx-auto max-w-md rounded-xl border border-border p-3 sm:p-4 text-center">
 		<MessageCircle class="mx-auto size-7 text-primary" data-icon="header" />
 		<h2 class="mt-3 text-base font-semibold sm:text-lg">Still have a question?</h2>
 		<p class="mt-1 text-sm text-muted-foreground">

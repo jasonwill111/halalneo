@@ -81,7 +81,7 @@
         </div>
 
         {#if story.supplierSlug}
-          <div class="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+          <div class="rounded-xl bg-card p-3 sm:p-4 ring-1 ring-foreground/10">
             <p class="text-xs text-muted-foreground">Supplied by</p>
             <p class="mt-0.5 truncate text-sm font-semibold">{data.supplierName}</p>
             <Button
@@ -111,7 +111,7 @@
       </main>
 
       <aside class="hidden lg:block shrink-0">
-        <div class="space-y-4 sticky top-24">
+        <div class="space-y-4 sticky top-24 z-10">
           {#if story.supplierSlug}
             <Card class="bg-card">
               <CardContent class="space-y-4 p-5">

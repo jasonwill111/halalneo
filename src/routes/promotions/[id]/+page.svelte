@@ -135,7 +135,7 @@
 					{/if}
 				</div>
 
-				<div class="space-y-3 rounded-xl bg-card p-4">
+				<div class="space-y-3 rounded-xl bg-card p-3 sm:p-4">
 					<div class="text-2xl font-bold text-primary">{priceText(promo)}</div>
 					{#if promo.moq}
 						<div class="text-xs text-muted-foreground">MOQ: {promo.moq}</div>

@@ -184,7 +184,7 @@
               {#each data.related as related (related.slug)}
                 <a
                   href={localizeHref(`/blog/${related.slug}`)}
-                  class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+                  class="group block rounded-xl bg-card p-3 sm:p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
                 >
                   <div class="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
                     <span class="font-medium text-foreground/80">{related.author.name}</span>
@@ -231,7 +231,7 @@
             ] as item (item.href)}
               <a
                 href={localizeHref(item.href)}
-                class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+                class="group block rounded-xl bg-card p-3 sm:p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
               >
                 <div class="mb-2">
                   <item.icon class="size-5 text-primary/60 transition-colors group-hover:text-primary" />
@@ -253,7 +253,7 @@
       </main>
 
       <aside class="hidden lg:block shrink-0">
-        <div class="space-y-4 sticky top-24">
+        <div class="space-y-4 sticky top-24 z-10">
           <Card class="bg-card">
             <CardContent class="space-y-3 p-5">
               <div class="space-y-3">
