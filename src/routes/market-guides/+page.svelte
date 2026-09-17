@@ -15,6 +15,7 @@
  	import UsersIcon from '@lucide/svelte/icons/users';
  	import BanknoteIcon from '@lucide/svelte/icons/banknote';
  	import ScaleIcon from '@lucide/svelte/icons/scale';
+ 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
  	import SeoMeta from '#lib/components/seo-meta.svelte';
 
  	let { data, itemList } = $props();

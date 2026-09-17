@@ -119,7 +119,11 @@
 				'@type': 'WebPage',
 				'@id': `https://halalneo.com/market-guides/${guide.slug}`
 			},
-			datePublished: guide.mandatorySince ? new Date(guide.mandatorySince).toISOString() : new Date().toISOString(),
+			datePublished: (() => {
+				if (!guide.mandatorySince) return new Date().toISOString();
+				const parsed = new Date(guide.mandatorySince);
+				return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+			})(),
 			language: 'en'
 		})
 	);
