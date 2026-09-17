@@ -390,36 +390,28 @@ export const successStories = sqliteTable('success_stories', {
 	title: text('title').notNull(),
 	excerpt: text('excerpt').default(''),
 	body: text('body').default(''),
-	supplierSlug: text('supplier_slug').references(() => suppliers.slug, { onDelete: 'set null' }),
-	buyerCountry: text('buyer_country').notNull(),
-	buyerIndustry: text('buyer_industry'),
+	supplierSlug: text('supplier_slug'),
+	buyerCountry: text('buyer_country').default(''),
 	dealValue: text('deal_value').default(''),
 	image: text('image'),
-	companyLogo: text('company_logo'),
-	testimonial: text('testimonial'),
-	metrics: text('metrics', { mode: 'json' }).default('[]'),
-	timeline: text('timeline', { mode: 'json' }).default('[]'),
-	indirectBenefits: text('indirect_benefits', { mode: 'json' }).default('[]'),
 	status: text('status').default('draft'),
-	views: integer('views').default(0),
-	featured: integer('featured', { mode: 'boolean' }).default(false),
-	metaTitle: text('meta_title'),
-	metaDescription: text('meta_description'),
-	keywords: text('keywords', { mode: 'json' }).default('[]'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
+// ==================== Indexes ====================
 // Products
 export const productsCategoryIdx = index('idx_products_category').on(products.categorySlug);
 export const productsSupplierIdx = index('idx_products_supplier').on(products.supplierSlug);
 export const productsStatusIdx = index('idx_products_status').on(products.status);
 export const productsCertIdx = index('idx_products_cert').on(products.certStatus);
 export const productsCreatedAtIdx = index('idx_products_created').on(products.createdAt);
+export const productsNameIdx = index('idx_products_name').on(products.name);
 
 // Suppliers
 export const suppliersStatusIdx = index('idx_suppliers_status').on(suppliers.status);
 export const suppliersCountryIdx = index('idx_suppliers_country').on(suppliers.country);
+export const suppliersNameIdx = index('idx_suppliers_name').on(suppliers.name);
 export const suppliersBusinessTypeIdx = index('idx_suppliers_business_type').on(suppliers.businessType);
 
 // Pages
@@ -435,8 +427,9 @@ export const kbStatusIdx = index('idx_kb_status').on(knowledgeBase.status);
 // Service Providers
 export const spTypeIdx = index('idx_sp_type').on(serviceProviders.type);
 export const spStatusIdx = index('idx_sp_status').on(serviceProviders.status);
+export const spCountryIdx = index('idx_sp_country').on(serviceProviders.country);
 
-// Certifying Bodies
+// Certifying Bodies (filters by country + status — index both)
 export const cbCountryIdx = index('idx_cb_country').on(certifyingBodies.country);
 export const cbStatusIdx = index('idx_cb_status').on(certifyingBodies.status);
 
@@ -453,21 +446,25 @@ export const rfqStatusIdx = index('idx_rfq_status').on(buyingRequests.status);
 export const rfqBuyerIdx = index('idx_rfq_buyer').on(buyingRequests.buyerId);
 export const rfqCategoryIdx = index('idx_rfq_category').on(buyingRequests.categorySlug);
 
+// Promotions
+export const promoStatusIdx = index('idx_promo_status').on(promotions.status);
+export const promoSupplierIdx = index('idx_promo_supplier').on(promotions.supplierSlug);
+
 // Supplier Members / Follows / Updates
 export const membersUserIdx = index('idx_members_user').on(supplierMembers.userId);
 export const followsUserIdx = index('idx_follows_user').on(follows.userId);
 export const updatesSupplierIdx = index('idx_updates_supplier').on(supplierUpdates.supplierSlug);
 
-// Page Views (analytics)
+// Page Views
 export const viewsSlugIdx = index('idx_views_slug').on(pageViews.kind, pageViews.slug);
 export const viewsTimeIdx = index('idx_views_time').on(pageViews.createdAt);
-
-// Media
-export const mediaKeyIdx = index('idx_media_key').on(media.key);
 
 // Success Stories
 export const storiesStatusIdx = index('idx_stories_status').on(successStories.status);
 export const storiesSupplierIdx = index('idx_stories_supplier').on(successStories.supplierSlug);
+
+// Media
+export const mediaKeyIdx = index('idx_media_key').on(media.key);
 
 // Market Guides
 export const mgCountryIdx = index('idx_mg_country').on(marketGuides.country);
@@ -477,161 +474,6 @@ export const mgStatusIdx = index('idx_mg_status').on(marketGuides.status);
 export const tsCountryIdx = index('idx_ts_country').on(tradeShows.country);
 export const tsStatusIdx = index('idx_ts_status').on(tradeShows.status);
 export const tsStartDateIdx = index('idx_ts_start_date').on(tradeShows.startDate);
-
-// ==================== Monitoring & Analytics ====================
-
-// Cost metrics - daily aggregates from Cloudflare usage
-export const costMetrics = sqliteTable('cost_metrics', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	date: text('date').notNull(), // YYYY-MM-DD
-	workerRequests: integer('worker_requests').default(0),
-	workerDuration: integer('worker_duration').default(0), // ms
-	workerMinorR2Ops: integer('worker_minor_r2_ops').default(0),
-	workerMajorR2Ops: integer('worker_major_r2_ops').default(0),
-	d1ReadOperations: integer('d1_read_operations').default(0),
-	d1WriteOperations: integer('d1_write_operations').default(0),
-	d1StorageBytes: integer('d1_storage_bytes').default(0),
-	costUSD: real('cost_usd').default(0),
-	source: text('source').default('cloudflare'),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date())
-});
-
-// Performance metrics - RUM and synthetic monitoring
-export const performanceMetrics = sqliteTable('performance_metrics', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	page: text('page').notNull(),
-	metric: text('metric').notNull(), // LCP, CLS, INP, FCP, TTFB, etc.
-	value: real('value').notNull(), // in ms or unitless
-	pageSize: integer('page_size_bytes').default(0),
-	loadTime: integer('load_time_ms').default(0),
-	sessionId: text('session_id').notNull(),
-	userId: text('user_id'),
-	country: text('country'),
-	deviceType: text('device_type', { enum: ['mobile', 'tablet', 'desktop'] }).default('desktop'),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date())
-});
-
-// Indexes for performance metrics
-export const perfPageIdx = index('Idx_perf_page').on(performanceMetrics.page);
-export const perfMetricIdx = index('Idx_perf_metric').on(performanceMetrics.metric);
-export const perfTimeIdx = index('Idx_perf_time').on(performanceMetrics.createdAt);
-
-// SEO rankings - keyword tracking
-export const seoRankings = sqliteTable('seo_rankings', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	keyword: text('keyword').notNull(),
-	pageUrl: text('page_url').notNull(),
-	category: text('category'),
-	createdAt: text('created_at').notNull(),
-	date: text('date').notNull(),
-	ranking: integer('ranking'),
-	searchVolume: integer('search_volume').default(0),
-	competition: text('competition'),
-	country: text('country').default('global'),
-	toolSource: text('tool_source').default('manual'),
-	isTracked: integer('is_tracked', { mode: 'boolean' }).default(true)
-});
-
-// Indexes for SEO rankings
-export const seoKeywordIdx = index('Idx_seo_keyword').on(seoRankings.keyword);
-export const seoDateIdx = index('Idx_seo_date').on(seoRankings.date);
-export const seoUrlIdx = index('Idx_seo_url').on(seoRankings.pageUrl);
-
-// SEO content metrics - freshness, structured data, canonical verification
-export const seoContentMetrics = sqliteTable('seo_content_metrics', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	contentType: text('content_type').notNull(), // article, product, supplier, etc.
-	contentId: text('content_id').notNull(),
-	pageUrl: text('page_url').notNull(),
-	lastCrawled: integer('last_crawled', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-	freshnessScore: real('freshness_score'), // 0-100
-	structuredDataValid: integer('structured_data_valid', { mode: 'boolean' }),
-	structuredDataErrors: text('structured_data_errors', { mode: 'json' }).$type<string[]>(),
-	canonicalUrl: text('canonical_url'),
-	hasCanonical: integer('has_canonical', { mode: 'boolean' }),
-	imageAltTextRatio: real('image_alt_text_ratio'), // ratio of images with alt text
-	wordCount: integer('word_count'),
-	lastContentChange: text('last_content_change', { mode: 'timestamp' }),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date())
-});
-
-// Indexes for SEO content metrics
-export const seoContentUrlIdx = index('Idx_seo_content_url').on(seoContentMetrics.pageUrl);
-export const seoContentTypeIdx = index('Idx_seo_content_type').on(seoContentMetrics.contentType);
-
-// A/B test results
-export const abTestResults = sqliteTable('ab_test_results', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	testName: text('test_name').notNull(),
-	variant: text('variant').notNull(), // control or treatment
-	contentId: text('content_id'), // optional if content-specific
-	pageUrl: text('page_url').notNull(),
-	email: text('email'), // user identifier (anonymized)
-	sessionId: text('session_id').notNull(),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-	impression: integer('impression').default(0),
-	click: integer('click').default(0),
-	conversion: integer('conversion').default(0),
-	revenue: real('revenue'), // in USD
-	lead: integer('lead').default(0)
-});
-
-// Indexes for A/B tests
-export const abTestNameIdx = index('Idx_ab_test_name').on(abTestResults.testName);
-export const abDateIdx = index('Idx_ab_date').on(abTestResults.createdAt);
-
-// Budget thresholds for alerts
-export const budgetThresholds = sqliteTable('budget_thresholds', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	name: text('name').notNull(),
-	resourceType: text('resource_type', { enum: ['all', 'workers', 'd1', 'r2'] }).default('all'),
-	thresholdUSD: real('threshold_usd').notNull(),
-	alertType: text('alert_type', { enum: ['warning', 'critical'] }).default('warning'),
-	cooldownMinutes: integer('cooldown_minutes').default(60),
-	enabled: integer('enabled', { mode: 'boolean' }).default(true),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date())
-});
-
-// Alerts and anomaly detections
-export const alerts = sqliteTable('alerts', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	type: text('type', { enum: ['cost', 'performance', 'seo', 'anomaly'] }).notNull(),
-	severity: text('severity', { enum: ['info', 'warning', 'critical'] }).notNull(),
-	title: text('title').notNull(),
-	message: text('message').notNull(),
-	resourceType: text('resource_type'),
-	resourceId: text('resource_id'),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-	readAt: text('read_at', { mode: 'timestamp' }),
-	readBy: text('read_by'),
-	isResolved: integer('is_resolved', { mode: 'boolean' }).default(false),
-	resolvedAt: text('resolved_at', { mode: 'timestamp' }),
-	resolvedBy: text('resolved_by')
-});
-
-// Anomaly detections
-export const anomalyDetections = sqliteTable('anomaly_detections', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
-	type: text('type').notNull(), // cost_spike, traffic_drop, performance_degradation, etc.
-	resource: text('resource').notNull(), // workers, d1, r2, pagespeed, etc.
-_detectedAt: text('detected_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-	description: text('description').notNull(),
-	value: real('value'), // actual value that triggered alert
-	expectedValue: real('expected_value'), // baseline valueComparing the computed anomaly score  (actual vs expected)
-	score: real('score'), // 0-100, higher means more anomalous
-	status: text('status', { enum: ['new', 'investigating', 'resolved', 'false_positive'] }).default('new'),
-	notes: text('notes')
-});
-
-// Indexes for alerts and anomalies
-export const alertTypeIdx = index('Idx_alert_type').on(alerts.type);
-export const alertSeverityIdx = index('Idx_alert_severity').on(alerts.severity);
-export const alertDateIdx = index('Idx_alert_date').on(alerts.createdAt);
-export const anomalyTypeIdx = index('Idx_anomaly_type').on(anomalyDetections.type);
-export const anomalyDetectedIdx = index('Idx_anomaly_detected').on(anomalyDetections._detectedAt);
 
 // Auth tables are provided by Better Auth
 export * from './auth.schema';
