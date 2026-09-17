@@ -228,22 +228,22 @@
 							<div class="space-y-1.5">
 								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
 									<UsersIcon class="size-3.5" />
-									{guide.population}m
+									{guide.muslimPopulation}m
 								</div>
 								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
 									<BanknoteIcon class="size-3.5" />
-									{guide.gdpPerCapita}
+									{guide.marketSizeUsd}
 								</div>
 								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
 									<ScaleIcon class="size-3.5" />
-									{guide.regulatoryLevel}
+									{guide.mandateStatus}
 								</div>
 							</div>
 							<p class="line-clamp-2 text-sm text-muted-foreground">
 								{guide.description || 'Comprehensive guide available - covers regulatory framework, import requirements, and market opportunities.'}
 							</p>
 							<div class="mt-auto flex items-center justify-between gap-2 pt-2">
-								<Badge variant="outline" class="text-[10px]">{guide.certifications.length} cert.{guide.certifications.length === 1 ? '' : 's'}</Badge>
+								<Badge variant="outline" class="text-[10px]">{guide.certifyingBodies?.length ?? 0} cert.{guide.certifications.length === 1 ? '' : 's'}</Badge>
 								<div class="flex items-center gap-1 text-[11px] text-primary">
 									Read guide
 									<ArrowRight class="size-3.5" />
