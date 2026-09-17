@@ -76,7 +76,7 @@ export function getHreflangLinks(baseExcluded: string[] = []) {
 
 // Generate localized URLs for product/supplier pages
 export function localizeUrl(url: string, locale: string = getLocale()): string {
-	if (Locale) {
+	if (locales) {
 		// Remove locale prefix if present
 		const path = url.replace(`/${locale}`, '');
 		const pathPrefix = path.replace('/', '');

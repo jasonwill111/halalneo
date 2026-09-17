@@ -1,12 +1,23 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { eq, like, or, sql, and, inArray } from 'drizzle-orm';
+import { eq, or, sql, and, inArray } from 'drizzle-orm';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import * as schema from '#lib/server/db/schema.js';
 import { ftsQuery, ftsSlugs } from '#lib/server/fts.js';
 import { cachedQuery, cacheShort } from '#lib/server/cache.js';
 
+/**
+ * Verify endpoint — FTS-only, no LIKE fallback.
+ *
+ * Old behavior: when FTS returned 0 slugs, the code fell through to a LIKE
+ * '%term%' full-table scan (3 LIKE terms × 2 tables = up to 6 full scans).
+ * Short/stopword queries that can't produce FTS tokens now return empty
+ * results instead of burning D1 read-ops on a full-table LIKE.
+ *
+ * Cost: saves 2-6 D1 reads per no-result query. A search box that's empty
+ * of useful tokens simply returns nothing — same UX as "no matches".
+ */
 export const GET: RequestHandler = async ({ url }) => {
 	const q = url.searchParams.get('q')?.trim();
 	if (!q) return json({ results: [] });
@@ -14,22 +25,18 @@ export const GET: RequestHandler = async ({ url }) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-		const term = `%${q}%`;
-		// Indexed FTS lookups (products/suppliers) instead of LIKE scans.
-		const match = ftsQuery(q);
+	const match = ftsQuery(q);
+	if (!match) return json({ results: [] });
 
-		try {
-		// Query string matters for verify results — explicit cacheKey keeps
-		// `?q=halal` separate from `?q=beef`. Path-only key would merge them.
+	try {
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
-				const [pSlugs, sSlugs] = match
-					? await Promise.all([
-							ftsSlugs(db, 'products', match, 20),
-							ftsSlugs(db, 'suppliers', match, 20)
-						])
-					: [[], []];
+				const [pSlugs, sSlugs] = await Promise.all([
+					ftsSlugs(db, 'products', match, 20),
+					ftsSlugs(db, 'suppliers', match, 20)
+				]);
+
 				const [supplierRows, productRows] = await Promise.all([
 					db
 						.select({
@@ -43,15 +50,10 @@ export const GET: RequestHandler = async ({ url }) => {
 						})
 						.from(schema.suppliers)
 						.where(
-							match
-								? and(eq(schema.suppliers.status, 'active'), inArray(schema.suppliers.slug, sSlugs))
-								: and(
-										eq(schema.suppliers.status, 'active'),
-										or(
-											like(schema.suppliers.name, term),
-											like(schema.suppliers.certifications, term)
-										)
-									)
+							and(
+								eq(schema.suppliers.status, 'active'),
+								inArray(schema.suppliers.slug, sSlugs)
+							)
 						)
 						.limit(20),
 					db
@@ -69,19 +71,13 @@ export const GET: RequestHandler = async ({ url }) => {
 						.innerJoin(schema.suppliers, eq(schema.products.supplierSlug, schema.suppliers.slug))
 						.leftJoin(schema.categories, eq(schema.products.categorySlug, schema.categories.slug))
 						.where(
-							match
-								? and(
-										eq(schema.products.status, 'active'),
-										or(inArray(schema.products.slug, pSlugs), inArray(schema.products.supplierSlug, sSlugs))
-									)
-								: and(
-										eq(schema.products.status, 'active'),
-										or(
-											like(schema.products.name, term),
-											like(schema.suppliers.name, term),
-											like(schema.suppliers.certifications, term)
-										)
-									)
+							and(
+								eq(schema.products.status, 'active'),
+								or(
+									inArray(schema.products.slug, pSlugs),
+									inArray(schema.products.supplierSlug, sSlugs)
+								)
+							)
 						)
 						.limit(20)
 				]);

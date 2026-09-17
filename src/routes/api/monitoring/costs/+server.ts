@@ -15,26 +15,50 @@ export const GET: RequestHandler = async (event) => {
 	const limit = Math.min(parseInt(limitParam || '30'), 90);
 	
 	try {
-		let query = db.DB.prepare(`
-			SELECT 
-				date,
-				printf('%0.2f', costUSD) as cost_usd_str,
-				worker_requests,
-				actor_requests,
-				worker_duration,
-				worker_minor_r2_ops,
-				worker_major_r2_ops,
-				d1_read_operations,
-				d1_write_operations,
-				d1_storage_bytes,
-				time_in_ms,
-				worker_united_state_requests
-			FROM cost_metrics 
-			WHERE date >= date('now', '-${limit} days')
-			${resourceType ? `AND resource_type = '${resourceType}'` : ''}
-			ORDER BY date DESC
-			LIMIT 100
-		`);
+		// Use parameterized queries to prevent SQL injection
+		let query;
+		if (resourceType) {
+			query = db.DB.prepare(`
+				SELECT 
+					date,
+					printf('%0.2f', costUSD) as cost_usd_str,
+					worker_requests,
+					actor_requests,
+					worker_duration,
+					worker_minor_r2_ops,
+					worker_major_r2_ops,
+					d1_read_operations,
+					d1_write_operations,
+					d1_storage_bytes,
+					time_in_ms,
+					worker_united_state_requests
+				FROM cost_metrics 
+				WHERE date >= date('now', '-' || ? || ' days')
+				AND resource_type = ?
+				ORDER BY date DESC
+				LIMIT 100
+			`).bind(limit, resourceType);
+		} else {
+			query = db.DB.prepare(`
+				SELECT 
+					date,
+					printf('%0.2f', costUSD) as cost_usd_str,
+					worker_requests,
+					actor_requests,
+					worker_duration,
+					worker_minor_r2_ops,
+					worker_major_r2_ops,
+					d1_read_operations,
+					d1_write_operations,
+					d1_storage_bytes,
+					time_in_ms,
+					worker_united_state_requests
+				FROM cost_metrics 
+				WHERE date >= date('now', '-' || ? || ' days')
+				ORDER BY date DESC
+				LIMIT 100
+			`).bind(limit);
+		}
 		
 		const results = await query.all();
 		

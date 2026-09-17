@@ -335,9 +335,9 @@ export const promotions = sqliteTable('promotions', {
 	moq: text('moq'),
 	validUntil: text('valid_until'),
 	status: text('status').default('active'),
- promociónType: text('promotion_type').default('flash-sale'), // flash-sale, seasonal, clearance, bulk-discount
-	expirationDate: text('expiration_date'),
-	views: integer('views').default(0)
+	views: integer('views').default(0),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 // ==================== Supplier Members (user <-> supplier link) ====================
@@ -416,12 +416,10 @@ export const productsSupplierIdx = index('idx_products_supplier').on(products.su
 export const productsStatusIdx = index('idx_products_status').on(products.status);
 export const productsCertIdx = index('idx_products_cert').on(products.certStatus);
 export const productsCreatedAtIdx = index('idx_products_created').on(products.createdAt);
-export const productsNameIdx = index('idx_products_name').on(products.name);
 
 // Suppliers
 export const suppliersStatusIdx = index('idx_suppliers_status').on(suppliers.status);
 export const suppliersCountryIdx = index('idx_suppliers_country').on(suppliers.country);
-export const suppliersNameIdx = index('idx_suppliers_name').on(suppliers.name);
 export const suppliersBusinessTypeIdx = index('idx_suppliers_business_type').on(suppliers.businessType);
 
 // Pages
@@ -437,9 +435,8 @@ export const kbStatusIdx = index('idx_kb_status').on(knowledgeBase.status);
 // Service Providers
 export const spTypeIdx = index('idx_sp_type').on(serviceProviders.type);
 export const spStatusIdx = index('idx_sp_status').on(serviceProviders.status);
-export const spCountryIdx = index('idx_sp_country').on(serviceProviders.country);
 
-// Certifying Bodies (filters by country + status — index both)
+// Certifying Bodies
 export const cbCountryIdx = index('idx_cb_country').on(certifyingBodies.country);
 export const cbStatusIdx = index('idx_cb_status').on(certifyingBodies.status);
 
@@ -461,12 +458,16 @@ export const membersUserIdx = index('idx_members_user').on(supplierMembers.userI
 export const followsUserIdx = index('idx_follows_user').on(follows.userId);
 export const updatesSupplierIdx = index('idx_updates_supplier').on(supplierUpdates.supplierSlug);
 
-// Page Views
+// Page Views (analytics)
 export const viewsSlugIdx = index('idx_views_slug').on(pageViews.kind, pageViews.slug);
 export const viewsTimeIdx = index('idx_views_time').on(pageViews.createdAt);
 
 // Media
 export const mediaKeyIdx = index('idx_media_key').on(media.key);
+
+// Success Stories
+export const storiesStatusIdx = index('idx_stories_status').on(successStories.status);
+export const storiesSupplierIdx = index('idx_stories_supplier').on(successStories.supplierSlug);
 
 // Market Guides
 export const mgCountryIdx = index('idx_mg_country').on(marketGuides.country);
@@ -543,7 +544,7 @@ export const seoContentMetrics = sqliteTable('seo_content_metrics', {
 	contentType: text('content_type').notNull(), // article, product, supplier, etc.
 	contentId: text('content_id').notNull(),
 	pageUrl: text('page_url').notNull(),
-	lastCrawled: text('last_crawled', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	lastCrawled: integer('last_crawled', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	freshnessScore: real('freshness_score'), // 0-100
 	structuredDataValid: integer('structured_data_valid', { mode: 'boolean' }),
 	structuredDataErrors: text('structured_data_errors', { mode: 'json' }).$type<string[]>(),

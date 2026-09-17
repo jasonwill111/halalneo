@@ -4,10 +4,13 @@
  	import { Badge } from '#lib/components/ui/badge/index.js';
  	import { Card } from '#lib/components/ui/card/index.js';
  	import ShieldCheck from '@lucide/svelte/icons/shield-check';
+ 	import SearchIcon from '@lucide/svelte/icons/search';
  	import ArrowRight from '@lucide/svelte/icons/arrow-right';
  	import Factory from '@lucide/svelte/icons/factory';
  	import Warehouse from '@lucide/svelte/icons/warehouse';
  	import ArrowLeftRight from '@lucide/svelte/icons/arrow-left-right';
+	import MapPin from '@lucide/svelte/icons/map-pin';
+	import Package from '@lucide/svelte/icons/package';
  	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
  	import Paginator from '#lib/components/site/paginator.svelte';
  	import FilterPills from '#lib/components/site/filter-pills.svelte';

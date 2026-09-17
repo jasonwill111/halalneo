@@ -268,6 +268,7 @@
 		<div class="flex items-center gap-1 text-[10px] text-muted-foreground">
 			<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
 			<ChevronRight class="size-3" />
+			<h1 class="sr-only">Search — HalalNeo</h1>
 			<span class="font-medium text-foreground">Search results</span>
 		</div>
 		<p class="text-xs text-muted-foreground">

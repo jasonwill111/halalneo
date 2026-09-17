@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { suppliers } from '#lib/server/db/schema.js';
-import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
+import { cachedQuery, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSupplierListItems } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					businessType: url.searchParams.get('businessType') || undefined
 				});
 			},
-			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
+			{ ttl: 300, cacheKey: queryCacheKey(url).toString() }
 		);
 
 		return json(data);

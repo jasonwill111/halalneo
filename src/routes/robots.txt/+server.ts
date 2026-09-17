@@ -11,6 +11,7 @@ Disallow: /api/
 # AI answer engines — allowed to READ public content (GEO).
 # Answers/search indexing only; training is opted out below
 # via the Cloudflare AI content signal (ai-train=no).
+# See also: https://halalneo.com/llms.txt for structured AI-friendly site summary.
 User-agent: GPTBot
 Allow: /
 Disallow: /admin/

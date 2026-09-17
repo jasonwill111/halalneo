@@ -1,4 +1,4 @@
-import { eq, like, and, sql, desc, asc, inArray } from 'drizzle-orm';
+import { eq, and, sql, desc, asc, inArray } from 'drizzle-orm';
 import type { drizzle } from 'drizzle-orm/d1';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium } from '../cache.js';
@@ -19,7 +19,7 @@ import type {
 type Db = ReturnType<typeof drizzle<typeof schema>>;
 
 function buildConditions(
-	conditions: ReturnType<typeof eq | typeof like | typeof and>[]
+	conditions: ReturnType<typeof eq | typeof and>[]
 ) {
 	return conditions.length ? and(...conditions) : undefined;
 }
@@ -196,8 +196,6 @@ export async function getSuppliers(
 		}
 		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
 		if (country) conditions.push(eq(schema.suppliers.country, country));
-		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
-		if (country) conditions.push(eq(schema.suppliers.country, country));
 
 		const where = buildConditions(conditions);
 
@@ -338,7 +336,12 @@ export async function getKbArticles(
 		const { limit = 20, offset = 0, search, section } = opts;
 
 		const conditions = [eq(schema.knowledgeBase.status, 'published')];
-		if (search) conditions.push(like(schema.knowledgeBase.title, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%...%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.knowledgeBase.slug, await ftsSlugs(db, 'knowledge_base', match, 200)));
+		}
 		if (section) conditions.push(eq(schema.knowledgeBase.section, section));
 
 		const where = buildConditions(conditions);
@@ -401,7 +404,12 @@ export async function getBlogPosts(
 		const { limit = 20, offset = 0, search, category } = opts;
 
 		const conditions = [eq(schema.pages.type, 'blog'), eq(schema.pages.status, 'published')];
-		if (search) conditions.push(like(schema.pages.title, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%...%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.pages.slug, await ftsSlugs(db, 'pages', match, 200)));
+		}
 		if (category) conditions.push(eq(schema.pages.category, category));
 
 		const where = buildConditions(conditions);
@@ -500,7 +508,12 @@ export async function getServiceProviders(
 		const { limit = 20, offset = 0, search, type } = opts;
 
 		const conditions = [eq(schema.serviceProviders.status, 'active')];
-		if (search) conditions.push(like(schema.serviceProviders.name, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%...%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.serviceProviders.slug, await ftsSlugs(db, 'service_providers', match, 200)));
+		}
 		if (type) conditions.push(eq(schema.serviceProviders.type, type as ServiceProviderType));
 
 		const where = buildConditions(conditions);
@@ -556,7 +569,12 @@ export async function getCertifyingBodies(
 		const { limit = 20, offset = 0, search, country } = opts;
 
 		const conditions = [];
-		if (search) conditions.push(like(schema.certifyingBodies.name, `%${search}%`));
+		// Indexed FTS lookup instead of LIKE '%...%' (full-table scan).
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.certifyingBodies.id, await ftsSlugs(db, 'certifying_bodies', match, 200)));
+		}
 		if (country) conditions.push(eq(schema.certifyingBodies.country, country));
 
 		const where = buildConditions(conditions);
@@ -926,7 +944,11 @@ export async function getKbListItems(
 				(status ?? 'published') as 'published' | 'draft' | 'archived'
 			)
 		];
-		if (search) conditions.push(like(schema.knowledgeBase.title, `%${search}%`));
+		if (search) {
+			const match = ftsQuery(search);
+			if (!match) return { items: [], total: 0, limit, offset };
+			conditions.push(inArray(schema.knowledgeBase.slug, await ftsSlugs(db, 'knowledge_base', match, 200)));
+		}
 		if (section) conditions.push(eq(schema.knowledgeBase.section, section));
 
 		const where = buildConditions(conditions);

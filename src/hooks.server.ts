@@ -16,6 +16,29 @@ function getOrCreateAuth(db: any) {
 	return cachedAuth;
 }
 
+// Detect Save-Data / low-bandwidth hint from the browser.
+// Passes to event.locals so pages/SSR can skip heavy assets.
+const handleNetworkHint: Handle = async ({ event, resolve }) => {
+	const saveData = event.request.headers.get('Save-Data') === 'on';
+	const ect = event.request.headers.get('ECT'); // effective connection type: slow-2g|2g|3g|4g
+	const downlink = event.request.headers.get('Downlink'); // Mbps estimate
+	const isLowBandwidth =
+		saveData || ect === 'slow-2g' || ect === '2g' || (downlink && parseFloat(downlink) < 1.5);
+
+	event.locals.saveData = saveData;
+	event.locals.ect = ect;
+	event.locals.isLowBandwidth = isLowBandwidth;
+
+	const response = await resolve(event);
+
+	// Signal Save-Data mode to downstream caches (Cache API, CDN)
+	if (saveData) {
+		response.headers.set('Save-Data', 'on');
+	}
+
+	return response;
+};
+
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
 		// Kit 3 made `event.request` readonly; redefine it in place rather than
@@ -362,6 +385,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 export const handle: Handle = sequence(
 	handleParaglide,
+	handleNetworkHint,
 	handleCacheHeaders,
 	handleSecurityHeaders,
 	handleBetterAuth

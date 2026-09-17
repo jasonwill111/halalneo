@@ -89,7 +89,7 @@
 		return { title, description, canonical, ogImage, path, robots, ogType };
 	});
 
-	const supportedLocales = locales;
+  const supportedLocales = locales as unknown as string[];
 	const siteUrl = baseUrl;
 
 	const organizationSchema = {

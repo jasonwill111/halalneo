@@ -52,6 +52,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal suppliers', 'certified manufacturers', 'B2B suppliers', 'halal trade partners']
 		},
 		suppliers,
+		businessTypes: [...new Set(suppliers.map((s: any) => s.businessType).filter(Boolean))] as string[],
 		products,
 		certifierCount,
 		itemList

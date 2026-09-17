@@ -118,10 +118,10 @@
 							class="transition-all rounded-full"
 							style:width={metric.score + '%'}
 							style:background-color={
-								metric.score >= 90 ? 'var(--success)' :
-								metric.score >= 80 ? 'var(--info)' :
-								metric.score >= 70 ? 'var(--warn)' :
-								'var(--destructive)'
+							metric.score >= 90 ? 'var(--success)' :
+							metric.score >= 80 ? 'var(--info)' :
+							metric.score >= 70 ? 'var(--warn)' :
+							'var(--destructive)'
 							}
 						></div>
 					</div>

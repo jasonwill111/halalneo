@@ -2,6 +2,7 @@
  	import { localizeHref } from '#lib/paraglide/runtime.js';
  	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
  	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
  	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
  	import FilterPills from '#lib/components/site/filter-pills.svelte';
  	import GuideHero from '#lib/components/site/guide-hero.svelte';
@@ -23,7 +24,7 @@
  	const countryImages = COUNTRY_IMAGES;
 
  	// Regions derived from data — sorted unique region values with counts, 'all' first
- 	const regionOptions = $derived([
+ 	const regionOptions = $derived.by(() => [
  		{ value: 'all', label: 'All Regions', count: data.guides.length },
  		...Array.from(
  			new Set(data.guides.map((g: any) => g.region).filter((r): r is string => !!r))
@@ -70,32 +71,25 @@
  		return req.description;
  	}
 
- 	const guideStats = $derived({
- 			totalGuides: data.guides.length,
- 			regions: regionOptions.length - 1, // exclude all
- 			countries: quantityOfCountries(),
- 			categories: quantityOfCategories()
- 		});
+  // Stats derived from data (recomputed on data change, no stale initial capture)
+  const guideStats = $derived.by(() => ({
+  	totalGuides: data.guides.length,
+  	regions: regionOptions.length - 1, // exclude all
+  	countries: new Set(data.guides.map((g: any) => g.country)).size,
+  	categories: new Set(data.guides.map((g: any) => g.category)).size
+  }));
 
- 		function quantityOfCountries(): number {
- 			return new Set(data.guides.map((g: any) => g.country)).size;
- 		}
+  function seoFriendlyDescription(): string {
+  	return `Comprehensive halal market entry guides for ${guideStats.regions} regions covering ${guideStats.countries} countries. Regulatory frameworks, import requirements, certification standards, and business insights for entering Asian, European, American, Middle Eastern, and African halal markets. Updated 2026.`;
+  }
 
- 		function quantityOfCategories(): number {
- 			return new Set(data.guides.map((g: any) => g.category)).size;
- 		}
-
- 		const seoFriendlyDescription = $derived(
- 			`Comprehensive halal market entry guides for ${guideStats.regions} regions covering ${guideStats.regions.toLocaleLowerCase()} countries. Regulatory frameworks, import requirements, certification standards, and business insights for entering Asian, European, American, Middle Eastern, and African halal markets. Updated 2026.`
- 		);
-
- 		const StatCard = (title: string, value: number | string, description: string) => ({ title, value, description });
- 		const stats = $derived([
- 			StatCard('Country Guides', guideStats.countries.toLocaleLowerCase(), 'Halal market entry guides'),
- 			StatCard('Regions Covered', guideStats.regions.toLocaleLowerCase(), 'Global halal markets'),
- 			StatCard('Regulatory Types', guideStats.categories.toLocaleLowerCase(), 'Standards & frameworks'),
- 			StatCard('Total Guides', guideStats.totalGuides.toLocaleLowerCase(), 'Comprehensive coverage')
- 		]);
+  const StatCard = (title: string, value: number | string, description: string) => ({ title, value, description });
+  const stats = $derived([
+  	StatCard('Country Guides', String(guideStats.countries), 'Halal market entry guides'),
+  	StatCard('Regions Covered', String(guideStats.regions), 'Global halal markets'),
+  	StatCard('Regulatory Types', String(guideStats.categories), 'Standards & frameworks'),
+  	StatCard('Total Guides', String(guideStats.totalGuides), 'Comprehensive coverage')
+  ]);
 </script>
 
 <!-- SEO Meta Tags -->
@@ -234,7 +228,7 @@
 							<div class="space-y-1.5">
 								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
 									<UsersIcon class="size-3.5" />
-									{guide.population.toLocaleLowerCase()}m
+									{guide.population}m
 								</div>
 								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
 									<BanknoteIcon class="size-3.5" />

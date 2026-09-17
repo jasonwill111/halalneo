@@ -5,6 +5,7 @@ interface CacheOptions {
 	ttl?: number;
 	staleWhileRevalidate?: number;
 	cacheKey?: string;
+	queryFn?: () => Promise<unknown>;
 }
 
 declare const caches: CacheStorage;
@@ -19,9 +20,40 @@ async function getDefaultCache(): Promise<Cache | null> {
 	}
 }
 
+/**
+ * In-memory LRU cache layered on top of the Cache API.
+ * Cloudflare Workers restart often (cold starts); an in-heap Map keyed by
+ * cache key avoids the ~1-3ms round-trip to the Cache API on every request
+ * within the same Worker instance. Bounded to prevent unbounded growth.
+ */
+const MAX_IN_MEMORY = 500;
+const memoryCache = new Map<string, { value: unknown; expires: number }>();
+
+function memoryGet(key: string): unknown | undefined {
+	const entry = memoryCache.get(key);
+	if (!entry) return undefined;
+	if (Date.now() > entry.expires) {
+		memoryCache.delete(key);
+		return undefined;
+	}
+	// Move to end (LRU refresh)
+	memoryCache.delete(key);
+	memoryCache.set(key, entry);
+	return entry.value;
+}
+
+function memorySet(key: string, value: unknown, ttlSeconds: number): void {
+	if (memoryCache.size >= MAX_IN_MEMORY) {
+		// Evict oldest (first entry in Map is LRU)
+		const oldestKey = memoryCache.keys().next().value;
+		if (oldestKey !== undefined) memoryCache.delete(oldestKey);
+	}
+	memoryCache.set(key, { value, expires: Date.now() + ttlSeconds * 1000 });
+}
+
 export async function cachedQuery<T>(
 	request: Request | string,
-	queryFn: () => Promise<T>,
+	queryFn: (() => Promise<T>) | undefined,
 	options: CacheOptions = {}
 ): Promise<T> {
 	const { ttl = 300, staleWhileRevalidate = 60, cacheKey } = options;
@@ -48,38 +80,49 @@ export async function cachedQuery<T>(
 		key = `https://cache.halalneo.internal${key.startsWith('/') ? '' : '/'}${key}`;
 	}
 
+	// L1: in-memory fast path (avoids Cache API round-trip on hot keys)
+	const memHit = memoryGet(key);
+	if (memHit !== undefined) return memHit as T;
+
 	const cache = await getDefaultCache();
-	if (!cache) return queryFn();
 
-	const cacheRequest = new Request(key);
+	// L2: Cache API
+	if (cache) {
+		const cacheRequest = new Request(key);
+		// NOTE: Cache API can reject synthetic (non-zone) keys in workerd.
+		// A failed match must fall through to the live query, never throw.
+		let cached: Response | undefined;
+		try {
+			cached = await cache.match(cacheRequest);
+		} catch {
+			cached = undefined;
+		}
+		if (cached) {
+			const data = (((await cached.json()) as any) as T) as T;
+			memorySet(key, data, ttl);
+			return data;
+		}
+	}
 
-	// NOTE: Cache API can reject synthetic (non-zone) keys in workerd.
-	// A failed match must fall through to the live query, never throw.
-	let cached: Response | undefined;
-	try {
-		cached = await cache.match(cacheRequest);
-	} catch {
-		cached = undefined;
-	}
-	if (cached) {
-		const data = (((await cached.json()) as any)) as T;
-		return data;
-	}
+	if (!queryFn) return undefined as T;
 
 	const data = await queryFn();
 
-	const response = new Response(JSON.stringify(data), {
-		headers: {
-			'Content-Type': 'application/json',
-			'Cache-Control': `public, max-age=${ttl}, stale-while-revalidate=${staleWhileRevalidate}`
+	if (cache) {
+		const response = new Response(JSON.stringify(data), {
+			headers: {
+				'Content-Type': 'application/json',
+				'Cache-Control': `public, max-age=${ttl}, stale-while-revalidate=${staleWhileRevalidate}`
+			}
+		});
+		try {
+			const cacheRequest = new Request(key);
+			await cache.put(cacheRequest, response.clone());
+		} catch {
+			// Cache API may not be available in dev
 		}
-	});
-
-	try {
-		await cache.put(cacheRequest, response.clone());
-	} catch {
-		// Cache API may not be available in dev
 	}
+	memorySet(key, data, ttl);
 
 	return data;
 }
@@ -122,7 +165,6 @@ export function queryCacheKey(url: URL): string {
 
 export async function invalidateCache(...urls: string[]): Promise<void> {
 	const cache = await getDefaultCache();
-	if (!cache) return;
 	await Promise.all(
 		urls.map((url) => {
 			// Match the path-only key scheme used by cachedQuery (without cacheKey).
@@ -140,7 +182,11 @@ export async function invalidateCache(...urls: string[]): Promise<void> {
 			} catch {
 				key = `https://cache.halalneo.internal${key.startsWith('/') ? '' : '/'}${key}`;
 			}
-			return cache.delete(new Request(key));
+			// Also evict the in-memory entry so a stale value doesn't survive
+			// the Cache API delete on the next request.
+			memoryCache.delete(key);
+			if (cache) return cache.delete(new Request(key));
+			return Promise.resolve();
 		})
 	);
 }

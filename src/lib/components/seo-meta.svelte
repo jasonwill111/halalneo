@@ -1,8 +1,3 @@
----
-name: Helper component for SEO on every page
-description: Common SEO meta tags and Open Graph / Twitter Card meta tags
-usage: Import and use <Seo title="Page Title" description="Page description" ogTitle="OG Title" ogDescription="OG Description" canonical="/url" keywords="keyword1, keyword2, keyword3" />
----
 <script lang="ts">
   import { getCanonicalUrl } from '#lib/utils.js';
 
@@ -17,38 +12,47 @@ usage: Import and use <Seo title="Page Title" description="Page description" ogT
   	twitterCard?: string;
   }
 
-  let { title, description, ogTitle, ogDescription, ogImage, canonical, keywords, twitterCard = 'summary_large_image' }: Props = $props();
+  let { title = 'HalalNeo', description = 'Halal certification and compliance platform', ogTitle, ogDescription, ogImage, canonical, keywords, twitterCard = 'summary_large_image' }: Props = $props();
+
   // Defaults
   const siteTitle = 'HalalNeo';
-  const defaultOgImage = '/og-image.webp' as string;
+  const defaultOgImage = '/api/media/og-default.png' as string;
 
-  const resolvedTitle = $derived(title || siteTitle);
-  const resolvedCanonical = $derived(canonical || getCanonicalUrl());
-  const resolvedOgTitle = $derived(ogTitle || resolvedTitle);
-  const resolvedOgImage = $derived(ogImage || defaultOgImage);
+  // Use $derived for computed values
+  const effectiveDescription = $derived(description);
+  const effectiveTitle = $derived(title || `${siteTitle} — Halal Trade Intelligence`);
+  const effectiveCanonical = $derived(canonical || getCanonicalUrl());
+  const effectiveOgTitle = $derived(ogTitle || effectiveTitle);
+  const effectiveOgImage = $derived(ogImage || defaultOgImage);
+  const effectiveOgDescription = $derived(ogDescription || effectiveDescription);
 </script>
 
 <svelte:head>
-  <title>{resolvedTitle}</title>
-  <meta name="description" content={description} />
-  <meta name="keywords" content={keywords} />
+  <title>{effectiveTitle}</title>
+  <link rel="canonical" href={effectiveCanonical} />
+  <meta name="description" content={effectiveDescription} />
+  {#if keywords}
+    <meta name="keywords" content={keywords} />
+  {/if}
+  <meta name="author" content="HalalNeo" />
 
   <!-- Open Graph / Facebook -->
-  <meta property="og:title" content={resolvedOgTitle} />
-  <meta property="og:description" content={ogDescription || description} />
-  <meta property="og:image" content={resolvedOgImage} />
-  <meta property="og:url" content={resolvedCanonical} />
+  <meta property="og:title" content={effectiveOgTitle} />
+  <meta property="og:description" content={effectiveOgDescription} />
+  <meta property="og:image" content={effectiveOgImage} />
+  <meta property="og:image:secure_url" content={effectiveOgImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={effectiveOgTitle} />
+  <meta property="og:url" content={effectiveCanonical} />
   <meta property="og:site_name" content={siteTitle} />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content={twitterCard} />
-  <meta name="twitter:title" content={resolvedOgTitle} />
-  <meta name="twitter:description" content={ogDescription || description} />
-  <meta name="twitter:image" content={resolvedOgImage} />
-
-  <!-- Canonical -->
-  {#if resolvedCanonical}
-    <link rel="canonical" href={resolvedCanonical} />
-  {/if}
+  <meta name="twitter:site" content="@halalneo" />
+  <meta name="twitter:title" content={effectiveOgTitle} />
+  <meta name="twitter:description" content={effectiveOgDescription} />
+  <meta name="twitter:image" content={effectiveOgImage} />
 </svelte:head>

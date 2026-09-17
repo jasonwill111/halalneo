@@ -3,10 +3,9 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { products } from '#lib/server/db/schema.js';
-import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
+import { smartQuery, smartInvalidate, queryCacheKey } from '#lib/workers/smart-cache-wrapper.js';
 import { getProductListItems, getProducts } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
-import { smartQuery, smartInvalidate } from '#lib/workers/smart-cache-wrapper.js';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const db = getDb(getBindings().DB);
@@ -17,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		// Drops description/features/specifications/faqs/resources/images/videos
 		// and other heavy TEXT/JSON fields from D1 rows-read + cache payload.
 		
-		const cacheKey = queryCacheKey(url).encodeURIComponent();
+		const cacheKey = encodeURIComponent(queryCacheKey(url));
 		const data = await smartQuery(
 			cacheKey,
 			async () => {
@@ -36,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					status: url.searchParams.get('status') || 'active'
 				});
 			},
-			{ ttl: 3600, priority: 'medium' }
+			{ ttl: 3600, cacheKey }
 		);
 
 		return json(data);

@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				if (supplierSlug) conditions.push(eq(promotions.supplierSlug, supplierSlug));
 				const where = conditions.length > 1 ? and(...conditions) : conditions[0];
 
-				const [countResult] = await db
+				const countRows = await db
 					.select({ count: sql<number>`count(*)` })
 					.from(promotions)
 					.where(where);
@@ -75,11 +75,12 @@ export const GET: RequestHandler = async ({ url }) => {
 					.orderBy(desc(promotions.createdAt))
 					.limit(limit)
 					.offset(offset);
-				return { items: rows, total: countResult?.count ?? 0 };
+				return { items: rows, total: countRows?.count ?? 0, limit, offset };
 			},
 			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
 		);
 
+		if (!data) return json({ items: [], total: 0 }, { status: 503 });
 		return json(data);
 	} catch (e: any) {
 		return json({ error: e?.message ?? 'Failed' }, { status: 500 });

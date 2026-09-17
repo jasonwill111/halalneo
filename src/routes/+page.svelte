@@ -13,6 +13,7 @@
  		CardDescription
  	} from '#lib/components/ui/card/index.js';
  	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+ 	import { cn } from '#lib/utils.js';
  	import ShieldCheck from '@lucide/svelte/icons/shield-check';
  	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
  	import BookOpen from '@lucide/svelte/icons/book-open';
@@ -25,6 +26,7 @@
  	import Calendar from '@lucide/svelte/icons/calendar';
  	import Briefcase from '@lucide/svelte/icons/briefcase';
  	import Newspaper from '@lucide/svelte/icons/newspaper';
+	import HelpCircle from '@lucide/svelte/icons/help-circle';
  	import SectionHead from '#lib/components/site/section-head.svelte';
  	import { onMount } from 'svelte';
  	import SeoMeta from '#lib/components/seo-meta.svelte';
@@ -106,6 +108,21 @@
 				urlTemplate: 'https://halalneo.com/search?q={search_term_string}'
 			},
 			'query-input': 'required name=search_term_string'
+		},
+		// Speakable specification for voice assistants (GEO)
+		speakable: {
+			'@type': 'SpeakableSpecification',
+			ssml: 'HalalNeo — your trusted halal trade intelligence platform. Research certifying bodies, verify suppliers, and navigate global halal markets.',
+			'cssSelector': ['h1', 'meta[name="description"]', '.hero-tagline']
+		},
+		// WebApplication signal for app-store style indexing
+		applicationCategory: 'BusinessApplication',
+		operatingSystem: 'Web',
+		softwareVersion: '2026.1',
+		provider: {
+			'@type': 'Organization',
+			name: 'HalalNeo',
+			url: 'https://halalneo.com'
 		}
 	})}</script>`}
 </svelte:head>
@@ -164,7 +181,8 @@
 	<div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
 		{#each slides as slide, i}
 			<button
-				aria-label={"Go to slide " + (i + 1)}
+			type="button"
+			aria-label="Go to slide {i + 1}"
 				onclick={() => goToSlide(i)}
 				class={cn(
 					'h-2 w-2 rounded-full transition-all duration-300',
@@ -174,7 +192,9 @@
 		{/each}
 	</div>
 	<button
+		type="button"
 		disabled={currentSlide === 0}
+		aria-label="Go to first slide"
 		onClick={() => { if (currentSlide > 0) { currentSlide = 0; } }}
 		class={cn(
 			'absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/80 p-3 shadow-lg transition-all hover:bg-white',
@@ -182,7 +202,9 @@
 		)}
 	><ArrowUpRight class="size-5 rotate-90" /></button>
 	<button
+		type="button"
 		disabled={currentSlide === slides.length - 1}
+		aria-label="Go to last slide"
 		onClick={() => { if (currentSlide < slides.length - 1) { currentSlide++; } }}
 		class={cn(
 			'absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/80 p-3 shadow-lg transition-all hover:bg-white',

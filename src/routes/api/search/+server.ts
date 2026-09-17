@@ -35,6 +35,14 @@ export const GET: RequestHandler = async ({ url }) => {
 							ftsSlugs(db, 'suppliers', match, 15)
 						])
 					: [[], []];
+			// KB + glossary: FTS when possible, LIKE fallback when FTS has no tokens
+			const [kbSlugs, glossarySlugs] = match
+				? await Promise.all([
+						ftsSlugs(db, 'knowledge_base', match, 15),
+						ftsSlugs(db, 'pages', match, 10)
+				  ])
+				: [[], []];
+
 				const [productRows, supplierRows, articleRows, termRows] = await Promise.all([
 					db
 						.select({
@@ -96,10 +104,12 @@ export const GET: RequestHandler = async ({ url }) => {
 						.where(
 							and(
 								eq(schema.knowledgeBase.status, 'published'),
-								or(
-									like(schema.knowledgeBase.title, term),
-									like(schema.knowledgeBase.summary, term)
-								)
+								match
+									? inArray(schema.knowledgeBase.slug, kbSlugs)
+									: or(
+											like(schema.knowledgeBase.title, term),
+											like(schema.knowledgeBase.summary, term)
+									  )
 							)
 						)
 						.limit(15),
@@ -113,7 +123,9 @@ export const GET: RequestHandler = async ({ url }) => {
 						.where(
 							and(
 								eq(schema.pages.category, 'glossary'),
-								or(like(schema.pages.title, term), like(schema.pages.body, term))
+								match
+									? inArray(schema.pages.slug, glossarySlugs)
+									: or(like(schema.pages.title, term), like(schema.pages.body, term))
 							)
 						)
 						.limit(10)

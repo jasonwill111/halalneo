@@ -1,25 +1,31 @@
-import { tweened, spring } from 'svelte/motion';
-import { cubicIn, cubicOut } from 'svelte/easing';
+import { spring } from 'svelte/motion';
 import { browser } from '$app/environment';
+import { getNetworkInfo } from '#lib/network.js';
 
-// 根据设备能力选择动画策略
+// 根据设备能力 + 网络条件选择动画策略
 export function canUseMotion(): boolean {
   if (!browser) return false;
-  
+
+  // 用户偏好减少动画
+  if (prefersReducedMotion()) return false;
+
+  // 低带宽 / Save-Data → 跳过动画（JS 预算敏感）
+  const net = getNetworkInfo();
+  if (net.saveData) return false;
+
   // 检查硬件并发线程数
   const cores = navigator.hardwareConcurrency;
   if (cores && cores < 4) return false;
-  
-  // 检查内存预算（简单检查）
-  if (navigator.userAgent.includes('CPU iPhone')) {
-    return true; // iOS 设备支持良好
-  }
-  
+
   // 检查是否是低端 Android 设备
-  if (navigator.userAgent.includes('Mobile') && navigator.hardwareConcurrency && navigator.hardwareConcurrency < 2) {
+  if (
+    navigator.userAgent.includes('Mobile') &&
+    navigator.hardwareConcurrency &&
+    navigator.hardwareConcurrency < 2
+  ) {
     return false;
   }
-  
+
   return true;
 }
 
@@ -32,16 +38,21 @@ export function prefersReducedMotion(): boolean {
 // 检查网络条件和预算策略
 export function getAnimationBudget(): 'aggressive' | 'balanced' | 'deliberate' {
   if (prefersReducedMotion()) return 'aggressive';
-  
+
   try {
+    // Save-Data 模式 → 立即降级
+    const net = getNetworkInfo();
+    if (net.saveData) return 'aggressive';
+
     const perfs = performance.getEntriesByType('longtask');
     if (perfs.length > 3) return 'aggressive';
-    
-    const memory = (performance as any).memory;
-    if (memory && (memory.usedJSHeapSize > memory.jsHeapSizeLimit * 0.8)) {
+
+    const memory = (performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } })
+      .memory;
+    if (memory && memory.usedJSHeapSize > memory.jsHeapSizeLimit * 0.8) {
       return 'aggressive';
     }
-    
+
     return 'balanced';
   } catch {
     return 'balanced';
@@ -50,11 +61,11 @@ export function getAnimationBudget(): 'aggressive' | 'balanced' | 'deliberate' {
 
 // 创建延迟动画（Svelte best practice）
 export function lazySpring(
-  initial: number, 
-  damping?: string | number, 
+  initial: number,
+  damping?: string | number,
   stiffness?: string | number
 ) {
-  return lazy(spring(initial).setDamping(0.8));
+  return spring(initial).setDamping(0.8);
 }
 
 // 生成优化过的动画选项（适配所有设备）
