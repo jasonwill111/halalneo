@@ -221,7 +221,7 @@
 								<p class="text-xs text-on-dark/80">{guide.region}</p>
 							</div>
 							<div class="absolute top-3 right-3">
-								<Badge class="backdrop-blur-sm">{guide.category}</Badge>
+								<Badge class="backdrop-blur-sm">{guide.region}</Badge>
 							</div>
 						</div>
 						<div class="flex flex-1 flex-col gap-2 p-3 sm:p-4">
@@ -240,10 +240,10 @@
 								</div>
 							</div>
 							<p class="line-clamp-2 text-sm text-muted-foreground">
-								{guide.description || 'Comprehensive guide available - covers regulatory framework, import requirements, and market opportunities.'}
+								{guide.summary || 'Comprehensive guide available - covers regulatory framework, import requirements, and market opportunities.'}
 							</p>
 							<div class="mt-auto flex items-center justify-between gap-2 pt-2">
-								<Badge variant="outline" class="text-[10px]">{guide.certifyingBodies?.length ?? 0} cert.{guide.certifications.length === 1 ? '' : 's'}</Badge>
+								<Badge variant="outline" class="text-[10px]">{guide.certifyingBodies?.length ?? 0} cert.{(guide.certifyingBodies?.length ?? 0) === 1 ? '' : 's'}</Badge>
 								<div class="flex items-center gap-1 text-[11px] text-primary">
 									Read guide
 									<ArrowRight class="size-3.5" />
