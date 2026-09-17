@@ -4,8 +4,7 @@ import { parseQuery } from '#lib/server/db/api-helpers.js';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { certifyingBodies } from '#lib/server/db/schema.js';
-import { and, eq, inArray, sql } from 'drizzle-orm';
-import { ftsQuery, ftsSlugs } from '#lib/server/fts.js';
+import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
@@ -22,12 +21,9 @@ export const GET: RequestHandler = async ({ url }) => {
 				const country = url.searchParams.get('country') || undefined;
 
 				const conditions = [];
-				// Indexed FTS lookup instead of LIKE full-table scan.
-				if (search) {
-					const match = ftsQuery(search);
-					if (!match) return { items: [], total: 0, limit, offset };
-					conditions.push(inArray(certifyingBodies.id, await ftsSlugs(db, 'certifying_bodies', match, 200)));
-				}
+				// LIKE only — certifying_bodies_fts does not exist in
+				// production D1, and the table is small (<500 rows).
+				if (search) conditions.push(like(certifyingBodies.name, `%${search}%`));
 				if (status) conditions.push(eq(certifyingBodies.status, status as 'active' | 'pending' | 'inactive'));
 				if (country) conditions.push(eq(certifyingBodies.country, country));
 

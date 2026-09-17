@@ -62,10 +62,17 @@ export async function ftsSlugs(
 	const fts = sql.raw(ftsName);
 	const col = sql.raw(pkCol);
 
-	const rows = await db
-		.select({ pk: sql<string>`${col}` })
-		.from(fts)
-		.where(sql`${fts} MATCH ${match}`)
-		.limit(limit);
-	return rows.map((r) => r.pk).filter(Boolean);
+	// Only products_fts / suppliers_fts exist in production D1.
+	// Missing tables throw "no such table" — swallow and return []
+	// so callers fall back to their LIKE paths.
+	try {
+		const rows = await db
+			.select({ pk: sql<string>`${col}` })
+			.from(fts)
+			.where(sql`${fts} MATCH ${match}`)
+			.limit(limit);
+		return rows.map((r) => r.pk).filter(Boolean);
+	} catch {
+		return [];
+	}
 }
