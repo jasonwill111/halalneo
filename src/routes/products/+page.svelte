@@ -158,9 +158,9 @@
 					variant="outline"
 					onclick={() => (activeCategory = activeCategory === cat.slug ? 'all' : cat.slug)}
 					aria-pressed={activeCategory === cat.slug}
-					class="group h-full text-left"
+					class="group h-full w-full text-left"
 				>
-					<Card hoverable class={`h-full p-3 transition-shadow group-hover:shadow-md sm:p-4 ${activeCategory === cat.slug ? 'ring-2 ring-primary' : ''}`}>
+					<Card hoverable class={`h-full w-full p-3 transition-shadow group-hover:shadow-md sm:p-4 ${activeCategory === cat.slug ? 'ring-2 ring-primary' : ''}`}>
 						<CardContent class="flex items-center gap-2.5 p-0 sm:gap-3">
 							<div
 								class="flex size-9 shrink-0 items-center justify-center rounded-lg sm:size-10 {TILE_COLORS[

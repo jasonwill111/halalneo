@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { cn } from '#lib/utils.js';
-	import { applePress, notifyPress } from '#lib/actions/apple-motion.svelte';
+	import { notifyPress } from '#lib/actions/apple-motion.svelte';
 	import { browser } from '$app/environment';
 	import { prefersReducedMotion, canUseMotion } from '#lib/utils/motion';
 
@@ -31,7 +31,6 @@
 </script>
 
 {#if href}
-	{@const isApple = useAppleMotion}
 	<a 
 		{href}
 		{variant}
@@ -40,10 +39,6 @@
 		{loading}
 		onpointerdown={handlePressStart}
 		ontouchstart={handlePressStart}
-		{isApple}
-		variant={variant}
-		size={size}
-		disabled={disabled}
 		class={cn(
 			"relative overflow-hidden",
 			variant === "default" && "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -70,11 +65,7 @@
 		{loading}
 		onpointerdown={handlePressStart}
 		ontouchstart={handlePressStart}
-		{$props.class}
-		{$props.disabled}
-		disabled={disabled}
-		{$props.loading}
-		loading={loading}
+		class={$props.class}
 	>
 		<span class="flex items-center gap-2">
 			{children}

@@ -1,5 +1,5 @@
-import { baseLocale, locales } from '$lib/paraglide/runtime';
-import { getLocale } from '$lib/paraglide/runtime';
+import { baseLocale, locales } from '#lib/paraglide/runtime';
+import { getLocale } from '#lib/paraglide/runtime';
 
 // Supported locales with native names and writing direction
 export const LOCALE_CONFIG = {

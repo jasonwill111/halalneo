@@ -11,7 +11,7 @@
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import { sanitizeHtml } from '#lib/sanitize.js';
-	import { marked } from 'marked';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
 
@@ -43,14 +43,61 @@
 			.replace(/\s+/g, ' ')
 			.trim();
 
-	// Blog bodies may be plain text or Markdown (never raw HTML needing passthrough).
+	// Blog bodies are stored as HTML (never Markdown). Render through shadcn components.
 	const renderedContent = $derived.by(() => {
 		const raw = String(item?.content ?? '');
 		if (!raw) return '';
-		const html = /<\s*(p|h[12]|ul|ol|blockquote)[\s>]/i.test(raw)
-			? raw
-			: (marked.parse(raw, { async: false }) as string);
-		return sanitizeHtml(html);
+		return sanitizeHtml(raw);
+	});
+
+	const slugifyHeading = (text: string): string =>
+		text
+			.toLowerCase()
+			.trim()
+			.replace(/<[^>]*>/g, '')
+			.replace(/[^a-z0-9\u4e00-\u9fa5\s-]/g, '')
+			.replace(/\s+/g, '-')
+			.replace(/-+/g, '-')
+			.replace(/^-+|-+$/g, '');
+
+	// Ensure every h2 has an id for the TOC.
+	const renderedBody = $derived.by(() => {
+		let html = renderedContent;
+		html = html.replace(/<h2>([^<]+)<\/h2>/g, (_, t: string) => {
+			const id = slugifyHeading(t);
+			return id ? `<h2 id="${id}">${t}</h2>` : `<h2>${t}</h2>`;
+		});
+		return html;
+	});
+
+	const tocItems = $derived.by(() => {
+		const matches = renderedBody.match(/<h2[^>]*id="([^"]*)"[^>]*>([^<]+)<\/h2>/g) ?? [];
+		return matches
+			.map((m: string) => {
+				const idMatch = m.match(/id="([^"]*)"/);
+				const textMatch = m.match(/>([^<]+)</);
+				return { id: idMatch?.[1] ?? '', text: textMatch?.[1]?.trim() ?? '' };
+			})
+			.filter((t: { id: string; text: string }) => t.id && t.text);
+	});
+
+	let activeId = $state('');
+	let articleEl: HTMLElement | undefined = $state();
+
+	onMount(() => {
+		if (!articleEl) return;
+		const headings = articleEl.querySelectorAll('h2[id]');
+		if (headings.length === 0) return;
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) activeId = entry.target.id;
+				}
+			},
+			{ rootMargin: '-20% 0px -70% 0px' }
+		);
+		headings.forEach((h) => observer.observe(h));
+		return () => observer.disconnect();
 	});
 
 	const blogSchema = $derived(
@@ -95,7 +142,7 @@
     <Breadcrumb
       items={[{ label: 'Blog', href: '/blog' }, { label: data.item.title ?? 'Blog Post' }]}
     />
-    <div class="grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div class="grid gap-6 lg:grid-cols-[1fr_240px_320px]">
       <main class="space-y-4 sm:space-y-6">
         <header class="space-y-4">
           <div class="flex flex-wrap gap-2">
@@ -160,10 +207,36 @@
           </div>
         {/if}
 
-        <div class="prose max-w-none prose-neutral dark:prose-invert overflow-hidden">
-          {@html renderedContent}
+        <div class="content-body overflow-hidden">
+          <div bind:this={articleEl}>
+            {@html renderedBody}
+          </div>
         </div>
 
+                {#if tocItems.length}
+          <aside class="hidden xl:block">
+            <nav aria-label="Table of contents">
+              <div class="sticky top-24">
+                <div class="mb-3 text-xs font-semibold text-muted-foreground uppercase">
+                  Contents
+                </div>
+                <ul class="space-y-1.5">
+                  {#each tocItems as tocItem (tocItem.id)}
+                    <li>
+                      <a
+                        href={"#" + tocItem.id}
+                        class="block text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        class:selected={activeId === tocItem.id}
+                      >
+                        {tocItem.text}
+                      </a>
+                    </li>
+                  {/each}
+                </ul>
+              </div>
+            </nav>
+          </aside>
+        {/if}
         <div class="flex flex-wrap gap-2 border-t border-border pt-6">
           {#each data.item.tags as tag}
             <Badge variant="secondary">{tag}</Badge>

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import QualityDashboard from '$lib/components/admin/quality-dashboard.svelte';
+	import QualityDashboard from '#lib/components/admin/quality-dashboard.svelte';
 	import type { PageData } from './$types';
 	
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 	
 	// Mock data for demonstration - will be replaced with real data from database
 	const mockDataCounts = {
@@ -82,8 +82,7 @@
 </script>
 
 <QualityDashboard 
-	svelte:target={document.body}
 	dataCounts={mockDataCounts}
 	qualityMetrics={mockQualityMetrics}
-	onrefresh={refreshData}
+	on:refresh={refreshData}
 />

@@ -484,7 +484,7 @@
 			<div class="space-y-4 lg:col-span-2">
 				{#if activeTab === 'description'}
 					<h2 class="text-base font-semibold">Product Description</h2>
-					<div class="prose prose-sm max-w-none text-sm leading-relaxed overflow-hidden">
+					<div class="content-body content-body-sm overflow-hidden">
 						{#if item.description}
 							{@html sanitizeHtml(item.description)}
 						{:else}

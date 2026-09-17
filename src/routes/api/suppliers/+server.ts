@@ -4,7 +4,6 @@ import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { suppliers } from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
-import { smartQuery, smartInvalidate } from '#lib/workers/cache-warming.js';
 import { getSupplierListItems } from '#lib/server/queries/index.js';
 import { getSession } from '#lib/server/auth.js';
 
@@ -16,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		// List view: project only the columns the UI needs (8 cols, not all 22).
 		// Drops certifications/main_markets/cover_image/website/email/phone/etc.
 		// from D1 rows-read + cache payload.
-		const data = await smartQuery(
+		const data = await cachedQuery(
 			url.toString(),
 			async () => {
 				const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
@@ -56,7 +55,7 @@ export const POST: RequestHandler = async (event) => {
 
 	try {
 		const [row] = await db.insert(suppliers).values(body as any).returning();
-		await smartInvalidate('/api/suppliers', '/suppliers');
+		await invalidateCache('/api/suppliers', '/suppliers');
 		return json(row, { status: 201 });
 	} catch (e: any) {
 		if (e?.message?.includes('UNIQUE constraint')) {

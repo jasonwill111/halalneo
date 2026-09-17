@@ -1,7 +1,7 @@
 <script lang="ts">
   import './layout.css';
   import favicon from '#lib/assets/favicon.svg';
-  import { localizeHref, deLocalizeUrl, localizeUrl } from '#lib/paraglide/runtime.js';
+  import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
   import { cn } from '#lib/utils.js';
   import { mode, toggleMode } from 'mode-watcher';
   import { ModeWatcher } from 'mode-watcher';
@@ -38,7 +38,7 @@
     
     if (prefersReduced) return;
     
-    // 为按钮添加按压缩放效果
+    // 为按钮添加按压效果
     document.querySelectorAll('button, [role="button"], a').forEach((el) => {
       el.addEventListener('pointerdown', (e) => {
         const target = e.currentTarget as HTMLElement;
@@ -54,7 +54,7 @@
       });
     });
     
-    // 为卡片添加悬停效果
+    // 为卡片添加悬浮效果
     document.querySelectorAll('.card').forEach((card) => {
       card.addEventListener('mouseenter', () => {
         (card as HTMLElement).style.transform = 'translateY(-2px)';
@@ -89,7 +89,7 @@
 		return { title, description, canonical, ogImage, path, robots, ogType };
 	});
 
-	const supportedLocales = ['en', 'ar', 'tr', 'id', 'ms', 'bn', 'ur'] as const;
+	const supportedLocales = locales;
 	const siteUrl = baseUrl;
 
 	const organizationSchema = {
@@ -413,8 +413,8 @@
 		</main>
 
 		<footer class="border-t border-border/50 bg-muted/30">
-			<div class="mx-auto max-w-7xl px-4 pt-3 pb-16 sm:px-6 sm:pt-6 sm:pb-6">
-				<div class="grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-3 lg:grid-cols-6">
+			<div class="mx-auto max-w-7xl px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-3">
+				<div class="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-7">
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
 						<a href={localizeHref('/')} class="flex items-center gap-2">
@@ -435,9 +435,9 @@
 						</p>
 					</div>
 					<!-- Marketplace -->
-					<nav class="space-y-2" aria-label="Marketplace">
+					<nav class="space-y-1" aria-label="Marketplace">
 						<p class="text-xs font-semibold tracking-wide text-foreground">Marketplace</p>
-						<ul class="space-y-1.5">
+						<ul class="space-y-0.5">
 							{#each primaryNav as item}
 								<li>
 									<a
@@ -459,9 +459,9 @@
 					</nav>
 					<!-- Link columns -->
 					{#each navGroups as group}
-						<nav class="space-y-2" aria-label={group.label}>
+						<nav class="space-y-1" aria-label={group.label}>
 							<p class="text-xs font-semibold tracking-wide text-foreground">{group.label}</p>
-							<ul class="space-y-1.5">
+							<ul class="space-y-0.5">
 								{#each group.items as item}
 									<li>
 										<a
@@ -476,7 +476,7 @@
 						</nav>
 					{/each}
 				</div>
-			<div class="mt-3 flex items-center justify-center border-t border-border/50 pt-3 sm:justify-between sm:mt-6 sm:pt-4">
+			<div class="mt-2 flex items-center justify-center border-t border-border/50 pt-2 sm:justify-between sm:mt-3 sm:pt-2">
 				<p class="text-[10px] text-muted-foreground sm:text-xs">
 					© {new Date().getFullYear()} HalalNeo. All rights reserved.
 				</p>

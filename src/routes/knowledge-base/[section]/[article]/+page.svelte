@@ -170,7 +170,7 @@
           <p class="text-lg text-muted-foreground">{data.item.summary}</p>
         </header>
 
-        <div class="prose max-w-none prose-neutral dark:prose-invert overflow-hidden [&_*]:scroll-mt-24">
+        <div class="content-body overflow-hidden">
           {@html renderedBody}
         </div>
 

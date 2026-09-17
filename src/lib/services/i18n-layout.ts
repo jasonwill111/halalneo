@@ -1,5 +1,5 @@
 // I18n Layout Service - manages hreflang and multi-page rendering for SvelteKit
-import { baseLocale } from '$lib/paraglide/runtime';
+import { baseLocale } from '#lib/paraglide/runtime';
 
 // Supported locales with metadata
 export const SUPPORTED_LOCALES = [

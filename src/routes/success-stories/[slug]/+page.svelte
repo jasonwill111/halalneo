@@ -76,7 +76,7 @@
           />
         {/if}
 
-        <div class="prose prose-sm max-w-none text-sm leading-relaxed">
+        <div class="content-body content-body-sm">
           {@html sanitizeHtml(story.body ?? '')}
         </div>
 

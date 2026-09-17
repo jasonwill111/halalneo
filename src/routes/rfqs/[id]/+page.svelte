@@ -143,7 +143,7 @@
 
 				<Card class="p-4">
 					<h2 class="mb-2 text-sm font-semibold">What the buyer needs</h2>
-					<div class="prose prose-sm max-w-none text-sm leading-relaxed">
+					<div class="content-body content-body-sm">
 						{@html sanitizeHtml(rfq.description ?? 'No details provided.')}
 					</div>
 				</Card>

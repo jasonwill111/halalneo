@@ -144,7 +144,7 @@ Format your response as:
 	{#if result}
 		<Card class="bg-card">
 			<CardContent class="p-5">
-				<div class="overflow-x-auto"><div class="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">{result}</div></div>
+				<div class="overflow-x-auto"><div class="content-body content-body-sm whitespace-pre-wrap">{result}</div></div>
 			</CardContent>
 		</Card>
 	{/if}

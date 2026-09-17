@@ -26,7 +26,9 @@
 	});
 
 	let { data } = $props();
-	let query = $derived(data.q ?? '');
+	let query = $state('');
+	// svelte-ignore state_referenced_locally
+	query = data?.q ?? '';
 	let errors = $state<Record<string, string>>({});
 	let formEl = $state<HTMLFormElement | null>(null);
 	let busy = $state(false); // Renamed from loading to align with form discipline

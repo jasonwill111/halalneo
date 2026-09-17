@@ -23,7 +23,7 @@
 	{#if data.item}
 		<article class="space-y-4 sm:space-y-6">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.title}</h1>
-			<div class="prose prose-neutral dark:prose-invert max-w-none">
+			<div class="content-body">
 				{@html data.item.content}
 			</div>
 		</article>

@@ -70,32 +70,32 @@
  		return req.description;
  	}
 
- 	const guideStats = {
- 		totalGuides: data.guides.length,
- 		regions: regionOptions.length - 1, // exclude all
- 		countries: quantityOfCountries(),
- 		categories: quantityOfCategories()
- 	};
+ 	const guideStats = $derived({
+ 			totalGuides: data.guides.length,
+ 			regions: regionOptions.length - 1, // exclude all
+ 			countries: quantityOfCountries(),
+ 			categories: quantityOfCategories()
+ 		});
 
- 	function quantityOfCountries(): number {
- 		return new Set(data.guides.map((g: any) => g.country)).size;
- 	}
+ 		function quantityOfCountries(): number {
+ 			return new Set(data.guides.map((g: any) => g.country)).size;
+ 		}
 
- 	function quantityOfCategories(): number {
- 		return new Set(data.guides.map((g: any) => g.category)).size;
- 	}
+ 		function quantityOfCategories(): number {
+ 			return new Set(data.guides.map((g: any) => g.category)).size;
+ 		}
 
- 	function seoFriendlyDescription(): string {
- 		return `Comprehensive halal market entry guides for ${guideStats.regions} regions covering ${guideStats.regions.toLocaleLowerCase()} countries. Regulatory frameworks, import requirements, certification standards, and business insights for entering Asian, European, American, Middle Eastern, and African halal markets. Updated 2026.`;
- 	}
+ 		const seoFriendlyDescription = $derived(
+ 			`Comprehensive halal market entry guides for ${guideStats.regions} regions covering ${guideStats.regions.toLocaleLowerCase()} countries. Regulatory frameworks, import requirements, certification standards, and business insights for entering Asian, European, American, Middle Eastern, and African halal markets. Updated 2026.`
+ 		);
 
- 	const StatCard = (title: string, value: number | string, description: string) => ({ title, value, description });
- 	const stats = [
- 		StatCard('Country Guides', guideStats.countries.toLocaleLowerCase(), 'Halal market entry guides'),
- 		StatCard('Regions Covered', guideStats.regions.toLocaleLowerCase(), 'Global halal markets'),
- 		StatCard('Regulatory Types', guideStats.categories.toLocaleLowerCase(), 'Standards & frameworks'),
- 		StatCard('Total Guides', data.guides.length.toLocaleLowerCase(), 'Comprehensive coverage')
- 	];
+ 		const StatCard = (title: string, value: number | string, description: string) => ({ title, value, description });
+ 		const stats = $derived([
+ 			StatCard('Country Guides', guideStats.countries.toLocaleLowerCase(), 'Halal market entry guides'),
+ 			StatCard('Regions Covered', guideStats.regions.toLocaleLowerCase(), 'Global halal markets'),
+ 			StatCard('Regulatory Types', guideStats.categories.toLocaleLowerCase(), 'Standards & frameworks'),
+ 			StatCard('Total Guides', guideStats.totalGuides.toLocaleLowerCase(), 'Comprehensive coverage')
+ 		]);
 </script>
 
 <!-- SEO Meta Tags -->
@@ -224,7 +224,7 @@
 							<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 							<div class="absolute bottom-3 left-3 right-3">
 								<h3 class="text-base font-semibold text-white sm:text-lg">{guide.country}</h3>
-								<p class="text-xs text-gray-300">{guide.region}</p>
+								<p class="text-xs text-on-dark/80">{guide.region}</p>
 							</div>
 							<div class="absolute top-3 right-3">
 								<Badge class="backdrop-blur-sm">{guide.category}</Badge>
@@ -265,6 +265,22 @@
 
 	<!-- Structured Data Keywords -->
 	{#if data.guides.length > 0}
-		<!-- Add Collection Page Schema inside the main svelte:head block -->
+	<!-- Schema: Collection -->
+		{@html `<script type="application/ld+json">${JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'CollectionPage',
+			name: 'Halal Market Entry Guides',
+			description: seoFriendlyDescription(),
+			publisher: {
+				'@type': 'Organization',
+				name: 'HalalNeo',
+				url: 'https://halalneo.com'
+			},
+			hasPart: data.guides.slice(0, 10).map(guide => ({
+				'@type': 'DigitalResource',
+				name: guide.country,
+				url: `https://halalneo.com/market-guide/${guide.country}`
+			}))
+		})}</script>`}
 	{/if}
 </section>

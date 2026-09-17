@@ -6,7 +6,6 @@ import { getBindings } from '#lib/server/bindings.js';
 import { marketGuides as dbMarketGuides } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
-import { smartQuery, smartInvalidate } from '#lib/workers/cache-warming.js';
 import { getSession } from '#lib/server/auth.js';
 import { marketGuides as staticMarketGuides } from '#lib/data/market-guides.js';
 
@@ -30,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	try {
-		const data = await smartQuery(
+		const data = await cachedQuery(
 			url.toString(),
 			async () => {
 				const conditions = [];
@@ -92,7 +91,7 @@ export const POST: RequestHandler = async (event) => {
 			updatedAt: now
 		} as any;
 		const [row] = await db.insert(dbMarketGuides).values(values).returning();
-		await smartInvalidate('/api/market-guides', '/market-guides');
+		await invalidateCache('/api/market-guides', '/market-guides');
 		return json(row, { status: 201 });
 	} catch (e: any) {
 		if (e?.message?.includes('UNIQUE constraint')) {

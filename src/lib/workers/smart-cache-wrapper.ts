@@ -3,7 +3,7 @@
  * 提供与原cachedQuery相同的API，但功能更强大
  */
 
-import { IntelligentCacheSystem } from '../workers/cache-optimization.js';
+import { IntelligentCacheSystem } from './cache-optimization.js';
 import { getBindings } from '../server/bindings.js';
 
 // 创建智能缓存单例
@@ -35,7 +35,7 @@ export async function smartQuery<T>(
     // 如果智能缓存失败，使用传统缓存
     try {
       // 这里可以导入原有cachedQuery
-      const { cachedQuery, cacheMedium } = await import('./cache.js');
+      const { cachedQuery, cacheMedium } = await import('../server/cache.js');
       const data = await cachedQuery(cacheKey, queryFn, cacheMedium());
       return data;
     } catch (fallbackError) {
@@ -98,7 +98,7 @@ export async function smartInvalidate(...patterns: string[]): Promise<void> {
   
   // 同时清除传统缓存
   try {
-    const { invalidateCache } = await import('./cache.js');
+    const { invalidateCache } = await import('../server/cache.js');
     await invalidateCache(...patterns);
   } catch (error) {
     console.error('❌ 传统缓存清除失败:', error);

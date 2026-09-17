@@ -4,6 +4,7 @@
 	import { cn } from '#lib/utils.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { fade } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
 	import HomeIcon from '@lucide/svelte/icons/home';
 	import MenuIcon from '@lucide/svelte/icons/menu';
 	import Grid2x2Icon from '@lucide/svelte/icons/grid-2x2';
@@ -95,6 +96,15 @@
 		showMenu = false;
 	}
 
+	// Materialize transition — scale + opacity together (Apple §12: "Materialize, don't just fade")
+	const materialize = (node: HTMLElement) => {
+		return {
+			duration: 250,
+			easing: cubicOut,
+			css: (t: number) => `opacity: ${t}; transform: scale(${0.92 + 0.08 * t});`
+		};
+	};
+
 	function handleClickOutside(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (!target.closest('[data-popover]') && !target.closest('[data-popover-panel]')) {
@@ -122,7 +132,9 @@
 <!-- Backdrop -->
 {#if showExplore || showMenu}
 	<div
-		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs md:hidden animate-fade-in"
+		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs md:hidden"
+		in:fade={{ duration: 200, easing: cubicOut }}
+		out:fade={{ duration: 150, easing: cubicOut }}
 		onclick={closeAll}
 	></div>
 {/if}
@@ -131,7 +143,9 @@
 {#if showExplore}
 	<div
 		class="glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-xl p-2 md:hidden"
-		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%);"
+		in:materialize
+		out:materialize
+		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%) scale(0.92);"
 		data-popover-panel
 	>
 		<div class="space-y-2">
@@ -163,11 +177,13 @@
 	</div>
 {/if}
 
-<!-- Menu Popover -->
+	<!-- Menu Popover -->
 {#if showMenu}
 	<div
 		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl p-2 md:hidden"
-		style="right: {menuPos.right}px; top: {menuPos.top}px; transform: translateY(-100%);"
+		in:materialize
+		out:materialize
+		style="right: {menuPos.right}px; top: {menuPos.top}px; transform: translateY(-100%) scale(0.92);"
 		data-popover-panel
 	>
 		<div class="grid grid-cols-3 gap-1.5">

@@ -399,7 +399,7 @@ export const successStories = sqliteTable('success_stories', {
 	testimonial: text('testimonial'),
 	metrics: text('metrics', { mode: 'json' }).default('[]'),
 	timeline: text('timeline', { mode: 'json' }).default('[]'),
-	indirect_benefits: text('indirect_benefits', { mode: 'json' }).default('[]'),
+	indirectBenefits: text('indirect_benefits', { mode: 'json' }).default('[]'),
 	status: text('status').default('draft'),
 	views: integer('views').default(0),
 	featured: integer('featured', { mode: 'boolean' }).default(false),
@@ -456,10 +456,6 @@ export const rfqStatusIdx = index('idx_rfq_status').on(buyingRequests.status);
 export const rfqBuyerIdx = index('idx_rfq_buyer').on(buyingRequests.buyerId);
 export const rfqCategoryIdx = index('idx_rfq_category').on(buyingRequests.categorySlug);
 
-// Promotions
-export const promoStatusIdx = index('idx_promo_status').on(promotions.status);
-export const promoSupplierIdx = index('idx_promo_supplier').on(promotions.supplierSlug);
-
 // Supplier Members / Follows / Updates
 export const membersUserIdx = index('idx_members_user').on(supplierMembers.userId);
 export const followsUserIdx = index('idx_follows_user').on(follows.userId);
@@ -468,10 +464,6 @@ export const updatesSupplierIdx = index('idx_updates_supplier').on(supplierUpdat
 // Page Views
 export const viewsSlugIdx = index('idx_views_slug').on(pageViews.kind, pageViews.slug);
 export const viewsTimeIdx = index('idx_views_time').on(pageViews.createdAt);
-
-// Success Stories
-export const storiesStatusIdx = index('idx_stories_status').on(successStories.status);
-export const storiesSupplierIdx = index('idx_stories_supplier').on(successStories.supplierSlug);
 
 // Media
 export const mediaKeyIdx = index('idx_media_key').on(media.key);
@@ -551,7 +543,7 @@ export const seoContentMetrics = sqliteTable('seo_content_metrics', {
 	contentType: text('content_type').notNull(), // article, product, supplier, etc.
 	contentId: text('content_id').notNull(),
 	pageUrl: text('page_url').notNull(),
-	lastCrawled: text('last_crawled', { mode: 'timestamp' }).defaultFn(() => new Date()),
+	lastCrawled: text('last_crawled', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	freshnessScore: real('freshness_score'), // 0-100
 	structuredDataValid: integer('structured_data_valid', { mode: 'boolean' }),
 	structuredDataErrors: text('structured_data_errors', { mode: 'json' }).$type<string[]>(),

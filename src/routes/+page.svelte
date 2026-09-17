@@ -152,7 +152,7 @@
 							<h3 class="mb-1 text-2xl font-semibold sm:text-3xl">
 								{slide.title}
 							</h3>
-							<p class="mb-4 text-sm leading-relaxed text-gray-200">
+							<p class="mb-4 text-sm leading-relaxed text-on-dark/80">
 								{slide.subtitle}
 							</p>
 						</div>
@@ -164,10 +164,11 @@
 	<div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
 		{#each slides as slide, i}
 			<button
+				aria-label={"Go to slide " + (i + 1)}
 				onclick={() => goToSlide(i)}
 				class={cn(
 					'h-2 w-2 rounded-full transition-all duration-300',
-					currentSlide === i ? 'bg-primary h-8' : 'bg-gray-400'
+					currentSlide === i ? 'bg-primary h-8' : 'bg-muted-foreground/50'
 				)}
 			></button>
 		{/each}

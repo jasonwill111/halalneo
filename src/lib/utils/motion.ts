@@ -95,39 +95,6 @@ export const springConfig = {
   bounce: { damping: 0.8, stiffness: 200, mass: 1, duration: 400 },
 };
 
-// 用于手动触发动画的工具函数
-export function animate(
-  element: HTMLElement,
-  to: Record<string, any>,
-  opts: {
-    duration?: number;
-    delay?: number;
-    easing?: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
-    onComplete?: () => void;
-  } = {}
-) {
-  const el = element as any;
-  
-  // 如果目标已经是动画状态，先取消原动画
-  if (el._currentAnim) {
-    el._currentAnim.cancel();
-  }
-  
-  // 使用纯 CSS transform 进行简单动画（性能最佳）
-  el._currentAnim = {
-    cancel: () => {
-      // 简单实现：移除动画类
-      el.style.transition = 'none';
-      el._currentAnim = null;
-    },
-    update: () => {
-      // 实际应用动画...
-    }
-  };
-  
-  return el._currentAnim;
-}
-
 // 创建可观测的弹簧
 export function observableSpring<T>(initial: T, config = springConfig.default): {
   value: T;

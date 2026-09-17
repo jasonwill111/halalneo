@@ -1,9 +1,5 @@
 <script lang="ts">
-	import { createRoot } from 'svelte';
-	import '../styles/admin.css';
-
-	export let dataCounts: any;
-	export let qualityMetrics: any;
+	let { dataCounts, qualityMetrics }: { dataCounts: any; qualityMetrics: any } = $props();
 	
 	let selectedTab = $state('all');
 	const tabOptions = ['all', 'suppliers', 'products', 'market_guides', 'success_stories', 'promotions'];
@@ -121,11 +117,11 @@
 						<div 
 							class="transition-all rounded-full"
 							style:width={metric.score + '%'}
-							style=background-color={
-								metric.score >= 90 ? 'rgb(34, 197, 94)' :
-								metric.score >= 80 ? 'rgb(59, 130, 246)' :
-								metric.score >= 70 ? 'rgb(249, 115, 22)' :
-								'rgb(239, 68, 68)'
+							style:background-color={
+								metric.score >= 90 ? 'var(--success)' :
+								metric.score >= 80 ? 'var(--info)' :
+								metric.score >= 70 ? 'var(--warn)' :
+								'var(--destructive)'
 							}
 						></div>
 					</div>

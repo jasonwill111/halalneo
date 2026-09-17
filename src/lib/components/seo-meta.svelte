@@ -6,49 +6,49 @@ usage: Import and use <Seo title="Page Title" description="Page description" ogT
 <script lang="ts">
   import { getCanonicalUrl } from '#lib/utils.js';
 
-  let {
-    title = "HalalNeo",
-    description = "Halal certification and compliance platform",
-    ogTitle,
-    ogDescription,
-    ogImage,
-    canonical,
-    keywords,
-    twitterCard = "summary_large_image"
-  } = $props();
-  
+  interface Props {
+  	title?: string;
+  	description?: string;
+  	ogTitle?: string;
+  	ogDescription?: string;
+  	ogImage?: string;
+  	canonical?: string;
+  	keywords?: string;
+  	twitterCard?: string;
+  }
+
+  let { title, description, ogTitle, ogDescription, ogImage, canonical, keywords, twitterCard = 'summary_large_image' }: Props = $props();
   // Defaults
   const siteTitle = 'HalalNeo';
-  const siteDomain = 'https://halalneo.com' as string;
   const defaultOgImage = '/og-image.webp' as string;
-  
-  title = title || `HalalNeo - ${siteTitle}`;
-  canonical = canonical || getCanonicalUrl();
-  ogTitle = ogTitle || title;
-  ogImage = ogImage || defaultOgImage;
+
+  const resolvedTitle = $derived(title || siteTitle);
+  const resolvedCanonical = $derived(canonical || getCanonicalUrl());
+  const resolvedOgTitle = $derived(ogTitle || resolvedTitle);
+  const resolvedOgImage = $derived(ogImage || defaultOgImage);
 </script>
 
 <svelte:head>
-  <title>{title}</title>
+  <title>{resolvedTitle}</title>
   <meta name="description" content={description} />
   <meta name="keywords" content={keywords} />
 
   <!-- Open Graph / Facebook -->
-  <meta property="og:title" content={ogTitle} />
+  <meta property="og:title" content={resolvedOgTitle} />
   <meta property="og:description" content={ogDescription || description} />
-  <meta property="og:image" content={ogImage} />
-  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={resolvedOgImage} />
+  <meta property="og:url" content={resolvedCanonical} />
   <meta property="og:site_name" content={siteTitle} />
   <meta property="og:type" content="website" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content={twitterCard} />
-  <meta name="twitter:title" content={ogTitle} />
+  <meta name="twitter:title" content={resolvedOgTitle} />
   <meta name="twitter:description" content={ogDescription || description} />
-  <meta name="twitter:image" content={ogImage} />
+  <meta name="twitter:image" content={resolvedOgImage} />
 
   <!-- Canonical -->
-  {#if canonical}
-    <link rel="canonical" href={canonical} />
+  {#if resolvedCanonical}
+    <link rel="canonical" href={resolvedCanonical} />
   {/if}
 </svelte:head>

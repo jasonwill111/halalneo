@@ -2,11 +2,21 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { canUseMotion, prefersReducedMotion } from '#lib/utils/motion';
 	import { browser } from '$app/environment';
-	import { motion, cancel } from 'motion';
+	import { animate } from 'motion';
 
 	let reducedMotion = $state(true);
 	let usesMotion = $state(false);
 	let rafId = $state(0);
+
+	// Track active press animations per element (avoids duplicate animations, Apple §3)
+	const pressAnims = new WeakMap<HTMLElement, ReturnType<typeof animate>>();
+
+	// Cancel an animation safely using its .cancel() method
+	function cancelAnim(anim: ReturnType<typeof animate> | undefined) {
+		if (anim && typeof (anim as { cancel?: () => void }).cancel === 'function') {
+			(anim as { cancel: () => void }).cancel();
+		}
+	}
 
 	// 在设备上注入全局运动增强
 	onMount(() => {
@@ -42,7 +52,7 @@
 			button.addEventListener('touchstart', handleButtonPress);
 		});
 
-		// 增强卡片悬停
+		// 增强卡片悬浮
 		const cards = document.querySelectorAll('.card');
 		cards.forEach((card) => {
 			card.style.touchAction = 'pan-x';
@@ -60,29 +70,31 @@
 		if (target.dataset.noMotion) return;
 
 		// 如果有当前动画，先取消
-		if (target._applePressAnim) {
-			cancel(target._applePressAnim);
-			target._applePressAnim = null;
-		}
+		cancelAnim(pressAnims.get(target));
 
 		// 创建弹簧动画（可中断）
-		const anim = motion.animate(target, {
+		const anim = animate(target, {
 			scale: 0.97,
 		}, {
 			type: 'spring',
 			damping: 1.0,
 			stiffness: 200,
-			duration: 100,
+			duration: 0.1,
 		});
 
-		target._applePressAnim = anim;
+		pressAnims.set(target, anim);
 
-		// 处理 mouseup/touchend
+		// Release: spring back to rest (Apple §3, §5 — interruptible, starts from current value)
 		const handleEnd = () => {
-			if (target._applePressAnim) {
-				cancel(target._applePressAnim);
-				target._applePressAnim = null;
-			}
+			cancelAnim(pressAnims.get(target));
+			// Animate back to scale 1 with a critically damped spring
+			animate(target, { scale: 1 }, {
+				type: 'spring',
+				damping: 1.0,
+				stiffness: 200,
+				duration: 0.3,
+			});
+			pressAnims.delete(target);
 		};
 
 		document.addEventListener('mouseup', handleEnd, { once: true });
