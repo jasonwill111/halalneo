@@ -223,6 +223,204 @@
 	>
 </div>
 
+<!-- STATS -->
+<section class="flex gap-1 sm:gap-2 lg:grid lg:grid-cols-4">
+	<StatTile value={data.stats.kbSections} label="KB sections" tone="info" />
+	<StatTile value={data.stats.glossaryTerms} label="Glossary" tone="warn" />
+	<StatTile value={`${data.stats.certifierCount}+`} label="Certifiers" tone="success" />
+	<StatTile value={data.stats.guideCount} label="Guides" tone="accent-purple" />
+</section>
+
+<!-- TOOLS -->
+<section {@attach reveal}>
+	<SectionHead
+		number="01"
+		title="Halal trade tools"
+		description="Free tools to help you navigate halal certification and compliance."
+		href="/tools"
+		linkLabel="View all"
+	/>
+	<div
+		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
+	>
+		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-accent-purple', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
+			<a
+				href={localizeHref(tool.href)}
+				class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
+			>
+				<tool.icon class="size-4 shrink-0 {tool.tone} sm:size-6" />
+				<div class="min-w-0">
+					<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+						{tool.name}
+					</h3>
+					<p class="truncate text-[10px] text-muted-foreground sm:text-xs">
+						{tool.desc}
+					</p>
+				</div>
+			</a>
+		{/each}
+	</div>
+</section>
+
+<!-- CATEGORIES -->
+<section {@attach reveal}>
+	<SectionHead number="02" title="Browse by category" href="/categories" linkLabel="View all" />
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
+		{#each data.categories.slice(0, 6) as category, i}
+			<a
+				href={localizeHref(`/category/${category.slug}`)}
+				class="group flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+			>
+				<div
+					class="flex size-10 shrink-0 items-center justify-center rounded-lg {categoryColors[
+						i % categoryColors.length
+					]}"
+				>
+					<Icon name={category.icon} class="size-5"></Icon>
+				</div>
+				<div class="min-w-0">
+					<h3 class="truncate text-sm font-medium transition-colors group-hover:text-primary">
+						{category.name}
+					</h3>
+					<p class="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{category.description}</p>
+				</div>
+			</a>
+		{/each}
+	</div>
+</section>
+
+<!-- MARKETPLACE -->
+<section
+	{@attach reveal}
+	class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
+>
+	<div class="text-center">
+		<Badge variant="secondary" class="mb-2 sm:mb-3">Launching 2026</Badge>
+		<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">
+			Verified Supplier Marketplace
+		</h2>
+		<p class="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
+			Every supplier listing backed by real halal certification data — certifying body, standard,
+			scope and expiry shown up front. No unverifiable claims.
+		</p>
+	</div>
+	<div class="mt-4 grid grid-cols-3 gap-3 sm:mx-auto sm:mt-6 sm:max-w-lg">
+		<div class="rounded-xl bg-muted/50 p-3 text-center">
+			<p class="text-lg font-bold text-info">{data.stats.verifiedSuppliers}</p>
+			<p class="text-[10px] text-muted-foreground sm:text-xs">Verified suppliers</p>
+		</div>
+		<div class="rounded-xl bg-muted/50 p-3 text-center">
+			<p class="text-lg font-bold text-warn">{data.stats.certifierCount}</p>
+			<p class="text-[10px] text-muted-foreground sm:text-xs">Certifying bodies</p>
+		</div>
+		<div class="rounded-xl bg-muted/50 p-3 text-center">
+			<p class="text-lg font-bold text-success">{data.stats.guideCount}</p>
+			<p class="text-[10px] text-muted-foreground sm:text-xs">Market guides</p>
+		</div>
+	</div>
+	<div class="mt-4 flex flex-col items-center justify-center gap-2 sm:mt-6 sm:flex-row sm:gap-3">
+		<Button href={localizeHref('/register')} size="sm" class="sm:size-lg">Join the waitlist</Button>
+		<Button href={localizeHref('/suppliers')} variant="outline" size="sm" class="sm:size-lg"
+			>Browse suppliers</Button
+		>
+	</div>
+</section>
+
+<!-- HALAL TOOLS -->
+<section {@attach reveal}>
+	<SectionHead number="03" title="Halal trade tools" href="/tools" linkLabel="See all tools" />
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+		{#each [{ href: '/tools/ingredient-checker', name: 'Ingredient Checker', desc: 'AI verdict on halal, haram, mashbooh', icon: FlaskConical, tone: 'info' }, { href: '/tools/certification-cost', name: 'Cost Estimator', desc: 'Estimate registration fees by certifier', icon: Calculator, tone: 'warn' }, { href: '/tools/landed-cost', name: 'Landed Cost', desc: 'True per-unit cost with duties & fees', icon: Banknote, tone: 'success' }, { href: '/tools/rfq-builder', name: 'RFQ Builder', desc: 'Draft sourcing documents', icon: FileText, tone: 'accent-purple' }, { href: '/export-docs', name: 'Export Docs', desc: 'Templates for suppliers & importers', icon: FileText, tone: 'info' }] as tool (tool.href)}
+			<a
+				href={localizeHref(tool.href)}
+				class="group flex flex-col gap-1.5 rounded-xl bg-card p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+			>
+				<div class="flex items-center justify-between">
+					<div
+						class={`flex size-8 items-center justify-center rounded-lg ${tool.tone === 'info' ? 'bg-info/15 text-info' : tool.tone === 'warn' ? 'bg-warn/15 text-warn' : tool.tone === 'success' ? 'bg-success/15 text-success' : 'bg-accent-purple/15 text-accent-purple'}`}
+					>
+						<tool.icon class="size-4" />
+					</div>
+					<Badge variant={tool.tone === 'info' ? 'secondary' : 'outline'} class="text-[10px]"
+						>{tool.tone}</Badge
+					>
+				</div>
+				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+					{tool.name}
+				</h3>
+				<p class="line-clamp-2 text-[10px] text-muted-foreground sm:text-xs">
+					{tool.desc}
+				</p>
+			</a>
+		{/each}
+	</div>
+</section>
+
+<!-- KB PREVIEW -->
+<section {@attach reveal}>
+	<SectionHead
+		number="04"
+		title="Latest from the knowledge base"
+		href="/knowledge-base"
+		linkLabel="View all"
+	/>
+	<div
+		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
+	>
+		{#each data.kbArticles.slice(0, 6) as article}
+			<a
+				href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)}
+				class="group w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
+			>
+				<Badge variant="secondary" class="mb-1 text-[10px] sm:text-[10px]">{article.section}</Badge>
+				<h3
+					class="line-clamp-2 text-xs leading-snug font-medium transition-colors group-hover:text-primary sm:text-sm"
+				>
+					{article.title}
+				</h3>
+				<p
+					class="mt-0.5 line-clamp-1 text-[10px] text-muted-foreground sm:mt-1 sm:line-clamp-2 sm:text-xs"
+				>
+					{article.summary}
+				</p>
+			</a>
+		{/each}
+	</div>
+</section>
+
+<!-- EXPLORE ECOSYSTEM -->
+<section {@attach reveal}>
+	<SectionHead
+		number="05"
+		title="Explore the halal trade ecosystem"
+		description="Market guides, trade shows, consultants and insights."
+	/>
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+		{#each [{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' }, { href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' }, { href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'accent-purple' }, { href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'accent-rose' }] as item (item.href)}
+			<a
+				href={localizeHref(item.href)}
+				class="group flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+			>
+				<div
+					class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${item.tone === 'info' ? 'bg-info/10 text-info' : item.tone === 'warn' ? 'bg-warn/10 text-warn' : item.tone === 'accent-purple' ? 'bg-accent-purple/10 text-accent-purple' : 'bg-accent-rose/10 text-accent-rose'}`}
+				>
+					<item.icon class="size-4" />
+				</div>
+				<div class="min-w-0">
+					<h3
+						class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm"
+					>
+						{item.label}
+					</h3>
+					<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
+						{item.desc}
+					</p>
+				</div>
+			</a>
+		{/each}
+	</div>
+</section>
+
 <!-- LETTER -->
 <section class="space-y-8 py-24 sm:space-y-12 sm:py-32">
 	<div class="animate-enter space-y-8 text-center">
@@ -379,5 +577,66 @@
 				<p class="text-sm text-muted-foreground">Common questions & answers</p>
 			</div>
 		</a>
+	</div>
+</section>
+
+<!-- CTA -->
+<section
+	{@attach reveal}
+	class="rounded-xl bg-card p-3 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
+>
+	<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">
+		Navigate halal trade with confidence
+	</h2>
+	<p class="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
+		Access comprehensive certification guides, market reports, and trade intelligence — built for
+		B2B buyers and suppliers.
+	</p>
+	<div class="mt-4 flex flex-col items-center justify-center gap-2 sm:mt-6 sm:flex-row sm:gap-3">
+		<Button href={localizeHref('/knowledge-base')} size="sm" class="sm:size-lg"
+			>Start reading</Button
+		>
+		<Button
+			href={localizeHref('/tools/ingredient-checker')}
+			variant="outline"
+			size="sm"
+			class="sm:size-lg">Try the Ingredient Checker</Button
+		>
+	</div>
+</section>
+
+<!-- TRUST / METHODOLOGY -->
+<section {@attach reveal} class="grid gap-3 sm:gap-4 lg:grid-cols-5 lg:gap-6">
+	<div class="space-y-2 lg:col-span-2 lg:pt-1">
+		<h2 class="text-sm font-semibold text-foreground">How we verify</h2>
+		<p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+			All certification data on HalalNeo is sourced from publicly available registers of accredited
+			halal certifying bodies. We cross-reference certificate numbers, issuing organisations and
+			scope details against the original body's published records.
+		</p>
+	</div>
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:col-span-3">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+			<p class="text-xs font-medium">JAKIM · MUI · ESMA</p>
+			<p class="mt-0.5 text-[10px] text-muted-foreground">
+				{data.stats.certifierCount} certifying body databases
+			</p>
+		</div>
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+			<p class="text-xs font-medium">Public certificate registers</p>
+			<p class="mt-0.5 text-[10px] text-muted-foreground">
+				Cross-referenced against issuing bodies
+			</p>
+		</div>
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+			<p class="text-xs font-medium">Scope & expiry tracking</p>
+			<p class="mt-0.5 text-[10px] text-muted-foreground">
+				Certificate validity shown on every profile
+			</p>
+		</div>
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+			<p class="text-xs font-medium">Open methodology</p>
+			<p class="mt-0.5 text-[10px] text-muted-foreground">How we source and verify data</p>
+		</div>
 	</div>
 </section>
