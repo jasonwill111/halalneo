@@ -22,8 +22,9 @@ const handleNetworkHint: Handle = async ({ event, resolve }) => {
 	const saveData = event.request.headers.get('Save-Data') === 'on';
 	const ect = event.request.headers.get('ECT'); // effective connection type: slow-2g|2g|3g|4g
 	const downlink = event.request.headers.get('Downlink'); // Mbps estimate
-	const isLowBandwidth =
-		saveData || ect === 'slow-2g' || ect === '2g' || (downlink && parseFloat(downlink) < 1.5);
+	const isLowBandwidth = Boolean(
+		saveData || ect === 'slow-2g' || ect === '2g' || (downlink && parseFloat(downlink) < 1.5)
+	);
 
 	event.locals.saveData = saveData;
 	event.locals.ect = ect;
@@ -161,14 +162,20 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname.startsWith('/api/inquiries')
 	) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=60');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=60, s-maxage=300, stale-while-revalidate=60'
+		);
 		return response;
 	}
 
 	// Verify search API — query-dependent, short shared cache
 	if (pathname.startsWith('/api/verify') || pathname.startsWith('/api/search')) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=120, stale-while-revalidate=60');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=60, s-maxage=120, stale-while-revalidate=60'
+		);
 		return response;
 	}
 
@@ -179,7 +186,10 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname.startsWith('/api/success-stories')
 	) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=60');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=60, s-maxage=300, stale-while-revalidate=60'
+		);
 		return response;
 	}
 
@@ -200,7 +210,10 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	// Search page — short cache, user-facing filters
 	if (pathname === '/search') {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=60');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=300, s-maxage=300, stale-while-revalidate=60'
+		);
 		return response;
 	}
 
@@ -222,7 +235,10 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname.startsWith('/blog/')
 	) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=300, stale-while-revalidate=600');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=600, s-maxage=300, stale-while-revalidate=600'
+		);
 		return response;
 	}
 
@@ -239,14 +255,20 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname === '/pricing'
 	) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600'
+		);
 		return response;
 	}
 
 	// Tools pages — static UI, long cache
 	if (pathname.startsWith('/tools/')) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600'
+		);
 		return response;
 	}
 
@@ -259,27 +281,39 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname.startsWith('/success-stories/')
 	) {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=3600, stale-while-revalidate=600');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=600, s-maxage=3600, stale-while-revalidate=600'
+		);
 		return response;
 	}
 
 	// Verify page — short (data freshness matters)
 	if (pathname === '/verify') {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=300');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=300, s-maxage=600, stale-while-revalidate=300'
+		);
 		return response;
 	}
 
 	// Homepage — moderate cache
 	if (pathname === '/') {
 		const response = await resolve(event);
-		response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=1800, stale-while-revalidate=600');
+		response.headers.set(
+			'Cache-Control',
+			'public, max-age=600, s-maxage=1800, stale-while-revalidate=600'
+		);
 		return response;
 	}
 
 	// Fallback
 	const response = await resolve(event);
-	response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=60');
+	response.headers.set(
+		'Cache-Control',
+		'public, max-age=300, s-maxage=600, stale-while-revalidate=60'
+	);
 	return response;
 };
 

@@ -15,8 +15,6 @@ import { glossaryTerms } from '../src/lib/data/glossary';
 import { serviceProviders } from '../src/lib/data/service-providers';
 import { marketGuides } from '../src/lib/data/market-guides';
 import { tradeShows } from '../src/lib/data/trade-shows';
-import { successStories } from '../src/lib/data/success-stories';
-import { promotions } from '../src/lib/data/promotions';
 
 // ── Helpers ───────────────────────────────────────────────────────────
 function now(): Date {
@@ -296,58 +294,14 @@ async function main() {
 	log('✅', `  → ${tradeShows.length} trade shows inserted`);
 
 	// ── Success Stories ────────────────────────────────────────────
-	log('📈', `Seeding ${successStories.length} success stories`);
-	await db.insert(schema.successStories).values(
-		successStories.map((s) => ({
-			id: s.id,
-			slug: s.slug,
-			title: s.title,
-			excerpt: s.excerpt,
-			body: s.body,
-			supplierSlug: s.supplierSlug,
-			buyerCountry: s.buyerCountry,
-			buyerIndustry: s.buyerIndustry,
-			dealValue: s.dealValue,
-			image: s.image,
-			companyLogo: s.companyLogo,
-			testimonial: s.testimonial,
-			metrics: JSON.stringify(s.metrics),
-			timeline: JSON.stringify(s.timeline),
-			indirectBenefits: JSON.stringify(s.indirectBenefits),
-			status: s.status,
-			views: s.views,
-			featured: s.featured,
-			metaTitle: s.metaTitle,
-			metaDescription: s.metaDescription,
-			keywords: s.keywords ? JSON.stringify(s.keywords.split(',')) : JSON.stringify([]),
-			createdAt: now(),
-			updatedAt: now()
-		}))
-	);
-	log('✅', `  → ${successStories.length} success stories inserted`);
+	// NOTE: junk faker-based fixtures removed 2026-09-18 (unrunnable, gibberish
+	// content). Tables stay empty — matches production D1.
+	log('📈', 'Skipping success stories (no fixtures)');
 
 	// ── Promotions ─────────────────────────────────────────────────
-	log('🏷️', `Seeding ${promotions.length} promotions`);
-	await db.insert(schema.promotions).values(
-		promotions.map((p) => ({
-			id: p.id,
-			supplierSlug: p.supplierSlug,
-			productSlug: p.productSlug,
-			title: p.title,
-			description: p.description,
-			discountPct: p.discountPct,
-			priceMin: p.priceMin,
-			priceMax: p.priceMax,
-			priceUnit: p.priceUnit,
-			moq: p.moq,
-			validUntil: p.validUntil,
-			status: p.status,
-			promotionType: p.promotionType,
-			expirationDate: p.expirationDate,
-			views: p.views
-		}))
-	);
-	log('✅', `  → ${promotions.length} promotions inserted`);
+	// NOTE: junk faker-based fixtures removed 2026-09-18 (unrunnable, gibberish
+	// content). Tables stay empty — matches production D1.
+	log('🏷️', 'Skipping promotions (no fixtures)');
 
 	// ── Summary ──────────────────────────────────────────────────────
 	const counts = {

@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					.orderBy(desc(promotions.createdAt))
 					.limit(limit)
 					.offset(offset);
-				return { items: rows, total: countRows?.count ?? 0, limit, offset };
+				return { items: rows, total: countRows[0]?.count ?? 0, limit, offset };
 			},
 			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
 		);
@@ -92,7 +92,8 @@ export const POST: RequestHandler = async (event) => {
 	const { request } = event;
 	const session = await getSession(event);
 	const userId = (session?.user as any)?.id as string | undefined;
-	if (!userId) return json({ error: 'Please sign in as a supplier to publish a deal.' }, { status: 401 });
+	if (!userId)
+		return json({ error: 'Please sign in as a supplier to publish a deal.' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
@@ -101,17 +102,32 @@ export const POST: RequestHandler = async (event) => {
 	if (!body) return json({ error: 'Request body is required' }, { status: 400 });
 	const parsed = promoSchema.safeParse(body);
 	if (!parsed.success) {
-		return json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
 	if (!(await isMember(db, userId, parsed.data.supplierSlug))) {
-		return json({ error: 'Only team members of this supplier can publish deals.' }, { status: 403 });
+		return json(
+			{ error: 'Only team members of this supplier can publish deals.' },
+			{ status: 403 }
+		);
 	}
 
-	const quota = await checkWeeklyQuota(db, promotions, promotions.supplierSlug, parsed.data.supplierSlug, 'promotion', resolvePlan(userId));
+	const quota = await checkWeeklyQuota(
+		db,
+		promotions,
+		promotions.supplierSlug,
+		parsed.data.supplierSlug,
+		'promotion',
+		resolvePlan(userId)
+	);
 	if (!quota.allowed) {
 		return json(
-			{ error: `Weekly deal limit reached (${quota.limit}/week on the free plan). Upgrade for more.` },
+			{
+				error: `Weekly deal limit reached (${quota.limit}/week on the free plan). Upgrade for more.`
+			},
 			{ status: 429 }
 		);
 	}

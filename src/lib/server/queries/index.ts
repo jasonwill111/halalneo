@@ -1,4 +1,5 @@
-import { eq, and, sql, desc, asc, inArray, like, or } from 'drizzle-orm';
+import { eq, and, or, sql, desc, asc, inArray, like } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 import type { drizzle } from 'drizzle-orm/d1';
 import * as schema from '#lib/server/db/schema.js';
 import { cachedQuery, cacheMedium } from '../cache.js';
@@ -18,9 +19,7 @@ import type {
 
 type Db = ReturnType<typeof drizzle<typeof schema>>;
 
-function buildConditions(
-	conditions: ReturnType<typeof eq | typeof and>[]
-) {
+function buildConditions(conditions: SQL[]) {
 	return conditions.length ? and(...conditions) : undefined;
 }
 
@@ -45,14 +44,21 @@ export async function getProducts(
 		if (supplierSlug) conditions.push(eq(schema.products.supplierSlug, supplierSlug));
 		if (certStatus)
 			conditions.push(
-				eq(schema.products.certStatus, certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable')
+				eq(
+					schema.products.certStatus,
+					certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable'
+				)
 			);
-		if (status) conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
+		if (status)
+			conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.products).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.products)
+				.where(where),
 			db
 				.select()
 				.from(schema.products)
@@ -83,7 +89,11 @@ export async function getProducts(
 }
 
 export async function getProductBySlug(db: Db, slug: string) {
-	const [row] = await db.select().from(schema.products).where(eq(schema.products.slug, slug)).limit(1);
+	const [row] = await db
+		.select()
+		.from(schema.products)
+		.where(eq(schema.products.slug, slug))
+		.limit(1);
 	return row ?? null;
 }
 
@@ -97,12 +107,16 @@ export async function getProductsBySupplier(
 		const { limit = 20, offset = 0, status } = opts;
 
 		const conditions = [eq(schema.products.supplierSlug, supplierSlug)];
-		if (status) conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
+		if (status)
+			conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.products).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.products)
+				.where(where),
 			db
 				.select()
 				.from(schema.products)
@@ -142,12 +156,16 @@ export async function getProductsByCategory(
 		const { limit = 20, offset = 0, status } = opts;
 
 		const conditions = [eq(schema.products.categorySlug, categorySlug)];
-		if (status) conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
+		if (status)
+			conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.products).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.products)
+				.where(where),
 			db
 				.select()
 				.from(schema.products)
@@ -194,13 +212,19 @@ export async function getSuppliers(
 			if (!match) return { items: [], total: 0, limit, offset };
 			conditions.push(inArray(schema.suppliers.slug, await ftsSlugs(db, 'suppliers', match, 200)));
 		}
-		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
+		if (status)
+			conditions.push(
+				eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected')
+			);
 		if (country) conditions.push(eq(schema.suppliers.country, country));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.suppliers).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.suppliers)
+				.where(where),
 			db
 				.select()
 				.from(schema.suppliers)
@@ -231,7 +255,11 @@ export async function getSuppliers(
 }
 
 export async function getSupplierBySlug(db: Db, slug: string) {
-	const [row] = await db.select().from(schema.suppliers).where(eq(schema.suppliers.slug, slug)).limit(1);
+	const [row] = await db
+		.select()
+		.from(schema.suppliers)
+		.where(eq(schema.suppliers.slug, slug))
+		.limit(1);
 	return row ?? null;
 }
 
@@ -252,7 +280,10 @@ export async function getSuppliersByCategory(
 		const where = sql`${schema.suppliers.slug} IN (${subquery})`;
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.suppliers).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.suppliers)
+				.where(where),
 			db
 				.select()
 				.from(schema.suppliers)
@@ -297,7 +328,11 @@ export async function getCategories(db: Db, request?: Request) {
 }
 
 export async function getCategoryBySlug(db: Db, slug: string) {
-	const [row] = await db.select().from(schema.categories).where(eq(schema.categories.slug, slug)).limit(1);
+	const [row] = await db
+		.select()
+		.from(schema.categories)
+		.where(eq(schema.categories.slug, slug))
+		.limit(1);
 	return row ?? null;
 }
 
@@ -335,21 +370,26 @@ export async function getKbArticles(
 	const queryFn = async () => {
 		const { limit = 20, offset = 0, search, section } = opts;
 
-		const conditions = [eq(schema.knowledgeBase.status, 'published')];
+		const conditions: SQL[] = [eq(schema.knowledgeBase.status, 'published')];
 		// LIKE only — knowledge_base_fts does not exist in production D1,
 		// and the table is small (<500 rows).
 		if (search) {
 			const term = `%${search}%`;
-			conditions.push(
-				or(like(schema.knowledgeBase.title, term), like(schema.knowledgeBase.summary, term))
+			const searchCond = or(
+				like(schema.knowledgeBase.title, term),
+				like(schema.knowledgeBase.summary, term)
 			);
+			if (searchCond) conditions.push(searchCond);
 		}
 		if (section) conditions.push(eq(schema.knowledgeBase.section, section));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.knowledgeBase).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.knowledgeBase)
+				.where(where),
 			db
 				.select()
 				.from(schema.knowledgeBase)
@@ -380,7 +420,11 @@ export async function getKbArticles(
 }
 
 export async function getKbArticleBySlug(db: Db, slug: string) {
-	const [row] = await db.select().from(schema.knowledgeBase).where(eq(schema.knowledgeBase.slug, slug)).limit(1);
+	const [row] = await db
+		.select()
+		.from(schema.knowledgeBase)
+		.where(eq(schema.knowledgeBase.slug, slug))
+		.limit(1);
 	return row ?? null;
 }
 
@@ -414,7 +458,10 @@ export async function getBlogPosts(
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.pages).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.pages)
+				.where(where),
 			db
 				.select()
 				.from(schema.pages)
@@ -471,12 +518,16 @@ export async function getPages(
 
 	const conditions = [];
 	if (type) conditions.push(eq(schema.pages.type, type));
-	if (status) conditions.push(eq(schema.pages.status, status as 'published' | 'draft' | 'archived'));
+	if (status)
+		conditions.push(eq(schema.pages.status, status as 'published' | 'draft' | 'archived'));
 
 	const where = buildConditions(conditions);
 
 	const [countRows, rows] = await Promise.all([
-		db.select({ count: sql<number>`count(*)` }).from(schema.pages).where(where),
+		db
+			.select({ count: sql<number>`count(*)` })
+			.from(schema.pages)
+			.where(where),
 		db
 			.select()
 			.from(schema.pages)
@@ -496,7 +547,8 @@ export async function getPages(
 
 // ==================== Service Providers ====================
 
-type ServiceProviderType = 'certification' | 'logistics' | 'finance' | 'payment' | 'insurance' | 'consulting';
+type ServiceProviderType =
+	'certification' | 'logistics' | 'finance' | 'payment' | 'insurance' | 'consulting';
 
 export async function getServiceProviders(
 	db: Db,
@@ -515,7 +567,10 @@ export async function getServiceProviders(
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.serviceProviders).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.serviceProviders)
+				.where(where),
 			db
 				.select()
 				.from(schema.serviceProviders)
@@ -573,7 +628,10 @@ export async function getCertifyingBodies(
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.certifyingBodies).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.certifyingBodies)
+				.where(where),
 			db
 				.select()
 				.from(schema.certifyingBodies)
@@ -657,7 +715,11 @@ export async function getSuppliersByCertifyingBody(
 		function parseCerts(s: any): any[] {
 			if (Array.isArray(s.certifications)) return s.certifications;
 			if (typeof s.certifications === 'string') {
-				try { return JSON.parse(s.certifications); } catch { return []; }
+				try {
+					return JSON.parse(s.certifications);
+				} catch {
+					return [];
+				}
 			}
 			return [];
 		}
@@ -670,7 +732,10 @@ export async function getSuppliersByCertifyingBody(
 		const supplierSlugs = certifiedSuppliers.map((s) => s.slug);
 		const allProducts = supplierSlugs.length
 			? await db
-					.select({ supplierSlug: schema.products.supplierSlug, categorySlug: schema.products.categorySlug })
+					.select({
+						supplierSlug: schema.products.supplierSlug,
+						categorySlug: schema.products.categorySlug
+					})
 					.from(schema.products)
 					.where(inArray(schema.products.supplierSlug, supplierSlugs))
 			: [];
@@ -704,13 +769,19 @@ export async function getInquiries(
 		const { limit = 20, offset = 0, status, buyerSlug } = opts;
 
 		const conditions = [];
-		if (status) conditions.push(eq(schema.inquiries.status, status as 'active' | 'pending' | 'closed' | 'flagged'));
+		if (status)
+			conditions.push(
+				eq(schema.inquiries.status, status as 'active' | 'pending' | 'closed' | 'flagged')
+			);
 		if (buyerSlug) conditions.push(eq(schema.inquiries.buyerSlug, buyerSlug));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.inquiries).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.inquiries)
+				.where(where),
 			db
 				.select()
 				.from(schema.inquiries)
@@ -748,7 +819,11 @@ export async function createInquiry(db: Db, data: CreateInquiryData) {
 // ==================== Site Settings ====================
 
 export async function getSetting(db: Db, key: string) {
-	const [row] = await db.select().from(schema.siteSettings).where(eq(schema.siteSettings.key, key)).limit(1);
+	const [row] = await db
+		.select()
+		.from(schema.siteSettings)
+		.where(eq(schema.siteSettings.key, key))
+		.limit(1);
 	return row ?? null;
 }
 
@@ -795,13 +870,23 @@ export async function getProductListItems(
 		}
 		if (categorySlug) conditions.push(eq(schema.products.categorySlug, categorySlug));
 		if (supplierSlug) conditions.push(eq(schema.products.supplierSlug, supplierSlug));
-		if (certStatus) conditions.push(eq(schema.products.certStatus, certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable'));
-		if (status) conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
+		if (certStatus)
+			conditions.push(
+				eq(
+					schema.products.certStatus,
+					certStatus as 'certified' | 'pending' | 'not-certified' | 'not-applicable'
+				)
+			);
+		if (status)
+			conditions.push(eq(schema.products.status, status as 'active' | 'draft' | 'archived'));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.products).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.products)
+				.where(where),
 			db
 				.select({
 					slug: schema.products.slug,
@@ -868,14 +953,23 @@ export async function getSupplierListItems(
 			if (!match) return { items: [], total: 0, limit, offset };
 			conditions.push(inArray(schema.suppliers.slug, await ftsSlugs(db, 'suppliers', match, 200)));
 		}
-		if (status) conditions.push(eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected'));
+		if (status)
+			conditions.push(
+				eq(schema.suppliers.status, status as 'active' | 'pending' | 'suspended' | 'rejected')
+			);
 		if (country) conditions.push(eq(schema.suppliers.country, country));
-		if (businessType) conditions.push(eq(schema.suppliers.businessType, businessType as 'manufacturer' | 'wholesaler' | 'trader'));
+		if (businessType)
+			conditions.push(
+				eq(schema.suppliers.businessType, businessType as 'manufacturer' | 'wholesaler' | 'trader')
+			);
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.suppliers).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.suppliers)
+				.where(where),
 			db
 				.select({
 					slug: schema.suppliers.slug,
@@ -931,24 +1025,26 @@ export async function getKbListItems(
 	const queryFn = async () => {
 		const { limit = 20, offset = 0, search, section, status } = opts;
 
-		const conditions = [
-			eq(
-				schema.knowledgeBase.status,
-				(status ?? 'published') as 'published' | 'draft' | 'archived'
-			)
+		const conditions: SQL[] = [
+			eq(schema.knowledgeBase.status, (status ?? 'published') as 'published' | 'draft' | 'archived')
 		];
 		if (search) {
 			const term = `%${search}%`;
-			conditions.push(
-				or(like(schema.knowledgeBase.title, term), like(schema.knowledgeBase.summary, term))
+			const searchCond = or(
+				like(schema.knowledgeBase.title, term),
+				like(schema.knowledgeBase.summary, term)
 			);
+			if (searchCond) conditions.push(searchCond);
 		}
 		if (section) conditions.push(eq(schema.knowledgeBase.section, section));
 
 		const where = buildConditions(conditions);
 
 		const [countRows, rows] = await Promise.all([
-			db.select({ count: sql<number>`count(*)` }).from(schema.knowledgeBase).where(where),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(schema.knowledgeBase)
+				.where(where),
 			db
 				.select({
 					slug: schema.knowledgeBase.slug,

@@ -9,6 +9,9 @@ import { env } from 'cloudflare:workers';
 export type Bindings = Cloudflare.Env & {
 	ADMIN_EMAILS?: string;
 	AGNES_API_KEY?: string;
+	// Cloudflare Images (resizing) — disabled 2026-09-15 (paid feature).
+	// Media routes probe it defensively and fall back to R2 originals.
+	IMAGES?: ImagesBinding;
 };
 
 export function getBindings(): Bindings {
