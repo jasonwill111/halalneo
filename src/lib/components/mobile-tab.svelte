@@ -5,6 +5,7 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+	import { onMount } from 'svelte';
 	import HomeIcon from '@lucide/svelte/icons/home';
 	import MenuIcon from '@lucide/svelte/icons/menu';
 	import Grid2x2Icon from '@lucide/svelte/icons/grid-2x2';
@@ -113,8 +114,35 @@
 		}
 	}
 
-	// Robust pill sync: always recompute from the live DOM so it works on
-	// first hydration (refs not yet bound) and on every route change.
+	// Resolve which tab the pill should sit under for the current state.
+	// Extracted so route-change effects, resize and font-ready handlers
+	// all share one source of truth (stale pills were reported on mobile).
+	function currentTarget(): string {
+		if (showMenu) return 'menu';
+		if (showExplore) return 'explore';
+		const path = deLocalizeUrl(page.url.href).pathname;
+		const keys = ['/', '/categories', '/products'];
+		let target = '/';
+		for (const key of keys) {
+			if (key === '/' ? path === '/' : path.startsWith(key)) {
+				target = key;
+				break;
+			}
+		}
+		return target;
+	}
+
+	function syncPill(): void {
+		requestAnimationFrame(() => positionPill(currentTarget()));
+	}
+
+	onMount(() => {
+		// Tab widths shift on viewport resize and when webfonts swap in —
+		// re-anchor the pill so it never drifts from the active tab.
+		window.addEventListener('resize', syncPill);
+		document.fonts?.ready.then(() => syncPill()).catch(() => {});
+		return () => window.removeEventListener('resize', syncPill);
+	});
 	function positionPill(targetKey: string) {
 		const bar = document.querySelector('[data-tab-bar]');
 		if (!bar) return;
@@ -138,31 +166,12 @@
 	}
 
 	$effect(() => {
-		const path = deLocalizeUrl(page.url.href).pathname;
-		const showE = showExplore;
-		const showM = showMenu;
-		void path;
-		void showE;
-		void showM;
-
-		if (showM) {
-			requestAnimationFrame(() => positionPill('menu'));
-			return;
-		}
-		if (showE) {
-			requestAnimationFrame(() => positionPill('explore'));
-			return;
-		}
-
-		const keys = ['/', '/categories', '/products'];
-		let target = '/';
-		for (const key of keys) {
-			if (key === '/' ? path === '/' : path.startsWith(key)) {
-				target = key;
-				break;
-			}
-		}
-		requestAnimationFrame(() => positionPill(target));
+		// Subscribe to all inputs so the pill re-anchors on route change
+		// and whenever a popover opens/closes.
+		void deLocalizeUrl(page.url.href).pathname;
+		void showExplore;
+		void showMenu;
+		syncPill();
 	});
 </script>
 
@@ -262,7 +271,7 @@
 	>
 		<!-- Sliding indicator pill (Apple signature pattern) -->
 		<div
-			class="tab-indicator pointer-events-none absolute top-0.5 h-[calc(100%-4px)] rounded-lg bg-primary/12"
+			class="tab-indicator pointer-events-none absolute top-0.5 left-0 h-[calc(100%-4px)] rounded-lg bg-primary/12"
 			style="transform: translateX({indicatorX}px); width: {indicatorWidth}px;"
 		></div>
 

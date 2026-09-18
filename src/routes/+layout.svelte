@@ -174,7 +174,7 @@
 </script>
 
 <ModeWatcher />
-<Toaster />
+<Toaster offset={76} />
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
@@ -426,7 +426,7 @@
 
 		<footer class="border-t border-border/50 bg-muted/30">
 			<div class="mx-auto max-w-7xl px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-3">
-				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-7">
+				<div class="hidden gap-3 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-7">
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
 						<a href={localizeHref('/')} class="flex items-center gap-2">
@@ -442,7 +442,7 @@
 							<span class="text-sm font-bold text-primary">{siteName}</span>
 						</a>
 						<p class="max-w-xs text-xs leading-relaxed text-muted-foreground">
-							Halal trade intelligence for buyers and suppliers �?certification, sourcing and market
+							Halal trade intelligence for buyers and suppliers — certification, sourcing and market
 							guides in one place.
 						</p>
 					</div>
