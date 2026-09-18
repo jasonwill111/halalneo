@@ -1,14 +1,6 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Icon from '#lib/components/site/icon.svelte';
-	import { Button } from '#lib/components/ui/button/index.js';
-	import {
-		Card,
-		CardHeader,
-		CardTitle,
-		CardDescription,
-		CardContent
-	} from '#lib/components/ui/card/index.js';
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
@@ -25,7 +17,7 @@
 
 	let { data } = $props();
 	let search = $state('');
-	const PAGE_SIZE = 8;
+	const PAGE_SIZE = 9;
 	let page = $state(1);
 	$effect(() => {
 		page = 1;
@@ -75,32 +67,36 @@
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#if pagedCategories.length === 0}
-			<Empty>
-				<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-				<EmptyTitle>No categories found</EmptyTitle>
-				<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
-			</Empty>
+			<div class="col-span-full">
+				<Empty>
+					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+					<EmptyTitle>No categories found</EmptyTitle>
+					<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
+				</Empty>
+			</div>
 		{:else}
 			{#each pagedCategories as category, i}
 				<a
 					href={localizeHref(`/category/${category.slug}`)}
 					class="group flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 				>
-					<div class="flex items-start gap-3 p-4">
+					<div class="flex items-start gap-2.5 p-2.5 sm:gap-3 sm:p-4">
 						<div
-							class="flex size-11 shrink-0 items-center justify-center rounded-lg {TILE_COLORS[
+							class="flex size-9 shrink-0 items-center justify-center rounded-lg sm:size-11 {TILE_COLORS[
 								i % TILE_COLORS.length
 							]}"
 						>
-							<Icon name={category.icon} class="size-5" />
+							<Icon name={category.icon} class="size-4 sm:size-5" />
 						</div>
 						<div class="min-w-0 flex-1">
-							<h2 class="text-base font-semibold transition-colors group-hover:text-primary">
+							<h2
+								class="truncate text-xs font-semibold transition-colors group-hover:text-primary sm:text-base"
+							>
 								{category.name}
 							</h2>
-							<p class="mt-1 line-clamp-2 text-xs text-muted-foreground">
+							<p class="mt-1 line-clamp-2 hidden text-xs text-muted-foreground sm:block">
 								{category.shortDescription ||
 									category.description?.substring(0, 120) ||
 									`Detailed information about ${category.name} halal requirements`}
@@ -108,7 +104,7 @@
 						</div>
 					</div>
 					<div
-						class="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 px-4 py-2.5"
+						class="hidden flex-wrap items-center justify-between gap-2 border-t border-border/50 px-4 py-2.5 sm:flex"
 					>
 						<div class="flex flex-wrap gap-2">
 							{#if category.requirements?.length}

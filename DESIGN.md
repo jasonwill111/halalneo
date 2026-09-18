@@ -282,6 +282,14 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 
 - Supplier profiles render certification as rich cards — certifying body, standard, scope, certificate number, and expiry with status chips (Verified / Pending / Expired) color-coded green/neutral/red. Expired certificates flag destructive-red on both chip and date. This block is the platform's trust artifact; it must always read as precise, documented, and scannable.
 
+### Shared Site Components (must-reuse, never rewrite in pages)
+
+- `site/stat-tile` (value + label + tone + hint) for stat tiles; `site/filter-pills` (ToggleGroup, `options` + `bind:value`) for all single-select filters — never hand-roll filter buttons.
+- `site/paginator` (`bind:page` + `totalPages`, PAGE_SIZE 8/9/12 for 2/3/4-col grids, reset to page 1 on filter change), `site/section-head` (number/title/description/link) for section headers.
+- `site/collapsible-section`, `site/share-buttons`, `site/related-links`, `site/guide-hero` (guide fallback), `site/confirm-dialog` (replaces `window.confirm`), `site/breadcrumb`.
+- Portals: `site/account-nav`, `site/admin-sidebar`, `site/supplier-sidebar` (fixed bottom cluster: user + email + theme + home + sign-out).
+- Listing grids start at `grid-cols-2` on mobile with compact cards (`p-2.5` vs `sm:p-4`, truncated titles, secondary descriptions `hidden sm:block`); empty states inside grids must span full width (`col-span-full`).
+
 ## Do's and Don'ts
 
 ### Do:
@@ -319,7 +327,7 @@ Every data surface implements the same three states — loading, empty, and erro
 ### Empty
 
 - Use `ui/empty` (`Empty`, `EmptyTitle`, `EmptyDescription`) with a muted icon and one clear next action (e.g. "Clear filters", "Publish the first story"). Match the list's grid width; don't stretch a full-width card.
-- Empty states must state *why* it's empty when it isn't obviously zero: "No products match these filters" not just "No products".
+- Empty states must state _why_ it's empty when it isn't obviously zero: "No products match these filters" not just "No products".
 
 ### Error
 

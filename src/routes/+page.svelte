@@ -5,16 +5,8 @@
 	import { reveal } from '#lib/actions/reveal.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import {
-		Card,
-		CardContent,
-		CardHeader,
-		CardTitle,
-		CardDescription
-	} from '#lib/components/ui/card/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
-	import BookOpen from '@lucide/svelte/icons/book-open';
 	import Search from '@lucide/svelte/icons/search';
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 	import Calculator from '@lucide/svelte/icons/calculator';
@@ -421,17 +413,17 @@
 </section>
 
 <!-- LETTER -->
-<section class="space-y-8 py-24 sm:space-y-12 sm:py-32">
-	<div class="animate-enter space-y-8 text-center">
-		<h2 class="animate-enter text-2xl font-semibold tracking-tight sm:text-3xl">
+<section class="space-y-4 py-8 sm:space-y-6 sm:py-12">
+	<div class="animate-enter space-y-3 text-center sm:space-y-4">
+		<h2 class="animate-enter text-xl font-semibold tracking-tight sm:text-2xl">
 			Halal trade intelligence.
 		</h2>
-		<p class="animate-enter mx-auto max-w-3xl text-base text-muted-foreground sm:text-lg">
+		<p class="animate-enter mx-auto max-w-3xl text-sm text-muted-foreground">
 			Research certification bodies, verify suppliers, and navigate global halal markets — all in
 			one place.
 		</p>
 	</div>
-	<div class="animate-enter grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
+	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-4">
 		<StatTile
 			value="JAKIM, MUI, ESMA"
 			label="15+ certification bodies"
@@ -460,120 +452,132 @@
 </section>
 
 <!-- RESOURCES -->
-<section class="space-y-8 py-24 sm:space-y-12 sm:py-32">
-	<div class="animate-enter space-y-8 text-center">
-		<h2 class="animate-enter text-2xl font-semibold tracking-tight sm:text-3xl">
+<section class="space-y-4 py-8 sm:space-y-6 sm:py-12">
+	<div class="animate-enter space-y-3 text-center sm:space-y-4">
+		<h2 class="animate-enter text-xl font-semibold tracking-tight sm:text-2xl">
 			Resources for your halal business
 		</h2>
-		<p class="animate-enter mx-auto max-w-3xl text-base text-muted-foreground sm:text-lg">
+		<p class="animate-enter mx-auto max-w-3xl text-sm text-muted-foreground">
 			Everything you need to succeed in global halal markets — guides, tools, and intelligence.
 		</p>
 	</div>
-	<div class="animate-enter grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
 		<a
 			href="/verify"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<ShieldCheck class="size-6 text-success" />
-				<h3 class="text-lg font-semibold">Verify Certificate</h3>
-				<p class="text-sm text-muted-foreground">
+			<div class="space-y-2">
+				<ShieldCheck class="size-5 text-success sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">Verify Certificate</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
 					Check certificate authenticity against issuing bodies
 				</p>
 			</div>
 		</a>
 		<a
 			href="/tools/ingredient-checker"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<FlaskConical class="size-6 text-warn" />
-				<h3 class="text-lg font-semibold">Ingredient Checker</h3>
-				<p class="text-sm text-muted-foreground">AI verdict on halal, haram, mashbooh</p>
+			<div class="space-y-2">
+				<FlaskConical class="size-5 text-warn sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">Ingredient Checker</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
+					AI verdict on halal, haram, mashbooh
+				</p>
 			</div>
 		</a>
 		<a
 			href="/tools/certification-cost"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<Calculator class="size-6 text-accent-purple" />
-				<h3 class="text-lg font-semibold">Certification Cost</h3>
-				<p class="text-sm text-muted-foreground">Estimate registration fees by certifier</p>
+			<div class="space-y-2">
+				<Calculator class="size-5 text-accent-purple sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">Certification Cost</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
+					Estimate registration fees by certifier
+				</p>
 			</div>
 		</a>
 		<a
 			href="/tools/landed-cost"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<Banknote class="size-6 text-accent-rose" />
-				<h3 class="text-lg font-semibold">Landed Cost</h3>
-				<p class="text-sm text-muted-foreground">True per-unit cost with duties & fees</p>
+			<div class="space-y-2">
+				<Banknote class="size-5 text-accent-rose sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">Landed Cost</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
+					True per-unit cost with duties & fees
+				</p>
 			</div>
 		</a>
 		<a
 			href="/tools/rfq-builder"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<FileText class="size-6 text-info" />
-				<h3 class="text-lg font-semibold">RFQ Builder</h3>
-				<p class="text-sm text-muted-foreground">Draft sourcing documents</p>
+			<div class="space-y-2">
+				<FileText class="size-5 text-info sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">RFQ Builder</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">Draft sourcing documents</p>
 			</div>
 		</a>
 		<a
 			href="/export-docs"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<Newspaper class="size-6 text-primary" />
-				<h3 class="text-lg font-semibold">Export Docs</h3>
-				<p class="text-sm text-muted-foreground">Templates for suppliers & importers</p>
+			<div class="space-y-2">
+				<Newspaper class="size-5 text-primary sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">Export Docs</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
+					Templates for suppliers & importers
+				</p>
 			</div>
 		</a>
 	</div>
 </section>
 
 <!-- MARKET GUIDES -->
-<section class="space-y-8 py-24 sm:space-y-12 sm:py-32">
-	<div class="animate-enter space-y-8 text-center">
-		<h2 class="animate-enter text-2xl font-semibold tracking-tight sm:text-3xl">
+<section class="space-y-4 py-8 sm:space-y-6 sm:py-12">
+	<div class="animate-enter space-y-3 text-center sm:space-y-4">
+		<h2 class="animate-enter text-xl font-semibold tracking-tight sm:text-2xl">
 			Market entry intelligence
 		</h2>
-		<p class="animate-enter mx-auto max-w-3xl text-base text-muted-foreground sm:text-lg">
+		<p class="animate-enter mx-auto max-w-3xl text-sm text-muted-foreground">
 			Regional analysis of halal regulations, import requirements, and sourcing opportunities.
 		</p>
 	</div>
-	<div class="animate-enter grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
 		<a
 			href="/market-guides"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<Globe class="size-6" />
-				<h3 class="text-lg font-semibold">All Market Guides</h3>
-				<p class="text-sm text-muted-foreground">Country-by.Country entry requirements</p>
+			<div class="space-y-2">
+				<Globe class="size-5 sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">All Market Guides</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
+					Country-by-country entry requirements
+				</p>
 			</div>
 		</a>
 		<a
 			href="/trade-shows"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<Calendar class="size-6" />
-				<h3 class="text-lg font-semibold">Trade Shows</h3>
-				<p class="text-sm text-muted-foreground">Global HALAL exhibitions & events</p>
+			<div class="space-y-2">
+				<Calendar class="size-5 sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">Trade Shows</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">
+					Global halal exhibitions & events
+				</p>
 			</div>
 		</a>
 		<a
 			href="/faq"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
-			<div class="space-y-3">
-				<HelpCircle class="size-6" />
-				<h3 class="text-lg font-semibold">FAQ</h3>
-				<p class="text-sm text-muted-foreground">Common questions & answers</p>
+			<div class="space-y-2">
+				<HelpCircle class="size-5 sm:size-6" />
+				<h3 class="truncate text-sm font-semibold">FAQ</h3>
+				<p class="hidden text-xs text-muted-foreground sm:block">Common questions & answers</p>
 			</div>
 		</a>
 	</div>
