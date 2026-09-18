@@ -4,13 +4,12 @@ import type { getDb } from '#lib/server/db/index.js';
 type Db = ReturnType<typeof getDb>;
 
 /**
- * FTS5 helpers for all searchable tables.
+ * FTS5 helpers — products/suppliers only.
  * Replaces LIKE '%term%' substring scans (full-table) with indexed MATCH.
  *
- * Supported tables:
- *   products, suppliers         — unbounded, always FTS
- *   knowledge_base, pages       — growing, FTS for search scalability
- *   certifying_bodies, service_providers — growing, FTS for search scalability
+ * knowledge_base, pages, certifying_bodies, service_providers intentionally
+ * stay on LIKE: their FTS side tables do not exist in production D1 and the
+ * tables are small (<500 rows). See queries/index.ts.
  */
 
 /** Sanitize free text into an FTS5 AND query. Returns null when unusable. */
@@ -24,7 +23,8 @@ export function ftsQuery(term: string): string | null {
 	return tokens.map((t) => `"${t}"`).join(' ');
 }
 
-type FtsTable = 'products' | 'suppliers' | 'knowledge_base' | 'pages' | 'certifying_bodies' | 'service_providers';
+type FtsTable =
+	'products' | 'suppliers' | 'knowledge_base' | 'pages' | 'certifying_bodies' | 'service_providers';
 
 /** Map table name → primary key column for slug/id lookups. */
 const FTS_PRIMARY_KEY: Record<FtsTable, string> = {

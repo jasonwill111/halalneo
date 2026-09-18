@@ -11,7 +11,7 @@
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import Wrench from '@lucide/svelte/icons/wrench';
 
-	let { data, itemList } = $props();
+	let { data } = $props();
 
 	const tools = [
 		{
@@ -63,13 +63,13 @@
 			badge: 'Soon'
 		}
 	];
-	</script>
+</script>
 
-	<svelte:head>
-		{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
-	</svelte:head>
+<svelte:head>
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+</svelte:head>
 
-	<Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
+<Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
 
 <section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
@@ -83,13 +83,15 @@
 		</p>
 	</div>
 
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each tools as tool}
 			<a href={localizeHref(tool.href)} class="group h-full">
-				<Card class="h-full p-3 transition-all hover:shadow-md hover:-translate-y-0.5 sm:p-4">
+				<Card class="h-full p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4">
 					<CardContent class="space-y-2 p-0 sm:space-y-2.5">
 						<div class="flex items-center justify-between">
-							<div class={`flex size-8 items-center justify-center rounded-lg sm:size-9 ${tool.tone}`}>
+							<div
+								class={`flex size-8 items-center justify-center rounded-lg sm:size-9 ${tool.tone}`}
+							>
 								<tool.icon class="size-4" />
 							</div>
 							<Badge variant={tool.badge === 'Live' ? 'secondary' : 'outline'} class="text-[10px]">
@@ -97,11 +99,19 @@
 							</Badge>
 						</div>
 						<div>
-							<h2 class="flex items-center gap-1 text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm">
+							<h2
+								class="flex items-center gap-1 text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm"
+							>
 								{tool.name}
-								<ArrowUpRight class="size-3.5 text-muted-foreground transition-colors group-hover:text-primary" />
+								<ArrowUpRight
+									class="size-3.5 text-muted-foreground transition-colors group-hover:text-primary"
+								/>
 							</h2>
-							<p class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs sm:leading-relaxed">{tool.desc}</p>
+							<p
+								class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs sm:leading-relaxed"
+							>
+								{tool.desc}
+							</p>
 						</div>
 					</CardContent>
 				</Card>

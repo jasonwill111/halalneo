@@ -21,28 +21,29 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
 
-	let { data, itemList, collectionPage } = $props();
+	let { data } = $props();
 	let search = $state('');
 	const PAGE_SIZE = 9;
 	let page = $state(1);
-	$effect(() => { page = 1; });
+	$effect(() => {
+		page = 1;
+	});
 
 	const filteredSections = $derived(
 		search.trim()
 			? (data.sections ?? []).filter((s: any) =>
 					s.title.toLowerCase().includes(search.toLowerCase())
 				)
-			: data.sections ?? []
+			: (data.sections ?? [])
 	);
 	const totalPages = $derived(Math.max(1, Math.ceil(filteredSections.length / PAGE_SIZE)));
-	const pagedSections = $derived(
-		filteredSections.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-	);
+	const pagedSections = $derived(filteredSections.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 
 	const subForms = $derived([
 		{
 			title: 'Market Guides',
-			description: 'Country-by-country halal certification requirements, costs, and market entry guides.',
+			description:
+				'Country-by-country halal certification requirements, costs, and market entry guides.',
 			count: data.marketGuidesCount ?? 0,
 			href: '/market-guides',
 			icon: GlobeIcon,
@@ -72,15 +73,22 @@
 	// Top-3 by views desc; fallback to latest 3 (API returns createdAt desc) when
 	// rows carry no view counts.
 	const popularArticles = $derived.by(() => {
-		const articles = (data.articles ?? []) as Array<{ slug: string; section: string | null; title: string; views?: number | null }>;
-		const viewed = articles.filter((a) => (a.views ?? 0) > 0).toSorted((a, b) => (b.views ?? 0) - (a.views ?? 0));
+		const articles = (data.articles ?? []) as Array<{
+			slug: string;
+			section: string | null;
+			title: string;
+			views?: number | null;
+		}>;
+		const viewed = articles
+			.filter((a) => (a.views ?? 0) > 0)
+			.toSorted((a, b) => (b.views ?? 0) - (a.views ?? 0));
 		return viewed.length >= 3 ? viewed.slice(0, 3) : articles.slice(0, 3);
 	});
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
-	{@html `<script type="application/ld+json">${JSON.stringify(collectionPage ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.collectionPage ?? {})}</script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
@@ -109,13 +117,8 @@
 	</div>
 
 	<div class="relative">
-		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input
-			type="search"
-			placeholder="Search sections..."
-			class="pl-9"
-			bind:value={search}
-		/>
+		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input type="search" placeholder="Search sections..." class="pl-9" bind:value={search} />
 	</div>
 
 	<!-- Resource Hubs -->
@@ -124,7 +127,7 @@
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each subForms as form, i (form.href)}
 				<a href={localizeHref(form.href)} class="group h-full">
-					<Card hoverable class="h-full transition-shadow group-hover:shadow-md p-3 sm:p-4">
+					<Card hoverable class="h-full p-3 transition-shadow group-hover:shadow-md sm:p-4">
 						<CardHeader class="gap-3">
 							<div
 								class="flex size-10 items-center justify-center rounded-lg {tileColors[
@@ -140,7 +143,8 @@
 						</CardHeader>
 						<CardContent class="space-y-3">
 							<p class="text-sm text-muted-foreground">
-								{form.count} {form.countLabel}
+								{form.count}
+								{form.countLabel}
 							</p>
 							<Button variant="outline" size="sm" class="w-full">
 								Explore
@@ -153,47 +157,49 @@
 		</div>
 	</div>
 
-<!-- KB Sections -->
+	<!-- KB Sections -->
 	<div class="space-y-3">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-		{#each pagedSections as section, i (section.slug)}
-			<article>
-			<Card hoverable class="h-full overflow-hidden p-3 sm:p-4">
-				<CardHeader class="gap-3">
-					<div
-						class="flex size-10 items-center justify-center rounded-lg {tileColors[
-							i % tileColors.length
-						]}"
-					>
-						<Icon name={section.icon} class="size-5"></Icon>
-					</div>
-					<div class="space-y-1">
-						<CardTitle class="text-lg">{section.title}</CardTitle>
-						<CardDescription>{section.description}</CardDescription>
-					</div>
-				</CardHeader>
-				<CardContent class="space-y-3">
-					{@const count = (data.articles ?? []).filter((a: any) => a.section === section.slug).length}
-					<p class="text-sm text-muted-foreground">
-						{count} article{count === 1 ? '' : 's'}
-					</p>
-					<Button
-						href={localizeHref(`/knowledge-base/${section.slug}`)}
-						variant="outline"
-						size="sm"
-					>
-						Browse the section
-						<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
-					</Button>
-				</CardContent>
-			</Card>
-			</article>
-		{/each}
+			{#each pagedSections as section, i (section.slug)}
+				<article>
+					<Card hoverable class="h-full overflow-hidden p-3 sm:p-4">
+						<CardHeader class="gap-3">
+							<div
+								class="flex size-10 items-center justify-center rounded-lg {tileColors[
+									i % tileColors.length
+								]}"
+							>
+								<Icon name={section.icon} class="size-5"></Icon>
+							</div>
+							<div class="space-y-1">
+								<CardTitle class="text-lg">{section.title}</CardTitle>
+								<CardDescription>{section.description}</CardDescription>
+							</div>
+						</CardHeader>
+						<CardContent class="space-y-3">
+							{@const count = (data.articles ?? []).filter(
+								(a: any) => a.section === section.slug
+							).length}
+							<p class="text-sm text-muted-foreground">
+								{count} article{count === 1 ? '' : 's'}
+							</p>
+							<Button
+								href={localizeHref(`/knowledge-base/${section.slug}`)}
+								variant="outline"
+								size="sm"
+							>
+								Browse the section
+								<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
+							</Button>
+						</CardContent>
+					</Card>
+				</article>
+			{/each}
 		</div>
 	</div>
 
-	<Paginator page={page} totalPages={totalPages} />
+	<Paginator {page} {totalPages} />
 
 	<!-- Popular Articles -->
 	{#if popularArticles.length > 0}
@@ -203,13 +209,21 @@
 				{#each popularArticles as article, i (article.slug)}
 					<a
 						href={localizeHref(`/knowledge-base/${article.section ?? ''}/${article.slug}`)}
-						class="group flex items-center gap-2.5 rounded-xl ring-1 ring-foreground/10 bg-card p-3 hover:shadow-md transition-all"
+						class="group flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md"
 					>
-						<div class="flex size-8 shrink-0 items-center justify-center rounded-lg {TILE_COLORS[i % TILE_COLORS.length]}">
+						<div
+							class="flex size-8 shrink-0 items-center justify-center rounded-lg {TILE_COLORS[
+								i % TILE_COLORS.length
+							]}"
+						>
 							<BookOpen class="size-4"></BookOpen>
 						</div>
 						<div class="min-w-0">
-							<h3 class="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">{article.title}</h3>
+							<h3
+								class="truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary"
+							>
+								{article.title}
+							</h3>
 							{#if (article.views ?? 0) > 0}
 								<p class="mt-0.5 text-xs text-muted-foreground">{article.views} reads</p>
 							{/if}
@@ -220,8 +234,10 @@
 		</div>
 	{/if}
 
-	<div class="rounded-xl ring-1 ring-primary/20 bg-primary/5 p-6 text-center">
-		<div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+	<div class="rounded-xl bg-primary/5 p-6 text-center ring-1 ring-primary/20">
+		<div
+			class="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+		>
 			<MessageCircle class="size-6" />
 		</div>
 		<h3 class="mb-1 text-sm font-bold text-foreground">Need Help?</h3>

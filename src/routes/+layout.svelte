@@ -1,71 +1,70 @@
 <script lang="ts">
-  import './layout.css';
-  import favicon from '#lib/assets/favicon.svg';
-  import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
-  import { cn } from '#lib/utils.js';
-  import { mode, toggleMode } from 'mode-watcher';
-  import { ModeWatcher } from 'mode-watcher';
-  import { page } from '$app/state';
-  import Sun from '@lucide/svelte/icons/sun';
-  import Moon from '@lucide/svelte/icons/moon';
-  import MenuIcon from '@lucide/svelte/icons/menu';
-  import SearchIcon from '@lucide/svelte/icons/search';
-  import UserIcon from '@lucide/svelte/icons/user';
-  import { Button } from '#lib/components/ui/button/index.js';
-  import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
-  import { Toaster } from '#lib/components/ui/sonner/index.js';
-  import MobileTab from '#lib/components/mobile-tab.svelte';
-  import BackToTop from '#lib/components/site/back-to-top.svelte';
-  import { initWebVitals } from '#lib/vitals.js';
-  import {
-    NavigationMenuRoot,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    NavigationMenuContent,
-    navigationMenuTriggerStyle
-  } from '#lib/components/ui/navigation-menu/index.js';
-  import { primaryNav, navGroups } from '#lib/data/navigation.js';
+	import './layout.css';
+	import favicon from '#lib/assets/favicon.svg';
+	import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
+	import { cn } from '#lib/utils.js';
+	import { mode, toggleMode } from 'mode-watcher';
+	import { ModeWatcher } from 'mode-watcher';
+	import { page } from '$app/state';
+	import Sun from '@lucide/svelte/icons/sun';
+	import Moon from '@lucide/svelte/icons/moon';
+	import MenuIcon from '@lucide/svelte/icons/menu';
+	import SearchIcon from '@lucide/svelte/icons/search';
+	import UserIcon from '@lucide/svelte/icons/user';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
+	import { Toaster } from '#lib/components/ui/sonner/index.js';
+	import MobileTab from '#lib/components/mobile-tab.svelte';
+	import BackToTop from '#lib/components/site/back-to-top.svelte';
+	import { initWebVitals } from '#lib/vitals.js';
+	import {
+		NavigationMenuRoot,
+		NavigationMenuItem,
+		NavigationMenuLink,
+		NavigationMenuList,
+		NavigationMenuTrigger,
+		NavigationMenuContent,
+		navigationMenuTriggerStyle
+	} from '#lib/components/ui/navigation-menu/index.js';
+	import { primaryNav, navGroups } from '#lib/data/navigation.js';
 
 	let { children } = $props();
 
-  // 增强运动效果的初始化
-  function enhanceMotion() {
-    if (typeof document === 'undefined') return;
-    
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReduced) return;
-    
-    // 为按钮添加按压效果
-    document.querySelectorAll('button, [role="button"], a').forEach((el) => {
-      el.addEventListener('pointerdown', (e) => {
-        const target = e.currentTarget as HTMLElement;
-        // 简单的按压缩放
-        target.style.transform = 'scale(0.97)';
-        target.style.transition = 'transform 100ms ease-out';
-        
-        // 自动恢复
-        setTimeout(() => {
-          target.style.transform = '';
-          target.style.transition = '';
-        }, 100);
-      });
-    });
-    
-    // 为卡片添加悬浮效果
-    document.querySelectorAll('.card').forEach((card) => {
-      card.addEventListener('mouseenter', () => {
-        (card as HTMLElement).style.transform = 'translateY(-2px)';
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        (card as HTMLElement).style.transform = '';
-      });
-    });
-  }
+	// 增强运动效果的初始化
+	function enhanceMotion() {
+		if (typeof document === 'undefined') return;
 
+		const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		if (prefersReduced) return;
+
+		// 为按钮添加按压效果
+		document.querySelectorAll('button, [role="button"], a').forEach((el) => {
+			el.addEventListener('pointerdown', (e) => {
+				const target = e.currentTarget as HTMLElement;
+				// 简单的按压缩放
+				target.style.transform = 'scale(0.97)';
+				target.style.transition = 'transform 100ms ease-out';
+
+				// 自动恢复
+				setTimeout(() => {
+					target.style.transform = '';
+					target.style.transition = '';
+				}, 100);
+			});
+		});
+
+		// 为卡片添加悬浮效果
+		document.querySelectorAll('.card').forEach((card) => {
+			card.addEventListener('mouseenter', () => {
+				(card as HTMLElement).style.transform = 'translateY(-2px)';
+			});
+
+			card.addEventListener('mouseleave', () => {
+				(card as HTMLElement).style.transform = '';
+			});
+		});
+	}
 
 	const isAdminRoute = $derived(deLocalizeUrl(page.url.href).pathname.startsWith('/admin'));
 
@@ -89,7 +88,7 @@
 		return { title, description, canonical, ogImage, path, robots, ogType };
 	});
 
-  const supportedLocales = locales as unknown as string[];
+	const supportedLocales = locales;
 	const siteUrl = baseUrl;
 
 	const organizationSchema = {
@@ -136,15 +135,14 @@
 		return items.some((i) => isActive(pathname, i.href));
 	}
 
-  let lastScrollY = 0;
-  let headerHidden = $state(false);
-  let headerHasContent = $state(false);
+	let lastScrollY = 0;
+	let headerHidden = $state(false);
+	let headerHasContent = $state(false);
 
-  // 增强运动效果的初始化
-  $effect(() => {
-    enhanceMotion();
-  });
-
+	// 增强运动效果的初始化
+	$effect(() => {
+		enhanceMotion();
+	});
 
 	// Real-user Core Web Vitals -> /api/vitals -> Analytics Engine (once per load).
 	// $effect only runs in the browser, so no browser guard is needed.
@@ -301,7 +299,10 @@
 						onclick={() => {
 							document.documentElement.classList.add('theme-transitioning');
 							toggleMode();
-							setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+							setTimeout(
+								() => document.documentElement.classList.remove('theme-transitioning'),
+								400
+							);
 						}}
 					>
 						{#if mode.current === 'dark'}
@@ -408,13 +409,15 @@
 			</div>
 		</header>
 
-		<main class="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 pt-3 pb-12 sm:space-y-6 sm:px-6 sm:pt-4 sm:pb-8">
+		<main
+			class="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 pt-3 pb-12 sm:space-y-6 sm:px-6 sm:pt-4 sm:pb-8"
+		>
 			{@render children()}
 		</main>
 
 		<footer class="border-t border-border/50 bg-muted/30">
 			<div class="mx-auto max-w-7xl px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-3">
-				<div class="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-7">
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-7">
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
 						<a href={localizeHref('/')} class="flex items-center gap-2">
@@ -476,11 +479,13 @@
 						</nav>
 					{/each}
 				</div>
-			<div class="mt-2 flex items-center justify-center border-t border-border/50 pt-2 sm:justify-between sm:mt-3 sm:pt-2">
-				<p class="text-[10px] text-muted-foreground sm:text-xs">
-					© {new Date().getFullYear()} HalalNeo. All rights reserved.
-				</p>
-			</div>
+				<div
+					class="mt-2 flex items-center justify-center border-t border-border/50 pt-2 sm:mt-3 sm:justify-between sm:pt-2"
+				>
+					<p class="text-[10px] text-muted-foreground sm:text-xs">
+						© {new Date().getFullYear()} HalalNeo. All rights reserved.
+					</p>
+				</div>
 			</div>
 		</footer>
 
@@ -488,4 +493,3 @@
 	{/if}
 	<BackToTop />
 </div>
-

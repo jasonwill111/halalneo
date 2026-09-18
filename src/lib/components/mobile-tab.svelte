@@ -57,10 +57,11 @@
 	}
 
 	function updateIndicator(key: string) {
-		const el = tabRefs[key];
-		if (el) {
+		// explore/menu are <Button> refs, not part of tabRefs
+		const el = key === 'explore' ? exploreBtnEl : key === 'menu' ? menuBtnEl : tabRefs[key];
+		if (el && el.parentElement) {
 			const rect = el.getBoundingClientRect();
-			const parentRect = el.parentElement!.getBoundingClientRect();
+			const parentRect = el.parentElement.getBoundingClientRect();
 			indicatorX = rect.left - parentRect.left;
 			indicatorWidth = rect.width;
 		}
@@ -112,15 +113,56 @@
 		}
 	}
 
-	$effect(() => {
-		const path = page.url.pathname;
-		const keys = ['/', '/categories', '/products', 'explore', 'menu'];
-		for (const key of keys) {
-			if (key === '/' && path === '/') { updateIndicator(key); break; }
-			if (key !== '/' && key !== 'explore' && key !== 'menu' && path.startsWith(key)) { updateIndicator(key); break; }
-			if (key === 'explore' && showExplore) { updateIndicator(key); break; }
-			if (key === 'menu' && showMenu) { updateIndicator(key); break; }
+	// Robust pill sync: always recompute from the live DOM so it works on
+	// first hydration (refs not yet bound) and on every route change.
+	function positionPill(targetKey: string) {
+		const bar = document.querySelector('[data-tab-bar]');
+		if (!bar) return;
+		const sel =
+			targetKey === '/'
+				? 'a[data-tab="home"]'
+				: targetKey === '/categories'
+					? 'a[data-tab="categories"]'
+					: targetKey === '/products'
+						? 'a[data-tab="products"]'
+						: targetKey === 'explore'
+							? '[data-tab="explore"]'
+							: '[data-tab="menu"]';
+		const activeEl = bar.querySelector(sel);
+		if (activeEl) {
+			const r = activeEl.getBoundingClientRect();
+			const pr = bar.getBoundingClientRect();
+			indicatorX = r.left - pr.left;
+			indicatorWidth = r.width;
 		}
+	}
+
+	$effect(() => {
+		const path = deLocalizeUrl(page.url.href).pathname;
+		const showE = showExplore;
+		const showM = showMenu;
+		void path;
+		void showE;
+		void showM;
+
+		if (showM) {
+			requestAnimationFrame(() => positionPill('menu'));
+			return;
+		}
+		if (showE) {
+			requestAnimationFrame(() => positionPill('explore'));
+			return;
+		}
+
+		const keys = ['/', '/categories', '/products'];
+		let target = '/';
+		for (const key of keys) {
+			if (key === '/' ? path === '/' : path.startsWith(key)) {
+				target = key;
+				break;
+			}
+		}
+		requestAnimationFrame(() => positionPill(target));
 	});
 </script>
 
@@ -151,7 +193,9 @@
 		<div class="space-y-2">
 			{#each exploreGroups as group (group.label)}
 				<div>
-					<p class="px-2 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
+					<p
+						class="px-2 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+					>
 						{group.label}
 					</p>
 					<div class="space-y-0.5">
@@ -177,7 +221,7 @@
 	</div>
 {/if}
 
-	<!-- Menu Popover -->
+<!-- Menu Popover -->
 {#if showMenu}
 	<div
 		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl p-2 md:hidden"
@@ -212,6 +256,7 @@
 	aria-label="Mobile navigation"
 >
 	<div
+		data-tab-bar
 		class="relative flex items-center justify-evenly rounded-xl border border-foreground/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-foreground/10"
 		style="width: min(90vw, 360px);"
 	>
@@ -223,6 +268,7 @@
 
 		<!-- Home -->
 		<a
+			data-tab="home"
 			href={localizeHref('/')}
 			onclick={closeAll}
 			bind:this={tabRefs['/']}
@@ -237,6 +283,7 @@
 
 		<!-- Categories -->
 		<a
+			data-tab="categories"
 			href={localizeHref('/categories')}
 			onclick={closeAll}
 			bind:this={tabRefs['/categories']}
@@ -251,6 +298,7 @@
 
 		<!-- Products -->
 		<a
+			data-tab="products"
 			href={localizeHref('/products')}
 			onclick={closeAll}
 			bind:this={tabRefs['/products']}
@@ -265,9 +313,13 @@
 
 		<!-- Explore -->
 		<Button
+			data-tab="explore"
 			variant="ghost"
 			bind:ref={exploreBtnEl}
-			onclick={(e) => { e.stopPropagation(); toggleExplore(); }}
+			onclick={(e) => {
+				e.stopPropagation();
+				toggleExplore();
+			}}
 			class={cn(
 				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
 				showExplore ? 'text-primary' : 'text-muted-foreground'
@@ -280,9 +332,13 @@
 
 		<!-- Menu -->
 		<Button
+			data-tab="menu"
 			variant="ghost"
 			bind:ref={menuBtnEl}
-			onclick={(e) => { e.stopPropagation(); toggleMenu(); }}
+			onclick={(e) => {
+				e.stopPropagation();
+				toggleMenu();
+			}}
 			class={cn(
 				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
 				showMenu ? 'text-primary' : 'text-muted-foreground'

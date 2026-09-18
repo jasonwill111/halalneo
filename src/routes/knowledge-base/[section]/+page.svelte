@@ -5,7 +5,7 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
 
-	let { data, itemList, collectionPage } = $props();
+	let { data } = $props();
 
 	const PAGE_SIZE = 9;
 	let page = $state(1);
@@ -15,8 +15,8 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
-	{@html `<script type="application/ld+json">${JSON.stringify(collectionPage ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.collectionPage ?? {})}</script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">
@@ -39,7 +39,9 @@
 							<CardTitle class="text-sm sm:text-lg">{article.title}</CardTitle>
 						</CardHeader>
 						<CardContent class="space-y-3">
-							<p class="hidden text-xs text-muted-foreground sm:line-clamp-3 sm:text-sm">{article.summary}</p>
+							<p class="hidden text-xs text-muted-foreground sm:line-clamp-3 sm:text-sm">
+								{article.summary}
+							</p>
 							<Button
 								href={localizeHref(`/knowledge-base/${data.item.slug}/${article.slug}`)}
 								variant="outline"
@@ -57,7 +59,9 @@
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
 				<p class="text-lg text-muted-foreground">Knowledge base section coming soon.</p>
-				<Button href={localizeHref('/knowledge-base')} variant="outline">Browse Knowledge Base</Button>
+				<Button href={localizeHref('/knowledge-base')} variant="outline"
+					>Browse Knowledge Base</Button
+				>
 			</div>
 		</div>
 	{/if}

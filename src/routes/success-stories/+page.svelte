@@ -5,20 +5,25 @@
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import TrophyIcon from '@lucide/svelte/icons/trophy';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription
+	} from '#lib/components/ui/empty/index.js';
 
-	let { data, itemList } = $props();
+	let { data } = $props();
 
 	let page = $state(1);
 	const PAGE_SIZE = 9;
 
 	const stories = $derived((data.stories ?? []) as any[]);
 	const totalPages = $derived(Math.max(1, Math.ceil(stories.length / PAGE_SIZE)));
-		const paged = $derived(stories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+	const paged = $derived(stories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Success Stories', href: '/success-stories' }]} />
@@ -39,7 +44,9 @@
 		<Empty>
 			<EmptyMedia><TrophyIcon class="size-6 text-muted-foreground"></TrophyIcon></EmptyMedia>
 			<EmptyTitle>First success stories are on the way</EmptyTitle>
-			<EmptyDescription>Closed a deal through HalalNeo? Tell us — we feature real trades.</EmptyDescription>
+			<EmptyDescription
+				>Closed a deal through HalalNeo? Tell us — we feature real trades.</EmptyDescription
+			>
 		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
@@ -50,7 +57,7 @@
 				>
 					<div class="flex flex-wrap items-center gap-1.5">
 						{#if s.dealValue}
-							<Badge class="bg-success/15 text-success text-[10px]">{s.dealValue}</Badge>
+							<Badge class="bg-success/15 text-[10px] text-success">{s.dealValue}</Badge>
 						{/if}
 						{#if s.buyerCountry}
 							<span class="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
@@ -59,11 +66,15 @@
 							</span>
 						{/if}
 					</div>
-					<h3 class="mt-1.5 line-clamp-2 text-xs font-semibold leading-snug transition-colors group-hover:text-primary sm:text-sm">
+					<h3
+						class="mt-1.5 line-clamp-2 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
+					>
 						{s.title}
 					</h3>
 					{#if s.excerpt}
-						<p class="mt-1 line-clamp-2 hidden text-[11px] leading-snug text-muted-foreground sm:block">
+						<p
+							class="mt-1 line-clamp-2 hidden text-[11px] leading-snug text-muted-foreground sm:block"
+						>
 							{s.excerpt}
 						</p>
 					{/if}

@@ -18,7 +18,7 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import X from '@lucide/svelte/icons/x';
 
-	let { data, itemList } = $props();
+	let { data } = $props();
 
 	type ProviderType =
 		'certification' | 'logistics' | 'finance' | 'payment' | 'insurance' | 'consulting';
@@ -141,7 +141,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }]} />
@@ -173,7 +173,7 @@
 
 <div class="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:gap-5">
 	<aside class="w-full shrink-0 lg:w-56">
-		<div class="rounded-xl bg-card p-3 sm:p-4 ring-1 ring-foreground/10 lg:sticky lg:top-20">
+		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:p-4 lg:sticky lg:top-20">
 			<div class="mb-4 flex items-center justify-between">
 				<h2 class="text-sm font-semibold">Filters</h2>
 				<Button
@@ -212,7 +212,7 @@
 				</Select>
 			</div>
 
-		<div class="mb-2">
+			<div class="mb-2">
 				<h3 class="mb-2.5 text-xs font-semibold">Rating</h3>
 				<ToggleGroup.Root
 					type="single"
@@ -225,7 +225,9 @@
 				>
 					<ToggleGroup.Item value="" class="justify-start text-xs">Any rating</ToggleGroup.Item>
 					{#each [{ val: '4.5', label: '4.5 & up' }, { val: '4.0', label: '4.0 & up' }, { val: '3.5', label: '3.5 & up' }] as r (r.val)}
-						<ToggleGroup.Item value={r.val} class="justify-start text-xs">{r.label}</ToggleGroup.Item>
+						<ToggleGroup.Item value={r.val} class="justify-start text-xs"
+							>{r.label}</ToggleGroup.Item
+						>
 					{/each}
 				</ToggleGroup.Root>
 			</div>
@@ -234,7 +236,7 @@
 
 	<div class="min-w-0 flex-1">
 		<div class="relative mb-4">
-			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search providers by name..."
@@ -306,8 +308,8 @@
 									{provider.name}
 								</h3>
 								{#if provider.rating && provider.rating >= 4.7}
-								<Star class="size-4 shrink-0 fill-primary text-primary" />
-							{/if}
+									<Star class="size-4 shrink-0 fill-primary text-primary" />
+								{/if}
 							</div>
 							<p class="truncate text-xs text-muted-foreground">{provider.country}</p>
 						</div>
@@ -318,7 +320,9 @@
 							>{typeLabel(provider.type)}</span
 						>
 					</div>
-					<div class="mb-3 grid grid-cols-3 gap-1.5 rounded-xl bg-muted/50 p-2 text-center sm:mb-4 sm:gap-2 sm:p-3">
+					<div
+						class="mb-3 grid grid-cols-3 gap-1.5 rounded-xl bg-muted/50 p-2 text-center sm:mb-4 sm:gap-2 sm:p-3"
+					>
 						<div>
 							<div class="text-sm font-bold sm:text-base">{provider.rating ?? '–'}</div>
 							<div class="text-[10px] text-muted-foreground">Rating</div>
@@ -333,7 +337,9 @@
 						</div>
 					</div>
 					{#if provider.description}
-						<p class="mb-3 hidden line-clamp-2 text-xs text-muted-foreground sm:mb-4 sm:block">{provider.description}</p>
+						<p class="mb-3 line-clamp-2 hidden text-xs text-muted-foreground sm:mb-4 sm:block">
+							{provider.description}
+						</p>
 					{/if}
 					<div class="flex gap-2">
 						<Button

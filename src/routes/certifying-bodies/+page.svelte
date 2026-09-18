@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
-	import {
-		Card,
-		CardContent,
-		CardTitle
-	} from '#lib/components/ui/card/index.js';
+	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
@@ -14,7 +10,7 @@
 	import { getRegion } from '#lib/utils/region.js';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 
-	let { data, itemList } = $props();
+	let { data } = $props();
 
 	const regions = [
 		{ label: 'All regions', value: '' },
@@ -60,7 +56,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(itemList ?? {})}</script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
@@ -100,10 +96,7 @@
 						<div class="min-w-0 flex-1">
 							<div class="flex items-center justify-between gap-2">
 								<CardTitle class="truncate text-sm transition-colors group-hover:text-primary">
-									<a
-										href={localizeHref(`/certifying-bodies/${body.id}`)}
-										class="block h-full"
-									>
+									<a href={localizeHref(`/certifying-bodies/${body.id}`)} class="block h-full">
 										{body.name}
 									</a>
 								</CardTitle>

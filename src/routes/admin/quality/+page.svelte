@@ -70,19 +70,6 @@
 			total: 8
 		}
 	];
-
-	// Function to fetch real quality metrics
-	async function refreshData() {
-		const response = await fetch('/api/admin/quality');
-		if (response.ok) {
-			const data = await response.json();
-			// Update dataCounts and qualityMetrics with real data
-		}
-	}
 </script>
 
-<QualityDashboard
-	dataCounts={mockDataCounts}
-	qualityMetrics={mockQualityMetrics}
-	on:refresh={refreshData}
-/>
+<QualityDashboard dataCounts={mockDataCounts} qualityMetrics={mockQualityMetrics} />

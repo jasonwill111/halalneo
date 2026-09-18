@@ -18,6 +18,9 @@ declare global {
 			user?: User;
 			session?: Session;
 			auth: ReturnType<typeof createAuth>;
+			saveData?: boolean;
+			ect?: string | null;
+			isLowBandwidth?: boolean;
 		}
 
 		// interface Error {}
