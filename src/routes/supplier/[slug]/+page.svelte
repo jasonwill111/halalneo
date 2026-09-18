@@ -73,8 +73,8 @@
 				fetch(`/api/follows?countFor=${encodeURIComponent(slug)}`),
 				fetch('/api/supplier-memberships')
 			]);
-			if (stRes.ok) following = (((await stRes.json()) as any).following ?? false);
-			if (countRes.ok) followerCount = (((await countRes.json()) as any).count ?? 0);
+			if (stRes.ok) following = ((await stRes.json()) as any).following ?? false;
+			if (countRes.ok) followerCount = ((await countRes.json()) as any).count ?? 0;
 			if (memRes.ok) {
 				const j = (await memRes.json()) as any;
 				isOwner = (j.items ?? []).some((m: any) => m.supplierSlug === slug);
@@ -89,7 +89,9 @@
 		if (!slug) return;
 		try {
 			if (following) {
-				const res = await fetch(`/api/follows?supplierSlug=${encodeURIComponent(slug)}`, { method: 'DELETE' });
+				const res = await fetch(`/api/follows?supplierSlug=${encodeURIComponent(slug)}`, {
+					method: 'DELETE'
+				});
 				if (res.ok) {
 					following = false;
 					followerCount = Math.max(0, followerCount - 1);
@@ -124,8 +126,10 @@
 		const slug = data.item?.slug;
 		if (!slug) return;
 		try {
-			const res = await fetch(`/api/supplier-updates?supplierSlug=${encodeURIComponent(slug)}&limit=5`);
-			if (res.ok) updates = (((await res.json()) as any).items ?? []);
+			const res = await fetch(
+				`/api/supplier-updates?supplierSlug=${encodeURIComponent(slug)}&limit=5`
+			);
+			if (res.ok) updates = ((await res.json()) as any).items ?? [];
 		} catch {
 			updates = [];
 		}
@@ -226,7 +230,7 @@
 				inquiryEmail = '';
 				inquiryFieldErrors = {};
 			} else {
-				const errBody = ((await res.json()) as any);
+				const errBody = (await res.json()) as any;
 				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
 				if (res.status === 400 && errBody.details) {
 					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
@@ -250,12 +254,15 @@
 	function fmtShortDate(v: unknown): string {
 		if (!v) return '';
 		const d = new Date(String(v));
-		return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+		return isNaN(d.getTime())
+			? ''
+			: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 	}
 
 	function typeBadgeCls(type?: string | null): string {
 		if (type === 'manufacturer') return 'bg-info/10 text-info border-info/20';
-		if (type === 'wholesaler') return 'bg-accent-purple/10 text-accent-purple border-accent-purple/20';
+		if (type === 'wholesaler')
+			return 'bg-accent-purple/10 text-accent-purple border-accent-purple/20';
 		if (type === 'trader') return 'bg-accent-rose/10 text-accent-rose border-accent-rose/20';
 		return '';
 	}
@@ -295,7 +302,18 @@
 			try {
 				arr = JSON.parse(raw);
 			} catch {
-				return [{ name: raw, bodyId: '', country: '', standard: '', scope: '', number: '', expiry: '', status: 'certified' }];
+				return [
+					{
+						name: raw,
+						bodyId: '',
+						country: '',
+						standard: '',
+						scope: '',
+						number: '',
+						expiry: '',
+						status: 'certified'
+					}
+				];
 			}
 		} else {
 			arr = raw;
@@ -303,7 +321,16 @@
 		if (!Array.isArray(arr)) return [];
 		return arr.map((c: any) => {
 			if (typeof c === 'string')
-				return { name: c, bodyId: '', country: '', standard: '', scope: '', number: '', expiry: '', status: 'certified' };
+				return {
+					name: c,
+					bodyId: '',
+					country: '',
+					standard: '',
+					scope: '',
+					number: '',
+					expiry: '',
+					status: 'certified'
+				};
 			return {
 				name: c.body?.name ?? c.name ?? c.bodyId ?? 'Certified',
 				bodyId: c.body?.id ?? c.bodyId ?? '',
@@ -332,7 +359,10 @@
 				const parsed = JSON.parse(raw);
 				if (Array.isArray(parsed)) return parsed.filter(Boolean).map(String);
 			} catch {
-				return raw.split(/[,;]/).map((s: string) => s.trim()).filter(Boolean);
+				return raw
+					.split(/[,;]/)
+					.map((s: string) => s.trim())
+					.filter(Boolean);
 			}
 		}
 		return [];
@@ -428,18 +458,26 @@
 				</p>
 				<div class="mt-1 flex flex-wrap gap-1">
 					{#if item.status === 'active'}
-						<span class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
+						<span
+							class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success"
+						>
 							<ShieldCheck class="size-2.5"></ShieldCheck>
 							Verified
 						</span>
 					{/if}
 					{#if item.country}
-						<Badge variant="outline" class="text-[10px] font-medium {regionBadgeClass(getRegion(item.country))}">
+						<Badge
+							variant="outline"
+							class="text-[10px] font-medium {regionBadgeClass(getRegion(item.country))}"
+						>
 							{item.country}
 						</Badge>
 					{/if}
 					{#if item.businessType}
-						<Badge variant="outline" class="text-[10px] font-medium capitalize {typeBadgeCls(item.businessType)}">
+						<Badge
+							variant="outline"
+							class="text-[10px] font-medium capitalize {typeBadgeCls(item.businessType)}"
+						>
 							{item.businessType}
 						</Badge>
 					{/if}
@@ -524,7 +562,11 @@
 		<div class="mb-4 grid grid-cols-2 gap-1 sm:grid-cols-4">
 			<StatTile value={products.length} label="Products" tone="primary" />
 			<StatTile value={certifications.length} label="Certifications" tone="success" />
-			<StatTile value={mainMarkets.length > 0 ? mainMarkets.length : (item.mainMarkets?.length ?? '—')} label="Markets" tone="info" />
+			<StatTile
+				value={mainMarkets.length > 0 ? mainMarkets.length : (item.mainMarkets?.length ?? '—')}
+				label="Markets"
+				tone="info"
+			/>
 			<StatTile value={item.yearEstablished ?? '—'} label="Est." tone="success" />
 		</div>
 
@@ -550,7 +592,9 @@
 										<div class="flex items-start justify-between gap-2">
 											<div class="flex items-center gap-1.5">
 												<div
-													class="flex size-6 shrink-0 items-center justify-center rounded-lg {expired ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'}"
+													class="flex size-6 shrink-0 items-center justify-center rounded-lg {expired
+														? 'bg-destructive/10 text-destructive'
+														: 'bg-success/10 text-success'}"
 												>
 													<ShieldCheck class="size-3.5"></ShieldCheck>
 												</div>
@@ -568,7 +612,9 @@
 											{#if expired}
 												<Badge variant="destructive" class="shrink-0 text-[10px]">Expired</Badge>
 											{:else if cert.status}
-												<Badge variant="secondary" class="shrink-0 text-[10px] capitalize">{cert.status}</Badge>
+												<Badge variant="secondary" class="shrink-0 text-[10px] capitalize"
+													>{cert.status}</Badge
+												>
 											{/if}
 										</div>
 										{#if cert.scope}
@@ -576,13 +622,24 @@
 										{/if}
 										<dl class="space-y-0.5 text-[10px]">
 											{#if cert.standard}
-												<div class="flex justify-between gap-2"><dt class="text-muted-foreground">Standard</dt><dd class="font-medium">{cert.standard}</dd></div>
+												<div class="flex justify-between gap-2">
+													<dt class="text-muted-foreground">Standard</dt>
+													<dd class="font-medium">{cert.standard}</dd>
+												</div>
 											{/if}
 											{#if cert.number}
-												<div class="flex justify-between gap-2"><dt class="text-muted-foreground">Certificate</dt><dd class="font-medium">{cert.number}</dd></div>
+												<div class="flex justify-between gap-2">
+													<dt class="text-muted-foreground">Certificate</dt>
+													<dd class="font-medium">{cert.number}</dd>
+												</div>
 											{/if}
 											{#if cert.expiry}
-												<div class="flex justify-between gap-2"><dt class="text-muted-foreground">Valid until</dt><dd class="font-medium {expired ? 'text-destructive' : ''}">{cert.expiry}</dd></div>
+												<div class="flex justify-between gap-2">
+													<dt class="text-muted-foreground">Valid until</dt>
+													<dd class="font-medium {expired ? 'text-destructive' : ''}">
+														{cert.expiry}
+													</dd>
+												</div>
 											{/if}
 										</dl>
 									</CardContent>
@@ -602,7 +659,7 @@
 							{#each products as product, i (product.slug)}
 								<a
 									href={localizeHref(`/product/${product.slug}`)}
-									class="group flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
+									class="group press-scale flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 								>
 									<div class="relative aspect-[16/10] overflow-hidden rounded-t-xl bg-muted">
 										{#if product.image}
@@ -613,19 +670,27 @@
 												loading="lazy"
 											/>
 										{:else}
-											<div class="flex h-full w-full items-center justify-center {TILE_COLORS[i % TILE_COLORS.length]}">
+											<div
+												class="flex h-full w-full items-center justify-center {TILE_COLORS[
+													i % TILE_COLORS.length
+												]}"
+											>
 												<Package class="size-6 opacity-60"></Package>
 											</div>
 										{/if}
 										{#if product.certStatus === 'certified'}
-											<span class="absolute top-1 left-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-[9px] font-semibold text-success">
+											<span
+												class="absolute top-1 left-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-[9px] font-semibold text-success"
+											>
 												<ShieldCheck class="size-2.5"></ShieldCheck>
 												Cert
 											</span>
 										{/if}
 									</div>
 									<div class="flex flex-1 flex-col gap-1 p-2.5">
-										<h3 class="line-clamp-2 text-[11px] font-medium leading-snug transition-colors group-hover:text-primary">
+										<h3
+											class="line-clamp-2 text-[11px] leading-snug font-medium transition-colors group-hover:text-primary"
+										>
 											{product.name}
 										</h3>
 										<div class="mt-auto flex items-center justify-between gap-1.5">
@@ -633,7 +698,9 @@
 												{productPrice(product) || (product.moq ? `MOQ ${product.moq}` : '')}
 											</span>
 											{#if product.moq && product.priceMin}
-												<span class="truncate text-[9px] text-muted-foreground">MOQ {product.moq}</span>
+												<span class="truncate text-[9px] text-muted-foreground"
+													>MOQ {product.moq}</span
+												>
 											{/if}
 										</div>
 									</div>
@@ -675,8 +742,11 @@
 						</div>
 					{/if}
 					{#if updates.length === 0}
-						<p class="rounded-xl bg-muted/40 px-3 py-4 text-center text-[11px] text-muted-foreground">
-							No updates yet. {#if isOwner}Post the first one above.{:else}Follow this supplier to see their news here.{/if}
+						<p
+							class="rounded-xl bg-muted/40 px-3 py-4 text-center text-[11px] text-muted-foreground"
+						>
+							No updates yet. {#if isOwner}Post the first one above.{:else}Follow this supplier to
+								see their news here.{/if}
 						</p>
 					{:else}
 						<div class="space-y-2">
@@ -684,7 +754,9 @@
 								<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 									<p class="text-xs leading-relaxed">{u.body}</p>
 									{#if fmtShortDate(u.createdAt)}
-										<p class="mt-1.5 text-[10px] text-muted-foreground">{fmtShortDate(u.createdAt)}</p>
+										<p class="mt-1.5 text-[10px] text-muted-foreground">
+											{fmtShortDate(u.createdAt)}
+										</p>
 									{/if}
 								</div>
 							{/each}
@@ -693,7 +765,7 @@
 				</section>
 			</div>
 
-			<aside class="min-w-0 space-y-3 sm:space-y-4 lg:col-span-2 lg:sticky lg:top-20 lg:self-start">
+			<aside class="min-w-0 space-y-3 sm:space-y-4 lg:sticky lg:top-20 lg:col-span-2 lg:self-start">
 				<!-- Company facts -->
 				<Card class="p-4">
 					<CardTitle class="mb-3 text-sm">Company facts</CardTitle>
@@ -776,13 +848,19 @@
 							</a>
 						{/if}
 						{#if item.email}
-							<a href="mailto:{item.email}" class="flex items-center gap-2 font-medium hover:text-primary">
+							<a
+								href="mailto:{item.email}"
+								class="flex items-center gap-2 font-medium hover:text-primary"
+							>
 								<Mail class="size-3.5 shrink-0 text-muted-foreground" />
 								<span class="truncate">{item.email}</span>
 							</a>
 						{/if}
 						{#if item.phone}
-							<a href="tel:{item.phone}" class="flex items-center gap-2 font-medium hover:text-primary">
+							<a
+								href="tel:{item.phone}"
+								class="flex items-center gap-2 font-medium hover:text-primary"
+							>
 								<Phone class="size-3.5 shrink-0 text-muted-foreground" />
 								{item.phone}
 							</a>
@@ -800,19 +878,26 @@
 						{/if}
 						{#if item.line}
 							<a
-								href={item.line.startsWith('http') ? item.line : `https://line.me/R/ti/p/@${item.line}`}
+								href={item.line.startsWith('http')
+									? item.line
+									: `https://line.me/R/ti/p/@${item.line}`}
 								target="_blank"
 								rel="noopener"
 								class="flex items-center gap-2 font-medium hover:text-primary"
 							>
-								<span class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-[7px] font-black text-success">L</span>
-								LINE<span class="truncate text-[10px] font-normal text-muted-foreground">{item.line}</span>
+								<span
+									class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-[7px] font-black text-success"
+									>L</span
+								>
+								LINE<span class="truncate text-[10px] font-normal text-muted-foreground"
+									>{item.line}</span
+								>
 							</a>
 						{/if}
 						{#if !hasDirectContact}
 							<p class="text-[11px] leading-relaxed text-muted-foreground">
-								This supplier has not listed direct contact details. Send an inquiry and
-								they typically respond within 2 business days.
+								This supplier has not listed direct contact details. Send an inquiry and they
+								typically respond within 2 business days.
 							</p>
 						{/if}
 						<Button
@@ -897,8 +982,8 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquiryEmail}<FieldError
-					>{inquiryFieldErrors.inquiryEmail}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquiryEmail}</FieldError
+					>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Subject</FieldLabel>
@@ -913,25 +998,25 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquirySubject}<FieldError
-					>{inquiryFieldErrors.inquirySubject}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquirySubject}</FieldError
+					>{/if}
 			</Field>
-		<Field>
-			<FieldLabel>Message</FieldLabel>
-			<Textarea
-				bind:value={inquiryMessage}
-				placeholder="I'm interested in..."
-				rows={4}
-				aria-invalid={inquiryFieldErrors.inquiryMessage ? true : undefined}
-				oninput={() => {
-					if (inquiryFieldErrors.inquiryMessage)
-						inquiryFieldErrors = { ...inquiryFieldErrors, inquiryMessage: '' };
-				}}
-			/>
-			{#if inquiryFieldErrors.inquiryMessage}<FieldError
-				>{inquiryFieldErrors.inquiryMessage}</FieldError
-			>{/if}
-		</Field>
+			<Field>
+				<FieldLabel>Message</FieldLabel>
+				<Textarea
+					bind:value={inquiryMessage}
+					placeholder="I'm interested in..."
+					rows={4}
+					aria-invalid={inquiryFieldErrors.inquiryMessage ? true : undefined}
+					oninput={() => {
+						if (inquiryFieldErrors.inquiryMessage)
+							inquiryFieldErrors = { ...inquiryFieldErrors, inquiryMessage: '' };
+					}}
+				/>
+				{#if inquiryFieldErrors.inquiryMessage}<FieldError
+						>{inquiryFieldErrors.inquiryMessage}</FieldError
+					>{/if}
+			</Field>
 			<DialogFooter>
 				<Button
 					type="submit"

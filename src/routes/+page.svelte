@@ -195,11 +195,15 @@
 						variant="ghost"
 						size="icon"
 						onclick={() => goToSlide(i)}
-						class="size-1.5 rounded-full p-0 sm:size-2 {i === currentSlide
-							? 'bg-primary hover:bg-primary/80'
-							: 'bg-muted-foreground/30 hover:bg-muted-foreground/50'}"
+						class="flex size-11 items-center justify-center !bg-transparent hover:!bg-transparent"
 						aria-label="Go to slide {i + 1}"
-					></Button>
+					>
+						<span
+							class="size-1.5 rounded-full transition-colors sm:size-2 {i === currentSlide
+								? 'bg-primary'
+								: 'bg-muted-foreground/30'}"
+						></span>
+					</Button>
 				{/each}
 			</div>
 		</div>
@@ -237,7 +241,7 @@
 		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-accent-purple', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
-				class="group flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
+				class="group press-scale flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
 			>
 				<tool.icon class="size-4 shrink-0 {tool.tone} sm:size-6" />
 				<div class="min-w-0">
@@ -260,7 +264,7 @@
 		{#each data.categories.slice(0, 6) as category, i}
 			<a
 				href={localizeHref(`/category/${category.slug}`)}
-				class="group flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+				class="group press-scale flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
 			>
 				<div
 					class="flex size-10 shrink-0 items-center justify-center rounded-lg {categoryColors[
@@ -297,15 +301,15 @@
 	</div>
 	<div class="mt-4 grid grid-cols-3 gap-3 sm:mx-auto sm:mt-6 sm:max-w-lg">
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
-			<p class="text-lg font-bold text-info">{data.stats.verifiedSuppliers}</p>
+			<p class="text-lg font-bold text-info tabular-nums">{data.stats.verifiedSuppliers}</p>
 			<p class="text-[10px] text-muted-foreground sm:text-xs">Verified suppliers</p>
 		</div>
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
-			<p class="text-lg font-bold text-warn">{data.stats.certifierCount}</p>
+			<p class="text-lg font-bold text-warn tabular-nums">{data.stats.certifierCount}</p>
 			<p class="text-[10px] text-muted-foreground sm:text-xs">Certifying bodies</p>
 		</div>
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
-			<p class="text-lg font-bold text-success">{data.stats.guideCount}</p>
+			<p class="text-lg font-bold text-success tabular-nums">{data.stats.guideCount}</p>
 			<p class="text-[10px] text-muted-foreground sm:text-xs">Market guides</p>
 		</div>
 	</div>
@@ -324,7 +328,7 @@
 		{#each [{ href: '/tools/ingredient-checker', name: 'Ingredient Checker', desc: 'AI verdict on halal, haram, mashbooh', icon: FlaskConical, tone: 'info' }, { href: '/tools/certification-cost', name: 'Cost Estimator', desc: 'Estimate registration fees by certifier', icon: Calculator, tone: 'warn' }, { href: '/tools/landed-cost', name: 'Landed Cost', desc: 'True per-unit cost with duties & fees', icon: Banknote, tone: 'success' }, { href: '/tools/rfq-builder', name: 'RFQ Builder', desc: 'Draft sourcing documents', icon: FileText, tone: 'accent-purple' }, { href: '/export-docs', name: 'Export Docs', desc: 'Templates for suppliers & importers', icon: FileText, tone: 'info' }] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
-				class="group flex flex-col gap-1.5 rounded-xl bg-card p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+				class="group press-scale flex flex-col gap-1.5 rounded-xl bg-card p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 			>
 				<div class="flex items-center justify-between">
 					<div
@@ -361,7 +365,7 @@
 		{#each data.kbArticles.slice(0, 6) as article}
 			<a
 				href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)}
-				class="group w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
+				class="group press-scale w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
 			>
 				<Badge variant="secondary" class="mb-1 text-[10px] sm:text-[10px]">{article.section}</Badge>
 				<h3
@@ -390,7 +394,7 @@
 		{#each [{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' }, { href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' }, { href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'accent-purple' }, { href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'accent-rose' }] as item (item.href)}
 			<a
 				href={localizeHref(item.href)}
-				class="group flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+				class="group press-scale flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
 			>
 				<div
 					class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${item.tone === 'info' ? 'bg-info/10 text-info' : item.tone === 'warn' ? 'bg-warn/10 text-warn' : item.tone === 'accent-purple' ? 'bg-accent-purple/10 text-accent-purple' : 'bg-accent-rose/10 text-accent-rose'}`}
@@ -464,7 +468,7 @@
 	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
 		<a
 			href="/verify"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<ShieldCheck class="size-5 text-success sm:size-6" />
@@ -476,7 +480,7 @@
 		</a>
 		<a
 			href="/tools/ingredient-checker"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<FlaskConical class="size-5 text-warn sm:size-6" />
@@ -488,7 +492,7 @@
 		</a>
 		<a
 			href="/tools/certification-cost"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<Calculator class="size-5 text-accent-purple sm:size-6" />
@@ -500,7 +504,7 @@
 		</a>
 		<a
 			href="/tools/landed-cost"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<Banknote class="size-5 text-accent-rose sm:size-6" />
@@ -512,7 +516,7 @@
 		</a>
 		<a
 			href="/tools/rfq-builder"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<FileText class="size-5 text-info sm:size-6" />
@@ -522,7 +526,7 @@
 		</a>
 		<a
 			href="/export-docs"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<Newspaper class="size-5 text-primary sm:size-6" />
@@ -548,7 +552,7 @@
 	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
 		<a
 			href="/market-guides"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<Globe class="size-5 sm:size-6" />
@@ -560,7 +564,7 @@
 		</a>
 		<a
 			href="/trade-shows"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<Calendar class="size-5 sm:size-6" />
@@ -572,7 +576,7 @@
 		</a>
 		<a
 			href="/faq"
-			class="animate-enter group relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
+			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
 		>
 			<div class="space-y-2">
 				<HelpCircle class="size-5 sm:size-6" />
@@ -586,7 +590,7 @@
 <!-- CTA -->
 <section
 	{@attach reveal}
-	class="rounded-xl bg-card p-3 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
+	class="rounded-xl border border-primary/15 bg-primary/[0.04] p-3 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
 >
 	<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">
 		Navigate halal trade with confidence

@@ -38,7 +38,7 @@
 		{#if loading}
 			<div class="skeleton h-6 w-12 rounded"></div>
 		{:else}
-			<div class="text-base font-bold sm:text-2xl {toneClass}">{value}</div>
+			<div class="text-base font-bold tabular-nums sm:text-2xl {toneClass}">{value}</div>
 		{/if}
 	</div>
 	<div class="truncate text-[10px] text-muted-foreground sm:text-xs">{label}</div>

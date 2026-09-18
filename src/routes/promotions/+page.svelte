@@ -9,7 +9,12 @@
 	import TagIcon from '@lucide/svelte/icons/tag';
 	import ClockIcon from '@lucide/svelte/icons/clock';
 	import PackageIcon from '@lucide/svelte/icons/package';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription
+	} from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -72,7 +77,7 @@
 	</div>
 
 	<div class="relative max-w-xs">
-		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
 		<Input type="search" placeholder="Search deals..." class="pl-9 text-xs" bind:value={query} />
 	</div>
 
@@ -80,28 +85,37 @@
 		<Empty>
 			<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
 			<EmptyTitle>No active deals right now</EmptyTitle>
-			<EmptyDescription>Suppliers publish clearance offers here — check back soon.</EmptyDescription>
+			<EmptyDescription>Suppliers publish clearance offers here — check back soon.</EmptyDescription
+			>
 		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as p (p.id)}
 				<a
 					href={localizeHref(`/promotions/${p.id}`)}
-					class="group relative flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale relative flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					{#if p.discountPct}
-						<span class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
+						<span
+							class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-[10px] font-bold text-destructive-foreground"
+						>
 							-{p.discountPct}%
 						</span>
 					{/if}
-					<p class="text-[10px] font-medium text-muted-foreground">{names[p.supplierSlug] ?? p.supplierSlug}</p>
-					<h3 class="mt-0.5 line-clamp-2 text-xs font-semibold leading-snug transition-colors group-hover:text-primary sm:text-sm">
+					<p class="text-[10px] font-medium text-muted-foreground">
+						{names[p.supplierSlug] ?? p.supplierSlug}
+					</p>
+					<h3
+						class="mt-0.5 line-clamp-2 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
+					>
 						{p.title}
 					</h3>
 					{#if priceText(p)}
 						<p class="mt-1 text-sm font-bold text-primary sm:text-base">{priceText(p)}</p>
 					{/if}
-					<div class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-[10px] text-muted-foreground">
+					<div
+						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-[10px] text-muted-foreground"
+					>
 						{#if p.moq}
 							<span>MOQ {p.moq}</span>
 						{/if}

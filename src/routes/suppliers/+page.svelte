@@ -223,7 +223,7 @@
 				{#each paged as s (s.slug)}
 					<a
 						href={localizeHref(`/supplier/${s.slug}`)}
-						class="group flex h-full flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
+						class="group press-scale flex h-full flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<div
 							class="flex h-24 items-center justify-center border-b border-foreground/10 bg-muted/50 p-3"

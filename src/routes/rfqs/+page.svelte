@@ -13,7 +13,12 @@
 	import PackageIcon from '@lucide/svelte/icons/package';
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import ClockIcon from '@lucide/svelte/icons/clock';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription
+	} from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
 
@@ -77,8 +82,8 @@
 			</div>
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Live sourcing needs</h1>
 			<p class="text-muted-foreground">
-				{filtered.length} open buying requests from halal buyers — quote directly, no middlemen.
-				Posting is free (1 request/week).
+				{filtered.length} open buying requests from halal buyers — quote directly, no middlemen. Posting
+				is free (1 request/week).
 			</p>
 		</div>
 		<Button href={localizeHref('/rfqs/new')} class="shrink-0 gap-1.5">
@@ -89,8 +94,13 @@
 
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div class="relative flex-1 sm:max-w-xs">
-			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-			<Input type="search" placeholder="Search requests..." class="pl-9 text-xs" bind:value={query} />
+			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<Input
+				type="search"
+				placeholder="Search requests..."
+				class="pl-9 text-xs"
+				bind:value={query}
+			/>
 		</div>
 		<FilterPills
 			options={categoryOptions}
@@ -103,7 +113,9 @@
 		<Empty>
 			<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
 			<EmptyTitle>No buying requests match these filters</EmptyTitle>
-			<EmptyDescription>Be the first — post your sourcing need and let suppliers quote.</EmptyDescription>
+			<EmptyDescription
+				>Be the first — post your sourcing need and let suppliers quote.</EmptyDescription
+			>
 			<Button href={localizeHref('/rfqs/new')} variant="outline" size="sm">Post a request</Button>
 		</Empty>
 	{:else}
@@ -111,20 +123,26 @@
 			{#each paged as r (r.id)}
 				<a
 					href={localizeHref(`/rfqs/${r.id}`)}
-					class="group flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					<div class="flex items-start justify-between gap-2">
-						<h3 class="line-clamp-2 text-xs font-semibold leading-snug transition-colors group-hover:text-primary sm:text-sm">
+						<h3
+							class="line-clamp-2 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
+						>
 							{r.title}
 						</h3>
 						{#if r.quantity}
 							<Badge variant="secondary" class="shrink-0 text-[10px]">{r.quantity}</Badge>
 						{/if}
 					</div>
-					<p class="mt-1.5 line-clamp-2 hidden text-[11px] leading-snug text-muted-foreground sm:block">
+					<p
+						class="mt-1.5 line-clamp-2 hidden text-[11px] leading-snug text-muted-foreground sm:block"
+					>
 						{r.description}
 					</p>
-					<div class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-[10px] text-muted-foreground">
+					<div
+						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-[10px] text-muted-foreground"
+					>
 						{#if r.destination}
 							<span class="inline-flex items-center gap-1">
 								<MapPinIcon class="size-3" />

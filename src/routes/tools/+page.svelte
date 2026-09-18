@@ -86,7 +86,9 @@
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each tools as tool}
 			<a href={localizeHref(tool.href)} class="group h-full">
-				<Card class="h-full p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4">
+				<Card
+					class="press-scale h-full p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+				>
 					<CardContent class="space-y-2 p-0 sm:space-y-2.5">
 						<div class="flex items-center justify-between">
 							<div

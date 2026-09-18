@@ -53,7 +53,7 @@
 			{#each paged as s (s.slug)}
 				<a
 					href={localizeHref(`/success-stories/${s.slug}`)}
-					class="group flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					<div class="flex flex-wrap items-center gap-1.5">
 						{#if s.dealValue}
