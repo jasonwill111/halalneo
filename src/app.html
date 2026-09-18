@@ -40,22 +40,25 @@
 			type="font/woff2"
 			crossorigin
 		/>
-		<!-- Google tag (gtag.js) — deferred; skipped when Save-Data is on -->
+		<!-- Google tag (gtag.js) — stub first so commands queue on dataLayer
+			 even before the library loads; skipped entirely when Save-Data is on.
+			 `send_page_view: false` because SvelteKit navigates client-side:
+			 each route change is reported manually (see root layout). -->
 		<script>
-			if (!navigator.connection?.saveData && !navigator.sendBeacon) {
+			window.dataLayer = window.dataLayer || [];
+			window.gtag = function gtag() {
+				window.dataLayer.push(arguments);
+			};
+			(function () {
+				var conn = navigator.connection;
+				if (conn && conn.saveData) return;
+				window.gtag('js', new Date());
+				window.gtag('config', 'G-7XP063VED4', { send_page_view: false });
 				var s = document.createElement('script');
 				s.async = true;
 				s.src = 'https://www.googletagmanager.com/gtag/js?id=G-7XP063VED4';
 				document.head.appendChild(s);
-			}
-		</script>
-		<script>
-			if (!navigator.connection?.saveData) {
-				window.dataLayer = window.dataLayer || [];
-				function gtag() { dataLayer.push(arguments); }
-				gtag('js', new Date());
-				gtag('config', 'G-7XP063VED4');
-			}
+			})();
 		</script>
 		%sveltekit.head%
 	</head>
@@ -63,10 +66,15 @@
 		<div style="display: contents">%sveltekit.body%</div>
 		<script>
 			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.register('/sw.js').then(function(reg) {
-					// Check for SW updates every 60 minutes
-					setInterval(function() { reg.update(); }, 3600000);
-				}).catch(function() {});
+				navigator.serviceWorker
+					.register('/sw.js')
+					.then(function (reg) {
+						// Check for SW updates every 60 minutes
+						setInterval(function () {
+							reg.update();
+						}, 3600000);
+					})
+					.catch(function () {});
 			}
 		</script>
 	</body>

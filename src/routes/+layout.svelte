@@ -27,8 +27,17 @@
 		navigationMenuTriggerStyle
 	} from '#lib/components/ui/navigation-menu/index.js';
 	import { primaryNav, navGroups } from '#lib/data/navigation.js';
+	import { afterNavigate } from '$app/navigation';
+	import { trackPageView } from '#lib/utils/analytics.js';
 
 	let { children } = $props();
+
+	// GA4 SPA tracking: report every client-side route change (covers the
+	// initial load too). No-op when analytics is unavailable.
+	afterNavigate((navigation) => {
+		const url = navigation.to?.url;
+		if (url) trackPageView(url, document.title);
+	});
 
 	// 增强运动效果的初始化
 	function enhanceMotion() {
