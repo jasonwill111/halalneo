@@ -195,7 +195,7 @@
 						variant="ghost"
 						size="icon"
 						onclick={() => goToSlide(i)}
-						class="flex size-11 items-center justify-center !bg-transparent hover:!bg-transparent"
+						class="flex size-11 items-center justify-center bg-transparent! hover:bg-transparent!"
 						aria-label="Go to slide {i + 1}"
 					>
 						<span
