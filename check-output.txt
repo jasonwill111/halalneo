@@ -1,5 +1,5 @@
 Already up to date
-Done in 753ms using pnpm v11.21.0
+Done in 726ms using pnpm v11.21.0
 Loading svelte-check in workspace: d:\Dev Projects\halalneo
 Getting Svelte diagnostics...
 

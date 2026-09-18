@@ -13,9 +13,7 @@
 		CardDescription
 	} from '#lib/components/ui/card/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
-	import { cn } from '#lib/utils.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
-	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import BookOpen from '@lucide/svelte/icons/book-open';
 	import Search from '@lucide/svelte/icons/search';
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
@@ -132,97 +130,98 @@
 	<span
 		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium text-secondary-foreground"
 	>
-		<ShieldCheck class="size-2.5 text-primary" />
-		Verified Halal Trade Intelligence
+		<ShieldCheck class="size-2.5 text-primary"></ShieldCheck>
+		Halal B2B marketplace & trade intelligence
 	</span>
-	<div class="space-y-3 text-center sm:space-y-4">
-		<h1 class="animate-enter text-3xl font-semibold tracking-tight sm:text-4xl">
-			{slides[currentSlide].title}
-		</h1>
-		<p class="animate-enter text-sm text-muted-foreground sm:text-base">
-			{slides[currentSlide].subtitle}
-		</p>
-	</div>
-</section>
 
-<!-- SLIDER -->
-<div class="relative mt-12 w-full rounded-none sm:rounded-xl">
-	<div class="relative overflow-hidden rounded-xl">
-		<div
-			class="flex transition-transform duration-700 ease-out"
-			style="transform: translateX(-{currentSlide * 100}%)
-		"
-		>
+	<!-- Hero Carousel -->
+	<div
+		class="animate-enter relative mb-2 w-full overflow-hidden rounded-xl shadow-lg sm:mb-3"
+		style="--enter-delay: 90ms"
+	>
+		<div class="relative aspect-[16/10] sm:aspect-[16/5]">
 			{#each slides as slide, i}
-				<div class="w-full shrink-0 sm:w-1/2">
-					<div class="relative min-h-[200px]">
-						<img
-							src={slide.image}
-							alt={slide.title}
-							class="h-full w-full object-cover"
-							loading="lazy"
-							width="600"
-							height="400"
-						/>
-						<div
-							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20"
-						></div>
-						<div class="relative z-10 p-8">
-							<h3 class="mb-1 text-2xl font-semibold sm:text-3xl">
-								{slide.title}
-							</h3>
-							<p class="mb-4 text-sm leading-relaxed text-on-dark/80">
+				<div
+					class="absolute inset-0 transition-opacity duration-500 {i === currentSlide
+						? 'z-10 opacity-100'
+						: 'z-0 opacity-0'}"
+				>
+					<img
+						src={slide.image}
+						srcset={`${slide.image}?w=768 768w, ${slide.image} 1200w`}
+						sizes="100vw"
+						alt={slide.title.replace(/\n/g, ' ')}
+						class="absolute inset-0 h-full w-full object-cover"
+						aria-hidden="true"
+						loading={i === 0 ? 'eager' : 'lazy'}
+						fetchpriority={i === 0 ? 'high' : undefined}
+						decoding="async"
+						width="1200"
+						height="500"
+					/>
+					<div
+						class="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/30"
+					></div>
+					<div class="absolute inset-0 flex items-center">
+						<div class="max-w-xl px-4 pb-6 sm:px-10 sm:pb-0">
+							{#if i === 0}
+								<h1
+									class="text-base leading-tight font-bold tracking-tight whitespace-pre-line sm:text-2xl sm:text-4xl lg:text-5xl"
+								>
+									{slide.title}
+								</h1>
+							{:else}
+								<p
+									class="text-base leading-tight font-bold tracking-tight whitespace-pre-line sm:text-2xl sm:text-4xl lg:text-5xl"
+									aria-hidden="true"
+								>
+									{slide.title}
+								</p>
+							{/if}
+							<p class="mt-1.5 max-w-md text-[11px] text-muted-foreground sm:mt-2 sm:text-sm">
 								{slide.subtitle}
 							</p>
+							<div class="mt-2.5 flex flex-col gap-1.5 sm:mt-3 sm:flex-row sm:gap-2">
+								<Button href={localizeHref('/knowledge-base')} size="sm" class="sm:size-lg"
+									>Explore Knowledge Base</Button
+								>
+								<Button
+									href={localizeHref('/categories')}
+									variant="outline"
+									size="sm"
+									class="sm:size-lg">Browse Categories</Button
+								>
+							</div>
 						</div>
 					</div>
 				</div>
 			{/each}
+			<!-- Carousel Dots -->
+			<div class="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 sm:bottom-3">
+				{#each slides as _, i}
+					<Button
+						variant="ghost"
+						size="icon"
+						onclick={() => goToSlide(i)}
+						class="size-1.5 rounded-full p-0 sm:size-2 {i === currentSlide
+							? 'bg-primary hover:bg-primary/80'
+							: 'bg-muted-foreground/30 hover:bg-muted-foreground/50'}"
+						aria-label="Go to slide {i + 1}"
+					></Button>
+				{/each}
+			</div>
 		</div>
 	</div>
-	<div class="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-		{#each slides as slide, i}
-			<button
-				type="button"
-				aria-label="Go to slide {i + 1}"
-				onclick={() => goToSlide(i)}
-				class={cn(
-					'h-2 w-2 rounded-full transition-all duration-300',
-					currentSlide === i ? 'h-8 bg-primary' : 'bg-muted-foreground/50'
-				)}
-			></button>
-		{/each}
-	</div>
-	<button
-		type="button"
-		disabled={currentSlide === 0}
-		aria-label="Go to first slide"
-		onclick={() => {
-			if (currentSlide > 0) {
-				currentSlide = 0;
-			}
-		}}
-		class={cn(
-			'absolute top-1/2 left-4 z-20 -translate-y-1/2 rounded-full bg-white/80 p-3 shadow-lg transition-all hover:bg-white',
-			currentSlide === 0 && 'pointer-events-none opacity-50'
-		)}><ArrowUpRight class="size-5 rotate-90" /></button
+	<p
+		class="animate-enter relative mb-2 text-[10px] text-muted-foreground sm:mb-3 sm:text-[11px]"
+		style="--enter-delay: 180ms"
 	>
-	<button
-		type="button"
-		disabled={currentSlide === slides.length - 1}
-		aria-label="Go to last slide"
-		onclick={() => {
-			if (currentSlide < slides.length - 1) {
-				currentSlide++;
-			}
-		}}
-		class={cn(
-			'absolute top-1/2 right-4 z-20 -translate-y-1/2 rounded-full bg-white/80 p-3 shadow-lg transition-all hover:bg-white',
-			currentSlide === slides.length - 1 && 'pointer-events-none opacity-50'
-		)}><ArrowUpRight class="size-5 -rotate-90" /></button
-	>
-</div>
-
+		Researched data from <span class="font-medium text-foreground"
+			>{data.stats.kbSections} knowledge sections</span
+		>
+		· <span class="font-medium text-foreground">{data.stats.glossaryTerms} glossary terms</span>
+	</p>
+</section>
 <!-- STATS -->
 <section class="flex gap-1 sm:gap-2 lg:grid lg:grid-cols-4">
 	<StatTile value={data.stats.kbSections} label="KB sections" tone="info" />
