@@ -63,8 +63,7 @@
 				fetch(`/api/follows?countFor=${encodeURIComponent(slug)}`),
 				fetch('/api/supplier-memberships')
 			]);
-			if (stRes.ok)
-				following = ((await stRes.json()) as FollowStateResult).following ?? false;
+			if (stRes.ok) following = ((await stRes.json()) as FollowStateResult).following ?? false;
 			if (countRes.ok) followerCount = ((await countRes.json()) as FollowCountResult).count ?? 0;
 			if (memRes.ok) {
 				const j = (await memRes.json()) as ApiList<SupplierMembershipItem>;
@@ -470,16 +469,16 @@
 	</div>
 
 	<!-- Company info -->
-	<div class="relative mx-auto -mt-8 max-w-6xl">
-		<div class="mb-3 flex items-end gap-4">
+	<div class="relative z-10 mx-auto max-w-6xl">
+		<div class="mb-3">
 			<div
-				class="flex size-12 items-center justify-center rounded-xl border-4 border-background bg-primary/10 text-lg font-bold text-primary"
+				class="-mt-8 mb-2 flex size-12 items-center justify-center rounded-xl border-4 border-background bg-primary/10 text-lg font-bold text-primary"
 			>
 				{item.logoInitials ?? item.name?.slice(0, 2) ?? '?'}
 			</div>
-			<div class="min-w-0 flex-1">
+			<div class="min-w-0">
 				<div class="flex flex-wrap items-center gap-2">
-					<h1 class="text-xl font-bold tracking-tight">{item.name}</h1>
+					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{item.name}</h1>
 					{#if item.isBrand}
 						<Badge variant="secondary" class="text-2xs">Brand owner</Badge>
 					{/if}
@@ -581,7 +580,6 @@
 				<UserPlus class="size-2.5" />
 				{following ? 'Following' : 'Follow'}{#if followerCount > 0}&nbsp;· {followerCount}{/if}
 			</Button>
-			<span class="text-2xs text-muted-foreground">Share:</span>
 			<ShareButtons title={item.name ?? 'HalalNeo supplier'} text={item.description ?? ''} />
 		</div>
 
@@ -589,11 +587,7 @@
 		<div class="mb-4 grid grid-cols-2 gap-1 sm:grid-cols-4">
 			<StatTile value={products.length} label="Products" tone="primary" />
 			<StatTile value={certifications.length} label="Certifications" tone="success" />
-			<StatTile
-				value={mainMarkets.length > 0 ? mainMarkets.length : (item.mainMarkets?.length ?? '—')}
-				label="Markets"
-				tone="info"
-			/>
+			<StatTile value={mainMarkets.length} label="Markets" tone="info" />
 			<StatTile value={item.yearEstablished ?? '—'} label="Est." tone="success" />
 		</div>
 
@@ -964,7 +958,7 @@
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">
 		<div class="space-y-4 text-center">
-			<p class="text-lg text-muted-foreground">Supplier not found.</p>
+			<p class="text-sm text-muted-foreground">Supplier not found.</p>
 			<Button href={localizeHref('/suppliers')} variant="outline">Browse Suppliers</Button>
 		</div>
 	</div>
