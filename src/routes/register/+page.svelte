@@ -1,23 +1,27 @@
-<svelte:head>
-	<meta name="robots" content="noindex, nofollow" />
-</svelte:head>
-
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { goto } from '$app/navigation';
-	import { registerAccount } from '#lib/stores/auth.svelte.js';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { page } from '$app/state';
+	import { authClient } from '#lib/auth-client.js';
+	import { safeNextPath } from '#lib/utils/redirect.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { z } from 'zod';
-	import { focusFirstInvalid } from '#lib/utils/forms.js';
+	import { toast } from 'svelte-sonner';
+	import { focusFirstInvalid, mergeServerDetails, readAuthErrorDetails } from '#lib/utils/forms.js';
 	import MailIcon from '@lucide/svelte/icons/mail';
 	import LockIcon from '@lucide/svelte/icons/lock';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	let firstName = $state('');
 	let lastName = $state('');
+	// Optional free-text field kept in the form for parity with the buyer onboarding
+	// copy. The Better Auth `user` table has no company column (and no
+	// `additionalFields` are registered), so it is intentionally not part of the
+	// sign-up payload — it needs a buyer-profile table before it can be stored.
 	let company = $state('');
 	let email = $state('');
 	let password = $state('');
@@ -37,10 +41,17 @@
 		})
 	});
 
-	function submit() {
+	async function submit() {
 		if (busy) return;
 		fieldErrors = {};
-		const parsed = registerSchema.safeParse({ firstName, lastName, email, password, termsAccepted });
+		error = '';
+		const parsed = registerSchema.safeParse({
+			firstName,
+			lastName,
+			email,
+			password,
+			termsAccepted
+		});
 		if (!parsed.success) {
 			for (const issue of parsed.error.issues) {
 				const key = String(issue.path[0] ?? '');
@@ -49,30 +60,62 @@
 			focusFirstInvalid(formEl);
 			return;
 		}
-		error = '';
+		const normalizedEmail = email.trim();
 		busy = true;
 		try {
-			registerAccount({
-				email: email.trim(),
-				fullName: `${firstName.trim()} ${lastName.trim()}`.trim(),
-				company: company.trim() || undefined,
+			const { error: signUpError } = await authClient.signUp.email({
+				email: normalizedEmail,
 				password,
-				type: 'buyer'
+				name: `${firstName.trim()} ${lastName.trim()}`.trim()
 			});
-			goto(localizeHref('/account'));
+			if (signUpError) {
+				// better-auth reports "user already exists" as a 4xx with the email in
+				// the message; `readAuthErrorDetails` lands it on the email field.
+				const details = readAuthErrorDetails(signUpError, 'email');
+				if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
+				error = signUpError.message ?? 'We could not create your account. Please try again.';
+				toast.error(error);
+				focusFirstInvalid(formEl);
+				return;
+			}
+			// Sign up only *may* return a session (email verification, plugins), so
+			// exchange the credentials explicitly to guarantee a cookie is set.
+			const { error: signInError } = await authClient.signIn.email({
+				email: normalizedEmail,
+				password
+			});
+			if (signInError) {
+				const details = readAuthErrorDetails(signInError);
+				if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
+				error = 'Account created, but we could not sign you in. Please sign in manually.';
+				toast.warning(error);
+				await goto(localizeHref('/login'));
+				return;
+			}
+			toast.success('Account created. Welcome to HalalNeo.');
+			await invalidateAll(); // refresh session-derived layout data
+			await goto(safeNextPath(page.url.searchParams.get('next'), localizeHref('/account')));
+		} catch {
+			// Network / unexpected failure: one form-level error, input preserved.
+			error = 'We could not create your account. Please try again.';
+			toast.error(error);
 		} finally {
 			busy = false;
 		}
 	}
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <main
-	class="register-pattern flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pb-20 pt-8"
+	class="register-pattern flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pt-8 pb-20"
 >
 	<div class="w-full max-w-md">
 		<div class="mb-5 text-center">
 			<div
-				class="bg-primary text-primary-foreground mx-auto mb-2 flex size-12 items-center justify-center rounded-xl text-lg font-bold"
+				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground"
 			>
 				H
 			</div>
@@ -85,37 +128,44 @@
 			<div class="mb-5 flex items-center justify-center gap-1.5">
 				<div class="flex items-center gap-1.5">
 					<div
-						class="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-full text-[10px] font-semibold"
+						class="flex size-6 items-center justify-center rounded-full bg-primary text-2xs font-semibold text-primary-foreground"
 					>
 						1
 					</div>
-					<span class="text-primary text-[10px] font-medium">Account</span>
+					<span class="text-2xs font-medium text-primary">Account</span>
 				</div>
 				<div class="h-px w-6 bg-border"></div>
 				<div class="flex items-center gap-1.5">
 					<div
-						class="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-[10px] font-semibold"
+						class="flex size-6 items-center justify-center rounded-full bg-muted text-2xs font-semibold text-muted-foreground"
 					>
 						2
 					</div>
-					<span class="text-[10px] text-muted-foreground">Verify</span>
+					<span class="text-2xs text-muted-foreground">Verify</span>
 				</div>
 			</div>
 
 			<!-- Supplier banner -->
-			<div class="bg-muted/50 mb-3 rounded-lg px-3 py-2 text-center">
-				<p class="text-[10px] text-muted-foreground">
+			<div class="mb-3 rounded-lg bg-muted/50 px-3 py-2 text-center">
+				<p class="text-2xs text-muted-foreground">
 					Want to sell products?
 					<a
 						href={localizeHref('/supplier/onboarding')}
-						class="text-primary font-semibold hover:underline"
+						class="font-semibold text-primary hover:underline"
 					>
 						Apply as a Supplier
 					</a>
 				</p>
 			</div>
 
-			<form bind:this={formEl} class="space-y-2.5" onsubmit={(e) => { e.preventDefault(); submit(); }}>
+			<form
+				bind:this={formEl}
+				class="space-y-2.5"
+				onsubmit={(e) => {
+					e.preventDefault();
+					void submit();
+				}}
+			>
 				<div class="grid grid-cols-2 gap-2.5">
 					<Field>
 						<FieldLabel>First Name</FieldLabel>
@@ -123,8 +173,11 @@
 							bind:value={firstName}
 							type="text"
 							placeholder="John"
+							autocomplete="given-name"
 							aria-invalid={fieldErrors.firstName ? true : undefined}
-							oninput={() => { if (fieldErrors.firstName) fieldErrors = { ...fieldErrors, firstName: '' }; }}
+							oninput={() => {
+								if (fieldErrors.firstName) fieldErrors = { ...fieldErrors, firstName: '' };
+							}}
 						/>
 						{#if fieldErrors.firstName}<FieldError>{fieldErrors.firstName}</FieldError>{/if}
 					</Field>
@@ -134,8 +187,11 @@
 							bind:value={lastName}
 							type="text"
 							placeholder="Doe"
+							autocomplete="family-name"
 							aria-invalid={fieldErrors.lastName ? true : undefined}
-							oninput={() => { if (fieldErrors.lastName) fieldErrors = { ...fieldErrors, lastName: '' }; }}
+							oninput={() => {
+								if (fieldErrors.lastName) fieldErrors = { ...fieldErrors, lastName: '' };
+							}}
 						/>
 						{#if fieldErrors.lastName}<FieldError>{fieldErrors.lastName}</FieldError>{/if}
 					</Field>
@@ -143,7 +199,12 @@
 
 				<Field>
 					<FieldLabel>Company Name</FieldLabel>
-					<Input bind:value={company} type="text" placeholder="Your company" />
+					<Input
+						bind:value={company}
+						type="text"
+						placeholder="Your company"
+						autocomplete="organization"
+					/>
 				</Field>
 
 				<Field>
@@ -157,8 +218,11 @@
 							type="email"
 							placeholder="you@company.com"
 							class="pl-9"
+							autocomplete="email"
 							aria-invalid={fieldErrors.email ? true : undefined}
-							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+							oninput={() => {
+								if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+							}}
 						/>
 					</div>
 					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
@@ -175,8 +239,11 @@
 							type="password"
 							placeholder="Min. 8 characters"
 							class="pl-9"
+							autocomplete="new-password"
 							aria-invalid={fieldErrors.password ? true : undefined}
-							oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
+							oninput={() => {
+								if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
+							}}
 						/>
 					</div>
 					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}
@@ -184,44 +251,53 @@
 
 				<div class="flex items-start gap-2">
 					<Checkbox
+						id="terms"
 						bind:checked={termsAccepted}
 						class="mt-0.5"
+						aria-required="true"
 						aria-invalid={fieldErrors.termsAccepted ? true : undefined}
-						onCheckedChange={() => { if (fieldErrors.termsAccepted) fieldErrors = { ...fieldErrors, termsAccepted: '' }; }}
+						onCheckedChange={() => {
+							if (fieldErrors.termsAccepted) fieldErrors = { ...fieldErrors, termsAccepted: '' };
+						}}
 					/>
 					<label for="terms" class="text-xs leading-snug text-muted-foreground">
 						I agree to the
-						<span class="text-primary font-medium">Terms of Service</span>
+						<span class="font-medium text-primary">Terms of Service</span>
 						and
-						<span class="text-primary font-medium">Privacy Policy</span>
+						<span class="font-medium text-primary">Privacy Policy</span>
 					</label>
 				</div>
 				{#if fieldErrors.termsAccepted}<FieldError>{fieldErrors.termsAccepted}</FieldError>{/if}
 
 				{#if error && !Object.keys(fieldErrors).length}
-					<p class="text-center text-sm text-destructive">{error}</p>
+					<FieldError class="rounded-md bg-destructive/10 px-3 py-2 text-center">
+						{error}
+					</FieldError>
 				{/if}
 
-				<Button type="submit" class="w-full" disabled={busy}>
+				<Button type="submit" class="w-full" disabled={busy} aria-busy={busy}>
 					<span class="inline-flex items-center gap-2">
-						{busy ? 'Creating…' : 'Create Account'}
-						<ArrowRight class="size-3.5" />
+						{#if busy}
+							<Loader2 class="size-3.5 animate-spin" />
+							Creating…
+						{:else}
+							Create Account
+							<ArrowRight class="size-3.5" />
+						{/if}
 					</span>
 				</Button>
 			</form>
-
-
 		</div>
 
 		<div class="mt-5 text-center">
 			<p class="text-xs text-muted-foreground">
 				Already have an account?
-				<a href={localizeHref('/login')} class="text-primary font-semibold hover:underline">
+				<a href={localizeHref('/login')} class="font-semibold text-primary hover:underline">
 					Sign in
 				</a>
 			</p>
-			<p class="text-muted-foreground mt-1.5 text-[10px]">
-				<a href={localizeHref('/')} class="hover:text-primary transition-colors">
+			<p class="mt-1.5 text-2xs text-muted-foreground">
+				<a href={localizeHref('/')} class="transition-colors hover:text-primary">
 					&larr; Back to home
 				</a>
 			</p>
@@ -232,12 +308,28 @@
 <style>
 	:global(.register-pattern) {
 		background-image:
-			radial-gradient(circle at 80% 50%, oklch(0.42 0.12 155 / 0.04) 0%, transparent 50%),
-			radial-gradient(circle at 20% 80%, oklch(0.42 0.12 155 / 0.03) 0%, transparent 50%);
+			radial-gradient(
+				circle at 80% 50%,
+				color-mix(in oklab, var(--primary) 4%, transparent) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 20% 80%,
+				color-mix(in oklab, var(--primary) 3%, transparent) 0%,
+				transparent 50%
+			);
 	}
 	:global(.dark .register-pattern) {
 		background-image:
-			radial-gradient(circle at 80% 50%, oklch(0.65 0.15 155 / 0.06) 0%, transparent 50%),
-			radial-gradient(circle at 20% 80%, oklch(0.65 0.15 155 / 0.04) 0%, transparent 50%);
+			radial-gradient(
+				circle at 80% 50%,
+				color-mix(in oklab, var(--primary) 6%, transparent) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 20% 80%,
+				color-mix(in oklab, var(--primary) 4%, transparent) 0%,
+				transparent 50%
+			);
 	}
 </style>

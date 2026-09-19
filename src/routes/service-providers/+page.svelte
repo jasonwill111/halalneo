@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { SvelteSet } from 'svelte/reactivity';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import {
 		Select,
@@ -8,8 +9,17 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
+	import {
+		Empty,
+		EmptyHeader,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription,
+		EmptyContent
+	} from '#lib/components/ui/empty/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
@@ -23,6 +33,14 @@
 	type ProviderType =
 		'certification' | 'logistics' | 'finance' | 'payment' | 'insurance' | 'consulting';
 
+	interface ProviderRow {
+		slug: string;
+		name: string;
+		type: ProviderType;
+		country: string;
+		rating?: number | null;
+	}
+
 	const types: ProviderType[] = [
 		'certification',
 		'logistics',
@@ -32,7 +50,7 @@
 		'consulting'
 	];
 
-	let selectedTypes = $state<Set<ProviderType>>(new Set());
+	let selectedTypes = new SvelteSet<ProviderType>();
 	let selectedLocation = $state('all');
 	let selectedRating = $state('');
 	let searchQuery = $state('');
@@ -41,47 +59,50 @@
 	const locationOptions = $derived([
 		{ value: 'all', label: 'All Locations' },
 		...Array.from(
-			new Set((data.providers ?? []).map((p: any) => p.country).filter((c): c is string => !!c))
+			new Set((data.providers ?? []).map((p: ProviderRow) => p.country).filter((c): c is string => !!c))
 		)
 			.sort()
 			.map((c) => ({
 				value: c,
 				label: c,
-				count: (data.providers ?? []).filter((p: any) => p.country === c).length
+				count: (data.providers ?? []).filter((p: ProviderRow) => p.country === c).length
 			}))
 	]);
 
 	// Real counts computed from data
 	const providerCount = $derived((data.providers ?? []).length);
 	const countryCount = $derived(
-		new Set((data.providers ?? []).map((p: any) => p.country).filter(Boolean)).size
+		new Set((data.providers ?? []).map((p: ProviderRow) => p.country).filter(Boolean)).size
 	);
 	const typeCount = $derived(
-		new Set((data.providers ?? []).map((p: any) => p.type).filter(Boolean)).size
+		new Set((data.providers ?? []).map((p: ProviderRow) => p.type).filter(Boolean)).size
 	);
 	const countryPeerCount = (country: string): number =>
-		(data.providers ?? []).filter((p: any) => p.country === country).length;
+		(data.providers ?? []).filter((p: ProviderRow) => p.country === country).length;
 	const typePeerCount = (type: string): number =>
-		(data.providers ?? []).filter((p: any) => p.type === type).length;
+		(data.providers ?? []).filter((p: ProviderRow) => p.type === type).length;
 
 	function toggleType(type: ProviderType) {
-		if (selectedTypes.has(type)) {
-			selectedTypes.delete(type);
-			selectedTypes = new Set(selectedTypes);
-		} else {
-			selectedTypes = new Set([...selectedTypes, type]);
-		}
+		if (selectedTypes.has(type)) selectedTypes.delete(type);
+		else selectedTypes.add(type);
 	}
 
 	function clearAll() {
-		selectedTypes = new Set();
+		selectedTypes.clear();
 		selectedLocation = 'all';
 		selectedRating = '';
 		searchQuery = '';
 	}
 
+	const filtersActive = $derived(
+		selectedTypes.size > 0 ||
+			selectedLocation !== 'all' ||
+			!!selectedRating ||
+			searchQuery.trim().length > 0
+	);
+
 	const filtered = $derived(
-		(data.providers ?? []).filter((p: any) => {
+		(data.providers ?? []).filter((p: ProviderRow) => {
 			if (selectedTypes.size > 0 && !selectedTypes.has(p.type)) return false;
 			if (selectedLocation !== 'all' && p.country !== selectedLocation) return false;
 			if (selectedRating) {
@@ -141,7 +162,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList ?? {})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }]} />
@@ -316,7 +337,7 @@
 					</div>
 					<div class="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
 						<span
-							class="rounded-full {typeColor(provider.type)} px-2.5 py-1 text-[10px] font-medium"
+							class="rounded-full {typeColor(provider.type)} px-2.5 py-1 text-2xs font-medium"
 							>{typeLabel(provider.type)}</span
 						>
 					</div>
@@ -325,15 +346,15 @@
 					>
 						<div>
 							<div class="text-sm font-bold sm:text-base">{provider.rating ?? '–'}</div>
-							<div class="text-[10px] text-muted-foreground">Rating</div>
+							<div class="text-2xs text-muted-foreground">Rating</div>
 						</div>
 						<div>
 							<div class="text-sm font-bold sm:text-base">{countryPeerCount(provider.country)}</div>
-							<div class="text-[10px] text-muted-foreground">Same country</div>
+							<div class="text-2xs text-muted-foreground">Same country</div>
 						</div>
 						<div>
 							<div class="text-sm font-bold sm:text-base">{typePeerCount(provider.type)}</div>
-							<div class="text-[10px] text-muted-foreground">Same type</div>
+							<div class="text-2xs text-muted-foreground">Same type</div>
 						</div>
 					</div>
 					{#if provider.description}
@@ -364,14 +385,43 @@
 						{/if}
 					</div>
 				</article>
+			{:else}
+				<div class="col-span-full">
+					{#if data.loadError}
+						<ErrorRetry failure={data.loadError} subject="service providers" />
+					{:else}
+						<Empty>
+							<EmptyHeader>
+								<EmptyMedia><SearchIcon class="size-6 text-muted-foreground" /></EmptyMedia>
+								<EmptyTitle>No service providers found</EmptyTitle>
+								<EmptyDescription>
+									{#if filtersActive}
+										No providers match the selected filters. Widen the type, location or
+										rating filters.
+									{:else}
+										The provider directory is empty right now.
+									{/if}
+								</EmptyDescription>
+							</EmptyHeader>
+							<EmptyContent>
+								{#if filtersActive}
+									<Button variant="outline" size="sm" onclick={clearAll}
+										>Clear filters</Button
+									>
+								{:else}
+									<Button size="sm" href={localizeHref('/products')}
+										>Browse products</Button
+									>
+								{/if}
+								<Button variant="link" size="sm" href={localizeHref('/contact')}
+									>Suggest a provider</Button
+								>
+							</EmptyContent>
+						</Empty>
+					{/if}
+				</div>
 			{/each}
 		</div>
-
-		{#if filtered.length === 0}
-			<p class="py-10 text-center text-sm text-muted-foreground">
-				No providers match the selected filters.
-			</p>
-		{/if}
 
 		<Paginator bind:page={currentPage} {totalPages} />
 	</div>

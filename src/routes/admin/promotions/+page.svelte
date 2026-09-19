@@ -27,16 +27,18 @@
   	import StatTile from '#lib/components/site/stat-tile.svelte';
   	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
   	import { toast } from 'svelte-sonner';
+  	import type { ApiList, PromotionItem } from '#lib/types/api.js';
+  	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	let search = $state('');
-	let items = $state<any[]>([]);
+	let items = $state<PromotionItem[]>([]);
 	let total = $state(0);
 	let loading = $state(true);
 	let page = $state(1);
 	const limit = 20;
 
 	let detailOpen = $state(false);
-	let selected = $state<any | null>(null);
+	let selected = $state<PromotionItem | null>(null);
 	let confirmId = $state<string | null>(null);
 	let confirmTitle = $state('');
 
@@ -45,11 +47,11 @@
 	async function loadItems() {
 		loading = true;
 		try {
-			const params = new URLSearchParams({ limit: String(limit), offset: String((page - 1) * limit) });
+			const params = new SvelteURLSearchParams({ limit: String(limit), offset: String((page - 1) * limit) });
 			if (search.trim()) params.set('search', search.trim());
 			const res = await fetch(`/api/promotions?${params}`);
 			if (res.ok) {
-				const data = (await res.json()) as { items: any[]; total: number };
+				const data = (await res.json()) as ApiList<PromotionItem>;
 				items = data.items ?? [];
 				total = data.total ?? 0;
 			}
@@ -64,12 +66,12 @@
 		loadItems();
 	});
 
-	function viewDetail(item: any) {
+	function viewDetail(item: PromotionItem) {
 		selected = item;
 		detailOpen = true;
 	}
 
-	function confirmDelete(item: any) {
+	function confirmDelete(item: PromotionItem) {
 		confirmId = item.id;
 		confirmTitle = item.title;
 	}
@@ -202,7 +204,7 @@
 							</TableCell>
 							<TableCell class="text-xs">{formatDate(p.validUntil ?? '')}</TableCell>
 							<TableCell>
-								<Badge variant="secondary" class={`px-1.5 py-0.5 text-[10px] capitalize ${statusColor(p.status ?? 'active')}`}>
+								<Badge variant="secondary" class={`px-1.5 py-0.5 text-2xs capitalize ${statusColor(p.status ?? 'active')}`}>
 									{p.status ?? 'active'}
 								</Badge>
 							</TableCell>
@@ -259,12 +261,12 @@
 				<div><span class="text-muted-foreground">Created:</span> {formatDate(selected.createdAt ?? '')}</div>
 			</div>
 			<div class="mt-4 flex flex-wrap gap-2">
-				{#each statusOptions as s}
+				{#each statusOptions as s (s)}
 					<Button
-						variant={selected.status === s ? 'default' : 'outline'}
+						variant={selected?.status === s ? 'default' : 'outline'}
 						size="sm"
-						disabled={selected.status === s}
-						onclick={() => updateStatus(selected.id, s)}
+						disabled={selected?.status === s}
+						onclick={() => selected && updateStatus(selected.id, s)}
 					>
 						{s}
 					</Button>

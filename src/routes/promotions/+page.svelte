@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import TagIcon from '@lucide/svelte/icons/tag';
@@ -11,9 +11,11 @@
 	import PackageIcon from '@lucide/svelte/icons/package';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
@@ -22,11 +24,20 @@
 	let page = $state(1);
 	const PAGE_SIZE = 9;
 
-	const promos = $derived((data.promos ?? []) as any[]);
+	interface PromotionRow {
+		title?: string | null;
+		description?: string | null;
+		supplierSlug: string;
+		priceMin?: string | number | null;
+		priceMax?: string | number | null;
+		priceUnit?: string | null;
+	}
+
+	const promos = $derived(data.promos ?? []);
 	const names = $derived((data.supplierNames ?? {}) as Record<string, string>);
 
 	const filtered = $derived(
-		promos.filter((p: any) => {
+		promos.filter((p: PromotionRow) => {
 			const q = query.trim().toLowerCase();
 			if (!q) return true;
 			return (
@@ -45,7 +56,7 @@
 		page = 1;
 	});
 
-	function priceText(p: any): string {
+	function priceText(p: PromotionRow): string {
 		if (!p.priceMin) return '';
 		const range = p.priceMax ? `$${p.priceMin}–$${p.priceMax}` : `$${p.priceMin}`;
 		return p.priceUnit ? `${range}/${p.priceUnit}` : range;
@@ -81,12 +92,36 @@
 		<Input type="search" placeholder="Search deals..." class="pl-9 text-xs" bind:value={query} />
 	</div>
 
-	{#if paged.length === 0}
+	{#if data.loadError}
+		<ErrorRetry failure={data.loadError} subject="deals" />
+	{:else if paged.length === 0}
 		<Empty>
-			<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
-			<EmptyTitle>No active deals right now</EmptyTitle>
-			<EmptyDescription>Suppliers publish clearance offers here — check back soon.</EmptyDescription
-			>
+			<EmptyHeader>
+				<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
+				<EmptyTitle>
+					{query.trim() ? 'No deals match your search' : 'No active deals right now'}
+				</EmptyTitle>
+				<EmptyDescription>
+					{#if query.trim()}
+						Try a shorter product name or supplier name.
+					{:else}
+						Suppliers publish clearance offers here — check back soon.
+					{/if}
+				</EmptyDescription>
+			</EmptyHeader>
+			<EmptyContent>
+				{#if query.trim()}
+					<Button variant="outline" size="sm" onclick={() => (query = '')}
+						>Clear search</Button
+					>
+				{:else}
+					<Button size="sm" href={localizeHref('/products')}>Browse products</Button
+					>
+				{/if}
+				<Button variant="link" size="sm" href={localizeHref('/rfqs/new')}
+					>Post a buying request</Button
+				>
+			</EmptyContent>
 		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
@@ -97,12 +132,12 @@
 				>
 					{#if p.discountPct}
 						<span
-							class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-[10px] font-bold text-destructive-foreground"
+							class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-2xs font-bold text-destructive-foreground"
 						>
 							-{p.discountPct}%
 						</span>
 					{/if}
-					<p class="text-[10px] font-medium text-muted-foreground">
+					<p class="text-2xs font-medium text-muted-foreground">
 						{names[p.supplierSlug] ?? p.supplierSlug}
 					</p>
 					<h3
@@ -114,7 +149,7 @@
 						<p class="mt-1 text-sm font-bold text-primary sm:text-base">{priceText(p)}</p>
 					{/if}
 					<div
-						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-[10px] text-muted-foreground"
+						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-2xs text-muted-foreground"
 					>
 						{#if p.moq}
 							<span>MOQ {p.moq}</span>

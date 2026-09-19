@@ -5,11 +5,9 @@
 	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FlaskConicalIcon from '@lucide/svelte/icons/flask-conical';
-	import CheckCircleIcon from '@lucide/svelte/icons/circle-check';
-	import XCircleIcon from '@lucide/svelte/icons/circle-x';
-	import HelpCircleIcon from '@lucide/svelte/icons/help-circle';
 	import SparklesIcon from '@lucide/svelte/icons/sparkles';
 	import AlertTriangleIcon from '@lucide/svelte/icons/alert-triangle';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	let ingredientInput = $state('');
 	let loading = $state(false);
@@ -73,9 +71,9 @@ Format your response as:
 					]
 				})
 			});
-			const json = ((await res.json()) as any);
+			const json = (await res.json()) as { text?: string; error?: string };
 			result = json.text ?? json.error ?? 'No response received.';
-		} catch (e) {
+		} catch {
 			error = 'Failed to analyze ingredients. Please try again.';
 		} finally {
 			loading = false;
@@ -98,8 +96,8 @@ Format your response as:
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal ingredient analysis</h1>
 		<p class="text-muted-foreground">
-			Paste any ingredient list and get an instant AI-powered halal, haram, or mashbooh verdict for each
-			ingredient.
+			Paste any ingredient list and get an instant AI-powered halal, haram, or mashbooh verdict for
+			each ingredient.
 		</p>
 	</div>
 
@@ -112,11 +110,11 @@ Format your response as:
 		<div class="flex flex-wrap items-center justify-between gap-2">
 			<p class="text-xs text-muted-foreground">Or try an example:</p>
 			<div class="flex flex-wrap gap-1.5">
-				{#each exampleLists as ex, i}
+				{#each exampleLists as ex, i (ex)}
 					<Button
 						variant="outline"
 						size="sm"
-						class="h-7 text-[10px]"
+						class="h-7 text-2xs"
 						onclick={() => (ingredientInput = ex)}
 					>
 						Example {i + 1}
@@ -124,12 +122,17 @@ Format your response as:
 				{/each}
 			</div>
 		</div>
-		<Button onclick={analyze} disabled={loading || !ingredientInput.trim()} class="w-full sm:w-auto">
+		<Button
+			onclick={analyze}
+			disabled={loading || !ingredientInput.trim()}
+			aria-busy={loading}
+			class="w-full sm:w-auto"
+		>
 			{#if loading}
-				<div class="mr-2 size-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"></div>
-				Analyzing...
+				<Loader2 class="size-4 animate-spin" data-icon="inline-start" />
+				Analyzing…
 			{:else}
-				<SparklesIcon class="mr-2 size-4" />
+				<SparklesIcon class="size-4" data-icon="inline-start" />
 				Analyze Ingredients
 			{/if}
 		</Button>
@@ -144,7 +147,9 @@ Format your response as:
 	{#if result}
 		<Card class="bg-card">
 			<CardContent class="p-5">
-				<div class="overflow-x-auto"><div class="content-body content-body-sm whitespace-pre-wrap">{result}</div></div>
+				<div class="overflow-x-auto">
+					<div class="content-body content-body-sm whitespace-pre-wrap">{result}</div>
+				</div>
 			</CardContent>
 		</Card>
 	{/if}

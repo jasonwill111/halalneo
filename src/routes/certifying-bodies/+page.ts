@@ -1,12 +1,16 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { CertifyingBodyRecord } from '#lib/schemas/certifying-bodies.js';
 
 const BASE_URL = 'https://halalneo.com';
 
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
-	const res = await fetch('/api/certifying-bodies?limit=100');
-	const certifiers = res.ok ? ((await res.json()) as { items?: any[] }).items ?? [] : [];
+	const failures: LoadFailure[] = [];
+	const res = await fetchSafe(fetch, '/api/certifying-bodies?limit=100', failures);
+	const certifiers = await readItems<CertifyingBodyRecord>(res);
 
 	const itemList = {
 		'@context': 'https://schema.org',
@@ -14,7 +18,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		name: 'Halal Certifying Bodies',
 		description:
 			'Directory of recognized halal certifying bodies worldwide — JAKIM, BPJPH, MUIS, SFDA, and more.',
-		itemListElement: certifiers.slice(0, 100).map((certifier: any, i: number) => ({
+		itemListElement: certifiers.slice(0, 100).map((certifier, i) => ({
 			'@type': 'ListItem',
 			position: i + 1,
 			item: {
@@ -40,6 +44,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal certifying bodies', 'JAKIM', 'BPJPH', 'accredited certifiers', 'halal accreditation']
 		},
 		certifiers,
-		itemList
+		itemList,
+		loadError: firstFailure(failures)
 	};
 };

@@ -134,11 +134,11 @@
 			<ToggleGroup.Item value="monthly">Monthly</ToggleGroup.Item>
 			<ToggleGroup.Item value="annual">Annual</ToggleGroup.Item>
 		</ToggleGroup.Root>
-		<span class="ml-1 text-[10px] text-muted-foreground">Save 20%</span>
+		<span class="ml-1 text-2xs text-muted-foreground">Save 20%</span>
 	</div>
 </div>
 
-<p class="mb-2 text-center text-[10px] text-muted-foreground">
+<p class="mb-2 text-center text-2xs text-muted-foreground">
 	Pricing shown is the post-test-mode standard. During test mode, every tier is free — no card required.
 </p>
 
@@ -146,26 +146,26 @@
 	{#each plans as plan (plan.name)}
 		<Card class={`relative overflow-visible ${plan.highlight ? 'border-2 border-primary' : ''} p-2.5 space-y-2`}>
 			{#if plan.highlight}
-				<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
+				<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 inline-flex items-center rounded-full bg-primary px-2 py-0.5 text-2xs font-medium text-primary-foreground">
 					Most popular
 				</span>
 			{/if}
 			<div>
 				<h3 class="font-semibold text-sm">{plan.name}</h3>
-				<p class="text-[11px] text-muted-foreground">{plan.description}</p>
+				<p class="text-2xs-plus text-muted-foreground">{plan.description}</p>
 			</div>
 			<div>
 				<span class="text-lg font-bold">${billing === 'annual' ? plan.annual : plan.monthly}</span>
-				<span class="text-muted-foreground text-[11px]">/mo</span>
+				<span class="text-muted-foreground text-2xs-plus">/mo</span>
 				{#if billing === 'annual' && plan.monthly > 0}
 					<span
-						class="ml-1 inline-flex items-center rounded-full bg-success/15 px-1.5 py-0.5 text-[10px] font-medium text-success"
+						class="ml-1 inline-flex items-center rounded-full bg-success/15 px-1.5 py-0.5 text-2xs font-medium text-success"
 					>
 						Save {Math.round((1 - plan.annual / plan.monthly) * 100)}%
 					</span>
-					<p class="text-[10px] text-muted-foreground">billed annually</p>
+					<p class="text-2xs text-muted-foreground">billed annually</p>
 				{/if}
-				<p class="text-[10px] text-success">Free during test mode</p>
+				<p class="text-2xs text-success">Free during test mode</p>
 			</div>
 			<Button
 				class="w-full"
@@ -198,12 +198,12 @@
 			<p class="text-xs text-muted-foreground">
 				Custom branded page at <span class="font-medium text-foreground">halalneo.com/your-brand</span>. Showcase your full catalog and story.
 			</p>
-			<p class="text-[10px] text-success">Free during test mode</p>
+			<p class="text-2xs text-success">Free during test mode</p>
 		</div>
 		<div class="flex items-center gap-2 shrink-0">
 			<div class="text-right">
 				<span class="text-sm font-bold">$49</span>
-				<span class="text-muted-foreground text-[11px]">/mo</span>
+				<span class="text-muted-foreground text-2xs-plus">/mo</span>
 			</div>
 			<Button size="sm" href="/supplier/onboarding">Apply</Button>
 		</div>
@@ -216,7 +216,7 @@
 		{#each pricingFaqs as faq (faq.q)}
 			<AccordionItem value={faq.q}>
 				<AccordionTrigger class="text-xs">{faq.q}</AccordionTrigger>
-				<AccordionContent class="text-[11px]">{faq.a}</AccordionContent>
+				<AccordionContent class="text-2xs-plus">{faq.a}</AccordionContent>
 			</AccordionItem>
 		{/each}
 	</Accordion>

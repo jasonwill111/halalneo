@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import Share2 from '@lucide/svelte/icons/share-2';
 	import Link2 from '@lucide/svelte/icons/link-2';
@@ -17,7 +18,7 @@
 	let copied = $state(false);
 	let canNativeShare = $state(false);
 
-	$effect(() => {
+	onMount(() => {
 		canNativeShare = typeof navigator !== 'undefined' && 'share' in navigator;
 	});
 
@@ -41,9 +42,14 @@
 		}
 	}
 
+	type ShareCapableNavigator = Navigator & {
+		share?: (data: { title?: string; text?: string; url?: string }) => Promise<unknown>;
+	};
+
 	async function nativeShare() {
 		try {
-			await (navigator as any).share({ title, text: text || title, url: pageUrl() });
+			const nav = navigator as unknown as ShareCapableNavigator;
+			await nav.share?.call(nav, { title, text: text || title, url: pageUrl() });
 		} catch {
 			// user dismissed — no-op
 		}

@@ -1,81 +1,194 @@
 <script lang="ts">
-	import { signOut } from '#lib/stores/auth.svelte.js';
-	import { Button } from '#lib/components/ui/button/index.js';
+	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { authClient } from '#lib/auth-client.js';
+	import { mode, toggleMode } from 'mode-watcher';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { cn } from '#lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import LayoutDashboard from '@lucide/svelte/icons/layout-dashboard';
 	import Boxes from '@lucide/svelte/icons/boxes';
 	import ClipboardList from '@lucide/svelte/icons/clipboard-list';
-	import ChartColumn from '@lucide/svelte/icons/chart-column';
 	import UserRound from '@lucide/svelte/icons/user-round';
-	import Settings from '@lucide/svelte/icons/settings';
+	import Building2 from '@lucide/svelte/icons/building-2';
+	import Sun from '@lucide/svelte/icons/sun';
+	import Moon from '@lucide/svelte/icons/moon';
 	import LogOut from '@lucide/svelte/icons/log-out';
+	import Home from '@lucide/svelte/icons/home';
+
+	type PortalUser = { name?: string | null; email?: string | null; image?: string | null } | null;
+	type PortalProfile = {
+		slug: string;
+		name: string;
+		status: string | null;
+		logoInitials: string | null;
+	} | null;
 
 	interface Props {
 		variant: 'desktop' | 'mobile';
-		supplierName: string;
-		supplierInitials: string;
+		user?: PortalUser;
+		profile?: PortalProfile;
 		onNavigate?: () => void;
 	}
 
-	let { variant, supplierName, supplierInitials, onNavigate }: Props = $props();
+	let { variant, user = null, profile = null, onNavigate }: Props = $props();
 
 	const nav = [
 		{ label: 'Dashboard', href: '/supplier/dashboard', icon: LayoutDashboard },
 		{ label: 'My Products', href: '/supplier/products', icon: Boxes },
-		{ label: 'Orders', href: '/supplier/orders', icon: ClipboardList },
-		{ label: 'Analytics', href: '/supplier/analytics', icon: ChartColumn },
-		{ label: 'Profile', href: '/supplier/profile', icon: UserRound },
-		{ label: 'Settings', href: '/supplier/settings', icon: Settings }
+		{ label: 'Inquiries', href: '/supplier/orders', icon: ClipboardList },
+		{ label: 'Account', href: '/supplier/profile', icon: UserRound },
+		{ label: 'Company Profile', href: '/supplier/manage', icon: Building2 }
 	];
 
+	const supplierName = $derived(profile?.name ?? 'Supplier account');
+	const supplierInitials = $derived(profile?.logoInitials || initials(profile?.name ?? ''));
+
+	// Session role/status is derived from the linked supplier record, never hardcoded.
+	const statusLabel = $derived.by(() => {
+		switch (profile?.status) {
+			case 'active':
+				return 'Verified supplier';
+			case 'pending':
+				return 'Application under review';
+			case 'suspended':
+				return 'Account suspended';
+			case 'rejected':
+				return 'Application declined';
+			default:
+				return profile?.slug ? 'Supplier account' : 'No supplier profile linked';
+		}
+	});
+
+	function initials(name: string): string {
+		return (
+			name
+				.split(/\s+/)
+				.map((p) => p[0])
+				.filter(Boolean)
+				.slice(0, 2)
+				.join('')
+				.toUpperCase() || 'SU'
+		);
+	}
+
 	function isActive(href: string): boolean {
-		return page.url.pathname === href;
+		return localizeHref(href) === page.url.pathname || href === page.url.pathname;
+	}
+
+	function handleToggleTheme() {
+		document.documentElement.classList.add('theme-transitioning');
+		toggleMode();
+		setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+	}
+
+	async function handleSignOut() {
+		try {
+			await authClient.signOut();
+		} catch {
+			// ignore — proceed to the supplier login screen regardless
+		}
+		await goto(localizeHref('/supplier/login'));
 	}
 </script>
 
-{#snippet profileHeader(bordered: boolean)}
-	<div class="flex items-center gap-2.5 px-2.5 {bordered ? 'border-b border-border' : ''} py-3">
-		<div
-			class="flex size-8 items-center justify-center rounded-xl bg-primary/10 text-xs font-bold text-primary"
-		>
-			{supplierInitials}
-		</div>
-		<div class="min-w-0">
-			<p class="truncate text-[11px] font-semibold">{supplierName}</p>
-			<p class="text-[10px] text-muted-foreground">Premium Supplier</p>
+{#snippet brandBar()}
+	<!-- Mobile renders inside a Sheet whose close button is absolutely
+	     positioned top-right — reserve space for it there only. -->
+	<div
+		class={cn(
+			'flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16',
+			variant === 'mobile' && 'pr-10'
+		)}
+	>
+		<span class="truncate text-base font-bold tracking-tight text-primary">Supplier Portal</span>
+	</div>
+{/snippet}
+
+{#snippet companyCard()}
+	<div class="flex items-center gap-2.5 border-b border-border/50 px-2.5 py-3">
+		<Avatar class="size-8">
+			<AvatarFallback class="bg-primary/15 text-xs font-semibold text-primary">
+				{supplierInitials}
+			</AvatarFallback>
+		</Avatar>
+		<div class="min-w-0 flex-1">
+			<p class="truncate text-sm font-medium">{supplierName}</p>
+			<p class="truncate text-xs text-muted-foreground">{statusLabel}</p>
 		</div>
 	</div>
 {/snippet}
 
 {#snippet navLinks()}
-	{#each nav as item (item.href)}
-		<a
-			href={item.href}
-			onclick={onNavigate}
-			class={`flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-[11px] font-medium transition-colors ${isActive(item.href) ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent'}`}
-		>
-			<item.icon class="size-3.5"></item.icon>
-			{item.label}
-		</a>
-	{/each}
+	<nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-3" aria-label="Supplier pages">
+		{#each nav as item (item.href)}
+			<Button
+				href={localizeHref(item.href)}
+				variant={isActive(item.href) ? 'secondary' : 'ghost'}
+				class={cn('w-full justify-start gap-2.5 text-sm')}
+				aria-current={isActive(item.href) ? 'page' : undefined}
+				onclick={onNavigate}
+			>
+				<item.icon class="size-4 shrink-0" />
+				{item.label}
+			</Button>
+		{/each}
+	</nav>
 {/snippet}
 
-{#if variant === 'desktop'}
-	{@render profileHeader(true)}
-	{@render navLinks()}
-	<div class="my-0.5 border-t border-border"></div>
+{#snippet iconButtons()}
 	<Button
 		variant="ghost"
-		size="sm"
-		class="w-full justify-start gap-2.5 text-[11px] text-destructive"
-		onclick={() => signOut()}
+		size="icon"
+		aria-label="Toggle theme"
+		class="size-8"
+		onclick={handleToggleTheme}
 	>
-		<LogOut class="size-3.5"></LogOut>
-		Sign Out
+		{#if mode.current === 'dark'}
+			<Sun class="size-4" />
+		{:else}
+			<Moon class="size-4" />
+		{/if}
 	</Button>
-{:else}
-	{@render profileHeader(true)}
-	<nav class="space-y-0.5 px-3 py-3">
-		{@render navLinks()}
-	</nav>
-{/if}
+	<Button
+		href={localizeHref('/')}
+		variant="ghost"
+		size="icon"
+		aria-label="Back to homepage"
+		class="size-8"
+		onclick={onNavigate}
+	>
+		<Home class="size-4" />
+	</Button>
+	<Button variant="ghost" size="icon" aria-label="Sign out" class="size-8" onclick={handleSignOut}>
+		<LogOut class="size-4" />
+	</Button>
+{/snippet}
+
+{#snippet accountBlock()}
+	<!-- §4.2: fixed bottom block = name + email + theme + home + sign out -->
+	<div class="shrink-0 border-t border-border/50 px-3 py-3">
+		<div class="flex items-center gap-2.5 rounded-lg px-2 py-2">
+			<Avatar class="size-8">
+				<AvatarFallback class="bg-primary/15 text-xs font-semibold text-primary">
+					{initials(user?.name ?? '')}
+				</AvatarFallback>
+			</Avatar>
+			<div class="min-w-0 flex-1">
+				<p class="truncate text-sm font-medium">{user?.name ?? 'Not signed in'}</p>
+				{#if user?.email}
+					<p class="truncate text-xs text-muted-foreground">{user.email}</p>
+				{/if}
+			</div>
+		</div>
+		<div class="flex items-center gap-1 border-t border-border/50 pt-2">
+			{@render iconButtons()}
+		</div>
+	</div>
+{/snippet}
+
+{@render brandBar()}
+{@render companyCard()}
+{@render navLinks()}
+{@render accountBlock()}

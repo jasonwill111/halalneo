@@ -1,32 +1,56 @@
 ﻿import type { EntryGenerator, PageLoad } from './$types';
+import { readItems, readJson, readList } from '#lib/utils/api-response.js';
+import type { ProductListItem } from '#lib/schemas/products.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
+import type { SuccessStoryItem } from '#lib/types/api.js';
 
 export const entries: EntryGenerator = () => [];
 
-interface SupplierItem {
-	slug?: string;
-	name?: string;
-	description?: string;
-	businessType?: string;
-	country?: string;
-	logoInitials?: string;
-	coverImage?: string;
-	mainMarkets?: any;
-	website?: string;
-	email?: string;
-	phone?: string;
-	whatsapp?: string;
-	line?: string;
-	status?: string;
-	isBrand?: boolean;
-	certifications?: any;
-	yearEstablished?: number;
-	employeeCount?: string;
-	productionCapacity?: string;
+/** One entry of the `certifications` JSON column (both legacy and current keys). */
+interface SupplierCertRow {
+	body?: {
+		id?: string | null;
+		name?: string | null;
+		country?: string | null;
+		standard?: string | null;
+	} | null;
+	name?: string | null;
+	bodyId?: string | null;
+	country?: string | null;
+	standard?: string | null;
+	scope?: string | null;
+	number?: string | null;
+	id?: string | null;
+	expiry?: string | null;
+	status?: string | null;
+}
+
+/** `/api/suppliers/[slug]` projection (`publicProjection`); JSON TEXT stays unparsed. */
+interface SupplierDetailRow {
+	slug?: string | null;
+	name?: string | null;
+	description?: string | null;
+	businessType?: string | null;
+	country?: string | null;
+	logoInitials?: string | null;
+	coverImage?: string | null;
+	mainMarkets?: string | string[] | null;
+	website?: string | null;
+	email?: string | null;
+	phone?: string | null;
+	whatsapp?: string | null;
+	line?: string | null;
+	status?: string | null;
+	isBrand?: boolean | null;
+	certifications?: string | string[] | SupplierCertRow[] | null;
+	yearEstablished?: number | null;
+	employeeCount?: string | null;
+	productionCapacity?: string | null;
 	metaTitle?: string | null;
 	metaDescription?: string | null;
-	keywords?: any;
-	createdAt?: string | null;
-	products?: unknown[];
+	keywords?: string | string[] | null;
+	createdAt?: string | number | null;
+	updatedAt?: string | number | null;
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
@@ -38,7 +62,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		]);
 
 		if (res.ok) {
-			const data: SupplierItem = (await res.json()) as any;
+			const data: SupplierDetailRow = await readJson<SupplierDetailRow>(res);
 			// Only approved suppliers are publicly visible; pending/rejected render as not-found.
 			if (data.status && data.status !== 'active') {
 				return {
@@ -51,24 +75,29 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					item: null
 				};
 			}
-			const certificationsParsed = typeof data.certifications === 'string' ? JSON.parse(data.certifications || '[]') : data.certifications ?? [];
-			const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
-			const supplierStories = storiesRes.ok ? ((((await storiesRes.json()) as any)).items ?? []) : [];
+			const certificationsParsed =
+				typeof data.certifications === 'string'
+					? (JSON.parse(data.certifications || '[]') as SupplierCertRow[])
+					: (data.certifications ?? []);
+			const products = await readItems<ProductListItem>(productsRes);
+			const supplierStories = await readItems<SuccessStoryItem>(storiesRes);
 			// Related suppliers: same country, excluding self (list API supports ?country=).
-			let relatedSuppliers: any[] = [];
+			let relatedSuppliers: SupplierListItem[] = [];
 			try {
 				if (data.country) {
 					const relRes = await fetch(
 						`/api/suppliers?country=${encodeURIComponent(data.country)}&status=active&limit=5`
 					);
 					if (relRes.ok) {
-						const rel = (await relRes.json()) as { items?: any[] };
+						const rel = await readList<SupplierListItem>(relRes);
 						relatedSuppliers = (rel.items ?? [])
-							.filter((s: any) => s.slug !== params.slug)
+							.filter((s) => s.slug !== params.slug)
 							.slice(0, 4);
 					}
 				}
-			} catch {}
+			} catch {
+				// related suppliers are best-effort — the profile still renders
+			}
 			return {
 				slug: params.slug,
 				seo: {
@@ -87,7 +116,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				supplierStories
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		slug: params.slug,

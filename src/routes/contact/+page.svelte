@@ -2,14 +2,19 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldDescription, FieldError, FieldLabel } from '#lib/components/ui/field/index.js';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
 	import {
-		Card,
-		CardContent,
-		CardHeader,
-		CardTitle
-	} from '#lib/components/ui/card/index.js';
+		Field,
+		FieldDescription,
+		FieldError,
+		FieldLabel
+	} from '#lib/components/ui/field/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import Mail from '@lucide/svelte/icons/mail';
 	import MapPin from '@lucide/svelte/icons/map-pin';
 	import Phone from '@lucide/svelte/icons/phone';
@@ -18,11 +23,17 @@
 	import CheckCircle from '@lucide/svelte/icons/check-circle';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { z } from 'zod';
-	import { focusFirstInvalid } from '#lib/utils/forms.js';
+	import { toast } from 'svelte-sonner';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	const offices = [
 		{ city: 'Dubai, UAE', address: 'Business Bay', email: 'dubai@halalneo.com' },
-		{ city: 'Istanbul, Türkiye', address: 'Levent, Maslak District', email: 'istanbul@halalneo.com' },
+		{
+			city: 'Istanbul, Türkiye',
+			address: 'Levent, Maslak District',
+			email: 'istanbul@halalneo.com'
+		},
 		{ city: 'Jakarta, Indonesia', address: 'SCBD, Sudirman Center', email: 'jakarta@halalneo.com' }
 	];
 
@@ -38,9 +49,21 @@
 	let formEl = $state<HTMLFormElement | undefined>(undefined);
 
 	const contactSchema = z.object({
-		name: z.string().trim().min(1, 'Please enter your name.'),
-		email: z.string().trim().min(1, 'Please enter your email.').email('Please enter a valid email.'),
-		message: z.string().trim().min(1, 'Please tell us what you need.')
+		name: z
+			.string()
+			.trim()
+			.min(1, 'Please enter your name.')
+			.max(200, 'Please keep your name shorter.'),
+		email: z
+			.string()
+			.trim()
+			.min(1, 'Please enter your email.')
+			.email('Please enter a valid email.'),
+		message: z
+			.string()
+			.trim()
+			.min(1, 'Please tell us what you need.')
+			.max(5000, 'Message must be at most 5000 characters.')
 	});
 
 	const topics = [
@@ -52,6 +75,7 @@
 	];
 
 	async function submit() {
+		if (sending) return;
 		fieldErrors = {};
 		const parsed = contactSchema.safeParse({ name, email, message });
 		if (!parsed.success) {
@@ -69,24 +93,34 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					buyerSlug: email.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+					buyerSlug: email
+						.trim()
+						.toLowerCase()
+						.replace(/[^a-z0-9]+/g, '-'),
 					supplierSlug: 'contact-form',
 					subject: `[Contact] ${topic}`,
 					message: `Name: ${name.trim()}\nEmail: ${email.trim()}\nCompany: ${company.trim()}\n\n${message.trim()}`
 				})
 			});
 			if (!res.ok) {
-				let errBody: any = {};
-				try {
-					errBody = (await res.json()) as any;
-				} catch {
-					errBody = {};
+				const errBody = (await res.json().catch(() => ({}))) as {
+					error?: string;
+					details?: Record<string, string[]>;
+				};
+				const failMessage = errBody.error || 'Failed to send message. Please try again.';
+				submitError = failMessage;
+				if (errBody.details) {
+					fieldErrors = mergeServerDetails(fieldErrors, errBody.details);
 				}
-				throw new Error(errBody.error || 'Failed to send message');
+				toast.error(failMessage);
+				focusFirstInvalid(formEl);
+				return;
 			}
 			sent = true;
-		} catch (e: any) {
-			submitError = e?.message || 'Something went wrong. Please try again.';
+			toast.success('Message sent. We will reply within one business day.');
+		} catch {
+			submitError = 'Network error. Please try again.';
+			toast.error(submitError);
 		} finally {
 			sending = false;
 		}
@@ -94,30 +128,31 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'ContactPage',
-		'name': 'Contact Us — HalalNeo',
-		'description': 'Get in touch with HalalNeo for questions about halal certification, product sourcing, supplier verification or partnerships.',
-		'url': 'https://halalneo.com/contact',
-		'mainEntity': {
+		name: 'Contact Us — HalalNeo',
+		description:
+			'Get in touch with HalalNeo for questions about halal certification, product sourcing, supplier verification or partnerships.',
+		url: 'https://halalneo.com/contact',
+		mainEntity: {
 			'@type': 'Organization',
-			'name': 'HalalNeo',
-			'url': 'https://halalneo.com',
-			'email': 'contact@halalneo.com',
-			'address': {
+			name: 'HalalNeo',
+			url: 'https://halalneo.com',
+			email: 'contact@halalneo.com',
+			address: {
 				'@type': 'PostalAddress',
-				'addressLocality': 'Kuala Lumpur',
-				'addressCountry': 'MY'
+				addressLocality: 'Kuala Lumpur',
+				addressCountry: 'MY'
 			},
-			'contactPoint': {
+			contactPoint: {
 				'@type': 'ContactPoint',
-				'email': 'contact@halalneo.com',
-				'contactType': 'customer service',
-				'availableLanguage': ['English']
+				email: 'contact@halalneo.com',
+				contactType: 'customer service',
+				availableLanguage: ['English']
 			}
 		}
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Contact', href: '/contact' }]} />
@@ -126,8 +161,8 @@
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Contact HalalNeo</h1>
 		<p class="text-muted-foreground">
-			Questions about certification, sourcing, or listing your products —send us a message and
-			we'll point you in the right direction.
+			Questions about certification, sourcing, or listing your products —send us a message and we'll
+			point you in the right direction.
 		</p>
 	</div>
 
@@ -226,6 +261,8 @@
 							<Input
 								bind:value={name}
 								placeholder="Jane Doe"
+								autocomplete="name"
+								maxlength={200}
 								required
 								aria-invalid={fieldErrors.name ? true : undefined}
 								oninput={() => {
@@ -240,6 +277,8 @@
 								type="email"
 								bind:value={email}
 								placeholder="jane@company.com"
+								autocomplete="email"
+								maxlength={200}
 								required
 								aria-invalid={fieldErrors.email ? true : undefined}
 								oninput={() => {
@@ -251,14 +290,17 @@
 					</div>
 					<Field>
 						<FieldLabel>Company (optional)</FieldLabel>
-						<Input bind:value={company} placeholder="Your company" />
+						<Input
+							bind:value={company}
+							placeholder="Your company"
+							autocomplete="organization"
+							maxlength={200}
+						/>
 					</Field>
 					<Field>
 						<FieldLabel>Topic</FieldLabel>
 						<Select type="single" bind:value={topic}>
-							<SelectTrigger class="w-full text-sm">
-								Select a topic
-							</SelectTrigger>
+							<SelectTrigger class="w-full text-sm">Select a topic</SelectTrigger>
 							<SelectContent>
 								{#each topics as t (t)}
 									<SelectItem value={t}>{t}</SelectItem>
@@ -272,6 +314,7 @@
 							bind:value={message}
 							rows={5}
 							placeholder="Tell us what you need..."
+							maxlength={5000}
 							required
 							aria-invalid={fieldErrors.message ? true : undefined}
 							oninput={() => {
@@ -283,8 +326,9 @@
 							Include your certifying body or standard if your question is about verification.
 						</FieldDescription>
 					</Field>
-					<Button type="submit" class="w-full sm:w-auto" disabled={sending}>
+					<Button type="submit" class="w-full sm:w-auto" disabled={sending} aria-busy={sending}>
 						{#if sending}
+							<Loader2 class="size-4 animate-spin" />
 							Sending...
 						{:else}
 							Send message

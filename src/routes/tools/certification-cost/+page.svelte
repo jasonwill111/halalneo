@@ -148,7 +148,7 @@
 					class="grid w-full gap-2 sm:grid-cols-2"
 					aria-labelledby="certifier-label"
 				>
-					{#each certifiers as c}
+					{#each certifiers as c (c.id)}
 						<ToggleGroup.Item value={c.id} class="h-auto flex-col items-start gap-0.5 p-3 text-left">
 							<span class="font-medium">{c.name}</span>
 							<span class="text-xs text-muted-foreground">{c.country}</span>
@@ -167,7 +167,7 @@
 					class="grid w-full gap-2 sm:grid-cols-2"
 					aria-labelledby="category-label"
 				>
-					{#each categories as cat}
+					{#each categories as cat (cat.id)}
 						<ToggleGroup.Item value={cat.id} class="h-auto justify-start p-3 text-left text-sm">
 							{cat.name}
 						</ToggleGroup.Item>
@@ -185,7 +185,7 @@
 					class="grid w-full gap-2 sm:grid-cols-2"
 					aria-labelledby="size-label"
 				>
-					{#each companySizes as s}
+					{#each companySizes as s (s.id)}
 						<ToggleGroup.Item value={s.id} class="h-auto justify-start p-3 text-left text-sm">
 							{s.name}
 						</ToggleGroup.Item>
@@ -209,19 +209,19 @@
 						<div class="rounded-xl bg-muted/50 p-3">
 							<ClockIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
 							<p class="text-sm font-semibold">{certifier.timelineWeeks} weeks</p>
-							<p class="text-[10px] text-muted-foreground">Typical timeline</p>
+							<p class="text-2xs text-muted-foreground">Typical timeline</p>
 						</div>
 						<div class="rounded-xl bg-muted/50 p-3">
 							<DollarSignIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
 							<p class="text-sm font-semibold">{certifier.validityYears} year{certifier.validityYears > 1 ? 's' : ''}</p>
-							<p class="text-[10px] text-muted-foreground">Certificate validity</p>
+							<p class="text-2xs text-muted-foreground">Certificate validity</p>
 						</div>
 					</div>
 
 					<div class="space-y-2">
 						<p class="text-xs font-medium text-muted-foreground">Requirements</p>
 						<ul class="space-y-1">
-							{#each certifier.requirements as req}
+							{#each certifier.requirements as req (req)}
 								<li class="flex items-start gap-1.5 text-xs text-muted-foreground">
 									<span class="mt-0.5 size-1.5 shrink-0 rounded-full bg-primary"></span>
 									{req}
@@ -242,7 +242,7 @@
 
 			<div class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground">
 				<AlertTriangleIcon class="mx-auto mb-2 size-6 opacity-40" />
-				<p class="text-[11px] leading-relaxed">
+				<p class="text-2xs-plus leading-relaxed">
 					Estimates are based on publicly available fee structures and may vary. Contact the
 					certifier directly for an exact quote.
 				</p>

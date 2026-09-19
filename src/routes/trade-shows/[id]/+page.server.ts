@@ -1,5 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { TradeShowDto } from '#lib/schemas/trade-shows.js';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
 	const [showRes, listRes] = await Promise.all([
@@ -11,11 +13,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 		error(404, { message: 'Trade show not found' });
 	}
 
-	const show: any = await showRes.json();
-	const allShows: any[] = listRes.ok ? (((await listRes.json()) as any).items ?? []) : [];
+	const show: TradeShowDto = await readJson<TradeShowDto>(showRes);
+	const allShows = await readItems<TradeShowDto>(listRes);
 	const related = allShows
-		.filter((s: any) => s.id !== show.id)
-		.filter((s: any) => s.region === show.region)
+		.filter((s) => s.id !== show.id)
+		.filter((s) => s.region === show.region)
 		.slice(0, 3);
 
 	return {

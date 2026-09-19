@@ -12,10 +12,13 @@
 	import { Sheet, SheetContent, SheetHeader, SheetTitle } from '#lib/components/ui/sheet/index.js';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import { SvelteSet } from 'svelte/reactivity';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import BookText from '@lucide/svelte/icons/book-text';
@@ -28,10 +31,78 @@
 	let { data } = $props();
 	let query = $state('');
 
-	let articles = $state.raw<any[]>([]);
-	let suppliers = $state.raw<any[]>([]);
-	let products = $state.raw<any[]>([]);
-	let terms = $state.raw<any[]>([]);
+	// One glossary/cert entry as stored: either a bare label or an object with a name.
+	type SearchCertEntry = string | { name?: string | null; bodyName?: string | null };
+
+	interface RawSearchArticle {
+		slug: string;
+		title: string;
+		summary: string;
+		section: string;
+		tags?: string[] | string;
+	}
+	interface RawSearchSupplier {
+		slug: string;
+		name: string;
+		country: string;
+		description?: string;
+		certStatus?: string;
+		certifications?: SearchCertEntry[] | string;
+	}
+	interface RawSearchProduct {
+		slug: string;
+		name: string;
+		shortDescription: string;
+		categorySlug?: string;
+		originCountry: string;
+		priceMin?: number | string | null;
+		certStatus?: string;
+		features?: string[] | string;
+		certifications?: SearchCertEntry[] | string;
+	}
+	interface SearchApiResponse {
+		articles?: RawSearchArticle[];
+		suppliers?: RawSearchSupplier[];
+		products?: RawSearchProduct[];
+		terms?: SearchTerm[];
+	}
+
+	interface SearchArticle {
+		slug: string;
+		title: string;
+		summary: string;
+		section: string;
+		tags?: string[];
+	}
+	interface SearchSupplier {
+		slug: string;
+		name: string;
+		country: string;
+		description?: string;
+		certStatus?: string;
+		certifications?: SearchCertEntry[];
+		mainMarkets?: string[];
+	}
+	interface SearchProduct {
+		slug: string;
+		name: string;
+		shortDescription: string;
+		categorySlug?: string;
+		originCountry: string;
+		priceMin?: number | string | null;
+		certStatus?: string;
+		features?: string[];
+		certifications?: SearchCertEntry[];
+	}
+	interface SearchTerm {
+		term: string;
+		definition: string;
+	}
+
+	let articles = $state.raw<SearchArticle[]>([]);
+	let suppliers = $state.raw<SearchSupplier[]>([]);
+	let products = $state.raw<SearchProduct[]>([]);
+	let terms = $state.raw<SearchTerm[]>([]);
 	let loaded = $state(false);
 	let loading = $state(false);
 
@@ -45,12 +116,12 @@
 		try {
 			const res = await fetch(`/api/search?q=${encodeURIComponent(needle)}`);
 			if (!res.ok) return;
-			const data = (await res.json()) as any;
-			articles = (data.articles ?? []).map((a: any) => ({
+			const data = (await res.json()) as SearchApiResponse;
+			articles = (data.articles ?? []).map((a) => ({
 				...a,
 				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : (a.tags ?? [])
 			}));
-			suppliers = (data.suppliers ?? []).map((s: any) => ({
+			suppliers = (data.suppliers ?? []).map((s) => ({
 				...s,
 				certifications:
 					typeof s.certifications === 'string'
@@ -58,13 +129,19 @@
 						: (s.certifications ?? []),
 				mainMarkets: []
 			}));
-			products = (data.products ?? []).map((p: any) => ({
+			products = (data.products ?? []).map((p) => ({
 				...p,
+				certifications:
+					typeof p.certifications === 'string'
+						? JSON.parse(p.certifications || '[]')
+						: (p.certifications ?? []),
 				features:
 					typeof p.features === 'string' ? JSON.parse(p.features || '[]') : (p.features ?? [])
 			}));
 			terms = data.terms ?? [];
 			loaded = true;
+		} catch {
+			// network failure — `loaded` was already cleared by the debounce effect
 		} finally {
 			loading = false;
 		}
@@ -81,7 +158,10 @@
 		if (!q || !loaded) return [];
 
 		// Helper: check if a product matches price range filters
-		function matchesPriceRange(p: any, ranges: Set<string>): boolean {
+		interface PriceRangeFields {
+			priceMin?: number | string | null;
+		}
+		function matchesPriceRange(p: PriceRangeFields, ranges: Set<string>): boolean {
 			if (ranges.size === 0) return true;
 			const price = p.priceMin ? Number(p.priceMin) : null;
 			if (price === null) return ranges.has('Under $20'); // no price = treat as low
@@ -95,7 +175,11 @@
 		}
 
 		// Helper: check if a product/supplier matches cert filters
-		function matchesCert(item: any, certs: Set<string>): boolean {
+		interface CertFilterFields {
+			certStatus?: string;
+			certifications?: SearchCertEntry[];
+		}
+		function matchesCert(item: CertFilterFields, certs: Set<string>): boolean {
 			if (certs.size === 0) return true;
 			const status = item.certStatus ?? '';
 			const itemCerts = Array.isArray(item.certifications) ? item.certifications : [];
@@ -103,7 +187,7 @@
 				const cLower = c.toLowerCase();
 				if (status.toLowerCase().includes(cLower)) return true;
 				if (
-					itemCerts.some((ic: any) => {
+					itemCerts.some((ic) => {
 						const name = typeof ic === 'string' ? ic : (ic.name ?? ic.bodyName ?? '');
 						return name.toLowerCase().includes(cLower);
 					})
@@ -197,6 +281,17 @@
 	let sortBy = $state('Relevance');
 	let showMobileFilters = $state(false);
 
+	const filtersActive = $derived(
+		selectedCategories.size + selectedPrices.size + selectedLocations.size + selectedCerts.size > 0
+	);
+
+	function clearFilters() {
+		selectedCategories = new Set();
+		selectedPrices = new Set();
+		selectedLocations = new Set();
+		selectedCerts = new Set();
+	}
+
 	const PAGE_SIZE = 9;
 	let currentPage = $state(1);
 
@@ -224,21 +319,10 @@
 	});
 
 	function toggleSet<T>(set: Set<T>, val: T): Set<T> {
-		const next = new Set(set);
+		const next = new SvelteSet(set);
 		if (next.has(val)) next.delete(val);
 		else next.add(val);
 		return next;
-	}
-
-	function getSection(section: string) {
-		const sections: Record<string, { title: string }> = {
-			'getting-started': { title: 'Getting Started' },
-			certification: { title: 'Certification' },
-			sourcing: { title: 'Sourcing' },
-			compliance: { title: 'Compliance' },
-			markets: { title: 'Markets' }
-		};
-		return sections[section];
 	}
 </script>
 
@@ -265,7 +349,7 @@
 
 <div class="mx-auto max-w-7xl">
 	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
-		<div class="flex items-center gap-1 text-[10px] text-muted-foreground">
+		<div class="flex items-center gap-1 text-2xs text-muted-foreground">
 			<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
 			<ChevronRight class="size-3" />
 			<h1 class="sr-only">Search — HalalNeo</h1>
@@ -279,11 +363,11 @@
 	</div>
 
 	<div class="flex gap-3 sm:gap-4 lg:gap-5">
-	{#snippet filterPanel()}
+		{#snippet filterPanel()}
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
 				<div class="space-y-1">
-						{#each categories as cat (cat)}
+					{#each categories as cat (cat)}
 						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
 							<Checkbox
 								checked={selectedCategories.has(cat)}
@@ -296,7 +380,7 @@
 				<Button
 					variant="ghost"
 					size="sm"
-					class="mt-1 h-auto p-0 text-[10px] text-primary hover:underline">Show more</Button
+					class="mt-1 h-auto p-0 text-2xs text-primary hover:underline">Show more</Button
 				>
 			</div>
 
@@ -305,7 +389,7 @@
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Price Range</h3>
 				<div class="space-y-1">
-						{#each priceRanges as pr (pr)}
+					{#each priceRanges as pr (pr)}
 						<label class="flex cursor-pointer items-center gap-1.5 text-xs">
 							<Checkbox
 								checked={selectedPrices.has(pr)}
@@ -351,17 +435,10 @@
 				</div>
 			</div>
 
-			<Button
-				variant="outline"
-				class="w-full text-xs"
-				onclick={() => {
-					selectedCategories = new Set();
-					selectedPrices = new Set();
-					selectedLocations = new Set();
-					selectedCerts = new Set();
-			}}>Clear all filters</Button
-		>
-	{/snippet}
+			<Button variant="outline" class="w-full text-xs" onclick={clearFilters}
+				>Clear all filters</Button
+			>
+		{/snippet}
 		<aside class="hidden w-52 shrink-0 lg:block">
 			<div class="sticky top-20 z-10 space-y-4">
 				{@render filterPanel()}
@@ -390,9 +467,9 @@
 					Filters
 				</Button>
 				<div class="flex items-center gap-2">
-					<span class="hidden text-[10px] text-muted-foreground sm:inline">Sort by:</span>
+					<span class="hidden text-2xs text-muted-foreground sm:inline">Sort by:</span>
 					<Select type="single" bind:value={sortBy}>
-						<SelectTrigger class="h-7 w-[140px] text-[10px]">Relevance</SelectTrigger>
+						<SelectTrigger class="h-7 w-[140px] text-2xs">Relevance</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="relevance">Relevance</SelectItem>
 							<SelectItem value="price-asc">Price: Low to High</SelectItem>
@@ -406,19 +483,45 @@
 
 			{#if query.trim() === ''}
 				<Empty>
-					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-					<EmptyTitle>Start typing to search</EmptyTitle>
-					<EmptyDescription
-						>Search across {(data.glossary ?? []).length} glossary terms, plus live supplier, product and article indexes.</EmptyDescription
-					>
+					<EmptyHeader>
+						<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+						<EmptyTitle>Start typing to search</EmptyTitle>
+						<EmptyDescription
+							>Search across {(data.glossary ?? []).length} glossary terms, plus live supplier, product
+							and article indexes.</EmptyDescription
+						>
+					</EmptyHeader>
+					<EmptyContent>
+						<Button size="sm" href={localizeHref('/products')}>Browse products</Button>
+						<Button variant="link" size="sm" href={localizeHref('/suppliers')}
+							>Search suppliers</Button
+						>
+					</EmptyContent>
 				</Empty>
 			{:else if resultCount === 0}
 				<Empty>
-					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-					<EmptyTitle>No results</EmptyTitle>
-					<EmptyDescription
-						>Nothing matched "{query.trim()}" — Try a different term.</EmptyDescription
-					>
+					<EmptyHeader>
+						<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+						<EmptyTitle>No results</EmptyTitle>
+						<EmptyDescription>
+							Nothing matched “{query.trim()}”{#if filtersActive}
+								with the selected filters{/if}.
+							{#if filtersActive}
+								Widen the category, price, location or certification filters, or try a shorter term.
+							{:else}
+								Try a different term or a shorter keyword.
+							{/if}
+						</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						{#if filtersActive}
+							<Button variant="outline" size="sm" onclick={clearFilters}>Clear all filters</Button>
+						{/if}
+						<Button size="sm" href={localizeHref('/rfqs/new')}>Post a buying request</Button>
+						<Button variant="link" size="sm" href={localizeHref('/products')}
+							>Browse products</Button
+						>
+					</EmptyContent>
 				</Empty>
 			{:else}
 				<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
@@ -430,20 +533,20 @@
 							>
 								<div class="relative mb-2 aspect-square rounded-md bg-muted">
 									<span
-										class="absolute top-1.5 left-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground"
+										class="absolute top-1.5 left-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-2xs font-medium text-secondary-foreground"
 										>JAKIM</span
 									>
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.name}</h3>
-								<p class="mt-0.5 text-[10px] text-muted-foreground">
+								<p class="mt-0.5 text-2xs text-muted-foreground">
 									{result.description ?? 'Halal product'}
 								</p>
 								<div class="mt-1 flex items-center gap-1">
 									<Star class="size-3 fill-warn text-warn" />
-									<span class="text-[10px] font-medium">4.8</span>
+									<span class="text-2xs font-medium">4.8</span>
 								</div>
 								<span
-									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-2xs font-medium transition-colors hover:bg-accent"
 									>View details</span
 								>
 							</a>
@@ -458,9 +561,9 @@
 									<Store class="size-8 text-muted-foreground/40" />
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.name}</h3>
-								<p class="mt-0.5 text-[10px] text-muted-foreground">Supplier · {result.country}</p>
+								<p class="mt-0.5 text-2xs text-muted-foreground">Supplier · {result.country}</p>
 								<span
-									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-2xs font-medium transition-colors hover:bg-accent"
 									>View details</span
 								>
 							</a>
@@ -475,11 +578,11 @@
 									<FileText class="size-8 text-muted-foreground/40" />
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.title}</h3>
-								<p class="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">
+								<p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">
 									{result.summary}
 								</p>
 								<span
-									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-2xs font-medium transition-colors hover:bg-accent"
 									>Read article</span
 								>
 							</a>
@@ -494,11 +597,11 @@
 									<BookText class="size-8 text-muted-foreground/40" />
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.term}</h3>
-								<p class="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">
+								<p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">
 									{result.definition}
 								</p>
 								<span
-									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-[10px] font-medium transition-colors hover:bg-accent"
+									class="mt-2 inline-flex h-7 w-full items-center justify-center rounded-md border border-border text-2xs font-medium transition-colors hover:bg-accent"
 									>View term</span
 								>
 							</a>
@@ -506,9 +609,8 @@
 					{/each}
 				</div>
 
-			<Paginator bind:page={currentPage} {totalPages} />
+				<Paginator bind:page={currentPage} {totalPages} />
 			{/if}
 		</div>
 	</div>
 </div>
-

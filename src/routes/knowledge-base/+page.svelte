@@ -17,21 +17,76 @@
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import BookMarkedIcon from '@lucide/svelte/icons/book-marked';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
+	import { focusFirstInvalid } from '#lib/utils/forms.js';
+	import { FieldError } from '#lib/components/ui/field/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import {
+		Empty,
+		EmptyHeader,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription,
+		EmptyContent
+	} from '#lib/components/ui/empty/index.js';
+	import { z } from 'zod';
 
 	let { data } = $props();
+
+	// Search is validated before it filters: trimmed, at least 2 characters so the
+	// section list is not filtered on a stray keystroke, capped so absurd queries
+	// never reach the derived filter.
+	const MAX_SEARCH = 60;
+	const searchSchema = z.object({
+		q: z
+			.string()
+			.trim()
+			.min(2, 'Type at least 2 characters to filter sections.')
+			.max(MAX_SEARCH, `Keep the search under ${MAX_SEARCH} characters.`)
+	});
+
+	let query = $state('');
 	let search = $state('');
+	let errors = $state<Record<string, string>>({});
+	let formEl = $state<HTMLFormElement | null>(null);
 	const PAGE_SIZE = 9;
 	let page = $state(1);
+
+	function handleSearch(e: SubmitEvent) {
+		e.preventDefault();
+		errors = {};
+		const parsed = searchSchema.safeParse({ q: query });
+		if (!parsed.success) {
+			const fieldErrors: Record<string, string> = {};
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
+			}
+			errors = fieldErrors;
+			focusFirstInvalid(formEl);
+			return;
+		}
+		search = parsed.data.q;
+	}
+
+	// Submit stays disabled while the query fails the same schema `handleSearch`
+	// checks, so an empty/whitespace search can never be attempted.
+	const canSearch = $derived(searchSchema.safeParse({ q: query }).success);
+
 	$effect(() => {
+		void search;
 		page = 1;
 	});
 
+	interface KbSectionRow {
+		title: string;
+	}
+
 	const filteredSections = $derived(
 		search.trim()
-			? (data.sections ?? []).filter((s: any) =>
+			? (data.sections ?? []).filter((s: KbSectionRow) =>
 					s.title.toLowerCase().includes(search.toLowerCase())
 				)
 			: (data.sections ?? [])
@@ -87,8 +142,8 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
-	{@html `<script type="application/ld+json">${JSON.stringify(data.collectionPage ?? {})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList ?? {})}\u003c/script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.collectionPage ?? {})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
@@ -116,10 +171,38 @@
 		</div>
 	</div>
 
-	<div class="relative">
-		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input type="search" placeholder="Search sections..." class="pl-9" bind:value={search} />
-	</div>
+	<form bind:this={formEl} onsubmit={handleSearch} class="space-y-1.5">
+		<div class="flex flex-col gap-2 sm:flex-row">
+			<div class="relative flex-1">
+				<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+				<Input
+					type="search"
+					placeholder="Search sections..."
+					class="pl-9"
+					bind:value={query}
+					maxlength={MAX_SEARCH}
+					aria-label="Search knowledge base sections"
+					aria-invalid={errors.q ? true : undefined}
+					aria-describedby={errors.q ? 'kb-search-error' : undefined}
+					oninput={() => {
+						if (errors.q) errors = { ...errors, q: '' };
+						if (!query.trim() && search) search = '';
+					}}
+				/>
+			</div>
+			<Button
+				type="submit"
+				variant="outline"
+				disabled={!canSearch}
+				class="w-full shrink-0 sm:w-auto"
+			>
+				Search
+			</Button>
+		</div>
+		{#if errors.q}
+			<FieldError id="kb-search-error">{errors.q}</FieldError>
+		{/if}
+	</form>
 
 	<!-- Resource Hubs -->
 	<div class="space-y-3">
@@ -179,7 +262,7 @@
 						</CardHeader>
 						<CardContent class="space-y-3">
 							{@const count = (data.articles ?? []).filter(
-								(a: any) => a.section === section.slug
+								(a) => a.section === section.slug
 							).length}
 							<p class="text-sm text-muted-foreground">
 								{count} article{count === 1 ? '' : 's'}
@@ -195,6 +278,47 @@
 						</CardContent>
 					</Card>
 				</article>
+			{:else}
+				<div class="col-span-full">
+					{#if data.loadError && pagedSections.length === 0}
+						<ErrorRetry failure={data.loadError} subject="knowledge base sections" />
+					{:else}
+						<Empty>
+							<EmptyHeader>
+								<EmptyMedia><BookOpen class="size-6 text-muted-foreground"></BookOpen></EmptyMedia>
+								<EmptyTitle>No sections found</EmptyTitle>
+								<EmptyDescription>
+									{#if search}
+										No section title matches “{search}”. Try a broader term such as “certification”
+										or “logistics”.
+									{:else}
+										Knowledge base sections are published here as guides are written.
+									{/if}
+								</EmptyDescription>
+							</EmptyHeader>
+							<EmptyContent>
+								{#if search}
+									<Button
+										variant="outline"
+										size="sm"
+										onclick={() => {
+											query = '';
+											search = '';
+											errors = {};
+										}}>Clear search</Button
+									>
+								{:else}
+									<Button size="sm" href={localizeHref('/market-guides')}
+										>Explore market guides</Button
+									>
+								{/if}
+								<Button variant="link" size="sm" href={localizeHref('/contact')}
+									>Ask us a question</Button
+								>
+							</EmptyContent>
+						</Empty>
+					{/if}
+				</div>
 			{/each}
 		</div>
 	</div>

@@ -1,10 +1,14 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { SuccessStoryItem } from '#lib/types/api.js';
 
 const BASE_URL = 'https://halalneo.com';
 
 export const load: PageLoad = async ({ fetch }) => {
-	const res = await fetch('/api/success-stories?limit=50');
-	const stories = res.ok ? ((((await res.json()) as any)).items ?? []) : [];
+	const failures: LoadFailure[] = [];
+	const res = await fetchSafe(fetch, '/api/success-stories?limit=50', failures);
+	const stories = await readItems<SuccessStoryItem>(res);
 
 	const itemList = {
 		'@context': 'https://schema.org',
@@ -12,7 +16,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		name: 'HalalTrade Success Stories',
 		description:
 			'Case studies of real deals closed on HalalNeo: suppliers winning export orders and buyers sourcing certified products.',
-		itemListElement: stories.slice(0, 50).map((story: any, i: number) => ({
+		itemListElement: stories.slice(0, 50).map((story, i) => ({
 			'@type': 'ListItem',
 			position: i + 1,
 			item: {
@@ -35,6 +39,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal success stories', 'trade case studies', 'export wins']
 		},
 		stories,
-		itemList
+		itemList,
+		loadError: firstFailure(failures)
 	};
 };

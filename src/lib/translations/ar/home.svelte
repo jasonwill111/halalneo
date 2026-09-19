@@ -38,3 +38,7 @@
 		</p>
 	</div>
 {/snippet}
+
+{@render hero1()}
+{@render hero2()}
+{@render hero3()}

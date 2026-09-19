@@ -23,7 +23,7 @@
 		>
 			<ChevronLeft class="size-4" />
 		</Button>
-		{#each Array(totalPages) as _, i}
+		{#each Array(totalPages) as _, i (i + 1)}
 			{@const p = i + 1}
 			{#if p === 1 || p === totalPages || Math.abs(p - page) <= 1}
 				<Button

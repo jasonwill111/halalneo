@@ -89,7 +89,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
 		'name': 'FAQ — HalalNeo',
@@ -103,7 +103,7 @@
 				text: faq.a
 			}
 		}))
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'FAQ', href: '/faq' }]} />

@@ -1,21 +1,20 @@
-import { error } from '@sveltejs/kit';
+import { error, isHttpError } from '@sveltejs/kit';
 import type { EntryGenerator, PageLoad } from './$types';
+import { readJson } from '#lib/utils/api-response.js';
+import type { PageDto } from '#lib/schemas/pages.js';
 
 export const entries: EntryGenerator = () => [];
 
-interface PageItem {
-	title?: string;
-	content?: string;
-	metaDescription?: string;
-	featuredImage?: string;
-	keywords?: string[];
+/** `/api/pages/[slug]` row; `content` is the legacy key the template renders. */
+interface PageItem extends PageDto {
+	content?: string | null;
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const res = await fetch(`/api/pages/${params.slug}`);
 		if (res.ok) {
-			const data: PageItem = (await res.json()) as any;
+			const data: PageItem = await readJson<PageItem>(res);
 			return {
 				seo: {
 					title: data.title ? `${data.title} — HalalNeo` : `${params.slug} — HalalNeo`,
@@ -29,8 +28,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			};
 		}
 		throw error(404, 'Page not found');
-	} catch (e: any) {
-		if (e?.status === 404) throw e;
+	} catch (e: unknown) {
+		if (isHttpError(e) && e.status === 404) throw e;
 		throw error(404, 'Page not found');
 	}
 };

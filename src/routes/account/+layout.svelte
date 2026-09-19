@@ -1,17 +1,18 @@
 <script lang="ts">
+	import type { LayoutProps } from './$types';
 	import AccountNav from '#lib/components/site/account-nav.svelte';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 
-	let { children } = $props();
+	let { children, data }: LayoutProps = $props();
 </script>
 
 <div class="mx-auto w-full max-w-7xl px-4 pb-24 pt-3 sm:px-6 sm:pb-10 sm:pt-6">
 	<Breadcrumb items={[{ label: 'My Account', href: '/account' }]} />
 
-	<AccountNav variant="mobile" />
+	<AccountNav variant="mobile" user={data.user} />
 
 	<div class="flex gap-3 sm:gap-4">
-		<AccountNav variant="desktop" />
+		<AccountNav variant="desktop" user={data.user} />
 
 		<div class="flex-1 min-w-0">
 			{@render children()}

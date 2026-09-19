@@ -132,7 +132,7 @@
 	<!-- Title + description render once via root layout from loader `seo`
 	     (which prefers metaTitle/metaDescription). -->
 	{#if articleSchema}
-		{@html `<script type="application/ld+json">${JSON.stringify(articleSchema)}</script>`}
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify(articleSchema)}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -270,7 +270,7 @@
                       class="group block"
                     >
                       <h5 class="text-xs font-medium group-hover:text-primary">{rel.title}</h5>
-                      <p class="mt-0.5 line-clamp-2 text-[10px] text-muted-foreground">{rel.summary}</p>
+                      <p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">{rel.summary}</p>
                     </a>
                   {/each}
                 </div>

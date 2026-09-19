@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import TrophyIcon from '@lucide/svelte/icons/trophy';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
@@ -17,13 +21,13 @@
 	let page = $state(1);
 	const PAGE_SIZE = 9;
 
-	const stories = $derived((data.stories ?? []) as any[]);
+	const stories = $derived(data.stories ?? []);
 	const totalPages = $derived(Math.max(1, Math.ceil(stories.length / PAGE_SIZE)));
 	const paged = $derived(stories.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList ?? {})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Success Stories', href: '/success-stories' }]} />
@@ -40,13 +44,23 @@
 		</p>
 	</div>
 
-	{#if paged.length === 0}
+	{#if data.loadError}
+		<ErrorRetry failure={data.loadError} subject="success stories" />
+	{:else if paged.length === 0}
 		<Empty>
-			<EmptyMedia><TrophyIcon class="size-6 text-muted-foreground"></TrophyIcon></EmptyMedia>
-			<EmptyTitle>First success stories are on the way</EmptyTitle>
-			<EmptyDescription
-				>Closed a deal through HalalNeo? Tell us — we feature real trades.</EmptyDescription
-			>
+			<EmptyHeader>
+				<EmptyMedia><TrophyIcon class="size-6 text-muted-foreground"></TrophyIcon></EmptyMedia>
+				<EmptyTitle>First success stories are on the way</EmptyTitle>
+				<EmptyDescription
+					>Closed a deal through HalalNeo? Tell us — we feature real trades.</EmptyDescription
+				>
+			</EmptyHeader>
+			<EmptyContent>
+				<Button size="sm" href={localizeHref('/contact')}>Share your story</Button>
+				<Button variant="link" size="sm" href={localizeHref('/products')}
+					>Browse products</Button
+				>
+			</EmptyContent>
 		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
@@ -57,10 +71,10 @@
 				>
 					<div class="flex flex-wrap items-center gap-1.5">
 						{#if s.dealValue}
-							<Badge class="bg-success/15 text-[10px] text-success">{s.dealValue}</Badge>
+							<Badge class="bg-success/15 text-2xs text-success">{s.dealValue}</Badge>
 						{/if}
 						{#if s.buyerCountry}
-							<span class="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+							<span class="inline-flex items-center gap-1 text-2xs text-muted-foreground">
 								<MapPinIcon class="size-3" />
 								{s.buyerCountry}
 							</span>
@@ -73,12 +87,12 @@
 					</h3>
 					{#if s.excerpt}
 						<p
-							class="mt-1 line-clamp-2 hidden text-[11px] leading-snug text-muted-foreground sm:block"
+							class="mt-1 line-clamp-2 hidden text-2xs-plus leading-snug text-muted-foreground sm:block"
 						>
 							{s.excerpt}
 						</p>
 					{/if}
-					<span class="mt-auto pt-2 text-[10px] font-semibold text-primary">Read story →</span>
+					<span class="mt-auto pt-2 text-2xs font-semibold text-primary">Read story →</span>
 				</a>
 			{/each}
 		</div>

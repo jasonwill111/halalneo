@@ -5,8 +5,6 @@
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 
-	let { data } = $props();
-
 	const templates = [
 		{
 			id: 'supplier-list',

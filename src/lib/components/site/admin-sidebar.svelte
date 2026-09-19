@@ -91,6 +91,14 @@ import Trophy from '@lucide/svelte/icons/trophy';
 			.toUpperCase();
 	}
 
+	// Same cross-fade as the site header (src/routes/+layout.svelte) — the class is
+	// what the reduced-motion-safe transition rule in app.css keys off.
+	function handleToggleTheme() {
+		document.documentElement.classList.add('theme-transitioning');
+		toggleMode();
+		setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+	}
+
 	async function handleSignOut() {
 		try {
 			await authClient.signOut();
@@ -102,8 +110,15 @@ import Trophy from '@lucide/svelte/icons/trophy';
 </script>
 
 {#snippet brandBar()}
-	<div class="flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16">
-		<span class="text-base font-bold tracking-tight text-primary">HalalNeo Admin</span>
+	<!-- Mobile renders inside a Sheet whose close button is absolutely positioned
+	     top-right — reserve space for it there only. -->
+	<div
+		class={cn(
+			'flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16',
+			variant === 'mobile' && 'pr-10'
+		)}
+	>
+		<span class="truncate text-base font-bold tracking-tight text-primary">HalalNeo Admin</span>
 	</div>
 {/snippet}
 
@@ -125,7 +140,13 @@ import Trophy from '@lucide/svelte/icons/trophy';
 {/snippet}
 
 {#snippet iconButtons()}
-	<Button variant="ghost" size="icon" aria-label="Toggle theme" onclick={() => toggleMode()} class="size-8">
+	<Button
+		variant="ghost"
+		size="icon"
+		aria-label="Toggle theme"
+		onclick={handleToggleTheme}
+		class="size-8"
+	>
 		{#if mode.current === 'dark'}
 			<Sun class="size-4" />
 		{:else}
@@ -138,6 +159,7 @@ import Trophy from '@lucide/svelte/icons/trophy';
 		size="icon"
 		aria-label="Back to homepage"
 		class="size-8"
+		onclick={onNavigate}
 	>
 		<Home class="size-4" />
 	</Button>
@@ -152,9 +174,9 @@ import Trophy from '@lucide/svelte/icons/trophy';
 	</Button>
 {/snippet}
 
-{#if variant === 'desktop'}
-	{@render brandBar()}
-	{@render navList()}
+{#snippet accountBlock()}
+	<!-- §4.2: fixed bottom block = name + email + theme + home + sign out.
+	     Shared by both variants so mobile can't drop the account identity. -->
 	<div class="shrink-0 border-t border-border/50 px-3 py-3">
 		<div class="flex items-center gap-2.5 rounded-lg px-2 py-2">
 			<Avatar class="size-8">
@@ -175,12 +197,8 @@ import Trophy from '@lucide/svelte/icons/trophy';
 			{@render iconButtons()}
 		</div>
 	</div>
-{:else}
-	{@render brandBar()}
-	{@render navList()}
-	<div class="shrink-0 border-t border-border/50 px-3 py-3">
-		<div class="flex items-center gap-1">
-			{@render iconButtons()}
-		</div>
-	</div>
-{/if}
+{/snippet}
+
+{@render brandBar()}
+{@render navList()}
+{@render accountBlock()}

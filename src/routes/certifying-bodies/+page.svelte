@@ -1,9 +1,19 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
+	import {
+		Empty,
+		EmptyHeader,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription,
+		EmptyContent
+	} from '#lib/components/ui/empty/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
@@ -24,11 +34,17 @@
 		{ label: 'Oceania', value: 'Oceania' }
 	] as const;
 
+	interface CertifierRow {
+		name: string;
+		country: string;
+		standard?: string | null;
+	}
+
 	let query = $state('');
 	let selectedRegion = $state('');
 
 	const filtered = $derived(
-		(data.certifiers ?? []).filter((b: any) => {
+		(data.certifiers ?? []).filter((b: CertifierRow) => {
 			const q = query.trim().toLowerCase();
 			const matchesQuery =
 				!q ||
@@ -56,7 +72,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList ?? {})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
@@ -67,7 +83,7 @@
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Certifying bodies</h1>
 			<p class="text-muted-foreground">
 				{(data.certifiers ?? []).length} recognized halal certification authorities across
-				{new Set((data.certifiers ?? []).map((b: any) => b.country)).size} countries.
+				{new Set((data.certifiers ?? []).map((b) => b.country)).size} countries.
 			</p>
 		</div>
 		<div class="w-full sm:w-72">
@@ -112,7 +128,7 @@
 											<GlobeIcon class="size-4" />
 										</a>
 									{/if}
-									<Badge variant="outline" class="text-[10px]">{getRegion(body.country)}</Badge>
+									<Badge variant="outline" class="text-2xs">{getRegion(body.country)}</Badge>
 								</div>
 							</div>
 							<p
@@ -125,11 +141,46 @@
 					</CardContent>
 				</Card>
 			</article>
+		{:else}
+			<div class="col-span-full">
+				{#if data.loadError}
+					<ErrorRetry failure={data.loadError} subject="certifying bodies" />
+				{:else}
+					<Empty>
+						<EmptyHeader>
+							<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground" /></EmptyMedia>
+							<EmptyTitle>No certifying bodies found</EmptyTitle>
+							<EmptyDescription>
+								{#if query.trim() || selectedRegion}
+									No bodies match “{query || selectedRegion}”. Try a shorter name or another
+									region.
+								{:else}
+									The certifying-body directory is empty right now.
+								{/if}
+							</EmptyDescription>
+						</EmptyHeader>
+						<EmptyContent>
+							{#if query.trim() || selectedRegion}
+								<Button
+									variant="outline"
+									size="sm"
+									onclick={() => {
+										query = '';
+										selectedRegion = '';
+									}}>Clear filters</Button
+								>
+							{:else}
+								<Button size="sm" href={localizeHref('/products')}>Browse products</Button
+							>{/if}
+							<Button variant="link" size="sm" href={localizeHref('/contact')}
+								>Suggest a certifying body</Button
+							>
+						</EmptyContent>
+					</Empty>
+				{/if}
+			</div>
 		{/each}
 	</div>
 
-	{#if filtered.length === 0}
-		<p class="py-10 text-center text-muted-foreground">No certifying bodies match "{query}"</p>
-	{/if}
 	<Paginator bind:page {totalPages} />
 </section>

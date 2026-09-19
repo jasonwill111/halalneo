@@ -76,15 +76,8 @@
 />
 
 <svelte:head>
-	<link
-		rel="preload"
-		as="image"
-		href={slides[0].image}
-		imagesrcset={`${slides[0].image}?w=768 768w, ${slides[0].image} 1200w`}
-		imagesizes="100vw"
-		fetchpriority="high"
-	/>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	<link rel="preload" as="image" href={slides[0].image} fetchpriority="high" />
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'WebSite',
 		name: 'HalalNeo',
@@ -114,13 +107,13 @@
 			name: 'HalalNeo',
 			url: 'https://halalneo.com'
 		}
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 <!-- HERO -->
 <section class="flex flex-col items-center py-2 text-center sm:py-4">
 	<span
-		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium text-secondary-foreground"
+		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-2xs font-medium text-secondary-foreground"
 	>
 		<ShieldCheck class="size-2.5 text-primary"></ShieldCheck>
 		Halal B2B marketplace & trade intelligence
@@ -132,16 +125,14 @@
 		style="--enter-delay: 90ms"
 	>
 		<div class="relative aspect-[16/10] sm:aspect-[16/5]">
-			{#each slides as slide, i}
+			{#each slides as slide, i (i)}
 				<div
-					class="absolute inset-0 transition-opacity duration-500 {i === currentSlide
+					class="absolute inset-0 transition-opacity duration-deliberate {i === currentSlide
 						? 'z-10 opacity-100'
 						: 'z-0 opacity-0'}"
 				>
 					<img
 						src={slide.image}
-						srcset={`${slide.image}?w=768 768w, ${slide.image} 1200w`}
-						sizes="100vw"
 						alt={slide.title.replace(/\n/g, ' ')}
 						class="absolute inset-0 h-full w-full object-cover"
 						aria-hidden="true"
@@ -170,7 +161,7 @@
 									{slide.title}
 								</p>
 							{/if}
-							<p class="mt-1.5 max-w-md text-[11px] text-muted-foreground sm:mt-2 sm:text-sm">
+							<p class="mt-1.5 max-w-md text-2xs-plus text-muted-foreground sm:mt-2 sm:text-sm">
 								{slide.subtitle}
 							</p>
 							<div class="mt-2.5 flex flex-col gap-1.5 sm:mt-3 sm:flex-row sm:gap-2">
@@ -190,7 +181,7 @@
 			{/each}
 			<!-- Carousel Dots -->
 			<div class="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 sm:bottom-3">
-				{#each slides as _, i}
+				{#each slides as _, i (i)}
 					<Button
 						variant="ghost"
 						size="icon"
@@ -209,7 +200,7 @@
 		</div>
 	</div>
 	<p
-		class="animate-enter relative mb-2 text-[10px] text-muted-foreground sm:mb-3 sm:text-[11px]"
+		class="animate-enter relative mb-2 text-2xs text-muted-foreground sm:mb-3 sm:text-2xs-plus"
 		style="--enter-delay: 180ms"
 	>
 		Researched data from <span class="font-medium text-foreground"
@@ -248,7 +239,7 @@
 					<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
 						{tool.name}
 					</h3>
-					<p class="truncate text-[10px] text-muted-foreground sm:text-xs">
+					<p class="truncate text-2xs text-muted-foreground sm:text-xs">
 						{tool.desc}
 					</p>
 				</div>
@@ -261,7 +252,7 @@
 <section {@attach reveal}>
 	<SectionHead number="02" title="Browse by category" href="/categories" linkLabel="View all" />
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
-		{#each data.categories.slice(0, 6) as category, i}
+		{#each data.categories.slice(0, 6) as category, i (category.slug)}
 			<a
 				href={localizeHref(`/category/${category.slug}`)}
 				class="group press-scale flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
@@ -271,7 +262,7 @@
 						i % categoryColors.length
 					]}"
 				>
-					<Icon name={category.icon} class="size-5"></Icon>
+					<Icon name={category.icon ?? ''} class="size-5"></Icon>
 				</div>
 				<div class="min-w-0">
 					<h3 class="truncate text-sm font-medium transition-colors group-hover:text-primary">
@@ -302,15 +293,15 @@
 	<div class="mt-4 grid grid-cols-3 gap-3 sm:mx-auto sm:mt-6 sm:max-w-lg">
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
 			<p class="text-lg font-bold text-info tabular-nums">{data.stats.verifiedSuppliers}</p>
-			<p class="text-[10px] text-muted-foreground sm:text-xs">Verified suppliers</p>
+			<p class="text-2xs text-muted-foreground sm:text-xs">Verified suppliers</p>
 		</div>
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
 			<p class="text-lg font-bold text-warn tabular-nums">{data.stats.certifierCount}</p>
-			<p class="text-[10px] text-muted-foreground sm:text-xs">Certifying bodies</p>
+			<p class="text-2xs text-muted-foreground sm:text-xs">Certifying bodies</p>
 		</div>
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
 			<p class="text-lg font-bold text-success tabular-nums">{data.stats.guideCount}</p>
-			<p class="text-[10px] text-muted-foreground sm:text-xs">Market guides</p>
+			<p class="text-2xs text-muted-foreground sm:text-xs">Market guides</p>
 		</div>
 	</div>
 	<div class="mt-4 flex flex-col items-center justify-center gap-2 sm:mt-6 sm:flex-row sm:gap-3">
@@ -336,14 +327,14 @@
 					>
 						<tool.icon class="size-4" />
 					</div>
-					<Badge variant={tool.tone === 'info' ? 'secondary' : 'outline'} class="text-[10px]"
+					<Badge variant={tool.tone === 'info' ? 'secondary' : 'outline'} class="text-2xs"
 						>{tool.tone}</Badge
 					>
 				</div>
 				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
 					{tool.name}
 				</h3>
-				<p class="line-clamp-2 text-[10px] text-muted-foreground sm:text-xs">
+				<p class="line-clamp-2 text-2xs text-muted-foreground sm:text-xs">
 					{tool.desc}
 				</p>
 			</a>
@@ -362,19 +353,19 @@
 	<div
 		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
 	>
-		{#each data.kbArticles.slice(0, 6) as article}
+		{#each data.kbArticles.slice(0, 6) as article (article.slug)}
 			<a
 				href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)}
 				class="group press-scale w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
 			>
-				<Badge variant="secondary" class="mb-1 text-[10px] sm:text-[10px]">{article.section}</Badge>
+				<Badge variant="secondary" class="mb-1 text-2xs">{article.section}</Badge>
 				<h3
 					class="line-clamp-2 text-xs leading-snug font-medium transition-colors group-hover:text-primary sm:text-sm"
 				>
 					{article.title}
 				</h3>
 				<p
-					class="mt-0.5 line-clamp-1 text-[10px] text-muted-foreground sm:mt-1 sm:line-clamp-2 sm:text-xs"
+					class="mt-0.5 line-clamp-1 text-2xs text-muted-foreground sm:mt-1 sm:line-clamp-2 sm:text-xs"
 				>
 					{article.summary}
 				</p>
@@ -407,7 +398,7 @@
 					>
 						{item.label}
 					</h3>
-					<p class="mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground sm:text-xs">
+					<p class="mt-0.5 line-clamp-2 text-2xs leading-snug text-muted-foreground sm:text-xs">
 						{item.desc}
 					</p>
 				</div>
@@ -625,25 +616,25 @@
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:col-span-3">
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">JAKIM · MUI · ESMA</p>
-			<p class="mt-0.5 text-[10px] text-muted-foreground">
+			<p class="mt-0.5 text-2xs text-muted-foreground">
 				{data.stats.certifierCount} certifying body databases
 			</p>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Public certificate registers</p>
-			<p class="mt-0.5 text-[10px] text-muted-foreground">
+			<p class="mt-0.5 text-2xs text-muted-foreground">
 				Cross-referenced against issuing bodies
 			</p>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Scope & expiry tracking</p>
-			<p class="mt-0.5 text-[10px] text-muted-foreground">
+			<p class="mt-0.5 text-2xs text-muted-foreground">
 				Certificate validity shown on every profile
 			</p>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Open methodology</p>
-			<p class="mt-0.5 text-[10px] text-muted-foreground">How we source and verify data</p>
+			<p class="mt-0.5 text-2xs text-muted-foreground">How we source and verify data</p>
 		</div>
 	</div>
 </section>

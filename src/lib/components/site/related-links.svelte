@@ -27,7 +27,7 @@
 							{item.label}
 						</h3>
 						{#if item.description}
-							<p class="mt-0.5 truncate text-[10px] text-muted-foreground">{item.description}</p>
+							<p class="mt-0.5 truncate text-2xs text-muted-foreground">{item.description}</p>
 						{/if}
 					</div>
 					<ArrowUpRight

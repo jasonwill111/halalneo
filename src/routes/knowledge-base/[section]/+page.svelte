@@ -9,14 +9,14 @@
 
 	const PAGE_SIZE = 9;
 	let page = $state(1);
-	const articles = $derived((data.item?.articles ?? []) as any[]);
+	const articles = $derived(data.item?.articles ?? []);
 	const totalPages = $derived(Math.max(1, Math.ceil(articles.length / PAGE_SIZE)));
 	const paged = $derived(articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
-	{@html `<script type="application/ld+json">${JSON.stringify(data.collectionPage ?? {})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList ?? {})}\u003c/script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.collectionPage ?? {})}\u003c/script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">

@@ -17,7 +17,9 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import { z } from 'zod';
+	import { toast } from 'svelte-sonner';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import TagIcon from '@lucide/svelte/icons/tag';
 	import Send from '@lucide/svelte/icons/send';
 
@@ -72,32 +74,45 @@
 					message: inquiryMessage.trim()
 				})
 			});
-			const j = (await res.json().catch(() => ({}))) as any;
+			const j = (await res.json().catch(() => ({}))) as {
+				error?: string;
+				details?: Record<string, string[]>;
+			};
 			if (res.ok) {
 				inquiryResult = { type: 'success', message: 'Inquiry sent successfully!' };
 				inquirySubject = '';
 				inquiryMessage = '';
 				inquiryEmail = '';
 				inquiryFieldErrors = {};
+				toast.success('Inquiry sent. The supplier will reply by email.');
 			} else {
-				inquiryResult = { type: 'error', message: j.error ?? 'Failed to send inquiry.' };
+				const failMessage = j.error ?? 'Failed to send inquiry.';
+				inquiryResult = { type: 'error', message: failMessage };
+				toast.error(failMessage);
 				if (res.status === 400 && j.details) {
 					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
 						inquirySubject: j.details.subject,
 						inquiryMessage: j.details.message,
-						inquiryEmail: j.details.buyerSlug
+						inquiryEmail: j.details.buyerSlug ?? j.details.supplierSlug
 					});
 					focusFirstInvalid(inquiryFormEl);
 				}
 			}
 		} catch {
 			inquiryResult = { type: 'error', message: 'Network error. Please try again.' };
+			toast.error('Network error. Please try again.');
 		} finally {
 			inquirySending = false;
 		}
 	}
 
-	function priceText(p: any): string {
+	interface PromotionPriceFields {
+		priceMin?: string | number | null;
+		priceMax?: string | number | null;
+		priceUnit?: string | null;
+	}
+
+	function priceText(p: PromotionPriceFields): string {
 		if (!p?.priceMin) return 'Price on request';
 		const range = p.priceMax ? `$${p.priceMin}–$${p.priceMax}` : `$${p.priceMin}`;
 		return p.priceUnit ? `${range}/${p.priceUnit}` : range;
@@ -105,7 +120,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'Offer',
 		name: promo?.title ?? '',
@@ -113,20 +128,22 @@
 		price: promo?.priceMin ?? '',
 		priceCurrency: 'USD',
 		url: `https://halalneo.com/promotions/${promo?.id ?? ''}`
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 {#if promo}
 	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
-		<Breadcrumb items={[{ label: 'Quick Deals', href: '/promotions' }, { label: promo.title ?? 'Deal' }]} />
+		<Breadcrumb
+			items={[{ label: 'Quick Deals', href: '/promotions' }, { label: promo.title ?? 'Deal' }]}
+		/>
 
 		<div class="grid gap-4 lg:grid-cols-[1fr_320px]">
 			<div class="min-w-0 space-y-4">
 				<div class="space-y-2">
 					<div class="flex flex-wrap items-center gap-1.5">
-						<Badge class="bg-success/15 text-success text-[10px]">Deal</Badge>
+						<Badge class="bg-success/15 text-2xs text-success">Deal</Badge>
 						{#if promo.discountPct}
-							<Badge variant="destructive" class="text-[10px]">-{promo.discountPct}%</Badge>
+							<Badge variant="destructive" class="text-2xs">-{promo.discountPct}%</Badge>
 						{/if}
 					</div>
 					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{promo.title}</h1>
@@ -228,8 +245,8 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquiryEmail}<FieldError
-					>{inquiryFieldErrors.inquiryEmail}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquiryEmail}</FieldError
+					>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Subject</FieldLabel>
@@ -244,8 +261,8 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquirySubject}<FieldError
-					>{inquiryFieldErrors.inquirySubject}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquirySubject}</FieldError
+					>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Message</FieldLabel>
@@ -260,15 +277,21 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquiryMessage}<FieldError
-					>{inquiryFieldErrors.inquiryMessage}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquiryMessage}</FieldError
+					>{/if}
 			</Field>
 			<DialogFooter>
 				<Button
 					type="submit"
 					disabled={inquirySending || !inquirySubject.trim() || !inquiryMessage.trim()}
+					aria-busy={inquirySending}
 				>
-					{inquirySending ? 'Sending...' : 'Send Inquiry'}
+					{#if inquirySending}
+						<Loader2 class="size-3.5 animate-spin" />
+						Sending...
+					{:else}
+						Send Inquiry
+					{/if}
 				</Button>
 			</DialogFooter>
 		</form>

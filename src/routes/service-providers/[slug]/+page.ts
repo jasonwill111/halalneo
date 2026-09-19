@@ -1,32 +1,18 @@
 import type { EntryGenerator, PageLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { ServiceProviderRecord } from '#lib/schemas/service-providers.js';
 
 export const entries: EntryGenerator = () => [];
-
-interface ProviderItem {
-	slug?: string;
-	name?: string;
-	metaTitle?: string;
-	metaDescription?: string;
-	description?: string;
-	type?: string;
-	country?: string;
-	website?: string;
-	email?: string;
-	phone?: string;
-	whatsapp?: string;
-	line?: string;
-	rating?: number;
-	status?: string;
-}
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const res = await fetch(`/api/service-providers/${params.slug}`);
 		if (res.ok) {
-			const data: ProviderItem = (await res.json()) as any;
+			const data: ServiceProviderRecord = await readJson<ServiceProviderRecord>(res);
 			const relatedRes = await fetch(`/api/service-providers?type=${data.type}&limit=5`);
-			const relatedData = relatedRes.ok ? ((await relatedRes.json()) as any) : { items: [] };
-			const related = (relatedData.items ?? []).filter((p: ProviderItem) => p.slug !== params.slug).slice(0, 4);
+			const related = (await readItems<ServiceProviderRecord>(relatedRes))
+				.filter((p) => p.slug !== params.slug)
+				.slice(0, 4);
 			return {
 				seo: {
 					// DB per-row meta wins when admins filled it; else derive.
@@ -43,7 +29,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				related
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		seo: {

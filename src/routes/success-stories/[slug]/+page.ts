@@ -1,5 +1,8 @@
-import { error } from '@sveltejs/kit';
+import { error, isHttpError } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { SuccessStoryItem } from '#lib/types/api.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
@@ -10,14 +13,14 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		if (!res.ok) throw error(404, 'Story not found');
 
-		const story = (await res.json()) as any;
-		const suppliers = supRes.ok ? ((((await supRes.json()) as any)).items ?? []) : [];
-		const supplierName = suppliers.find((s: any) => s.slug === story.supplierSlug)?.name ?? story.supplierSlug;
+		const story = await readJson<SuccessStoryItem>(res);
+		const suppliers = await readItems<SupplierListItem>(supRes);
+		const supplierName = suppliers.find((s) => s.slug === story.supplierSlug)?.name ?? story.supplierSlug;
 
 		const listRes = await fetch('/api/success-stories?limit=10');
-		const related = listRes.ok
-			? ((((await listRes.json()) as any)).items ?? []).filter((s: any) => s.slug !== params.slug).slice(0, 3)
-			: [];
+		const related = (await readItems<SuccessStoryItem>(listRes))
+			.filter((s) => s.slug !== params.slug)
+			.slice(0, 3);
 
 		return {
 			seo: {
@@ -31,8 +34,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			supplierName,
 			related
 		};
-	} catch (e: any) {
-		if (e?.status === 404) throw e;
+	} catch (e: unknown) {
+		if (isHttpError(e) && e.status === 404) throw e;
 		throw error(404, 'Story not found');
 	}
 };

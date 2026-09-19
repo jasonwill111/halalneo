@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import Icon from '#lib/components/site/icon.svelte';
@@ -15,10 +16,13 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import SeoMeta from '#lib/components/seo-meta.svelte';
 
 	let { data } = $props();
@@ -42,7 +46,7 @@
 	);
 
 	const certByCategory = $derived.by(() => {
-		const map = new Map<string, number>();
+		const map = new SvelteMap<string, number>();
 		for (const c of productCategories) {
 			map.set(c.slug, allProducts.filter((p) => p.categorySlug === c.slug).length);
 		}
@@ -72,7 +76,7 @@
 	});
 
 	const supplierNames = $derived.by(() => {
-		const map = new Map<string, string>();
+		const map = new SvelteMap<string, string>();
 		for (const s of (data.suppliers ?? []) as Array<{ slug: string; name: string }>) {
 			map.set(s.slug, s.name);
 		}
@@ -151,18 +155,18 @@
 
 <svelte:head>
 	<!-- Structured Data: Breadcrumb -->
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
 		itemListElement: [
 			{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://halalneo.com/' },
 			{ '@type': 'ListItem', position: 2, name: 'Products', item: 'https://halalneo.com/products' }
 		]
-	})}</script>`}
+	})}\u003c/script>`}
 
 	<!-- Structured Data: Product Schema (for top products) -->
 	{#if allProducts.length > 0}
-		{@html `<script type="application/ld+json">${JSON.stringify({
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'Product',
 			name: allProducts[0].name,
@@ -171,7 +175,7 @@
 			sku: allProducts[0].slug,
 			brand: { '@type': 'Brand', name: 'HalalNeo' },
 			offset: allProducts[0].priceMin ? `Price: $${allProducts[0].priceMin}` : 'Price on request'
-		})}</script>`}
+		})}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -217,7 +221,7 @@
 								>
 									{cat.name}
 								</h3>
-								<p class="mt-0.5 text-[10px] text-muted-foreground sm:text-xs">
+								<p class="mt-0.5 text-2xs text-muted-foreground sm:text-xs">
 									{certByCategory.get(cat.slug) ?? 0} product{(certByCategory.get(cat.slug) ??
 										0) === 1
 										? ''
@@ -248,7 +252,7 @@
 				<Button
 					variant="outline"
 					size="sm"
-					class="text-[10px]"
+					class="text-2xs"
 					onclick={() => {
 						activeCategory = 'all';
 						query = '';
@@ -268,17 +272,39 @@
 			/>
 		</div>
 
-		{#if paged.length === 0}
+		{#if data.loadError && paged.length === 0}
+			<ErrorRetry failure={data.loadError} subject="products" />
+		{:else if paged.length === 0}
 			<Empty>
-				<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
-				<EmptyTitle
-					>{query.trim() || activeCategory !== 'all'
-						? 'No products match these filters'
-						: 'No products in this category yet'}</EmptyTitle
-				>
-				<EmptyDescription
-					>New listings are added as suppliers onboard during test mode.</EmptyDescription
-				>
+				<EmptyHeader>
+					<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
+					<EmptyTitle
+						>{query.trim() || activeCategory !== 'all'
+							? 'No products match these filters'
+							: 'No products in this category yet'}</EmptyTitle
+					>
+					<EmptyDescription
+						>New listings are added as suppliers onboard during test mode.</EmptyDescription
+					>
+				</EmptyHeader>
+				<EmptyContent>
+					{#if query.trim() || activeCategory !== 'all'}
+						<Button
+							variant="outline"
+							size="sm"
+							onclick={() => {
+								activeCategory = 'all';
+								query = '';
+							}}
+							>Clear filters</Button
+						>
+					{:else}
+						<Button size="sm" href={localizeHref('/rfqs/new')}>Post a buying request</Button>
+					{/if}
+					<Button variant="link" size="sm" href={localizeHref('/suppliers')}
+						>Browse suppliers instead</Button
+					>
+				</EmptyContent>
 			</Empty>
 		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
@@ -293,7 +319,7 @@
 								<img
 									src={p.image}
 									alt={p.name}
-									class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+									class="h-full w-full object-cover transition-transform duration-slow group-hover:scale-105"
 									loading="lazy"
 									decoding="async"
 									width="320"
@@ -310,7 +336,7 @@
 							{/if}
 							{#if cert}
 								<span
-									class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold {cert.cls}"
+									class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-3xs font-semibold {cert.cls}"
 								>
 									<cert.icon class="size-2.5"></cert.icon>
 									{cert.text}
@@ -324,11 +350,11 @@
 								{p.name}
 							</h3>
 							{#if p.moq}
-								<p class="hidden text-[10px] text-muted-foreground sm:block">MOQ: {p.moq}</p>
+								<p class="hidden text-2xs text-muted-foreground sm:block">MOQ: {p.moq}</p>
 							{/if}
 							<div class="mt-auto flex items-center justify-between gap-1.5 pt-1">
-								<span class="truncate text-[11px] font-semibold text-primary">{priceLabel(p)}</span>
-								<span class="max-w-[45%] truncate text-[10px] text-muted-foreground">
+								<span class="truncate text-2xs-plus font-semibold text-primary">{priceLabel(p)}</span>
+								<span class="max-w-[45%] truncate text-2xs text-muted-foreground">
 									{supplierNames.get(p.supplierSlug ?? '') ?? p.supplierSlug}
 								</span>
 							</div>
@@ -357,7 +383,7 @@
 						</div>
 						<h3 class="truncate text-xs font-semibold sm:text-sm">{market.region}</h3>
 					</div>
-					<p class="mt-1.5 line-clamp-2 text-[10px] text-muted-foreground sm:text-xs">
+					<p class="mt-1.5 line-clamp-2 text-2xs text-muted-foreground sm:text-xs">
 						{market.countries}
 					</p>
 				</Card>

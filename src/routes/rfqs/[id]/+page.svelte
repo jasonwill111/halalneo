@@ -3,9 +3,8 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card } from '#lib/components/ui/card/index.js';
-	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel, FieldDescription, FieldError } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
 	import {
 		Dialog,
@@ -21,12 +20,13 @@
 	import { sanitizeHtml } from '#lib/sanitize.js';
 	import { z } from 'zod';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import type { ApiList, SupplierMembershipItem } from '#lib/types/api.js';
 
 	let { data } = $props();
 	const rfq = $derived(data.rfq);
 
 	let quoteOpen = $state(false);
-	let mySuppliers = $state<any[]>([]);
+	let mySuppliers = $state<SupplierMembershipItem[]>([]);
 	let quoteSupplier = $state('');
 	let quoteMessage = $state('');
 	let quoteSending = $state(false);
@@ -49,7 +49,7 @@
 		try {
 			const res = await fetch('/api/supplier-memberships');
 			if (res.ok) {
-				const j = (await res.json()) as any;
+				const j = (await res.json()) as ApiList<SupplierMembershipItem>;
 				mySuppliers = j.items ?? [];
 				quoteSupplier = mySuppliers[0]?.supplierSlug ?? '';
 			}
@@ -85,7 +85,10 @@
 					message: quoteMessage.trim()
 				})
 			});
-			const j = (await res.json().catch(() => ({}))) as any;
+			const j = (await res.json().catch(() => ({}))) as {
+				error?: string;
+				details?: Record<string, string[] | string | undefined>;
+			};
 			if (res.ok) {
 				quoteResult = { type: 'success', message: 'Quote sent to the buyer!' };
 				quoteMessage = '';
@@ -113,13 +116,13 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'BuyAction',
 		name: rfq?.title ?? '',
 		description: rfq?.description ?? '',
 		url: `https://halalneo.com/rfqs/${rfq?.id ?? ''}`
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 {#if rfq}
@@ -130,9 +133,9 @@
 			<div class="min-w-0 space-y-4">
 				<div class="space-y-2">
 					<div class="flex flex-wrap items-center gap-1.5">
-						<Badge class="bg-success/15 text-success text-[10px]">Open</Badge>
+						<Badge class="bg-success/15 text-success text-2xs">Open</Badge>
 						{#if rfq.categorySlug}
-							<Badge variant="outline" class="text-[10px]">{rfq.categorySlug.replace(/-/g, ' ')}</Badge>
+							<Badge variant="outline" class="text-2xs">{rfq.categorySlug.replace(/-/g, ' ')}</Badge>
 						{/if}
 					</div>
 					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{rfq.title}</h1>
@@ -195,9 +198,9 @@
 
 		<RelatedLinks
 			title="More buying requests"
-			items={(data.related ?? []).map((r: any) => ({
+			items={(data.related ?? []).map((r) => ({
 				label: r.title,
-				description: r.quantity ?? r.destination,
+				description: r.quantity ?? r.destination ?? '',
 				href: `/rfqs/${r.id}`
 			}))}
 		/>

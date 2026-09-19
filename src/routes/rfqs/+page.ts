@@ -1,13 +1,18 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { BuyingRequestItem } from '#lib/types/api.js';
+import type { CategoryRecord } from '#lib/schemas/categories.js';
 
 export const load: PageLoad = async ({ fetch }) => {
+	const failures: LoadFailure[] = [];
 	const [rfqRes, catRes] = await Promise.all([
-		fetch('/api/rfqs?limit=100'),
-		fetch('/api/categories?limit=100')
+		fetchSafe(fetch, '/api/rfqs?limit=100', failures),
+		fetchSafe(fetch, '/api/categories?limit=100', failures)
 	]);
 
-	const rfqs = rfqRes.ok ? ((((await rfqRes.json()) as any)).items ?? []) : [];
-	const categories = catRes.ok ? ((((await catRes.json()) as any)).items ?? []) : [];
+	const rfqs = await readItems<BuyingRequestItem>(rfqRes);
+	const categories = await readItems<CategoryRecord>(catRes);
 
 	return {
 		seo: {
@@ -18,6 +23,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal RFQ', 'buying requests', 'halal sourcing', 'trade leads']
 		},
 		rfqs,
-		categories: categories.map((c: any) => ({ slug: c.slug, name: c.name }))
+		categories: categories.map((c) => ({ slug: c.slug, name: c.name })),
+		loadError: firstFailure(failures)
 	};
 };

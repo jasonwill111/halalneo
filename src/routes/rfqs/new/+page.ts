@@ -1,8 +1,10 @@
 import type { PageLoad } from './$types';
+import { readItems } from '#lib/utils/api-response.js';
+import type { CategoryRecord } from '#lib/schemas/categories.js';
 
 export const load: PageLoad = async ({ fetch }) => {
 	const catRes = await fetch('/api/categories?limit=100');
-	const categories = catRes.ok ? ((((await catRes.json()) as any)).items ?? []) : [];
+	const categories = await readItems<CategoryRecord>(catRes);
 
 	return {
 		seo: {
@@ -12,6 +14,6 @@ export const load: PageLoad = async ({ fetch }) => {
 			ogImage: 'https://halalneo.com/api/media/og-default.png',
 			robots: 'noindex, nofollow'
 		},
-		categories: categories.map((c: any) => ({ slug: c.slug, name: c.name }))
+		categories: categories.map((c) => ({ slug: c.slug, name: c.name }))
 	};
 };

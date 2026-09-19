@@ -1,22 +1,41 @@
 import type { EntryGenerator, PageLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { CategoryRecord } from '#lib/schemas/categories.js';
 
 export const entries: EntryGenerator = () => [];
 
-interface ProductItem {
-	name?: string;
-	shortDescription?: string;
-	description?: string;
-	image?: string;
-	images?: any;
-	videos?: any;
-	features?: any;
-	faqs?: any;
-	resources?: any;
-	specifications?: any;
-	category?: string;
-	categorySlug?: string;
-	supplierSlug?: string;
-	slug?: string;
+/** Feature rows: modern seed stores strings, legacy rows an object with `value`. */
+type FeatureEntry = string | { value?: string | null };
+
+/** FAQ rows: `{ question, answer }`, the legacy `{ q, a }` alias, or a bare string. */
+type FaqEntry =
+	| string
+	| { question?: string | null; answer?: string | null; q?: string | null; a?: string | null };
+
+/** Resource rows: `{ name, url }`, the legacy `href` alias, or a bare string. */
+type ResourceEntry = string | { name?: string | null; url?: string | null; href?: string | null };
+
+/**
+ * `/api/products/[slug]` returns the raw row, so every JSON TEXT column arrives
+ * as a string (the seed/legacy rows occasionally carry an already-parsed value,
+ * hence the unions). §5.4 — the fetch boundary lands on a real type.
+ */
+interface ProductRow {
+	name?: string | null;
+	shortDescription?: string | null;
+	description?: string | null;
+	image?: string | null;
+	images?: string | unknown[] | null;
+	videos?: string | unknown[] | null;
+	features?: string | FeatureEntry[] | null;
+	faqs?: string | FaqEntry[] | null;
+	resources?: string | ResourceEntry[] | null;
+	specifications?: string | Record<string, string> | null;
+	/** Not a `products` column — older payloads carried it; only feeds SEO keywords. */
+	category?: string | null;
+	categorySlug?: string | null;
+	supplierSlug?: string | null;
+	slug?: string | null;
 	priceMin?: number | string | null;
 	priceMax?: number | string | null;
 	priceUnit?: string | null;
@@ -29,7 +48,24 @@ interface ProductItem {
 	createdAt?: string | null;
 	metaTitle?: string | null;
 	metaDescription?: string | null;
-	keywords?: any;
+	keywords?: string | string[] | null;
+}
+
+/** Projected row from the `/api/products` list endpoint (`ProductListItem`). */
+interface ProductRelatedItem {
+	slug: string;
+	name: string;
+	image?: string | null;
+	status?: string | null;
+	categorySlug?: string | null;
+	supplierSlug?: string | null;
+	originCountry?: string | null;
+	shortDescription?: string | null;
+	moq?: string | null;
+	priceMin?: number | null;
+	priceMax?: number | null;
+	priceUnit?: string | null;
+	certStatus?: string | null;
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
@@ -53,29 +89,36 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			fetch('/api/categories')
 		]);
 		if (res.ok) {
-			const data: ProductItem = (await res.json()) as any;
+			const data: ProductRow = await readJson<ProductRow>(res);
 			const parsed = {
 				...data,
 				features:
 					typeof data.features === 'string'
-						? JSON.parse(data.features || '[]')
+						? (JSON.parse(data.features || '[]') as FeatureEntry[])
 						: (data.features ?? []),
 				specifications:
 					typeof data.specifications === 'string'
-						? JSON.parse(data.specifications || '{}')
+						? (JSON.parse(data.specifications || '{}') as Record<string, string>)
 						: (data.specifications ?? {}),
 				images:
-					typeof data.images === 'string' ? JSON.parse(data.images || '[]') : (data.images ?? []),
+					typeof data.images === 'string'
+						? (JSON.parse(data.images || '[]') as unknown[])
+						: (data.images ?? []),
 				videos:
-					typeof data.videos === 'string' ? JSON.parse(data.videos || '[]') : (data.videos ?? []),
-				faqs: typeof data.faqs === 'string' ? JSON.parse(data.faqs || '[]') : (data.faqs ?? []),
+					typeof data.videos === 'string'
+						? (JSON.parse(data.videos || '[]') as unknown[])
+						: (data.videos ?? []),
+				faqs:
+					typeof data.faqs === 'string'
+						? (JSON.parse(data.faqs || '[]') as FaqEntry[])
+						: (data.faqs ?? []),
 				resources:
 					typeof data.resources === 'string'
-						? JSON.parse(data.resources || '[]')
+						? (JSON.parse(data.resources || '[]') as ResourceEntry[])
 						: (data.resources ?? [])
 			};
-			const allProducts = relatedRes.ok ? (((await relatedRes.json()) as { items?: any[] }).items ?? []) : [];
-		const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
+			const allProducts = await readItems<ProductRelatedItem>(relatedRes);
+			const categories = await readItems<CategoryRecord>(categoriesRes);
 		// Resolve the supplier name for the product page's supplier card.
 		let supplierName: string | null = null;
 		if (parsed.supplierSlug) {
@@ -86,9 +129,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			}
 		}
 			const relatedProducts = allProducts
-				.filter(
-					(p: any) => p.slug !== params.slug && p.categorySlug === (parsed as any).categorySlug
-				)
+				.filter((p) => p.slug !== params.slug && p.categorySlug === parsed.categorySlug)
 				.slice(0, 3);
 			return {
 				seo: {
@@ -110,7 +151,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				supplierName
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		seo: {

@@ -1,13 +1,18 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { PromotionItem } from '#lib/types/api.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
 
 export const load: PageLoad = async ({ fetch }) => {
+	const failures: LoadFailure[] = [];
 	const [promoRes, supRes] = await Promise.all([
-		fetch('/api/promotions?limit=100'),
-		fetch('/api/suppliers?limit=100&status=active')
+		fetchSafe(fetch, '/api/promotions?limit=100', failures),
+		fetchSafe(fetch, '/api/suppliers?limit=100&status=active', failures)
 	]);
 
-	const promos = promoRes.ok ? ((((await promoRes.json()) as any)).items ?? []) : [];
-	const suppliers = supRes.ok ? ((((await supRes.json()) as any)).items ?? []) : [];
+	const promos = await readItems<PromotionItem>(promoRes);
+	const suppliers = await readItems<SupplierListItem>(supRes);
 	const names: Record<string, string> = {};
 	for (const s of suppliers) names[s.slug] = s.name;
 
@@ -20,6 +25,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal deals', 'clearance', 'wholesale offers', 'halal promotions']
 		},
 		promos,
-		supplierNames: names
+		supplierNames: names,
+		loadError: firstFailure(failures)
 	};
 };

@@ -1,6 +1,8 @@
+import type { PageLoad } from './$types';
+
 export const prerender = false;
 
-export const load = () => ({
+export const load: PageLoad = () => ({
 	seo: {
 		title: 'Pricing — HalalNeo',
 		description:

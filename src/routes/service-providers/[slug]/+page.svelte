@@ -47,21 +47,23 @@
 			.join('');
 	}
 
-	const yearEst = $derived((provider as any)?.createdAt ? String(new Date((provider as any).createdAt).getFullYear()) : '—');
+	const yearEst = $derived(provider?.createdAt ? String(new Date(provider.createdAt).getFullYear()) : '—');
 
 	const hasContact = $derived(
 		!!(provider?.website || provider?.email || provider?.phone || provider?.whatsapp || provider?.line)
 	);
 
 	const metaKeywords = $derived.by(() => {
-		const kw = (provider as any)?.keywords;
+		const kw = provider?.keywords;
 		if (!kw) return null;
 		if (Array.isArray(kw)) return kw.filter(Boolean).join(', ') || null;
 		if (typeof kw === 'string') {
 			try {
 				const parsed = JSON.parse(kw);
 				if (Array.isArray(parsed)) return parsed.filter(Boolean).join(', ') || null;
-			} catch {}
+			} catch {
+				// not JSON — fall through and treat as a raw comma-separated string
+			}
 			return kw.trim() || null;
 		}
 		return null;
@@ -73,7 +75,7 @@
 		<meta name="keywords" content={metaKeywords} />
 	{/if}
 	{#if provider}
-		{@html `<script type="application/ld+json">${JSON.stringify({
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'Organization',
 			name: provider.name,
@@ -88,7 +90,7 @@
 			parentOrganization: { '@type': 'Organization', name: 'HalalNeo' },
 			sameAs: [provider.website],
 			...(provider.rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: provider.rating, ratingCount: 1 } } : {})
-		})}</script>`}
+		})}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -106,20 +108,20 @@
 		<!-- Header -->
 		<div>
 			<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{provider.name}</h1>
-			<p class="mt-0.5 text-[10px] text-muted-foreground">{provider.country} · {typeLabel(provider.type as ProviderType)} · Est. {yearEst}</p>
+			<p class="mt-0.5 text-2xs text-muted-foreground">{provider.country} · {typeLabel(provider.type as ProviderType)} · Est. {yearEst}</p>
 			<div class="mt-1 flex flex-wrap gap-1">
 				{#if provider.status === 'active'}
-					<Badge variant="secondary" class="gap-0.5 text-[10px]">
+					<Badge variant="secondary" class="gap-0.5 text-2xs">
 						<Shield class="size-2 text-success" />
 						Verified
 					</Badge>
 				{/if}
-				<Badge variant="secondary" class="text-[10px]">{typeLabel(provider.type as ProviderType)}</Badge>
+				<Badge variant="secondary" class="text-2xs">{typeLabel(provider.type as ProviderType)}</Badge>
 			</div>
 			{#if provider.rating}
 				<div class="mt-1 flex items-center gap-1">
 					<Star class="size-2.5 fill-warn text-warn" />
-					<span class="text-[10px] text-primary font-medium">{provider.rating}</span>
+					<span class="text-2xs text-primary font-medium">{provider.rating}</span>
 				</div>
 			{/if}
 		</div>
@@ -127,30 +129,30 @@
 		<!-- Action buttons -->
 		<div class="flex gap-1">
 			{#if provider.whatsapp}
-				<Button href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]" target="_blank" rel="noopener">
+				<Button href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs" target="_blank" rel="noopener">
 					<MessageCircle class="size-2.5" />
 					WhatsApp
 				</Button>
 			{/if}
 			{#if provider.line}
-				<Button href="https://line.me/ti/p/{provider.line}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]" target="_blank" rel="noopener">
+				<Button href="https://line.me/ti/p/{provider.line}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs" target="_blank" rel="noopener">
 					Line
 				</Button>
 			{/if}
 			{#if provider.email}
-				<Button href="mailto:{provider.email}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]">
+				<Button href="mailto:{provider.email}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs">
 					<Mail class="size-2.5" />
 					Email
 				</Button>
 			{/if}
 			{#if provider.phone}
-				<Button href="tel:{provider.phone}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]">
+				<Button href="tel:{provider.phone}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs">
 					<Phone class="size-2.5" />
 					Phone
 				</Button>
 			{/if}
 			{#if provider.website}
-				<Button href={provider.website} variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]" target="_blank" rel="noopener">
+				<Button href={provider.website} variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs" target="_blank" rel="noopener">
 					<Globe class="size-2.5" />
 					Website
 				</Button>
@@ -184,11 +186,11 @@
 									<div class="flex items-center gap-1.5">
 										<div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-semibold">{initials(rel.name)}</div>
 										<div class="min-w-0 flex-1">
-											<h3 class="text-[10px] font-medium truncate">{rel.name}</h3>
-											<p class="text-[10px] text-muted-foreground truncate">{rel.country} · {rel.rating ?? '–'}★</p>
+											<h3 class="text-2xs font-medium truncate">{rel.name}</h3>
+											<p class="text-2xs text-muted-foreground truncate">{rel.country} · {rel.rating ?? '–'}★</p>
 										</div>
 										{#if rel.status === 'active'}
-											<Badge variant="secondary" class="hidden shrink-0 gap-0.5 text-[10px] sm:inline-flex">
+											<Badge variant="secondary" class="hidden shrink-0 gap-0.5 text-2xs sm:inline-flex">
 												<Shield class="size-2 text-success" />
 												Verified
 											</Badge>
@@ -247,12 +249,12 @@
 								rel="noopener"
 								class="flex items-center gap-2 text-xs font-medium hover:text-primary"
 							>
-								<span class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-[7px] font-black text-success">L</span>
-								LINE<span class="truncate text-[10px] font-normal text-muted-foreground">{provider.line}</span>
+								<span class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-4xs font-black text-success">L</span>
+								LINE<span class="truncate text-2xs font-normal text-muted-foreground">{provider.line}</span>
 							</a>
 						{/if}
 						{#if !hasContact}
-							<p class="text-[11px] leading-relaxed text-muted-foreground">
+							<p class="text-2xs-plus leading-relaxed text-muted-foreground">
 								This provider has not listed direct contact details yet.
 							</p>
 						{/if}

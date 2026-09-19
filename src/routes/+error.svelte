@@ -4,7 +4,6 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 
 	let status = $derived(page.status);
-	let error = $derived(page.error);
 </script>
 
 <svelte:head>

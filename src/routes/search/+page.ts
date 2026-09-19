@@ -1,13 +1,17 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { PageDto } from '#lib/schemas/pages.js';
 
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
+	const failures: LoadFailure[] = [];
 	const [glossaryRes] = await Promise.all([
-		fetch('/api/pages?category=glossary&limit=50')
+		fetchSafe(fetch, '/api/pages?category=glossary&limit=50', failures)
 	]);
 
-	const glossary = (glossaryRes.ok ? ((await glossaryRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
+	const glossary = (await readItems<PageDto>(glossaryRes)).map((p) => ({
 		term: p.title,
 		definition: p.body ?? p.excerpt ?? ''
 	}));
@@ -21,6 +25,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			keywords: ['halal search', 'find suppliers', 'halal products', 'certification lookup'],
 			robots: 'noindex, follow'
 		},
-		glossary
+		glossary,
+		loadError: firstFailure(failures)
 	};
 };

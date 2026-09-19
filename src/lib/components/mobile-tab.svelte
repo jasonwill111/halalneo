@@ -99,7 +99,7 @@
 	}
 
 	// Materialize transition — scale + opacity together (Apple §12: "Materialize, don't just fade")
-	const materialize = (node: HTMLElement) => {
+	const materialize = (_node: HTMLElement) => {
 		return {
 			duration: 250,
 			easing: cubicOut,
@@ -203,7 +203,7 @@
 			{#each exploreGroups as group (group.label)}
 				<div>
 					<p
-						class="px-2 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
+						class="px-2 pb-1 text-2xs font-semibold tracking-wide text-muted-foreground uppercase"
 					>
 						{group.label}
 					</p>
@@ -245,7 +245,7 @@
 					href={localizeHref(item.href)}
 					onclick={closeAll}
 					class={cn(
-						'flex flex-col items-center gap-1 rounded-lg border p-2 text-[10px] font-medium transition-colors',
+						'flex flex-col items-center gap-1 rounded-lg border p-2 text-2xs font-medium transition-colors',
 						isActive(item.href)
 							? 'border-primary/30 bg-primary/10 text-primary'
 							: 'border-border/60 text-foreground hover:bg-muted'
@@ -282,7 +282,7 @@
 			onclick={closeAll}
 			bind:this={tabRefs['/']}
 			class={cn(
-				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				isActive('/') ? 'text-primary' : 'text-muted-foreground'
 			)}
 		>
@@ -297,7 +297,7 @@
 			onclick={closeAll}
 			bind:this={tabRefs['/categories']}
 			class={cn(
-				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				isActive('/categories') ? 'text-primary' : 'text-muted-foreground'
 			)}
 		>
@@ -312,7 +312,7 @@
 			onclick={closeAll}
 			bind:this={tabRefs['/products']}
 			class={cn(
-				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				isActive('/products') ? 'text-primary' : 'text-muted-foreground'
 			)}
 		>
@@ -330,7 +330,7 @@
 				toggleExplore();
 			}}
 			class={cn(
-				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				showExplore ? 'text-primary' : 'text-muted-foreground'
 			)}
 			data-popover
@@ -349,7 +349,7 @@
 				toggleMenu();
 			}}
 			class={cn(
-				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-[10px] font-medium transition-colors duration-200',
+				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				showMenu ? 'text-primary' : 'text-muted-foreground'
 			)}
 			data-popover

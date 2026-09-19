@@ -1,18 +1,30 @@
 import type { EntryGenerator, PageLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { PageDto } from '#lib/schemas/pages.js';
 
 export const entries: EntryGenerator = () => [];
 
-interface BlogPost {
-	title?: string;
-	metaTitle?: string;
-	metaDescription?: string;
-	excerpt?: string;
-	featuredImage?: string;
-	keywords?: string[];
-	tags?: string[];
-	publishedAt?: string;
-	author?: string;
-	body?: string;
+/** Detail payload the article template renders. */
+interface BlogDetailItem {
+	title: string | null;
+	tags: string[];
+	date: string;
+	author: { name: string; initials: string };
+	content: string | null;
+	image: string | null;
+	readTime: string;
+	/** Not emitted by this loader — the share block reads it defensively. */
+	excerpt?: string | null;
+}
+
+/** Card payload for the "more from the blog" lists. */
+interface BlogRelatedItem {
+	slug: string;
+	title: string;
+	excerpt: string;
+	date: string;
+	author: { name: string };
+	tags: string[];
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
@@ -31,20 +43,25 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		]);
 
 		if (res.ok) {
-			const data: BlogPost = (await res.json()) as any;
-			const tagsParsed = typeof data.tags === 'string' ? JSON.parse(data.tags || '[]') : data.tags ?? [];
-			const relatedData = relatedRes.ok ? ((await relatedRes.json()) as any) : { items: [] };
-			const relatedPosts = relatedData.items ?? [];
-			const related = relatedPosts
-				.filter((p: any) => p.slug !== params.slug)
+			const data: PageDto = await readJson<PageDto>(res);
+			const tagsParsed =
+				typeof data.tags === 'string'
+					? (JSON.parse(data.tags || '[]') as string[])
+					: (data.tags ?? []);
+			const relatedPosts = await readItems<PageDto>(relatedRes);
+			const related: BlogRelatedItem[] = relatedPosts
+				.filter((p) => p.slug !== params.slug)
 				.slice(0, 3)
-				.map((p: any) => ({
+				.map((p) => ({
 					slug: p.slug ?? '',
 					title: p.title ?? '',
 					excerpt: p.excerpt ?? p.metaDescription ?? '',
 					date: toIsoDate(p.publishedAt),
 					author: { name: p.author || 'HalalNeo' },
-					tags: typeof p.tags === 'string' ? JSON.parse(p.tags || '[]') : p.tags ?? []
+					tags:
+						typeof p.tags === 'string'
+							? (JSON.parse(p.tags || '[]') as string[])
+							: (p.tags ?? [])
 				}));
 
 			const wordCount = data.body ? data.body.replace(/<[^>]*>/g, '').split(/\s+/).length : 0;
@@ -53,13 +70,13 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			const authorInitials =
 				(data.author || 'HalalNeo')
 					.split(/\s+/)
-					.map((w: string) => w[0])
+					.map((w) => w[0])
 					.filter(Boolean)
 					.slice(0, 2)
 					.join('')
 					.toUpperCase() || 'HN';
 
-			const item = {
+			const item: BlogDetailItem = {
 				title: data.title,
 				tags: tagsParsed,
 				date: toIsoDate(data.publishedAt),
@@ -84,7 +101,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				related
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		slug: params.slug,
@@ -94,7 +113,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			robots: 'noindex, nofollow',
 			ogType: 'article'
 		},
-		item: null as any,
+		item: null as BlogDetailItem | null,
 		related: []
 	};
 };

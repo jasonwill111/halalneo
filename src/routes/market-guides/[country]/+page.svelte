@@ -62,16 +62,22 @@
 		storiesInMarket(guide.country, data.stories ?? [])
 	);
 	const links = keyLinks();
-	const plays = $derived(winPlays(guide.opportunities));
+	const plays = $derived(winPlays(guide.opportunities ?? undefined));
 
 	const countryImages = COUNTRY_IMAGES;
 
 	const status = $derived(MANDATE_STATUSES[guide.mandateStatus as MandateStatus]);
 
+	interface GuideSummaryRow {
+		slug: string;
+		region?: string | null;
+		mandateStatus?: string | null;
+	}
+
 	const relatedGuides = $derived(
 		(data.allGuides ?? [])
-			.filter((g: any) => g.slug !== guide.slug)
-			.filter((g: any) => g.region === guide.region || guide.mandateStatus === g.mandateStatus)
+			.filter((g: GuideSummaryRow) => g.slug !== guide.slug)
+			.filter((g: GuideSummaryRow) => g.region === guide.region || guide.mandateStatus === g.mandateStatus)
 			.slice(0, 3)
 	);
 
@@ -135,7 +141,7 @@
 	{#if countryImages[guide.country]}
 		<link rel="preload" as="image" href={countryImages[guide.country]} fetchpriority="high" />
 	{/if}
-	{@html `<script type="application/ld+json">${jsonLd}</script>`}
+	{@html `\u003cscript type="application/ld+json">${jsonLd}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb
@@ -163,8 +169,8 @@
   {:else}
     <GuideHero
       country={guide.country}
-      flag={guide.flag}
-      region={guide.region}
+      flag={guide.flag ?? ''}
+      region={guide.region ?? ''}
       class="aspect-[5/2] w-full"
     />
   {/if}
@@ -187,10 +193,10 @@
     </div>
 
     <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-      <StatTile value={guide.muslimPopulation} label="Muslim population" tone="info" hint={popHint} />
-      <StatTile value={guide.marketSizeUsd} label="Market size" tone="success" />
-      <StatTile value={guide.processingTime} label="Processing time" tone="warn" />
-      <StatTile value={guide.certificateValidity} label="Certificate validity" tone="accent-purple" />
+      <StatTile value={guide.muslimPopulation ?? ''} label="Muslim population" tone="info" hint={popHint} />
+      <StatTile value={guide.marketSizeUsd ?? ''} label="Market size" tone="success" />
+      <StatTile value={guide.processingTime ?? ''} label="Processing time" tone="warn" />
+      <StatTile value={guide.certificateValidity ?? ''} label="Certificate validity" tone="accent-purple" />
     </div>
 
     <div class="grid gap-4 lg:grid-cols-2">
@@ -210,7 +216,7 @@
                   {i + 1}
                 </span>
                 <div class="min-w-0 space-y-1">
-                  <span class={`inline-block rounded-full px-1.5 py-0.5 text-[10px] font-medium ${PHASE_TONES[step.phase]}`}>
+                  <span class={`inline-block rounded-full px-1.5 py-0.5 text-2xs font-medium ${PHASE_TONES[step.phase]}`}>
                     {step.phase}
                   </span>
                   <p class="text-sm leading-relaxed text-foreground/80">{step.text}</p>
@@ -220,7 +226,7 @@
           </ol>
           {#if guide.challenges?.[0]}
             <p class="rounded-lg bg-warn/10 px-3 py-2 text-xs leading-relaxed text-warn">
-              Watch out: {guide.challenges[0]}
+              Watch out: {guide.challenges?.[0]}
             </p>
           {/if}
         </CardContent>
@@ -252,12 +258,12 @@
                     <a href={localizeHref(`/certifying-bodies/${bodyId}`)}>
                       <Badge
                         variant="secondary"
-                        class="text-[10px] transition-colors hover:text-primary hover:shadow-md"
+                        class="text-2xs transition-colors hover:text-primary hover:shadow-md"
                         >{cb.name}</Badge
                       >
                     </a>
                   {:else}
-                    <Badge variant="secondary" class="text-[10px]">{cb.name}</Badge>
+                    <Badge variant="secondary" class="text-2xs">{cb.name}</Badge>
                   {/if}
                 {/each}
               </dd>
@@ -300,8 +306,8 @@
           </div>
           <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
             <StatTile value={activeTierData.range} label={activeTierData.label} tone="success" />
-            <StatTile value={guide.processingTime} label="Processing time" tone="warn" />
-            <StatTile value={guide.certificateValidity} label="Certificate validity" tone="accent-purple" />
+            <StatTile value={guide.processingTime ?? ''} label="Processing time" tone="warn" />
+            <StatTile value={guide.certificateValidity ?? ''} label="Certificate validity" tone="accent-purple" />
           </div>
           <p class="text-xs leading-relaxed text-muted-foreground">
             {activeTierData.note} Guide figure: {guide.estimatedCostUsd}
@@ -338,14 +344,14 @@
                         <span class="truncate text-foreground/80">
                           <span class="font-medium">{row.bodyName}</span> → {row.country}
                         </span>
-                        <span class={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${recognitionStatusClasses(row.status)}`}>
+                        <span class={`shrink-0 rounded-full border px-1.5 py-0.5 text-2xs font-medium ${recognitionStatusClasses(row.status)}`}>
                           {recognitionStatusLabel(row.status)}
                         </span>
                       </li>
                     {/each}
                   </ul>
                   {#if recognition.outbound.length > 8}
-                    <p class="text-[11px] text-muted-foreground">+{recognition.outbound.length - 8} more markets</p>
+                    <p class="text-2xs-plus text-muted-foreground">+{recognition.outbound.length - 8} more markets</p>
                   {/if}
                 {/if}
             </div>
@@ -358,19 +364,19 @@
                     {#each recognition.inbound.slice(0, 8) as row (row.bodySlug + row.country)}
                       <li class="flex items-center justify-between gap-2 text-xs">
                         <span class="truncate font-medium text-foreground/80">{row.bodyName}</span>
-                        <span class={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium ${recognitionStatusClasses(row.status)}`}>
+                        <span class={`shrink-0 rounded-full border px-1.5 py-0.5 text-2xs font-medium ${recognitionStatusClasses(row.status)}`}>
                           {recognitionStatusLabel(row.status)}
                         </span>
                       </li>
                     {/each}
                   </ul>
                   {#if recognition.inbound.length > 8}
-                    <p class="text-[11px] text-muted-foreground">+{recognition.inbound.length - 8} more bodies</p>
+                    <p class="text-2xs-plus text-muted-foreground">+{recognition.inbound.length - 8} more bodies</p>
                   {/if}
                 {/if}
             </div>
           </div>
-          <p class="text-[11px] leading-relaxed text-muted-foreground">
+          <p class="text-2xs-plus leading-relaxed text-muted-foreground">
             Statuses are indicative — confirm with the issuing body before shipping.
           </p>
         </CardContent>
@@ -385,7 +391,7 @@
             <CardTitle class="text-sm">Key Insights</CardTitle>
           </div>
           <ul class="space-y-2">
-            {#each guide.keyInsights as insight (insight)}
+            {#each guide.keyInsights ?? [] as insight (insight)}
               <li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
                 <span class="mt-1.5 size-1 shrink-0 rounded-full bg-primary"></span>
                 {insight}
@@ -402,7 +408,7 @@
             <CardTitle class="text-sm">Opportunities</CardTitle>
           </div>
           <ul class="space-y-2">
-            {#each guide.opportunities as opp (opp)}
+            {#each guide.opportunities ?? [] as opp (opp)}
               <li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
                 <span class="mt-1.5 size-1 shrink-0 rounded-full bg-success"></span>
                 {opp}
@@ -419,7 +425,7 @@
             <CardTitle class="text-sm">Challenges</CardTitle>
           </div>
           <ul class="space-y-2">
-            {#each guide.challenges as ch (ch)}
+            {#each guide.challenges ?? [] as ch (ch)}
               <li class="flex items-start gap-2 text-xs leading-relaxed text-foreground/80">
                 <span class="mt-1.5 size-1 shrink-0 rounded-full bg-warn"></span>
                 {ch}
@@ -504,7 +510,7 @@
                           {story.title}
                         </p>
                         {#if story.dealValue}
-                          <p class="mt-0.5 text-[10px] font-semibold text-success">{story.dealValue}</p>
+                          <p class="mt-0.5 text-2xs font-semibold text-success">{story.dealValue}</p>
                         {/if}
                       </a>
                     </li>
@@ -544,7 +550,7 @@
                     >
                       <span>
                         <span class="block font-medium transition-colors group-hover:text-primary">{link.label}</span>
-                        <span class="block text-[10px] text-muted-foreground">{link.description}</span>
+                        <span class="block text-2xs text-muted-foreground">{link.description}</span>
                       </span>
                       <ExternalLinkIcon class="size-3.5 shrink-0 text-muted-foreground" />
                     </a>
@@ -555,7 +561,7 @@
                     >
                       <span>
                         <span class="block font-medium transition-colors group-hover:text-primary">{link.label}</span>
-                        <span class="block text-[10px] text-muted-foreground">{link.description}</span>
+                        <span class="block text-2xs text-muted-foreground">{link.description}</span>
                       </span>
                       <ArrowRightIcon class="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
                     </a>
@@ -584,7 +590,7 @@
                       <span class="text-lg">{rel.flag}</span>
                       <span>
                         <span class="block text-sm font-medium">{rel.country}</span>
-                        <span class="block text-[10px] text-muted-foreground">{rel.region}</span>
+                        <span class="block text-2xs text-muted-foreground">{rel.region}</span>
                       </span>
                     </span>
                     <ArrowRightIcon class="size-4 shrink-0 text-muted-foreground" />

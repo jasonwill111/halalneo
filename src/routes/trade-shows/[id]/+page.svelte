@@ -17,9 +17,9 @@
 
 	const now = new Date();
 
-	function formatDateRange(start: string, end: string): string {
-		const s = new Date(start);
-		const e = new Date(end);
+	function formatDateRange(start: string | null, end: string | null): string {
+		const s = new Date(start ?? 0);
+		const e = new Date(end ?? 0);
 		const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 		const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
 		if (sameMonth) {
@@ -28,17 +28,17 @@
 		return `${s.toLocaleDateString('en-US', opts)} – ${e.toLocaleDateString('en-US', { ...opts, year: 'numeric' })}`;
 	}
 
-	function isPast(endDate: string): boolean {
-		return new Date(endDate) < now;
+	function isPast(endDate: string | null): boolean {
+		return new Date(endDate ?? 0) < now;
 	}
 
-	function isUpcoming(startDate: string): boolean {
-		return new Date(startDate) > now;
+	function isUpcoming(startDate: string | null): boolean {
+		return new Date(startDate ?? 0) > now;
 	}
 
-	function isOngoing(start: string, end: string): boolean {
-		const s = new Date(start);
-		const e = new Date(end);
+	function isOngoing(start: string | null, end: string | null): boolean {
+		const s = new Date(start ?? 0);
+		const e = new Date(end ?? 0);
 		return s <= now && e >= now;
 	}
 
@@ -80,7 +80,7 @@
 <svelte:head>
 	<!-- Title + description render once via root layout from loader `seo`
 	     (which prefers show.metaTitle/metaDescription). -->
-	{@html `<script type="application/ld+json">${jsonLd}</script>`}
+	{@html `\u003cscript type="application/ld+json">${jsonLd}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb
@@ -103,7 +103,7 @@
 				<Badge variant="secondary">Past</Badge>
 			{/if}
 			{#if show.scale}
-				<span class={cn('rounded-full px-2 py-0.5 text-xs font-medium', scaleColors[show.scale])}>
+				<span class={cn('rounded-full px-2 py-0.5 text-xs font-medium', scaleColors[show.scale ?? ''])}>
 					{show.scale}
 				</span>
 			{/if}
@@ -127,8 +127,8 @@
 					<p class="text-sm leading-relaxed text-foreground/80">{show.description}</p>
 					{#if (show.focus ?? []).length > 0}
 						<div class="flex flex-wrap gap-1.5">
-							{#each show.focus as tag, i (tag)}
-								<Badge variant="secondary" class="text-[10px]">{tag}</Badge>
+							{#each (show.focus ?? []) as tag (tag)}
+								<Badge variant="secondary" class="text-2xs">{tag}</Badge>
 							{/each}
 						</div>
 					{/if}
@@ -166,7 +166,7 @@
 				<div class="space-y-3">
 					<h2 class="text-lg font-semibold tracking-tight">Related shows</h2>
 					<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-						{#each related as rel, i (rel.id)}
+						{#each related as rel (rel.id)}
 							<Card class="bg-card transition-shadow hover:shadow-md">
 								<CardContent class="space-y-2 p-3 sm:p-4">
 									<a href="/trade-shows/{rel.id}" class="hover:text-primary">

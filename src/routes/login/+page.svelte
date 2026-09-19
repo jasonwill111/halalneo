@@ -1,20 +1,20 @@
-<svelte:head>
-	<meta name="robots" content="noindex, nofollow" />
-</svelte:head>
-
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { goto } from '$app/navigation';
-	import { signIn } from '#lib/stores/auth.svelte.js';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { page } from '$app/state';
+	import { authClient } from '#lib/auth-client.js';
+	import { safeNextPath } from '#lib/utils/redirect.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { z } from 'zod';
-	import { focusFirstInvalid } from '#lib/utils/forms.js';
+	import { toast } from 'svelte-sonner';
+	import { focusFirstInvalid, mergeServerDetails, readAuthErrorDetails } from '#lib/utils/forms.js';
 	import MailIcon from '@lucide/svelte/icons/mail';
 	import LockIcon from '@lucide/svelte/icons/lock';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	let email = $state('');
 	let password = $state('');
@@ -29,9 +29,10 @@
 		password: z.string().min(1, 'Password is required.')
 	});
 
-	function submit() {
+	async function submit() {
 		if (busy) return;
 		fieldErrors = {};
+		error = '';
 		const parsed = loginSchema.safeParse({ email, password });
 		if (!parsed.success) {
 			for (const issue of parsed.error.issues) {
@@ -41,27 +42,46 @@
 			focusFirstInvalid(formEl);
 			return;
 		}
-		error = '';
 		busy = true;
 		try {
-			if (!signIn(email.trim(), password)) {
-				error = 'Invalid email or password. No account found for this demo session.';
+			const { error: signInError } = await authClient.signIn.email({
+				email: email.trim(),
+				password,
+				rememberMe
+			});
+			if (signInError) {
+				// better-auth shape: `{ message, status, body }`. Prefer the server's
+				// `{ error, details }` field map (§3.4), keep the typed credentials.
+				const details = readAuthErrorDetails(signInError);
+				if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
+				error = signInError.message ?? 'Invalid email or password.';
+				toast.error(error);
+				focusFirstInvalid(formEl);
 				return;
 			}
-			goto(localizeHref('/account'));
+			toast.success('Signed in. Welcome back.');
+			await invalidateAll(); // refresh session-derived layout data (/account guard)
+			await goto(safeNextPath(page.url.searchParams.get('next'), localizeHref('/account')));
+		} catch {
+			error = 'Something went wrong while signing you in. Please try again.';
+			toast.error(error);
 		} finally {
 			busy = false;
 		}
 	}
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <main
-	class="login-pattern flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pb-20 pt-8"
+	class="login-pattern flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pt-8 pb-20"
 >
 	<div class="w-full max-w-md">
 		<div class="mb-5 text-center">
 			<div
-				class="bg-primary text-primary-foreground mx-auto mb-2 flex size-12 items-center justify-center rounded-xl text-lg font-bold"
+				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground"
 			>
 				H
 			</div>
@@ -70,7 +90,14 @@
 		</div>
 
 		<div class="rounded-xl bg-card p-5 ring-1 ring-foreground/10">
-			<form bind:this={formEl} class="space-y-3" onsubmit={(e) => { e.preventDefault(); submit(); }}>
+			<form
+				bind:this={formEl}
+				class="space-y-3"
+				onsubmit={(e) => {
+					e.preventDefault();
+					void submit();
+				}}
+			>
 				<Field>
 					<FieldLabel>Email</FieldLabel>
 					<div class="relative">
@@ -82,15 +109,18 @@
 							type="email"
 							placeholder="you@company.com"
 							class="pl-9"
+							autocomplete="email"
 							aria-invalid={fieldErrors.email ? true : undefined}
-							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+							oninput={() => {
+								if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+							}}
 						/>
 					</div>
 					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
 				</Field>
 
-			<Field>
-				<FieldLabel>Password</FieldLabel>
+				<Field>
+					<FieldLabel>Password</FieldLabel>
 					<div class="relative">
 						<LockIcon
 							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
@@ -100,8 +130,11 @@
 							type="password"
 							placeholder="Enter your password"
 							class="pl-9"
+							autocomplete="current-password"
 							aria-invalid={fieldErrors.password ? true : undefined}
-							oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
+							oninput={() => {
+								if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
+							}}
 						/>
 					</div>
 					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}
@@ -113,18 +146,23 @@
 				</div>
 
 				{#if error && !Object.keys(fieldErrors).length}
-					<p class="text-center text-sm text-destructive">{error}</p>
+					<FieldError class="rounded-md bg-destructive/10 px-3 py-2 text-center">
+						{error}
+					</FieldError>
 				{/if}
 
-				<Button type="submit" class="w-full" disabled={busy}>
+				<Button type="submit" class="w-full" disabled={busy} aria-busy={busy}>
 					<span class="inline-flex items-center gap-2">
-						{busy ? 'Signing in…' : 'Sign In'}
-						<ArrowRight class="size-3.5" />
+						{#if busy}
+							<Loader2 class="size-3.5 animate-spin" />
+							Signing in…
+						{:else}
+							Sign In
+							<ArrowRight class="size-3.5" />
+						{/if}
 					</span>
 				</Button>
 			</form>
-
-
 		</div>
 
 		<div class="mt-5 text-center">
@@ -134,8 +172,8 @@
 					Sign up
 				</a>
 			</p>
-			<p class="text-muted-foreground mt-1.5 text-[10px]">
-				<a href={localizeHref('/')} class="hover:text-primary transition-colors">
+			<p class="mt-1.5 text-2xs text-muted-foreground">
+				<a href={localizeHref('/')} class="transition-colors hover:text-primary">
 					&larr; Back to home
 				</a>
 			</p>
@@ -146,14 +184,38 @@
 <style>
 	:global(.login-pattern) {
 		background-image:
-			radial-gradient(circle at 20% 50%, oklch(0.42 0.12 155 / 0.04) 0%, transparent 50%),
-			radial-gradient(circle at 80% 20%, oklch(0.42 0.12 155 / 0.03) 0%, transparent 50%),
-			radial-gradient(circle at 60% 80%, oklch(0.42 0.12 155 / 0.02) 0%, transparent 50%);
+			radial-gradient(
+				circle at 20% 50%,
+				color-mix(in oklab, var(--primary) 4%, transparent) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 80% 20%,
+				color-mix(in oklab, var(--primary) 3%, transparent) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 60% 80%,
+				color-mix(in oklab, var(--primary) 2%, transparent) 0%,
+				transparent 50%
+			);
 	}
 	:global(.dark .login-pattern) {
 		background-image:
-			radial-gradient(circle at 20% 50%, oklch(0.65 0.15 155 / 0.06) 0%, transparent 50%),
-			radial-gradient(circle at 80% 20%, oklch(0.65 0.15 155 / 0.04) 0%, transparent 50%),
-			radial-gradient(circle at 60% 80%, oklch(0.65 0.15 155 / 0.03) 0%, transparent 50%);
+			radial-gradient(
+				circle at 20% 50%,
+				color-mix(in oklab, var(--primary) 6%, transparent) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 80% 20%,
+				color-mix(in oklab, var(--primary) 4%, transparent) 0%,
+				transparent 50%
+			),
+			radial-gradient(
+				circle at 60% 80%,
+				color-mix(in oklab, var(--primary) 3%, transparent) 0%,
+				transparent 50%
+			);
 	}
 </style>

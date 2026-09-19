@@ -14,32 +14,39 @@
 	let search = $state('');
 	let activeCategory = $state('all');
 
+	interface BlogPostRow {
+		title: string;
+		category?: string | null;
+		status?: string | null;
+		date?: string | null;
+	}
+
 	const blogImages = ['/api/media/blog-featured-1.webp', '/api/media/blog-featured-2.webp', '/api/media/blog-1.webp', '/api/media/blog-2.webp', '/api/media/blog-3.webp'];
 
 	const categoryOptions = $derived([
 		{ value: 'all', label: 'All' },
 		...Array.from(
-			new Set((data.posts ?? []).map((p: any) => p.category).filter((c): c is string => !!c))
+			new Set((data.posts ?? []).map((p: BlogPostRow) => p.category).filter((c): c is string => !!c))
 		)
 			.sort()
 			.map((c) => ({
 				value: c,
 				label: c,
-				count: (data.posts ?? []).filter((p: any) => p.category === c && p.status === 'published')
+				count: (data.posts ?? []).filter((p: BlogPostRow) => p.category === c && p.status === 'published')
 					.length
 			}))
 	]);
 
 	const published = $derived(
 		(data.posts ?? [])
-			.filter((p: any) => p.status === 'published')
-			.toSorted((a: any, b: any) => (b.date ?? '').localeCompare(a.date ?? ''))
-			.filter((p: any) =>
+			.filter((p: BlogPostRow) => p.status === 'published')
+			.toSorted((a: BlogPostRow, b: BlogPostRow) => (b.date ?? '').localeCompare(a.date ?? ''))
+			.filter((p: BlogPostRow) =>
 				search.trim()
 					? p.title.toLowerCase().includes(search.toLowerCase())
 					: true
 			)
-			.filter((p: any) => (activeCategory === 'all' ? true : p.category === activeCategory))
+			.filter((p: BlogPostRow) => (activeCategory === 'all' ? true : p.category === activeCategory))
 	);
 
 	const PAGE_SIZE = 6;
@@ -57,7 +64,7 @@
 <Breadcrumb items={[{ label: 'Blog', href: '/blog' }]} />
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList)}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList)}\u003c/script>`}
 </svelte:head>
 
 <section class="space-y-4 sm:space-y-6">
@@ -102,12 +109,20 @@
 					<article>
 						<a href={localizeHref(`/blog/${post.slug}`)} class="group block">
 							<div class="aspect-[16/10] overflow-hidden bg-muted sm:aspect-[4/3]">
-								<img src={post.featuredImage || blogImages[idx % blogImages.length]} srcset={`${post.featuredImage || blogImages[idx % blogImages.length]}?w=480 480w, ${post.featuredImage || blogImages[idx % blogImages.length]}?w=1200 1200w`} sizes="(max-width: 640px) 100vw, 400px" alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" width="600" height="400" />
+								<img
+									src={post.featuredImage || blogImages[idx % blogImages.length]}
+									alt={post.title}
+									class="h-full w-full object-cover transition-transform duration-slow group-hover:scale-105"
+									loading="lazy"
+									decoding="async"
+									width="600"
+									height="400"
+								/>
 							</div>
 							<CardContent class="space-y-2 pt-3 sm:space-y-3 sm:pt-4">
 								<div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 									{#if post.category}
-										<Badge variant="outline" class="text-[10px]">{post.category}</Badge>
+										<Badge variant="outline" class="text-2xs">{post.category}</Badge>
 									{/if}
 									<span class="font-medium text-foreground/80">{post.author}</span>
 									{#if post.date}
@@ -134,7 +149,7 @@
 								{/if}
 								<div class="flex flex-wrap gap-1.5 pt-1">
 									{#each post.tags as tag (tag)}
-										<Badge variant="secondary" class="text-[10px] max-w-[60px] truncate">
+										<Badge variant="secondary" class="text-2xs max-w-[60px] truncate">
 											{tag}
 										</Badge>
 									{/each}

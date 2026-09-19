@@ -1,65 +1,250 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
 	import Save from '@lucide/svelte/icons/save';
-	import Plus from '@lucide/svelte/icons/plus';
-	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import Building2 from '@lucide/svelte/icons/building-2';
 	import Users from '@lucide/svelte/icons/users';
-	import { adminData } from '#lib/stores/admin-data.svelte.js';
+	import BadgeCheck from '@lucide/svelte/icons/badge-check';
+	import ShieldQuestion from '@lucide/svelte/icons/shield-question';
+	import { toast } from 'svelte-sonner';
+	import { z } from 'zod';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 
-	// TODO: Replace with authenticated user's supplier slug from session/load function
-	const SUPPLIER_SLUG = 'nusantara-foods';
-	const supplier = $derived(adminData.suppliers.find((s) => s.slug === SUPPLIER_SLUG));
-	const supplierProductCount = $derived(adminData.products.filter((p) => p.supplierSlug === SUPPLIER_SLUG).length);
+	let { data }: PageProps = $props();
+
+	const supplierSlug = $derived(data.supplierSlug);
+
+	type SupplierDetail = {
+		slug: string;
+		name: string;
+		country: string;
+		businessType: string | null;
+		status: string | null;
+		description: string | null;
+		website: string | null;
+		email: string | null;
+		yearEstablished: number | null;
+		certifications: string | unknown[] | null;
+		createdAt: string | null;
+	};
+
+	let detail = $state<SupplierDetail | null>(null);
+	let loading = $state(true);
+	let loadError = $state('');
+	let activeProducts = $state<number | null>(null);
 
 	let companyName = $state('');
-	let description = $state('');
 	let country = $state('');
+	let description = $state('');
 	let yearEstablished = $state('');
 	let website = $state('');
+	let fieldErrors = $state<Record<string, string>>({});
+	let formError = $state('');
+	let saving = $state(false);
+	let formEl = $state<HTMLFormElement | undefined>(undefined);
 
-	// Initialize form fields once per supplier — never overwrite user edits
-	// when the underlying store updates.
-	let initializedSlug = $state('');
+	const currentYear = new Date().getFullYear();
 
-	$effect(() => {
-		if (supplier && supplier.slug !== initializedSlug) {
-			initializedSlug = supplier.slug;
-			companyName = supplier.name;
-			description = supplier.description;
-			country = supplier.country;
-			yearEstablished = String(supplier.yearEstablished);
-			website = supplier.website ?? '';
-		}
+	const profileSchema = z.object({
+		name: z
+			.string()
+			.trim()
+			.min(2, 'Company name must be at least 2 characters.')
+			.max(200, 'Company name must be at most 200 characters.'),
+		country: z
+			.string()
+			.trim()
+			.min(2, 'Country is required.')
+			.max(100, 'Country must be at most 100 characters.'),
+		yearEstablished: z
+			.string()
+			.trim()
+			.refine((v) => v === '' || /^\d{4}$/.test(v), 'Enter a 4-digit year.')
+			.refine(
+				(v) => v === '' || (Number(v) >= 1900 && Number(v) <= currentYear),
+				`Year must be between 1900 and ${currentYear}.`
+			),
+		website: z
+			.string()
+			.trim()
+			.max(300, 'Website must be at most 300 characters.')
+			.refine(
+				(v) => v === '' || /^https?:\/\/\S+\.\S+/.test(v),
+				'Enter a full URL starting with https://'
+			),
+		description: z.string().trim().max(2000, 'Description must be at most 2000 characters.')
 	});
 
-	let teamMembers = $state<{ name: string; email: string; role: string; initials: string }[]>([]);
+	const statusMeta: Record<string, { label: string; cls: string }> = {
+		active: { label: 'Verified', cls: 'bg-success/10 text-success' },
+		pending: { label: 'Under review', cls: 'bg-warn/10 text-warn' },
+		suspended: { label: 'Suspended', cls: 'bg-destructive/10 text-destructive' },
+		rejected: { label: 'Declined', cls: 'bg-destructive/10 text-destructive' }
+	};
 
-	let newMemberName = $state('');
-	let newMemberEmail = $state('');
+	const certificationList = $derived.by(() => {
+		const raw = detail?.certifications;
+		if (!raw) return [] as Array<{ name: string; scope: string }>;
+		let arr: unknown = raw;
+		if (typeof raw === 'string') {
+			try {
+				arr = JSON.parse(raw);
+			} catch {
+				return [{ name: raw, scope: '' }];
+			}
+		}
+		if (!Array.isArray(arr)) return [];
+		return arr
+			.map((c) => {
+				if (!c || typeof c !== 'object') return null;
+				const rec = c as Record<string, unknown>;
+				const name = typeof rec.name === 'string' ? rec.name : typeof rec.bodyName === 'string' ? rec.bodyName : '';
+				if (!name) return null;
+				return { name, scope: typeof rec.scope === 'string' ? rec.scope : '' };
+			})
+			.filter((c): c is { name: string; scope: string } => c !== null);
+	});
 
-	function addMember() {
-		if (!newMemberName.trim() || !newMemberEmail.trim()) return;
-		const initials = newMemberName
-			.split(' ')
-			.map((p) => p[0])
-			.filter(Boolean)
-			.slice(0, 2)
-			.join('')
-			.toUpperCase();
-		teamMembers = [...teamMembers, { name: newMemberName, email: newMemberEmail, role: 'Member', initials }];
-		newMemberName = '';
-		newMemberEmail = '';
+	const memberSince = $derived.by(() => {
+		const raw = detail?.createdAt;
+		if (!raw) return '—';
+		const d = new Date(raw);
+		return Number.isNaN(d.getTime())
+			? '—'
+			: d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+	});
+
+	function hydrate(row: SupplierDetail): void {
+		companyName = row.name ?? '';
+		country = row.country ?? '';
+		description = row.description ?? '';
+		yearEstablished = row.yearEstablished ? String(row.yearEstablished) : '';
+		website = row.website ?? '';
 	}
 
-	function removeMember(index: number) {
-		teamMembers = teamMembers.filter((_, i) => i !== index);
+	function errorMessage(e: unknown, fallback: string): string {
+		return e instanceof Error && e.message ? e.message : fallback;
+	}
+
+	async function loadProfile(): Promise<void> {
+		if (!supplierSlug) {
+			loading = false;
+			return;
+		}
+		loading = true;
+		loadError = '';
+		try {
+			const res = await fetch(`/api/suppliers/${encodeURIComponent(supplierSlug)}`);
+			if (!res.ok) {
+				throw new Error(
+					res.status === 404
+						? 'Supplier profile not found.'
+						: 'Could not load your company details.'
+				);
+			}
+			const row = (await res.json()) as SupplierDetail;
+			detail = row;
+			hydrate(row);
+		} catch (e) {
+			loadError = errorMessage(e, 'Could not load your company details.');
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function loadProductCount(): Promise<void> {
+		if (!supplierSlug) return;
+		try {
+			// limit=1 → we only need `total` (indexed supplier_slug + status).
+			const res = await fetch(
+				`/api/products?supplierSlug=${encodeURIComponent(supplierSlug)}&status=active&limit=1`
+			);
+			if (!res.ok) return;
+			const json = (await res.json()) as { total?: number };
+			activeProducts = typeof json.total === 'number' ? json.total : null;
+		} catch {
+			activeProducts = null;
+		}
+	}
+
+	$effect(() => {
+		if (!supplierSlug) return;
+		void loadProfile();
+		void loadProductCount();
+	});
+
+	async function save() {
+		if (!supplierSlug || saving) return; // double-submit guard (§3.4)
+		formError = '';
+		fieldErrors = {};
+		const parsed = profileSchema.safeParse({
+			name: companyName,
+			country,
+			yearEstablished,
+			website,
+			description
+		});
+		if (!parsed.success) {
+			for (const issue of parsed.error.issues) {
+				const key = String(issue.path[0] ?? '');
+				if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+			}
+			focusFirstInvalid(formEl);
+			return;
+		}
+		saving = true;
+		try {
+			const res = await fetch(`/api/suppliers/${encodeURIComponent(supplierSlug)}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: companyName.trim(),
+					country: country.trim(),
+					yearEstablished: yearEstablished.trim() ? Number(yearEstablished.trim()) : null,
+					website: website.trim() || null,
+					description: description.trim()
+				})
+			});
+			const json = (await res.json().catch(() => ({}))) as {
+				error?: string;
+				details?: Record<string, string[] | string>;
+			};
+			if (!res.ok) {
+				if (json.details) fieldErrors = mergeServerDetails(fieldErrors, json.details);
+				formError = json.error ?? 'Could not save your changes. Please try again.';
+				toast.error(formError);
+				focusFirstInvalid(formEl);
+				return;
+			}
+			const updated = json as unknown as Partial<SupplierDetail>;
+			if (detail) {
+				// Keep only what we sent — the PUT response echoes every column
+				// (including admin-only `adminNotes`), which must not leak into state.
+				detail = {
+					...detail,
+					name: updated.name ?? companyName.trim(),
+					country: updated.country ?? country.trim(),
+					description: updated.description ?? description.trim(),
+					yearEstablished: updated.yearEstablished ?? (yearEstablished.trim() ? Number(yearEstablished.trim()) : null),
+					website: updated.website ?? (website.trim() || null)
+				};
+			}
+			formError = '';
+			toast.success('Company profile updated.');
+		} catch {
+			formError = 'Could not save your changes. Please check your connection and try again.';
+			toast.error(formError);
+		} finally {
+			saving = false;
+		}
 	}
 </script>
 
@@ -69,7 +254,7 @@
 </svelte:head>
 
 <div class="space-y-1 mb-4">
-	<nav class="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+	<nav class="flex items-center gap-1.5 text-2xs text-muted-foreground">
 		<a href={localizeHref('/')} class="hover:text-foreground transition-colors">Home</a>
 		<span>/</span>
 		<a href={localizeHref('/supplier/dashboard')} class="hover:text-foreground transition-colors">Supplier</a>
@@ -77,145 +262,262 @@
 		<span class="text-foreground font-medium">Manage</span>
 	</nav>
 	<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Company Profile</h1>
-	<p class="text-sm text-muted-foreground">Manage your company information and team members.</p>
+	<p class="text-sm text-muted-foreground">Manage the company information buyers see on your public profile.</p>
 </div>
 
-<div class="grid gap-3 sm:gap-4 lg:grid-cols-3">
-	<div class="lg:col-span-2 space-y-4">
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="flex items-center gap-2 text-sm">
-					<Building2 class="size-4 text-muted-foreground"></Building2>
-					Company Details
-				</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-4">
-				<div class="grid gap-4 sm:grid-cols-2">
-					<Field>
-						<FieldLabel>Company Name</FieldLabel>
-						<Input bind:value={companyName} placeholder="Company name" />
-					</Field>
-					<Field>
-						<FieldLabel>Country</FieldLabel>
-						<Input bind:value={country} placeholder="Country" />
-					</Field>
+{#if !supplierSlug}
+	<Card class="p-3 ring-1 ring-foreground/10">
+		<CardContent class="p-0">
+			<Empty>
+				<EmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></EmptyMedia>
+				<div class="space-y-1">
+					<p class="font-medium">No supplier profile linked</p>
+					<p class="text-sm text-muted-foreground">
+						Your account isn't linked to a supplier company yet. Apply for access and an
+						administrator will connect this account to your profile.
+					</p>
 				</div>
-				<div class="grid gap-4 sm:grid-cols-2">
-					<Field>
-						<FieldLabel>Year Established</FieldLabel>
-						<Input bind:value={yearEstablished} type="number" min="1900" max="2030" />
-					</Field>
-					<Field>
-						<FieldLabel>Website</FieldLabel>
-						<Input bind:value={website} placeholder="https://..." />
-					</Field>
-				</div>
-				<Field>
-					<FieldLabel>Description</FieldLabel>
-					<Textarea bind:value={description} rows={3} placeholder="Company description..." />
-				</Field>
-				<div class="flex justify-end">
-					<Button size="sm" class="gap-1.5">
-						<Save class="size-3.5"></Save>
-						Save Changes
-					</Button>
-				</div>
-			</CardContent>
-		</Card>
+				<Button class="mt-2" size="sm" href={localizeHref('/supplier/onboarding')}>
+					Apply to become a supplier
+				</Button>
+			</Empty>
+		</CardContent>
+	</Card>
+{:else if loading}
+	<div class="grid gap-3 sm:gap-4 lg:grid-cols-3">
+		<div class="lg:col-span-2 space-y-4">
+			<Card>
+				<CardHeader class="pb-3"><CardTitle class="text-sm">Company Details</CardTitle></CardHeader>
+				<CardContent class="space-y-4">
+					<div class="grid gap-4 sm:grid-cols-2">
+						{#each [0, 1, 2, 3] as i (i)}
+							<div class="space-y-2">
+								<Skeleton class="h-3 w-24" />
+								<Skeleton class="h-9 w-full" />
+							</div>
+						{/each}
+					</div>
+					<Skeleton class="h-20 w-full" />
+				</CardContent>
+			</Card>
+		</div>
+		<div class="space-y-4">
+			<Card>
+				<CardHeader class="pb-3"><CardTitle class="text-sm">Account Status</CardTitle></CardHeader>
+				<CardContent class="space-y-3">
+					{#each [0, 1, 2] as i (i)}
+						<Skeleton class="h-4 w-full" />
+					{/each}
+				</CardContent>
+			</Card>
+		</div>
+	</div>
+{:else if loadError}
+	<Card class="p-3 ring-1 ring-foreground/10">
+		<CardContent class="flex flex-col items-center gap-2 p-0 py-6 text-center">
+			<p class="text-sm font-medium text-destructive">{loadError}</p>
+			<Button size="sm" variant="outline" onclick={() => void loadProfile()}>Try again</Button>
+		</CardContent>
+	</Card>
+{:else}
+	<div class="grid gap-3 sm:gap-4 lg:grid-cols-3">
+		<div class="lg:col-span-2 space-y-4">
+			<Card>
+				<CardHeader class="pb-3">
+					<CardTitle class="flex items-center gap-2 text-sm">
+						<Building2 class="size-4 text-muted-foreground"></Building2>
+						Company Details
+					</CardTitle>
+				</CardHeader>
+				<CardContent class="p-0">
+					<form
+						class="space-y-4"
+						bind:this={formEl}
+						onsubmit={(e) => {
+							e.preventDefault();
+							void save();
+						}}
+					>
+						<div class="grid gap-4 sm:grid-cols-2">
+							<Field>
+								<FieldLabel for="company-name">Company Name</FieldLabel>
+								<Input
+									id="company-name"
+									bind:value={companyName}
+									maxlength={200}
+									placeholder="Company name"
+									aria-invalid={fieldErrors.name ? true : undefined}
+									oninput={() => { if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' }; }}
+								/>
+								{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
+							</Field>
+							<Field>
+								<FieldLabel for="country">Country</FieldLabel>
+								<Input
+									id="country"
+									bind:value={country}
+									maxlength={100}
+									placeholder="Country"
+									aria-invalid={fieldErrors.country ? true : undefined}
+									oninput={() => { if (fieldErrors.country) fieldErrors = { ...fieldErrors, country: '' }; }}
+								/>
+								{#if fieldErrors.country}<FieldError>{fieldErrors.country}</FieldError>{/if}
+							</Field>
+						</div>
+						<div class="grid gap-4 sm:grid-cols-2">
+							<Field>
+								<FieldLabel for="year">Year Established</FieldLabel>
+								<Input
+									id="year"
+									bind:value={yearEstablished}
+									type="number"
+									min="1900"
+									max={String(currentYear)}
+									inputmode="numeric"
+									aria-invalid={fieldErrors.yearEstablished ? true : undefined}
+									oninput={() => { if (fieldErrors.yearEstablished) fieldErrors = { ...fieldErrors, yearEstablished: '' }; }}
+								/>
+								{#if fieldErrors.yearEstablished}<FieldError>{fieldErrors.yearEstablished}</FieldError>{/if}
+							</Field>
+							<Field>
+								<FieldLabel for="website">Website</FieldLabel>
+								<Input
+									id="website"
+									bind:value={website}
+									type="url"
+									placeholder="https://..."
+									maxlength={300}
+									aria-invalid={fieldErrors.website ? true : undefined}
+									oninput={() => { if (fieldErrors.website) fieldErrors = { ...fieldErrors, website: '' }; }}
+								/>
+								{#if fieldErrors.website}<FieldError>{fieldErrors.website}</FieldError>{/if}
+							</Field>
+						</div>
+						<Field>
+							<FieldLabel for="description">Description</FieldLabel>
+							<Textarea
+								id="description"
+								bind:value={description}
+								rows={3}
+								maxlength={2000}
+								placeholder="Company description..."
+								aria-invalid={fieldErrors.description ? true : undefined}
+								oninput={() => { if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' }; }}
+							/>
+							{#if fieldErrors.description}<FieldError>{fieldErrors.description}</FieldError>{/if}
+						</Field>
+						{#if formError && Object.keys(fieldErrors).length === 0}
+							<p class="text-xs text-destructive">{formError}</p>
+						{/if}
+						<div class="flex justify-end">
+							<Button type="submit" size="sm" class="gap-1.5" disabled={saving}>
+								<Save class="size-3.5"></Save>
+								{saving ? 'Saving…' : 'Save Changes'}
+							</Button>
+						</div>
+					</form>
+				</CardContent>
+			</Card>
 
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="flex items-center gap-2 text-sm">
-					<Users class="size-4 text-muted-foreground"></Users>
-					Team Members
-				</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-3">
-				{#each teamMembers as member, i (member.email)}
+			<Card>
+				<CardHeader class="pb-3">
+					<CardTitle class="flex items-center gap-2 text-sm">
+						<Users class="size-4 text-muted-foreground"></Users>
+						Team &amp; access
+					</CardTitle>
+				</CardHeader>
+				<CardContent class="space-y-3">
 					<div class="flex items-center gap-3 rounded-lg bg-muted/40 px-3 py-2">
 						<div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-							{member.initials}
+							{(data.supplierUser?.name ?? 'S')
+								.split(/\s+/)
+								.map((p) => p[0])
+								.filter(Boolean)
+								.slice(0, 2)
+								.join('')
+								.toUpperCase() || 'S'}
 						</div>
 						<div class="min-w-0 flex-1">
-							<p class="truncate text-[11px] font-medium">{member.name}</p>
-							<p class="truncate text-[10px] text-muted-foreground">{member.email}</p>
+							<p class="truncate text-2xs-plus font-medium">{data.supplierUser?.name ?? '—'}</p>
+							<p class="truncate text-2xs text-muted-foreground">{data.supplierUser?.email ?? '—'}</p>
 						</div>
-						<Badge variant="secondary" class="text-[10px]">{member.role}</Badge>
-						{#if member.role !== 'Owner'}
-							<Button
-								variant="ghost"
-								size="icon"
-								class="size-7 hover:bg-destructive/10 hover:text-destructive"
-								onclick={() => removeMember(i)}
-							>
-								<Trash2 class="size-3.5"></Trash2>
-							</Button>
+						<Badge variant="secondary" class="text-2xs">Owner</Badge>
+					</div>
+					<p class="text-2xs text-muted-foreground">
+						Additional team members are linked to this company by HalalNeo support —
+						<a href={localizeHref('/contact')} class="text-primary hover:underline">contact us</a>
+						to grant access to a colleague's account.
+					</p>
+				</CardContent>
+			</Card>
+		</div>
+
+		<div class="space-y-4">
+			<Card>
+				<CardHeader class="pb-3">
+					<CardTitle class="text-sm">Account Status</CardTitle>
+				</CardHeader>
+				<CardContent class="space-y-3">
+					<div class="flex items-center justify-between text-2xs-plus">
+						<span class="text-muted-foreground">Verification</span>
+						{#if detail}
+							<Badge class="text-2xs {(statusMeta[detail.status ?? ''] ?? { cls: 'bg-muted text-muted-foreground' }).cls}">
+								{(statusMeta[detail.status ?? ''] ?? { label: 'Unknown', cls: '' }).label}
+							</Badge>
+						{:else}
+							<span class="text-muted-foreground">—</span>
 						{/if}
 					</div>
-				{/each}
-
-				<div class="flex items-end gap-2 border-t border-border pt-3">
-					<div class="flex-1 space-y-2">
-						<Input bind:value={newMemberName} placeholder="Member name" class="h-8 text-[11px]" />
-						<Input bind:value={newMemberEmail} placeholder="Email address" class="h-8 text-[11px]" />
+					<div class="flex items-center justify-between text-2xs-plus">
+						<span class="text-muted-foreground">Business type</span>
+						<span class="font-medium capitalize">{detail?.businessType ?? '—'}</span>
 					</div>
-					<Button size="sm" class="h-8 gap-1 text-[10px]" onclick={addMember}>
-						<Plus class="size-3"></Plus>
-						Add
+					<div class="flex items-center justify-between text-2xs-plus">
+						<span class="text-muted-foreground">Active products</span>
+						<a
+							href={localizeHref('/supplier/products')}
+							class="font-medium text-primary hover:underline"
+						>
+							{activeProducts === null ? '—' : activeProducts}
+						</a>
+					</div>
+					<div class="flex items-center justify-between text-2xs-plus">
+						<span class="text-muted-foreground">Listed as</span>
+						<span class="max-w-[60%] truncate font-medium" title={detail?.slug}>{detail?.slug}</span>
+					</div>
+					<div class="flex items-center justify-between text-2xs-plus">
+						<span class="text-muted-foreground">Member since</span>
+						<span class="font-medium">{memberSince}</span>
+					</div>
+				</CardContent>
+			</Card>
+
+			<Card>
+				<CardHeader class="pb-3">
+					<CardTitle class="flex items-center gap-2 text-sm">
+						<BadgeCheck class="size-4 text-muted-foreground"></BadgeCheck>
+						Certifications
+					</CardTitle>
+				</CardHeader>
+				<CardContent class="space-y-2">
+					{#if certificationList.length > 0}
+						{#each certificationList as cert (cert.name)}
+							<div class="flex items-center gap-2 rounded-lg bg-muted/40 px-2.5 py-2 text-2xs-plus">
+								<Badge class="bg-success/10 text-success text-2xs">{cert.name}</Badge>
+								<span class="truncate text-muted-foreground">{cert.scope}</span>
+							</div>
+						{/each}
+					{:else}
+						<p class="text-2xs text-muted-foreground">
+							No certifications on file. Send your certificate details to HalalNeo support and
+							our team will add them after verification.
+						</p>
+					{/if}
+					<Button variant="outline" size="sm" class="w-full mt-2 text-2xs" href={localizeHref('/contact')}>
+						Contact support
 					</Button>
-				</div>
-			</CardContent>
-		</Card>
+				</CardContent>
+			</Card>
+		</div>
 	</div>
-
-	<div class="space-y-4">
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm">Account Status</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-3">
-				<div class="flex items-center justify-between text-[11px]">
-					<span class="text-muted-foreground">Verification</span>
-					<Badge class="bg-success/10 text-success text-[10px]">Verified</Badge>
-				</div>
-				<div class="flex items-center justify-between text-[11px]">
-					<span class="text-muted-foreground">Plan</span>
-					<Badge variant="secondary" class="text-[10px]">Business</Badge>
-				</div>
-				<div class="flex items-center justify-between text-[11px]">
-					<span class="text-muted-foreground">Products</span>
-					<span class="font-medium">{supplierProductCount} / 80</span>
-				</div>
-				<div class="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-					<div class="h-full rounded-full bg-primary" style="width: {Math.min((supplierProductCount / 80) * 100, 100)}%"></div>
-				</div>
-				<div class="flex items-center justify-between text-[11px]">
-					<span class="text-muted-foreground">Member since</span>
-					<span class="font-medium">Jan 2024</span>
-				</div>
-			</CardContent>
-		</Card>
-
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm">Certifications</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-2">
-				{#if supplier && supplier.certifications.length > 0}
-					{#each supplier.certifications as cert (cert.bodyName)}
-						<div class="flex items-center gap-2 rounded-lg bg-muted/40 px-2.5 py-2 text-[11px]">
-							<Badge class="bg-success/10 text-success text-[10px]">{cert.bodyName}</Badge>
-							<span class="text-muted-foreground">{cert.scope}</span>
-						</div>
-					{/each}
-				{:else}
-					<p class="text-[10px] text-muted-foreground">No certifications added yet.</p>
-				{/if}
-				<Button variant="outline" size="sm" class="w-full mt-2 gap-1 text-[10px]">
-					<Plus class="size-3"></Plus>
-					Add Certification
-				</Button>
-			</CardContent>
-		</Card>
-	</div>
-</div>
+{/if}

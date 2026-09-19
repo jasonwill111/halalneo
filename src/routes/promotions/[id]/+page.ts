@@ -1,5 +1,8 @@
-import { error } from '@sveltejs/kit';
+import { error, isHttpError } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { PromotionItem } from '#lib/types/api.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
@@ -10,9 +13,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		if (!res.ok) throw error(404, 'Deal not found');
 
-		const promo = (await res.json()) as any;
-		const suppliers = supRes.ok ? ((((await supRes.json()) as any)).items ?? []) : [];
-		const supplierName = suppliers.find((s: any) => s.slug === promo.supplierSlug)?.name ?? promo.supplierSlug;
+		const promo = await readJson<PromotionItem>(res);
+		const suppliers = await readItems<SupplierListItem>(supRes);
+		const supplierName = suppliers.find((s) => s.slug === promo.supplierSlug)?.name ?? promo.supplierSlug;
 
 		return {
 			seo: {
@@ -24,8 +27,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			promo,
 			supplierName
 		};
-	} catch (e: any) {
-		if (e?.status === 404) throw e;
+	} catch (e: unknown) {
+		if (isHttpError(e) && e.status === 404) throw e;
 		throw error(404, 'Deal not found');
 	}
 };

@@ -2,9 +2,9 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import SearchIcon from '@lucide/svelte/icons/search';
@@ -15,9 +15,11 @@
 	import ClockIcon from '@lucide/svelte/icons/clock';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
 
 	let { data } = $props();
@@ -27,7 +29,14 @@
 	let page = $state(1);
 	const PAGE_SIZE = 9;
 
-	const rfqs = $derived((data.rfqs ?? []) as any[]);
+	interface BuyingRequestRow {
+		categorySlug?: string | null;
+		title?: string | null;
+		description?: string | null;
+		destination?: string | null;
+	}
+
+	const rfqs = $derived(data.rfqs ?? []);
 
 	const categoryOptions = $derived([
 		{ value: 'all', label: 'All categories' },
@@ -38,7 +47,7 @@
 	]);
 
 	const filtered = $derived(
-		rfqs.filter((r: any) => {
+		rfqs.filter((r: BuyingRequestRow) => {
 			if (activeCategory !== 'all' && r.categorySlug !== activeCategory) return false;
 			const q = query.trim().toLowerCase();
 			if (!q) return true;
@@ -109,14 +118,36 @@
 		/>
 	</div>
 
-	{#if paged.length === 0}
+	{#if data.loadError && paged.length === 0}
+		<ErrorRetry failure={data.loadError} subject="buying requests" />
+	{:else if paged.length === 0}
 		<Empty>
-			<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
-			<EmptyTitle>No buying requests match these filters</EmptyTitle>
-			<EmptyDescription
-				>Be the first — post your sourcing need and let suppliers quote.</EmptyDescription
-			>
-			<Button href={localizeHref('/rfqs/new')} variant="outline" size="sm">Post a request</Button>
+			<EmptyHeader>
+				<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
+				<EmptyTitle>
+					{query.trim() || activeCategory !== 'all'
+						? 'No buying requests match these filters'
+						: 'No buying requests yet'}
+				</EmptyTitle>
+				<EmptyDescription
+					>Be the first — post your sourcing need and let suppliers quote.</EmptyDescription
+				>
+			</EmptyHeader>
+			<EmptyContent>
+				{#if query.trim() || activeCategory !== 'all'}
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={() => {
+							query = '';
+							activeCategory = 'all';
+						}}>Clear filters</Button
+					>
+				{/if}
+				<Button href={localizeHref('/rfqs/new')} size="sm"
+					><PlusIcon class="size-3.5" data-icon="inline-start" />Post a request</Button
+				>
+			</EmptyContent>
 		</Empty>
 	{:else}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
@@ -132,16 +163,16 @@
 							{r.title}
 						</h3>
 						{#if r.quantity}
-							<Badge variant="secondary" class="shrink-0 text-[10px]">{r.quantity}</Badge>
+							<Badge variant="secondary" class="shrink-0 text-2xs">{r.quantity}</Badge>
 						{/if}
 					</div>
 					<p
-						class="mt-1.5 line-clamp-2 hidden text-[11px] leading-snug text-muted-foreground sm:block"
+						class="mt-1.5 line-clamp-2 hidden text-2xs-plus leading-snug text-muted-foreground sm:block"
 					>
 						{r.description}
 					</p>
 					<div
-						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-[10px] text-muted-foreground"
+						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-2xs text-muted-foreground"
 					>
 						{#if r.destination}
 							<span class="inline-flex items-center gap-1">

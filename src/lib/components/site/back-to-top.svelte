@@ -38,7 +38,7 @@
 		size="icon"
 		onclick={scrollToTop}
 		aria-label="Back to top"
-		class="fixed right-3 bottom-3 z-50 size-8 rounded-full shadow-md motion-safe:animate-fade-in sm:right-4 sm:bottom-4"
+		class="fixed right-3 bottom-20 z-50 flex size-11 items-center justify-center rounded-full shadow-md motion-safe:animate-fade-in md:right-4 md:bottom-4 md:size-9"
 	>
 		<ArrowUp class="size-4" />
 	</Button>

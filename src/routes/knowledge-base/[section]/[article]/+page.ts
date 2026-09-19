@@ -1,18 +1,40 @@
 import type { EntryGenerator, PageLoad } from './$types';
+import { readJson } from '#lib/utils/api-response.js';
+import type { ApiList } from '#lib/types/api.js';
 import { getSection } from '#lib/data/kb-sections.js';
 
 export const entries: EntryGenerator = () => [];
 
+/** `/api/knowledge-base/[slug]` row (all columns nullable over the wire). */
 interface KbArticle {
-	title?: string;
-	metaTitle?: string;
-	metaDescription?: string;
-	summary?: string;
-	tags?: string[] | string;
-	body?: string;
-	content?: string;
+	slug?: string | null;
+	section?: string | null;
+	title?: string | null;
+	metaTitle?: string | null;
+	metaDescription?: string | null;
+	summary?: string | null;
+	tags?: string[] | string | null;
+	body?: string | null;
+	/** Legacy key some early payloads used instead of `body`. */
+	content?: string | null;
+	author?: string | null;
+	status?: string | null;
+	views?: number | null;
 	createdAt?: string | null;
 	updatedAt?: string | null;
+}
+
+/** `/api/knowledge-base` list projection — `excerpt` (not `summary`), no body/tags. */
+interface KbListRow {
+	slug: string;
+	title: string | null;
+	section: string | null;
+	status: string | null;
+	excerpt: string | null;
+	views: number | null;
+	/** Not in the current projection; the matcher below still reads them defensively. */
+	summary?: string | null;
+	tags?: string | string[] | null;
 }
 
 interface RelatedArticle {
@@ -41,42 +63,46 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		]);
 
 		if (res.ok) {
-			const data: KbArticle = (await res.json()) as any;
+			const data: KbArticle = await readJson<KbArticle>(res);
 			const tagsParsed =
-				typeof data.tags === 'string' ? JSON.parse(data.tags || '[]') : (data.tags ?? []);
+				typeof data.tags === 'string'
+					? (JSON.parse(data.tags || '[]') as string[])
+					: (data.tags ?? []);
 
 			// Related rows come from the KB list projection, which only carries
 			// slug/title/section/status/excerpt — no body, so no readTime.
 			let related: RelatedArticle[] = [];
 			try {
 				if (relatedRes.ok) {
-					const relatedData = (await relatedRes.json()) as any;
-					const candidates = (relatedData.items ?? []).filter(
-						(a: any) => a.slug !== params.article
-					);
-					const tagSet = new Set(tagsParsed.map((t: string) => t.toLowerCase()));
-					const scoreOf = (a: any) => {
+					const relatedData = await readJson<ApiList<KbListRow>>(relatedRes);
+					const candidates = (relatedData.items ?? []).filter((a) => a.slug !== params.article);
+					const tagSet = new Set(tagsParsed.map((t) => t.toLowerCase()));
+					const scoreOf = (a: KbListRow) => {
 						const aTags = (
-							typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : (a.tags ?? [])
+							typeof a.tags === 'string'
+								? (JSON.parse(a.tags || '[]') as string[])
+								: (a.tags ?? [])
 						) as string[];
-						return aTags.filter((t: string) => tagSet.has(t.toLowerCase())).length;
+						return aTags.filter((t) => tagSet.has(t.toLowerCase())).length;
 					};
-					const toRelated = (a: any): RelatedArticle => ({
+					const toRelated = (a: KbListRow): RelatedArticle => ({
 						slug: a.slug,
 						section: a.section ?? '',
 						title: a.title ?? '',
 						summary: a.summary ?? a.excerpt ?? ''
 					});
 					related = candidates
-						.toSorted((a: any, b: any) => scoreOf(b) - scoreOf(a))
-						.filter((a: any) => scoreOf(a) > 0)
+						.toSorted((a, b) => scoreOf(b) - scoreOf(a))
+						.filter((a) => scoreOf(a) > 0)
 						.slice(0, 3)
 						.map(toRelated);
 					if (related.length === 0) {
 						related = candidates.slice(0, 3).map(toRelated);
 					}
 				}
-			} catch {}
+			} catch {
+				// related list is best-effort — the article still renders
+			}
 
 			return {
 				slug: params.article,
@@ -101,7 +127,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				related
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		slug: params.article,

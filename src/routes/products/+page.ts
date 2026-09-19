@@ -1,27 +1,47 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { ProductListItem } from '#lib/schemas/products.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
+import type { CategoryRecord } from '#lib/schemas/categories.js';
 
 const BASE_URL = 'https://halalneo.com';
 
 export const prerender = false;
 
+/**
+ * `/api/products` and `/api/suppliers` list rows are projected (§5.9.3) and never carry
+ * the JSON TEXT columns, so the defensive parses below collapse to their fallbacks —
+ * kept as-is because the cards render those arrays.
+ */
+type CatalogueProduct = ProductListItem & {
+	features?: string | unknown[] | null;
+	images?: string | unknown[] | null;
+};
+type CatalogueSupplier = SupplierListItem & {
+	certifications?: string | unknown[] | null;
+	mainMarkets?: string | unknown[] | null;
+};
+
 export const load: PageLoad = async ({ fetch }) => {
+	const failures: LoadFailure[] = [];
 	const [productsRes, suppliersRes, categoriesRes] = await Promise.all([
-		fetch('/api/products?limit=100'),
-		fetch('/api/suppliers?limit=100'),
-		fetch('/api/categories')
+		fetchSafe(fetch, '/api/products?limit=100', failures),
+		fetchSafe(fetch, '/api/suppliers?limit=100', failures),
+		fetchSafe(fetch, '/api/categories', failures)
 	]);
 
-	const products = (productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
+	const products = (await readItems<CatalogueProduct>(productsRes)).map((p) => ({
 		...p,
-		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
-		images: typeof p.images === 'string' ? JSON.parse(p.images || '[]') : p.images ?? [],
+		features: typeof p.features === 'string' ? (JSON.parse(p.features || '[]') as string[]) : p.features ?? [],
+		images: typeof p.images === 'string' ? (JSON.parse(p.images || '[]') as string[]) : p.images ?? [],
 	}));
-	const suppliers = (suppliersRes.ok ? ((await suppliersRes.json()) as { items?: any[] }).items ?? [] : []).map((s: any) => ({
+	const suppliers = (await readItems<CatalogueSupplier>(suppliersRes)).map((s) => ({
 		...s,
-		certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
-		mainMarkets: typeof s.mainMarkets === 'string' ? JSON.parse(s.mainMarkets || '[]') : s.mainMarkets ?? []
+		certifications: typeof s.certifications === 'string' ? (JSON.parse(s.certifications || '[]') as string[]) : s.certifications ?? [],
+		mainMarkets: typeof s.mainMarkets === 'string' ? (JSON.parse(s.mainMarkets || '[]') as string[]) : s.mainMarkets ?? []
 	}));
-	const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
+	const categories = await readItems<CategoryRecord>(categoriesRes);
 
 	const itemList = {
 		'@context': 'https://schema.org',
@@ -29,7 +49,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		name: 'Halal-Certified Products',
 		description:
 			'Browse halal-certified products from verified suppliers across major halal markets.',
-		itemListElement: products.slice(0, 20).map((p: any, i: number) => ({
+		itemListElement: products.slice(0, 20).map((p, i) => ({
 			'@type': 'ListItem',
 			position: i + 1,
 			item: {
@@ -55,6 +75,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		products,
 		suppliers,
 		categories,
-		itemList
+		itemList,
+		loadError: firstFailure(failures)
 	};
 };

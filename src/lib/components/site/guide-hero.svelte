@@ -24,7 +24,7 @@
 		rounded,
 		className
 	)}
-	style={`background: linear-gradient(135deg, hsl(${hue} 45% 32%) 0%, hsl(${(hue + 40) % 360} 50% 22%) 100%)`}
+	style={`background: linear-gradient(135deg, oklch(0.42 0.09 ${hue}) 0%, oklch(0.3 0.1 ${(hue + 40) % 360}) 100%)`}
 	role="img"
 	aria-label={`${country} market illustration`}
 >
@@ -40,7 +40,7 @@
 		{/if}
 		<span class="text-sm font-bold tracking-tight text-on-dark drop-shadow-md">{country}</span>
 		{#if region}
-			<span class="text-[10px] font-medium tracking-wide text-on-dark/70 uppercase">{region}</span>
+			<span class="text-2xs font-medium tracking-wide text-on-dark/70 uppercase">{region}</span>
 		{/if}
 	</div>
 </div>

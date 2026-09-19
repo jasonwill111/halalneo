@@ -1,19 +1,34 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import BookText from '@lucide/svelte/icons/book-text';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import {
+		Empty,
+		EmptyHeader,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription,
+		EmptyContent
+	} from '#lib/components/ui/empty/index.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import type { GlossaryTerm } from '#lib/types/index.js';
 
 	let { data } = $props();
 	let search = $state('');
 	let activeLetter = $state('all');
 	const PAGE_SIZE = 3;
 	let page = $state(1);
-	$effect(() => { page = 1; });
+	$effect(() => {
+		void search;
+		void activeLetter;
+		page = 1;
+	});
 
 	const definedTermSet = $derived(
 		JSON.stringify({
@@ -23,7 +38,7 @@
 			description:
 				'Definitions of halal certification, trade, finance, logistics and regulatory terms for B2B buyers and suppliers.',
 			url: 'https://halalneo.com/glossary',
-			hasDefinedTerm: ((data.terms ?? []) as any[]).slice(0, 100).map((t: any) => ({
+			hasDefinedTerm: (data.terms ?? []).slice(0, 100).map((t: GlossaryTerm) => ({
 				'@type': 'DefinedTerm',
 				name: t.term,
 				description: t.definition,
@@ -36,10 +51,10 @@
 	);
 
 	const allSorted = $derived(
-		(data.terms ?? []).toSorted((a: any, b: any) => a.term.localeCompare(b.term))
+		(data.terms ?? []).toSorted((a: GlossaryTerm, b: GlossaryTerm) => a.term.localeCompare(b.term))
 	);
 
-	const allGrouped = $derived(Object.groupBy(allSorted, (t: any) => t.term[0].toUpperCase()));
+	const allGrouped = $derived(Object.groupBy(allSorted, (t: GlossaryTerm) => t.term[0].toUpperCase()));
 	const allLetters = $derived(Object.keys(allGrouped).toSorted());
 
 	const pillOptions = $derived([
@@ -54,7 +69,7 @@
 	// Search takes precedence over the letter filter; letter filtering is client-side
 	// so all terms stay server-rendered in HTML for SEO.
 	const sorted = $derived(
-		allSorted.filter((t: any) => {
+		allSorted.filter((t: GlossaryTerm) => {
 			if (search.trim()) {
 				const q = search.toLowerCase();
 				return (
@@ -68,7 +83,7 @@
 		})
 	);
 
-	const grouped = $derived(Object.groupBy(sorted, (t: any) => t.term[0].toUpperCase()));
+	const grouped = $derived(Object.groupBy(sorted, (t: GlossaryTerm) => t.term[0].toUpperCase()));
 	const letters = $derived(Object.keys(grouped).toSorted());
 	const totalPages = $derived(Math.max(1, Math.ceil(letters.length / PAGE_SIZE)));
 	const paginatedLetters = $derived(
@@ -81,7 +96,7 @@
 <Breadcrumb items={[{ label: 'Glossary', href: '/glossary' }]} />
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${definedTermSet}</script>`}
+	{@html `\u003cscript type="application/ld+json">${definedTermSet}\u003c/script>`}
 </svelte:head>
 
 <section class="space-y-4 sm:space-y-6">
@@ -114,12 +129,16 @@
 		/>
 	{/if}
 
+	{#if data.loadError}
+		<ErrorRetry failure={data.loadError} subject="glossary terms" />
+	{/if}
+
 	<div class="space-y-4 sm:space-y-6">
-		{#each paginatedLetters as letter, i (letter)}
+		{#each paginatedLetters as letter (letter)}
 			<div class="space-y-3">
 				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
 				<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-					{#each grouped[letter] as term, j (term.term)}
+					{#each grouped[letter] as term (term.term)}
 						<Card class="p-3 sm:p-4">
 							<CardContent class="space-y-1 pt-4">
 								<CardTitle class="text-base">{term.term}</CardTitle>
@@ -130,13 +149,26 @@
 				</div>
 			</div>
 		{:else}
-			<Empty>
-				<EmptyMedia><BookText class="size-6 text-muted-foreground"></BookText></EmptyMedia>
-				<EmptyTitle>No glossary terms found</EmptyTitle>
-				<EmptyDescription>Try adjusting your search.</EmptyDescription>
-			</Empty>
+			{#if !data.loadError}
+				<Empty>
+					<EmptyHeader>
+						<EmptyMedia><BookText class="size-6 text-muted-foreground"></BookText></EmptyMedia>
+						<EmptyTitle>No glossary terms found</EmptyTitle>
+						<EmptyDescription>Try adjusting your search.</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						{#if search.trim()}
+							<Button variant="outline" size="sm" onclick={() => (search = '')}
+								>Clear search</Button
+							>
+						{:else}
+							<Button size="sm" href={localizeHref('/knowledge-base')}>Browse the knowledge base</Button>
+						{/if}
+					</EmptyContent>
+				</Empty>
+			{/if}
 		{/each}
 	</div>
 
-	<Paginator page={page} totalPages={totalPages} />
+	<Paginator bind:page {totalPages} />
 </section>

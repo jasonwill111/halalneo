@@ -47,7 +47,7 @@
 					</div>
 					<div class="min-w-0">
 						<h2 class="text-xs font-semibold">{f.title}</h2>
-						<p class="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{f.desc}</p>
+						<p class="mt-0.5 text-2xs-plus leading-relaxed text-muted-foreground">{f.desc}</p>
 					</div>
 				</CardContent>
 			</Card>

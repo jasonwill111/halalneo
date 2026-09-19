@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Button } from '#lib/components/ui/button/index.js';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -47,12 +46,12 @@
 			{#if icon}<span class="text-muted-foreground">{@render icon()}</span>{/if}
 			<span class="text-sm">{title}</span>
 			{#if description}
-				<span class="text-[10px] text-muted-foreground">— {description}</span>
+				<span class="text-2xs text-muted-foreground">— {description}</span>
 			{/if}
 		</span>
 		<span class="flex items-center gap-2">
 			{#if headerAction}{@render headerAction()}{/if}
-			<span class="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]" class:rotate-180={open}>
+			<span class="transition-transform duration-slow ease-spring" class:rotate-180={open}>
 				<ChevronDown class="size-4 text-muted-foreground" />
 			</span>
 		</span>
@@ -60,7 +59,7 @@
 	<div
 		bind:this={contentEl}
 		style:--content-height="{height}px"
-		class="content-animate overflow-hidden transition-[height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+		class="content-animate overflow-hidden transition-[height] duration-slow ease-spring"
 		data-state={open ? 'open' : 'closed'}
 	>
 		<div class="space-y-3 border-t border-border/60 p-3">

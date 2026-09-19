@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { adminData } from '#lib/stores/admin-data.svelte.js';
 	import {
 		Card,
 		CardContent,
@@ -20,7 +19,6 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import Users from '@lucide/svelte/icons/users';
-	import Store from '@lucide/svelte/icons/store';
 	import Package from '@lucide/svelte/icons/package';
 	import FolderTree from '@lucide/svelte/icons/folder-tree';
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
@@ -33,19 +31,12 @@
 
 	let { data } = $props();
 
-	const activeSuppliers = $derived(adminData.suppliers.filter((s) => s.status === 'active').length);
-	const pendingSuppliers = $derived(
-		adminData.suppliers.filter((s) => s.status === 'pending').length
-	);
-	const certifiedProducts = $derived(
-		adminData.products.filter((s) => s.certStatus === 'certified').length
-	);
-	const pendingProducts = $derived(
-		adminData.products.filter((s) => s.certStatus === 'pending').length
-	);
-	const notCertifiedProducts = $derived(
-		adminData.products.filter((s) => s.certStatus === 'not-certified').length
-	);
+	const stats = $derived(data.stats);
+	const activeSuppliers = $derived(stats.suppliers.active);
+	const pendingSuppliers = $derived(stats.suppliers.pending);
+	const certifiedProducts = $derived(stats.products.certified);
+	const pendingProducts = $derived(stats.products.pending);
+	const notCertifiedProducts = $derived(stats.products.notCertified);
 
 	interface ApplicationRow {
 		slug: string;
@@ -61,12 +52,10 @@
 
 	let liveApplications = $state<ApplicationRow[]>([]);
 	let livePendingCount = $state(0);
-	let loaded = $state(false);
 
 	$effect(() => {
 		liveApplications = ((data.applications ?? []) as ApplicationRow[]).map((a) => ({ ...a }));
 		livePendingCount = data.pendingCount ?? 0;
-		loaded = true;
 	});
 
 	// Review dialog state
@@ -109,8 +98,8 @@
 			livePendingCount = Math.max(0, livePendingCount - 1);
 			reviewOpen = false;
 			reviewTarget = null;
-		} catch (e: any) {
-			reviewError = e?.message ?? 'Something went wrong. Please try again.';
+		} catch (e: unknown) {
+			reviewError = e instanceof Error ? e.message : 'Something went wrong. Please try again.';
 		} finally {
 			reviewBusy = false;
 		}
@@ -181,18 +170,18 @@
 									{/if}
 								</p>
 							</div>
-							<div class="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
+							<div class="flex shrink-0 items-center gap-1 text-2xs text-muted-foreground">
 								<Clock class="size-3"></Clock>
 								{formatTime(app.createdAt)}
 							</div>
-							<Button variant="outline" size="sm" class="shrink-0 text-[10px]" onclick={() => openReview(app)}>
+							<Button variant="outline" size="sm" class="shrink-0 text-2xs" onclick={() => openReview(app)}>
 								Review
 							</Button>
 						</li>
 					{/each}
 				</ul>
 				{#if liveApplications.length < livePendingCount}
-					<p class="mt-3 text-[10px] text-muted-foreground">
+					<p class="mt-3 text-2xs text-muted-foreground">
 						Showing {liveApplications.length} of {livePendingCount} pending applications.
 					</p>
 				{/if}
@@ -204,28 +193,28 @@
 		<Card>
 			<CardHeader class="gap-2">
 				<Users class="size-5 text-primary"></Users>
-				<CardTitle class="text-2xl">{adminData.suppliers.length}</CardTitle>
+				<CardTitle class="text-2xl">{stats.suppliers.total}</CardTitle>
 				<CardDescription>Suppliers (sellers)</CardDescription>
 			</CardHeader>
 		</Card>
 		<Card>
 			<CardHeader class="gap-2">
 				<Package class="size-5 text-primary"></Package>
-				<CardTitle class="text-2xl">{adminData.products.length}</CardTitle>
+				<CardTitle class="text-2xl">{stats.products.total}</CardTitle>
 				<CardDescription>Products (SKUs)</CardDescription>
 			</CardHeader>
 		</Card>
 		<Card>
 			<CardHeader class="gap-2">
 				<FolderTree class="size-5 text-primary"></FolderTree>
-				<CardTitle class="text-2xl">{adminData.categories.length}</CardTitle>
+				<CardTitle class="text-2xl">{stats.categories}</CardTitle>
 				<CardDescription>Categories</CardDescription>
 			</CardHeader>
 		</Card>
 		<Card>
 			<CardHeader class="gap-2">
 				<BadgeCheck class="size-5 text-primary"></BadgeCheck>
-				<CardTitle class="text-2xl">{adminData.certifyingBodies.length}</CardTitle>
+				<CardTitle class="text-2xl">{stats.certifyingBodies}</CardTitle>
 				<CardDescription>Certifying bodies</CardDescription>
 			</CardHeader>
 		</Card>
@@ -262,7 +251,7 @@
 			<CardHeader>
 				<CardTitle class="text-lg">Knowledge base</CardTitle>
 				<CardDescription
-					>{adminData.kbSections.length} sections · {adminData.kbArticles.length} articles</CardDescription
+					>{stats.kbSections} sections · {stats.kbArticles} articles</CardDescription
 				>
 			</CardHeader>
 			<CardContent>
@@ -275,7 +264,7 @@
 			<CardHeader>
 				<CardTitle class="text-lg">Content</CardTitle>
 				<CardDescription
-					>{adminData.glossary.length} glossary terms · {adminData.blogPosts.length} blog posts</CardDescription
+					>{stats.glossary} glossary terms · {stats.blogPosts} blog posts</CardDescription
 				>
 			</CardHeader>
 			<CardContent>
@@ -286,8 +275,7 @@
 			<CardHeader>
 				<CardTitle class="text-lg">AI tools</CardTitle>
 				<CardDescription
-					>{adminData.aiTools.filter((t) => t.status === 'active').length} of {adminData.aiTools
-						.length} enabled</CardDescription
+					>{stats.aiTools.active} of {stats.aiTools.total} enabled</CardDescription
 				>
 			</CardHeader>
 			<CardContent>
@@ -331,23 +319,23 @@
 				</div>
 
 				<div class="max-h-48 overflow-y-auto rounded-lg bg-muted/50 p-3">
-					<p class="mb-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Application details</p>
+					<p class="mb-1 text-2xs font-medium uppercase tracking-wide text-muted-foreground">Application details</p>
 					{#if reviewTarget.applicationText}
-						<pre class="whitespace-pre-wrap font-sans text-[11px] leading-relaxed">{reviewTarget.applicationText}</pre>
+						<pre class="whitespace-pre-wrap font-sans text-2xs-plus leading-relaxed">{reviewTarget.applicationText}</pre>
 					{:else}
-						<p class="text-[11px] text-muted-foreground">No application text available.</p>
+						<p class="text-2xs-plus text-muted-foreground">No application text available.</p>
 					{/if}
 				</div>
 
 				<div class="space-y-1">
-					<p class="text-[11px] font-medium">Feedback to the applicant</p>
+					<p class="text-2xs-plus font-medium">Feedback to the applicant</p>
 					<Textarea
 						bind:value={reviewFeedback}
 						placeholder="Optional for approval. Required when rejecting — this is recorded as the review note."
 						class="min-h-20 text-xs"
 					></Textarea>
 					{#if reviewTarget.adminNotes}
-						<p class="text-[10px] text-muted-foreground">Previous note: {reviewTarget.adminNotes}</p>
+						<p class="text-2xs text-muted-foreground">Previous note: {reviewTarget.adminNotes}</p>
 					{/if}
 				</div>
 

@@ -5,11 +5,23 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Field, FieldError, FieldLabel, FieldDescription } from '#lib/components/ui/field/index.js';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
+	import {
+		Field,
+		FieldError,
+		FieldLabel,
+		FieldDescription
+	} from '#lib/components/ui/field/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { z } from 'zod';
+	import { toast } from 'svelte-sonner';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	let { data } = $props();
 
@@ -21,16 +33,27 @@
 	let buyerCountry = $state('');
 	let description = $state('');
 	let sending = $state(false);
-	let result = $state<{ type: 'success' | 'error'; message: string; needsLogin?: boolean } | null>(null);
+	let result = $state<{ type: 'success' | 'error'; message: string; needsLogin?: boolean } | null>(
+		null
+	);
 	let fieldErrors = $state<Record<string, string>>({});
 	let formEl = $state<HTMLFormElement | undefined>(undefined);
 
 	const rfqClientSchema = z.object({
-		title: z.string().trim().min(1, 'Please describe what you need.'),
-		description: z.string().trim().min(1, 'Please add specs, certifications and timeline.')
+		title: z
+			.string()
+			.trim()
+			.min(5, 'Title must be at least 5 characters.')
+			.max(200, 'Title must be at most 200 characters.'),
+		description: z
+			.string()
+			.trim()
+			.min(10, 'Describe what you need (min 10 characters).')
+			.max(5000, 'Description must be at most 5000 characters.')
 	});
 
 	async function submit() {
+		if (sending) return;
 		fieldErrors = {};
 		const parsed = rfqClientSchema.safeParse({ title, description });
 		if (!parsed.success) {
@@ -57,22 +80,31 @@
 					buyerCountry: buyerCountry.trim() || null
 				})
 			});
-			const j = (await res.json().catch(() => ({}))) as any;
+			const j = (await res.json().catch(() => ({}))) as {
+				id?: string;
+				error?: string;
+				details?: Record<string, string[]>;
+			};
 			if (res.ok && j.id) {
+				result = { type: 'success', message: 'Request published.' };
+				toast.success('Buying request published. Suppliers can now quote.');
 				goto(localizeHref(`/rfqs/${j.id}`));
 				return;
 			}
+			const failMessage = j.error ?? 'Failed to publish.';
 			result = {
 				type: 'error',
-				message: j.error ?? 'Failed to publish.',
+				message: failMessage,
 				needsLogin: res.status === 401
 			};
+			toast.error(failMessage);
 			if (res.status === 400 && j.details) {
 				fieldErrors = mergeServerDetails(fieldErrors, j.details);
 				focusFirstInvalid(formEl);
 			}
 		} catch {
 			result = { type: 'error', message: 'Network error. Please try again.' };
+			toast.error('Network error. Please try again.');
 		} finally {
 			sending = false;
 		}
@@ -130,7 +162,8 @@
 					<FieldLabel>Category</FieldLabel>
 					<Select type="single" bind:value={categorySlug}>
 						<SelectTrigger class="w-full text-sm">
-							{(data.categories ?? []).find((c: any) => c.slug === categorySlug)?.name ?? 'Select category'}
+							{(data.categories ?? []).find((c) => c.slug === categorySlug)?.name ??
+								'Select category'}
 						</SelectTrigger>
 						<SelectContent>
 							{#each data.categories ?? [] as c (c.slug)}
@@ -141,20 +174,40 @@
 				</Field>
 				<Field>
 					<FieldLabel>Quantity</FieldLabel>
-					<Input type="text" bind:value={quantity} placeholder="e.g. 500kg monthly" maxlength={200} />
+					<Input
+						type="text"
+						bind:value={quantity}
+						placeholder="e.g. 500kg monthly"
+						maxlength={200}
+					/>
 				</Field>
 				<Field>
 					<FieldLabel>Target price</FieldLabel>
-					<Input type="text" bind:value={targetPrice} placeholder="e.g. $4.20/kg CIF" maxlength={200} />
+					<Input
+						type="text"
+						bind:value={targetPrice}
+						placeholder="e.g. $4.20/kg CIF"
+						maxlength={200}
+					/>
 				</Field>
 				<Field>
 					<FieldLabel>Destination</FieldLabel>
-					<Input type="text" bind:value={destination} placeholder="e.g. Port Klang, Malaysia" maxlength={200} />
+					<Input
+						type="text"
+						bind:value={destination}
+						placeholder="e.g. Port Klang, Malaysia"
+						maxlength={200}
+					/>
 				</Field>
 			</div>
 			<Field>
 				<FieldLabel>Your country</FieldLabel>
-				<Input type="text" bind:value={buyerCountry} placeholder="e.g. United Arab Emirates" maxlength={200} />
+				<Input
+					type="text"
+					bind:value={buyerCountry}
+					placeholder="e.g. United Arab Emirates"
+					maxlength={200}
+				/>
 			</Field>
 			<Field>
 				<FieldLabel>Details *</FieldLabel>
@@ -163,6 +216,7 @@
 					bind:value={description}
 					placeholder="Grade, specs, required certifications (JAKIM/ESMA/...), packaging, delivery timeline..."
 					rows={5}
+					maxlength={5000}
 					aria-invalid={fieldErrors.description ? true : undefined}
 					oninput={() => {
 						if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' };
@@ -170,8 +224,18 @@
 				/>
 				{#if fieldErrors.description}<FieldError>{fieldErrors.description}</FieldError>{/if}
 			</Field>
-			<Button type="submit" class="w-full" disabled={sending || !title.trim() || !description.trim()}>
-				{sending ? 'Publishing...' : 'Publish request'}
+			<Button
+				type="submit"
+				class="w-full"
+				disabled={sending || !title.trim() || !description.trim()}
+				aria-busy={sending}
+			>
+				{#if sending}
+					<Loader2 class="size-4 animate-spin" />
+					Publishing...
+				{:else}
+					Publish request
+				{/if}
 			</Button>
 		</form>
 	</Card>

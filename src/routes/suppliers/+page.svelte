@@ -11,14 +11,15 @@
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
-	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import SeoMeta from '#lib/components/seo-meta.svelte';
 
 	let { data } = $props();
@@ -115,7 +116,7 @@
 
 <svelte:head>
 	<!-- Structured Data: Breadcrumb -->
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
 		itemListElement: [
@@ -127,11 +128,11 @@
 				item: 'https://halalneo.com/suppliers'
 			}
 		]
-	})}</script>`}
+	})}\u003c/script>`}
 
 	<!-- Structured Data: Organization Schema -->
 	{#if allSuppliers.length > 0}
-		{@html `<script type="application/ld+json">${JSON.stringify({
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'Organization',
 			name: allSuppliers[0].name,
@@ -144,7 +145,7 @@
 				contactType: 'customer service',
 				availableLanguage: ['en', 'ar', 'id', 'ms', 'tr', 'bn', 'ur']
 			}
-		})}</script>`}
+		})}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -186,7 +187,7 @@
 				<Button
 					variant="outline"
 					size="sm"
-					class="text-[10px]"
+					class="text-2xs"
 					onclick={() => {
 						activeType = 'all';
 						query = '';
@@ -206,17 +207,39 @@
 			/>
 		</div>
 
-		{#if paged.length === 0}
+		{#if data.loadError && paged.length === 0}
+			<ErrorRetry failure={data.loadError} subject="suppliers" />
+		{:else if paged.length === 0}
 			<Empty>
-				<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
-				<EmptyTitle
-					>{query.trim() || activeType !== 'all'
-						? 'No suppliers match these filters'
-						: 'No suppliers yet'}</EmptyTitle
-				>
-				<EmptyDescription
-					>Additions continue as new suppliers join during test mode.</EmptyDescription
-				>
+				<EmptyHeader>
+					<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
+					<EmptyTitle
+						>{query.trim() || activeType !== 'all'
+							? 'No suppliers match these filters'
+							: 'No suppliers yet'}</EmptyTitle
+					>
+					<EmptyDescription
+						>Additions continue as new suppliers join during test mode.</EmptyDescription
+					>
+				</EmptyHeader>
+				<EmptyContent>
+					{#if activeType !== 'all' || query.trim()}
+						<Button
+							variant="outline"
+							size="sm"
+							onclick={() => {
+								activeType = 'all';
+								query = '';
+							}}
+							>Clear filters</Button
+						>
+					{:else}
+						<Button size="sm" href={localizeHref('/register')}>Join as a supplier</Button>
+					{/if}
+					<Button variant="link" size="sm" href={localizeHref('/products')}
+						>Browse products instead</Button
+					>
+				</EmptyContent>
 			</Empty>
 		{:else}
 			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
@@ -245,12 +268,12 @@
 						<div class="flex flex-1 flex-col gap-1 p-2.5 sm:p-3">
 							<h3 class="line-clamp-1 text-xs leading-tight font-medium sm:text-sm">{s.name}</h3>
 							{#if s.country}
-								<p class="text-[10px] text-muted-foreground">{s.country}</p>
+								<p class="text-2xs text-muted-foreground">{s.country}</p>
 							{/if}
 							<div class="mt-auto flex items-center justify-between gap-1 pt-1">
-								<Badge variant="outline" class="text-[9px]">{s.businessType}</Badge>
+								<Badge variant="outline" class="text-3xs">{s.businessType}</Badge>
 								{#if s.isBrand}
-									<Badge variant="secondary" class="text-[9px]">
+									<Badge variant="secondary" class="text-3xs">
 										<ArrowRight class="mr-0.5 size-2" /> Brand
 									</Badge>
 								{/if}
@@ -280,7 +303,7 @@
 						</div>
 						<h3 class="truncate text-xs font-semibold sm:text-sm">{market.region}</h3>
 					</div>
-					<p class="mt-1.5 line-clamp-2 text-[10px] text-muted-foreground sm:text-xs">
+					<p class="mt-1.5 line-clamp-2 text-2xs text-muted-foreground sm:text-xs">
 						{market.countries}
 					</p>
 				</Card>

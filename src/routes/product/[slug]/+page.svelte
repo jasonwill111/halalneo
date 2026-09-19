@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Separator } from '#lib/components/ui/separator/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
-	import { Tabs, TabsList, TabsTrigger, TabsContent } from '#lib/components/ui/tabs/index.js';
+	import { Tabs, TabsList, TabsTrigger } from '#lib/components/ui/tabs/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import {
 		Dialog,
@@ -28,11 +28,13 @@
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import RelatedLinks from '#lib/components/site/related-links.svelte';
-	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
 	import { sanitizeHtml } from '#lib/sanitize.js';
 	import { z } from 'zod';
+	import { toast } from 'svelte-sonner';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	let { data } = $props();
 
@@ -57,9 +59,6 @@
 		inquirySubject: z.string().trim().min(1, 'Subject is required.'),
 		inquiryMessage: z.string().trim().min(10, 'Message must be at least 10 characters.')
 	});
-
-	// Favorite state — initialized client-side to avoid SSR/CSR mismatch
-	let favorited = $state(false);
 
 	async function submitInquiry() {
 		if (inquirySending) return;
@@ -94,20 +93,27 @@
 				inquiryMessage = '';
 				inquiryEmail = '';
 				inquiryFieldErrors = {};
+				toast.success('Inquiry sent. The supplier will reply by email.');
 			} else {
-				const errBody = ((await res.json()) as any);
-				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
+				const errBody = (await res.json().catch(() => ({}))) as {
+					error?: string;
+					details?: Record<string, string[]>;
+				};
+				const failMessage = errBody.error ?? 'Failed to send inquiry.';
+				inquiryResult = { type: 'error', message: failMessage };
+				toast.error(failMessage);
 				if (res.status === 400 && errBody.details) {
 					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
 						inquirySubject: errBody.details.subject,
 						inquiryMessage: errBody.details.message,
-						inquiryEmail: errBody.details.buyerSlug
+						inquiryEmail: errBody.details.buyerSlug ?? errBody.details.supplierSlug
 					});
 					focusFirstInvalid(inquiryFormEl);
 				}
 			}
 		} catch {
 			inquiryResult = { type: 'error', message: 'Network error. Please try again.' };
+			toast.error('Network error. Please try again.');
 		} finally {
 			inquirySending = false;
 		}
@@ -125,6 +131,10 @@
 			: 'Price on request'
 	);
 
+	// Favorite state — server-backed via /api/favorites (init/toggle below)
+	let favorited = $state(false);
+	let favoriteBusy = $state(false);
+
 	const heartClass = $derived(`size-4 ${favorited ? 'text-primary' : ''}`);
 	const heartFill = $derived(favorited ? 'currentColor' : 'none');
 
@@ -137,7 +147,8 @@
 		)
 	);
 	const categoryName = $derived(
-		categoryInfo?.name ?? (item?.categorySlug ? item.categorySlug.replace(/-/g, ' ') : 'Uncategorized')
+		categoryInfo?.name ??
+			(item?.categorySlug ? item.categorySlug.replace(/-/g, ' ') : 'Uncategorized')
 	);
 	const categoryIcon = $derived(categoryInfo?.icon ?? 'Package');
 
@@ -156,16 +167,7 @@
 		const list: string[] = [];
 		if (item?.image) list.push(item.image);
 		const raw = item?.images;
-		if (typeof raw === 'string') {
-			try {
-				const parsed = JSON.parse(raw);
-				if (Array.isArray(parsed)) list.push(...parsed.filter(Boolean).map(String));
-			} catch {
-				if (raw.trim()) list.push(raw.trim());
-			}
-		} else if (Array.isArray(raw)) {
-			list.push(...raw.filter(Boolean).map(String));
-		}
+		if (Array.isArray(raw)) list.push(...raw.filter(Boolean).map(String));
 		return [...new Set(list)];
 	});
 	let activeImage = $state(0);
@@ -177,18 +179,7 @@
 	// Videos: JSON array of URLs (mp4/webm play inline, others link out).
 	const productVideos = $derived.by(() => {
 		const raw = item?.videos;
-		let arr: unknown[] = [];
-		if (typeof raw === 'string') {
-			try {
-				const parsed = JSON.parse(raw);
-				if (Array.isArray(parsed)) arr = parsed;
-				else if (raw.trim()) arr = [raw.trim()];
-			} catch {
-				if (raw.trim()) arr = [raw.trim()];
-			}
-		} else if (Array.isArray(raw)) {
-			arr = raw;
-		}
+		const arr: unknown[] = Array.isArray(raw) ? raw : [];
 		return arr.filter((v): v is string => typeof v === 'string' && v.length > 0);
 	});
 
@@ -209,7 +200,9 @@
 			try {
 				const parsed = JSON.parse(kw);
 				if (Array.isArray(parsed)) return parsed.filter(Boolean).join(', ') || null;
-			} catch {}
+			} catch {
+				// not JSON — fall through and treat as a raw comma-separated string
+			}
 			return kw.trim() || null;
 		}
 		return null;
@@ -222,7 +215,8 @@
 			{ value: 'description', label: 'Description' },
 			{ value: 'certifications', label: 'Certifications' }
 		];
-		if (Object.keys(specifications).length > 0) tabs.splice(1, 0, { value: 'specs', label: 'Specs' });
+		if (Object.keys(specifications).length > 0)
+			tabs.splice(1, 0, { value: 'specs', label: 'Specs' });
 		if (faqs.length > 0) tabs.push({ value: 'faq', label: 'FAQ' });
 		if (resources.length > 0) tabs.push({ value: 'resources', label: 'Resources' });
 		return tabs;
@@ -232,11 +226,24 @@
 		if (!availableTabs.some((t) => t.value === activeTab)) activeTab = availableTabs[0].value;
 	});
 
-	// Initialize favorite state from localStorage (client-only)
+	// Favorite state — server-backed via /api/favorites (requires session;
+	// degrades to signed-out state when the request 401s).
+	interface FavoriteStateResult {
+		favorite?: boolean;
+	}
 	$effect(() => {
-		if (item?.slug) {
-			favorited = isFavorite(item.slug);
-		}
+		const slug = item?.slug;
+		if (!slug) return;
+		let cancelled = false;
+		fetch(`/api/favorites?productSlug=${encodeURIComponent(slug)}`)
+			.then(async (res) => {
+				if (!cancelled && res.ok)
+					favorited = ((await res.json()) as FavoriteStateResult).favorite ?? false;
+			})
+			.catch(() => {});
+		return () => {
+			cancelled = true;
+		};
 	});
 
 	// Analytics beacon: record the product view (fire-and-forget POST with
@@ -252,9 +259,40 @@
 		}).catch(() => {});
 	});
 
-	function handleToggleFavorite() {
-		if (!item?.slug) return;
-		favorited = toggleFavorite(item.slug);
+	async function handleToggleFavorite() {
+		const slug = item?.slug;
+		if (!slug || favoriteBusy) return;
+		favoriteBusy = true;
+		try {
+			if (favorited) {
+				const res = await fetch(`/api/favorites?productSlug=${encodeURIComponent(slug)}`, {
+					method: 'DELETE'
+				});
+				if (res.ok) {
+					favorited = false;
+					toast.info('Removed from your saved items.');
+				} else if (res.status === 401) {
+					await goto(`/login?next=${encodeURIComponent(page.url.pathname)}`);
+				}
+			} else {
+				const res = await fetch('/api/favorites', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ productSlug: slug })
+				});
+				if (res.ok) {
+					favorited = true;
+					toast.success('Saved. Find it later in Account → Saved Items.');
+				} else if (res.status === 401) {
+					toast.info('Please sign in to save products.');
+					await goto(`/login?next=${encodeURIComponent(page.url.pathname)}`);
+				}
+			}
+		} catch {
+			toast.error('Could not reach the server. Please try again.');
+		} finally {
+			favoriteBusy = false;
+		}
 	}
 
 	const productSchema = $derived(
@@ -276,12 +314,20 @@
 									itemCondition: 'https://schema.org/NewCondition',
 									priceCurrency: 'USD',
 									price: item.priceMin,
-									...(item.priceMax ? { priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() } : {})
+									...(item.priceMax
+										? {
+												priceValidUntil: new Date(
+													Date.now() + 30 * 24 * 60 * 60 * 1000
+												).toISOString()
+											}
+										: {})
 								}
 							}
 						: {}),
 					manufacturer: { '@type': 'Organization', name: item.supplierSlug ?? '' },
-					...(item.originCountry ? { countryOfOrigin: { '@type': 'Country', name: item.originCountry } } : {})
+					...(item.originCountry
+						? { countryOfOrigin: { '@type': 'Country', name: item.originCountry } }
+						: {})
 				}
 			: null
 	);
@@ -297,13 +343,13 @@
 		<meta name="keywords" content={metaKeywords} />
 	{/if}
 	{#if productSchema}
-		{@html `<script type="application/ld+json">${JSON.stringify(productSchema)}</script>`}
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify(productSchema)}\u003c/script>`}
 	{/if}
 	{#if faqs.length > 0}
-		{@html `<script type="application/ld+json">${JSON.stringify({
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'FAQPage',
-			mainEntity: faqs.map((f: any) => ({
+			mainEntity: faqs.map((f) => ({
 				'@type': 'Question',
 				name: typeof f === 'string' ? f : (f.question ?? ''),
 				acceptedAnswer: {
@@ -311,7 +357,7 @@
 					text: typeof f === 'string' ? '' : (f.answer ?? '')
 				}
 			}))
-		})}</script>`}
+		})}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -322,7 +368,7 @@
 		/>
 
 		<!-- Top: Image + Info -->
-		<div class="grid gap-4 lg:gap-6 lg:grid-cols-5">
+		<div class="grid gap-4 lg:grid-cols-5 lg:gap-6">
 			<!-- Image gallery -->
 			<div class="lg:col-span-2">
 				<div
@@ -352,12 +398,12 @@
 							<Button
 								variant="ghost"
 								onclick={() => (activeImage = i)}
-								class={`h-auto aspect-square overflow-hidden rounded-xl border bg-muted p-0 transition-all ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
+								class={`aspect-square h-auto overflow-hidden rounded-xl border bg-muted p-0 transition-all ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
 								aria-label={`View image ${i + 1}`}
 								aria-pressed={i === activeImage}
 							>
 								<img
-									src={src}
+									{src}
 									alt=""
 									class="h-full w-full object-cover"
 									loading="lazy"
@@ -383,27 +429,44 @@
 				<!-- Certification badges -->
 				<div class="flex flex-wrap gap-1.5">
 					{#if item.certStatus === 'certified'}
-						<span class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
+						<span
+							class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-2xs font-semibold text-success"
+						>
 							<ShieldCheck class="size-2.5"></ShieldCheck>
 							Halal Certified
 						</span>
 					{:else if item.certStatus === 'pending'}
-						<span class="inline-flex items-center gap-1 rounded-full border border-warn/20 bg-warn/10 px-2 py-0.5 text-[10px] font-semibold text-warn">
+						<span
+							class="inline-flex items-center gap-1 rounded-full border border-warn/20 bg-warn/10 px-2 py-0.5 text-2xs font-semibold text-warn"
+						>
 							<Play class="size-2.5"></Play>
 							Certification pending
 						</span>
 					{:else if item.certStatus === 'not-certified'}
-						<span class="inline-flex items-center gap-1 rounded-full border border-destructive/20 bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+						<span
+							class="inline-flex items-center gap-1 rounded-full border border-destructive/20 bg-destructive/10 px-2 py-0.5 text-2xs font-semibold text-destructive"
+						>
 							Not certified
 						</span>
 					{/if}
 					{#if item.originCountry}
-						<Badge variant="outline" class="text-[10px] font-medium {regionBadgeClass(getRegion(item.originCountry))}">
+						<Badge
+							variant="outline"
+							class="text-2xs font-medium {regionBadgeClass(getRegion(item.originCountry))}"
+						>
 							{item.originCountry}
 						</Badge>
 					{/if}
-					<a href={localizeHref(`/category/${item.categorySlug}`)} class="transition-transform hover:scale-105">
-						<Badge variant="outline" class="gap-1 text-[10px] font-medium {TILE_COLORS[(item.categorySlug?.length ?? 0) % TILE_COLORS.length]}">
+					<a
+						href={localizeHref(`/category/${item.categorySlug}`)}
+						class="transition-transform hover:scale-105"
+					>
+						<Badge
+							variant="outline"
+							class="gap-1 text-2xs font-medium {TILE_COLORS[
+								(item.categorySlug?.length ?? 0) % TILE_COLORS.length
+							]}"
+						>
 							<Icon name={categoryIcon} class="size-2.5"></Icon>
 							{categoryName}
 						</Badge>
@@ -447,6 +510,8 @@
 							size="icon"
 							class="size-8 shrink-0"
 							onclick={handleToggleFavorite}
+							disabled={favoriteBusy}
+							aria-pressed={favorited}
 							aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
 						>
 							<Heart class={heartClass} fill={heartFill}></Heart>
@@ -454,17 +519,20 @@
 					</div>
 				</div>
 
-		<!-- Share -->
-		<div class="flex items-center gap-2">
-			<span class="text-xs text-muted-foreground">Share:</span>
-			<ShareButtons title={item.name ?? 'HalalNeo product'} text={item.shortDescription ?? ''} />
-			{#if item.views != null}
-				<span class="ml-auto inline-flex items-center gap-1 text-[10px] text-muted-foreground">
-					<Eye class="size-3" />
-					{item.views} views
-				</span>
-			{/if}
-		</div>
+				<!-- Share -->
+				<div class="flex items-center gap-2">
+					<span class="text-xs text-muted-foreground">Share:</span>
+					<ShareButtons
+						title={item.name ?? 'HalalNeo product'}
+						text={item.shortDescription ?? ''}
+					/>
+					{#if item.views != null}
+						<span class="ml-auto inline-flex items-center gap-1 text-2xs text-muted-foreground">
+							<Eye class="size-3" />
+							{item.views} views
+						</span>
+					{/if}
+				</div>
 			</div>
 		</div>
 
@@ -496,7 +564,9 @@
 						<ul class="mt-2 space-y-1.5">
 							{#each features as feature, i (typeof feature === 'string' ? feature : (feature.value ?? JSON.stringify(feature)))}
 								<li class="flex items-start gap-2">
-									<div class={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded ${TILE_COLORS[i % TILE_COLORS.length]}`}>
+									<div
+										class={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded ${TILE_COLORS[i % TILE_COLORS.length]}`}
+									>
 										<ShieldCheck class="size-2.5"></ShieldCheck>
 									</div>
 									<span class="text-sm leading-relaxed">
@@ -588,9 +658,13 @@
 						<div class="space-y-2">
 							{#each resources as res (typeof res === 'string' ? res : (res.url ?? res.href ?? res.name ?? JSON.stringify(res)))}
 								{@const url = typeof res === 'string' ? null : (res.url ?? res.href ?? null)}
-								<div class="flex items-center justify-between gap-2 rounded-xl border border-border p-3">
+								<div
+									class="flex items-center justify-between gap-2 rounded-xl border border-border p-3"
+								>
 									<div class="flex min-w-0 items-center gap-2">
-										<div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info">
+										<div
+											class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info"
+										>
 											<ExternalLink class="size-3.5"></ExternalLink>
 										</div>
 										<span class="min-w-0 truncate text-sm font-medium"
@@ -615,7 +689,7 @@
 			</div>
 
 			<!-- Quick Info sidebar -->
-			<div class="space-y-4 lg:sticky lg:top-20 lg:self-start lg:z-10">
+			<div class="space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
 				<Card class="p-3 sm:p-4">
 					<h3 class="mb-3 text-sm font-semibold">Quick Info</h3>
 					<dl class="space-y-2 text-sm">
@@ -628,7 +702,9 @@
 							<dd class="font-medium">
 								<a
 									href={localizeHref(`/category/${item.categorySlug}`)}
-									class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold {TILE_COLORS[(item.categorySlug?.length ?? 0) % TILE_COLORS.length]}">{categoryName}</a
+									class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-2xs font-semibold {TILE_COLORS[
+										(item.categorySlug?.length ?? 0) % TILE_COLORS.length
+									]}">{categoryName}</a
 								>
 							</dd>
 						</div>
@@ -657,7 +733,9 @@
 				<Card class="p-3 sm:p-4">
 					<h3 class="mb-3 text-sm font-semibold">Supplier</h3>
 					<div class="flex items-center gap-2.5">
-						<div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
+						<div
+							class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary"
+						>
 							{(data.supplierName ?? item.supplierSlug ?? '?')
 								.split(/\s+/)
 								.map((p: string) => p[0])
@@ -668,7 +746,7 @@
 						</div>
 						<div class="min-w-0">
 							<p class="truncate text-sm font-medium">{data.supplierName ?? item.supplierSlug}</p>
-							<p class="text-[10px] text-muted-foreground">Verified halal supplier</p>
+							<p class="text-2xs text-muted-foreground">Verified halal supplier</p>
 						</div>
 					</div>
 					<Button
@@ -687,7 +765,7 @@
 			<section class="space-y-2">
 				<h2 class="text-base font-semibold">Product videos</h2>
 				<div class="grid gap-3 sm:grid-cols-2">
-						{#each productVideos as url, i (url)}
+					{#each productVideos as url, i (url)}
 						{#if isPlayableVideo(url)}
 							<video
 								src={url}
@@ -709,7 +787,7 @@
 								<Play class="size-4 shrink-0 text-primary" />
 								<span class="min-w-0">
 									<span class="block truncate text-sm font-medium">Watch video {i + 1}</span>
-									<span class="block truncate text-[10px] text-muted-foreground">{url}</span>
+									<span class="block truncate text-2xs text-muted-foreground">{url}</span>
 								</span>
 								<ExternalLink class="ml-auto size-3.5 shrink-0 text-muted-foreground" />
 							</Button>
@@ -721,9 +799,9 @@
 
 		<RelatedLinks
 			title="Related products"
-			items={(data.relatedProducts ?? []).map((p: any) => ({
+			items={(data.relatedProducts ?? []).map((p) => ({
 				label: p.name,
-				description: p.originCountry ?? p.supplierSlug,
+				description: p.originCountry ?? p.supplierSlug ?? '',
 				href: `/product/${p.slug}`
 			}))}
 		/>
@@ -780,8 +858,8 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquiryEmail}<FieldError
-					>{inquiryFieldErrors.inquiryEmail}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquiryEmail}</FieldError
+					>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Subject</FieldLabel>
@@ -796,8 +874,8 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquirySubject}<FieldError
-					>{inquiryFieldErrors.inquirySubject}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquirySubject}</FieldError
+					>{/if}
 			</Field>
 			<Field>
 				<FieldLabel>Message</FieldLabel>
@@ -812,15 +890,21 @@
 					}}
 				/>
 				{#if inquiryFieldErrors.inquiryMessage}<FieldError
-					>{inquiryFieldErrors.inquiryMessage}</FieldError
-				>{/if}
+						>{inquiryFieldErrors.inquiryMessage}</FieldError
+					>{/if}
 			</Field>
 			<DialogFooter>
 				<Button
 					type="submit"
 					disabled={inquirySending || !inquirySubject.trim() || !inquiryMessage.trim()}
+					aria-busy={inquirySending}
 				>
-					{inquirySending ? 'Sending...' : 'Send Inquiry'}
+					{#if inquirySending}
+						<Loader2 class="size-3.5 animate-spin" />
+						Sending...
+					{:else}
+						Send Inquiry
+					{/if}
 				</Button>
 			</DialogFooter>
 		</form>

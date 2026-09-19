@@ -1,5 +1,8 @@
 import type { PageLoad } from './$types';
 import { kbSections } from '#lib/data/kb-sections.js';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems, readTotal } from '#lib/utils/api-response.js';
+import type { KbArticleListItem, KbSectionCountItem } from '#lib/types/api.js';
 
 const BASE_URL = 'https://halalneo.com';
 
@@ -11,28 +14,29 @@ const sectionMeta: Record<string, { title: string; description: string; icon: st
 	);
 
 export const load: PageLoad = async ({ fetch }) => {
+	const failures: LoadFailure[] = [];
 	const [articlesRes, sectionsRes, marketGuidesRes, tradeShowsRes, glossaryRes] = await Promise.all([
-		fetch('/api/knowledge-base?limit=50'),
-		fetch('/api/knowledge-base/sections'),
-		fetch('/api/market-guides?limit=1'),
-		fetch('/api/trade-shows?limit=1'),
-		fetch('/api/pages?category=glossary&limit=1')
+		fetchSafe(fetch, '/api/knowledge-base?limit=50', failures),
+		fetchSafe(fetch, '/api/knowledge-base/sections', failures),
+		fetchSafe(fetch, '/api/market-guides?limit=1', failures),
+		fetchSafe(fetch, '/api/trade-shows?limit=1', failures),
+		fetchSafe(fetch, '/api/pages?category=glossary&limit=1', failures)
 	]);
 
-	const articles = (articlesRes.ok ? ((await articlesRes.json()) as { items?: any[] }).items ?? [] : []).map((a: any) => ({
+	const articles = (await readItems<KbArticleListItem>(articlesRes)).map((a) => ({
 		...a,
-		tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
+		tags: typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : a.tags ?? []
 	}));
-	const rawSections = sectionsRes.ok ? ((await sectionsRes.json()) as { items?: any[] }).items ?? [] : [];
-	const sections = rawSections.map((s: any) => ({
+	const rawSections = await readItems<KbSectionCountItem>(sectionsRes);
+	const sections = rawSections.map((s) => ({
 		slug: s.section,
 		...sectionMeta[s.section],
 		count: s.count
-	})).filter((s: any) => s.title);
+	})).filter((s) => s.title);
 
-	const marketGuidesCount = marketGuidesRes.ok ? ((await marketGuidesRes.json()) as { total?: number }).total ?? 0 : 0;
-	const tradeShowsCount = tradeShowsRes.ok ? ((await tradeShowsRes.json()) as { total?: number }).total ?? 0 : 0;
-	const glossaryCount = glossaryRes.ok ? ((await glossaryRes.json()) as { total?: number }).total ?? 0 : 0;
+	const marketGuidesCount = await readTotal(marketGuidesRes);
+	const tradeShowsCount = await readTotal(tradeShowsRes);
+	const glossaryCount = await readTotal(glossaryRes);
 
 	// ItemList for sections
 	const itemList = {
@@ -78,6 +82,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		tradeShowsCount,
 		glossaryCount,
 		itemList,
-		collectionPage
+		collectionPage,
+		loadError: firstFailure(failures)
 	};
 };

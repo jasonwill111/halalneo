@@ -22,8 +22,9 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import FileText from '@lucide/svelte/icons/file-text';
+	import type { ApiList, SuccessStoryItem } from '#lib/types/api.js';
 
-	let stories = $state<any[]>([]);
+	let stories = $state<SuccessStoryItem[]>([]);
 	let loading = $state(true);
 
 	let dialogOpen = $state(false);
@@ -53,7 +54,7 @@
 		loading = true;
 		try {
 			const res = await fetch('/api/success-stories?status=all&limit=100');
-			if (res.ok) stories = (((await res.json()) as any).items ?? []);
+			if (res.ok) stories = ((await res.json()) as ApiList<SuccessStoryItem>).items ?? [];
 		} catch {
 			stories = [];
 		} finally {
@@ -93,7 +94,7 @@
 					image: image.trim() || null
 				})
 			});
-			const j = (await res.json().catch(() => ({}))) as any;
+			const j = (await res.json().catch(() => ({}))) as { error?: string };
 			if (res.ok) {
 				dialogOpen = false;
 				slug = '';
@@ -128,7 +129,7 @@
 				toast.success('Story deleted');
 				await refresh();
 			} else {
-				const j = (await res.json().catch(() => ({}))) as any;
+				const j = (await res.json().catch(() => ({}))) as { error?: string };
 				toast.error(j.error ?? 'Failed to delete.');
 			}
 		} finally {
@@ -157,7 +158,7 @@
 <Card class="p-0 ring-0">
 	{#if loading}
 		<div class="space-y-2 p-4">
-			{#each Array(4) as _}
+			{#each Array(4) as _, i (i)}
 				<Skeleton class="h-9 w-full" />
 			{/each}
 		</div>
@@ -175,21 +176,21 @@
 		<Table>
 			<TableHeader>
 				<TableRow>
-					<TableHead class="text-[10px]">Title</TableHead>
-					<TableHead class="text-[10px]">Supplier</TableHead>
-					<TableHead class="text-[10px]">Deal</TableHead>
-					<TableHead class="text-[10px]">Status</TableHead>
-					<TableHead class="text-[10px] text-right">Actions</TableHead>
+					<TableHead class="text-2xs">Title</TableHead>
+					<TableHead class="text-2xs">Supplier</TableHead>
+					<TableHead class="text-2xs">Deal</TableHead>
+					<TableHead class="text-2xs">Status</TableHead>
+					<TableHead class="text-2xs text-right">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
 				{#each stories as s (s.slug)}
 					<TableRow>
-						<TableCell class="max-w-[220px] truncate text-[11px] font-medium">{s.title}</TableCell>
-						<TableCell class="text-[10px] text-muted-foreground">{s.supplierSlug ?? '—'}</TableCell>
-						<TableCell class="text-[10px] text-muted-foreground">{s.dealValue ?? '—'}</TableCell>
+						<TableCell class="max-w-[220px] truncate text-2xs-plus font-medium">{s.title}</TableCell>
+						<TableCell class="text-2xs text-muted-foreground">{s.supplierSlug ?? '—'}</TableCell>
+						<TableCell class="text-2xs text-muted-foreground">{s.dealValue ?? '—'}</TableCell>
 						<TableCell>
-							<Badge variant="secondary" class="text-[10px]">{s.status ?? 'draft'}</Badge>
+							<Badge variant="secondary" class="text-2xs">{s.status ?? 'draft'}</Badge>
 						</TableCell>
 						<TableCell class="text-right">
 							<Button

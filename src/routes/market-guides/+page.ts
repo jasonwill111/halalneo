@@ -1,14 +1,18 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readList } from '#lib/utils/api-response.js';
+import type { MarketGuideDto } from '#lib/schemas/market-guides.js';
 
 const BASE_URL = 'https://halalneo.com';
 
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
-	const res = await fetch('/api/market-guides?limit=50');
-	const data: { items?: any[]; total?: number } = res.ok ? ((await res.json()) as any) : { items: [], total: 0 };
+	const failures: LoadFailure[] = [];
+	const res = await fetchSafe(fetch, '/api/market-guides?limit=50', failures);
+	const data = await readList<MarketGuideDto>(res);
 
-	const guides = (data.items ?? []) as any[];
+	const guides = data.items ?? [];
 
 	const itemList = {
 		'@context': 'https://schema.org',
@@ -16,7 +20,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		name: 'Halal Market Guides',
 		description:
 			'Country-by-country halal certification requirements, costs, and market entry guides for major halal markets.',
-		itemListElement: guides.slice(0, 50).map((guide: any, i: number) => ({
+		itemListElement: guides.slice(0, 50).map((guide, i) => ({
 			'@type': 'ListItem',
 			position: i + 1,
 			item: {
@@ -37,6 +41,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			ogImage: 'https://halalneo.com/api/media/og-default.png',
 			keywords: ['halal market guide', 'halal certification by country', 'halal import requirements']
 		},
-		itemList
+		itemList,
+		loadError: firstFailure(failures)
 	};
 };

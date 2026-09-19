@@ -1,8 +1,5 @@
 <script lang="ts">
 	import QualityDashboard from '#lib/components/admin/quality-dashboard.svelte';
-	import type { PageData } from './$types';
-
-	const { data = {} as PageData } = $props();
 
 	// Mock data for demonstration - will be replaced with real data from database
 	const mockDataCounts = {

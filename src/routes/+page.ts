@@ -1,6 +1,19 @@
 import type { PageLoad } from './$types';
+import { readItems, readList, readTotal } from '#lib/utils/api-response.js';
+import type { ProductListItem } from '#lib/schemas/products.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
+import type { CategoryRecord } from '#lib/schemas/categories.js';
+import type { KbArticleListItem, KbSectionCountItem } from '#lib/types/api.js';
 
 export const prerender = false;
+
+/**
+ * `/api/products` + `/api/suppliers` list rows are projected (§5.9.3) and never carry
+ * the JSON TEXT columns, so the defensive parses below collapse to their fallbacks —
+ * kept as-is because the cards render those arrays.
+ */
+type FeaturedProduct = ProductListItem & { features?: string | unknown[] | null };
+type FeaturedSupplier = SupplierListItem & { certifications?: string | unknown[] | null };
 
 export const load: PageLoad = async ({ fetch }) => {
 	const [productsRes, suppliersRes, categoriesRes, kbSectionsRes, kbArticlesRes, guidesRes, certifiersRes, glossaryRes] = await Promise.all([
@@ -14,26 +27,26 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/pages?category=glossary&limit=1')
 	]);
 
-	const productsData = productsRes.ok ? ((await productsRes.json()) as any) : { items: [], total: 0 };
-	const suppliersData = suppliersRes.ok ? ((await suppliersRes.json()) as any) : { items: [], total: 0 };
-	const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
-	const kbSections = kbSectionsRes.ok ? ((await kbSectionsRes.json()) as { items?: any[] }).items ?? [] : [];
-	const kbArticles = (kbArticlesRes.ok ? ((await kbArticlesRes.json()) as { items?: any[] }).items ?? [] : []).map((a: any) => ({
+	const productsData = await readList<FeaturedProduct>(productsRes);
+	const suppliersData = await readList<FeaturedSupplier>(suppliersRes);
+	const categories = await readItems<CategoryRecord>(categoriesRes);
+	const kbSections = await readItems<KbSectionCountItem>(kbSectionsRes);
+	const kbArticles = (await readItems<KbArticleListItem>(kbArticlesRes)).map((a) => ({
 		...a,
-		tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
+		tags: typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : a.tags ?? []
 	}));
 
-	const featuredProducts = (productsData.items ?? []).map((p: any) => ({
+	const featuredProducts = (productsData.items ?? []).map((p) => ({
 		...p,
-		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
+		features: typeof p.features === 'string' ? (JSON.parse(p.features || '[]') as string[]) : p.features ?? [],
 	}));
-	const featuredSuppliers = (suppliersData.items ?? []).map((s: any) => ({
+	const featuredSuppliers = (suppliersData.items ?? []).map((s) => ({
 		...s,
-		certifications: typeof s.certifications === 'string' ? JSON.parse(s.certifications || '[]') : s.certifications ?? [],
+		certifications: typeof s.certifications === 'string' ? (JSON.parse(s.certifications || '[]') as string[]) : s.certifications ?? [],
 	}));
-	const guidesTotal = guidesRes.ok ? (((await guidesRes.json()) as any).total ?? 0) : 0;
-	const certifiersTotal = certifiersRes.ok ? (((await certifiersRes.json()) as any).total ?? 0) : 0;
-	const glossaryTotal = glossaryRes.ok ? (((await glossaryRes.json()) as any).total ?? 0) : 0;
+	const guidesTotal = await readTotal(guidesRes);
+	const certifiersTotal = await readTotal(certifiersRes);
+	const glossaryTotal = await readTotal(glossaryRes);
 
 	return {
 		seo: {

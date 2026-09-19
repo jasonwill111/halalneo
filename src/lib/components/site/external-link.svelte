@@ -25,5 +25,5 @@
 		<ExternalLink class="size-3" />
 	</a>
 {:else}
-	<span class="text-[10px] text-muted-foreground">Official website not on record</span>
+	<span class="text-2xs text-muted-foreground">Official website not on record</span>
 {/if}

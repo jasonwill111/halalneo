@@ -1,13 +1,18 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readList } from '#lib/utils/api-response.js';
+import type { TradeShowDto } from '#lib/schemas/trade-shows.js';
 
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
-	const res = await fetch('/api/trade-shows?limit=50');
-	const data = res.ok ? ((await res.json()) as any) : { items: [], total: 0 };
+	const failures: LoadFailure[] = [];
+	const res = await fetchSafe(fetch, '/api/trade-shows?limit=50', failures);
+	const data = await readList<TradeShowDto>(res);
 
 	return {
 		shows: data.items ?? [],
+		loadError: firstFailure(failures),
 		seo: {
 			title: 'Global Halal Trade Shows & Exhibitions — Calendar & Events',
 			description:

@@ -1,14 +1,7 @@
 export const prerender = false;
 
-export const load = async ({ fetch }) => {
-	try {
-		const res = await fetch('/api/kb?limit=50');
-		if (res.ok) {
-			const data = (await res.json()) as any;
-			return { articles: data.articles ?? data ?? [], error: null };
-		}
-		return { articles: [], error: `Failed to load: ${res.status}` };
-	} catch (e) {
-		return { articles: [], error: 'Failed to connect to API.' };
-	}
-};
+// The listing is loaded client-side from `/api/knowledge-base?status=all`
+// (admin-only, `Cache-Control: private, no-store`) so the table can offer a
+// Retry action without a full navigation. An earlier `load()` here fetched
+// `/api/kb`, a route that does not exist, so the page was permanently in its
+// error state.

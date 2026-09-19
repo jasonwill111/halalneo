@@ -9,14 +9,13 @@
 	const item = $derived(data.item);
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
 	const pageTitle = $derived(seo.title ?? `${item?.title ?? 'Page'} — HalalNeo`);
 	const pageDescription = $derived(seo.description ?? '');
 	const pageUrl = $derived(`${baseUrl}${page.url.pathname}`);
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@type":"WebPage","name":pageTitle,"description":pageDescription,"url":pageUrl})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@type":"WebPage","name":pageTitle,"description":pageDescription,"url":pageUrl})}\u003c/script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">

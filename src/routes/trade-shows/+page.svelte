@@ -17,12 +17,28 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
-	import { Empty, EmptyMedia, EmptyTitle, EmptyDescription } from '#lib/components/ui/empty/index.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
+	import {
+		Empty,
+		EmptyHeader,
+		EmptyMedia,
+		EmptyTitle,
+		EmptyDescription,
+		EmptyContent
+	} from '#lib/components/ui/empty/index.js';
+
+	import type { TradeShowDto } from '#lib/schemas/trade-shows.js';
 
 	let { data } = $props();
 
+	/** `TradeShowDto` plus the optional coordinates the static seed rows carry. */
+	type TradeShowRow = TradeShowDto & { lat?: number; lng?: number };
+
 	let selectedRegion = $state('all');
 	let viewMode = $state<'list' | 'map'>('list');
+
+	/** Single assertion point: seed rows add optional coordinates to the projected DTO. */
+	const rows = $derived((data.shows ?? []) as TradeShowRow[]);
 
 	// Regions derived from data — sorted unique region values with counts, 'all' first
 	const regionOptions = $derived.by<{ value: string; label: string; count: number }[]>(() => {
@@ -43,7 +59,7 @@
 		name: 'Global Halal Trade Shows & Exhibitions',
 		description:
 			'Calendar of halal trade shows, exhibitions, and industry events worldwide — MIHAS, Gulfood, Halal Expo Istanbul and more.',
-		itemListElement: (data.shows ?? []).map((s: any, i: number) => ({
+		itemListElement: rows.map((s: TradeShowRow, i: number) => ({
 			'@type': 'ListItem',
 			position: i + 1,
 			item: {
@@ -72,16 +88,16 @@
 	let page = $state(1);
 
 	const filtered = $derived(
-		(data.shows ?? [])
-			.filter((s: any) => (selectedRegion === 'all' || s.region === selectedRegion))
-			.filter((s: any) =>
+		rows
+			.filter((s: TradeShowRow) => (selectedRegion === 'all' || s.region === selectedRegion))
+			.filter((s: TradeShowRow) =>
 				search.trim()
 					? s.name.toLowerCase().includes(search.toLowerCase()) ||
-						s.city.toLowerCase().includes(search.toLowerCase()) ||
-						s.country.toLowerCase().includes(search.toLowerCase())
+						s.city?.toLowerCase().includes(search.toLowerCase()) ||
+						s.country?.toLowerCase().includes(search.toLowerCase())
 					: true
 			)
-			.sort((a: any, b: any) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+			.sort((a: TradeShowRow, b: TradeShowRow) => new Date(a.startDate ?? 0).getTime() - new Date(b.startDate ?? 0).getTime())
 	);
 
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
@@ -95,9 +111,9 @@
 
 	const now = new Date();
 
-	function formatDateRange(start: string, end: string): string {
-		const s = new Date(start);
-		const e = new Date(end);
+	function formatDateRange(start: string | null, end: string | null): string {
+		const s = new Date(start ?? 0);
+		const e = new Date(end ?? 0);
 		const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 		const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
 		if (sameMonth) {
@@ -106,17 +122,17 @@
 		return `${s.toLocaleDateString('en-US', opts)} – ${e.toLocaleDateString('en-US', { ...opts, year: 'numeric' })}`;
 	}
 
-	function isPast(endDate: string): boolean {
-		return new Date(endDate) < now;
+	function isPast(endDate: string | null): boolean {
+		return new Date(endDate ?? 0) < now;
 	}
 
-	function isUpcoming(startDate: string): boolean {
-		return new Date(startDate) > now;
+	function isUpcoming(startDate: string | null): boolean {
+		return new Date(startDate ?? 0) > now;
 	}
 
-	function isOngoing(start: string, end: string): boolean {
-		const s = new Date(start);
-		const e = new Date(end);
+	function isOngoing(start: string | null, end: string | null): boolean {
+		const s = new Date(start ?? 0);
+		const e = new Date(end ?? 0);
 		return s <= now && e >= now;
 	}
 
@@ -146,12 +162,16 @@
 	}
 	
 	// Shows with coordinates for map view
-	const mappedShows = $derived((filtered ?? []).filter((s: any) => s.lat && s.lng));
+	const mappedShows = $derived(
+		(filtered ?? []).filter(
+			(s): s is TradeShowRow & { lat: number; lng: number } => !!(s.lat && s.lng)
+		)
+	);
 </script>
 
 <svelte:head>
 	<!-- Title + description render once via root layout from loader `seo`. -->
-	{@html `<script type="application/ld+json">${jsonLd}</script>`}
+	{@html `\u003cscript type="application/ld+json">${jsonLd}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Trade Shows', href: '/trade-shows' }]} />
@@ -194,10 +214,40 @@
 		</ToggleGroup>
 	</div>
 
-	{#if filtered.length === 0}
+	{#if data.loadError}
+		<ErrorRetry failure={data.loadError} subject="trade shows" />
+	{:else if filtered.length === 0}
 		<Empty>
-			<EmptyMedia><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></EmptyMedia>
-			<EmptyTitle>No events found matching your criteria.</EmptyTitle>
+			<EmptyHeader>
+				<EmptyMedia><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></EmptyMedia>
+				<EmptyTitle>No events found</EmptyTitle>
+				<EmptyDescription>
+					{#if search.trim() || selectedRegion !== 'all'}
+						Nothing matches the current search or region. Try a shorter event name or another
+						region.
+					{:else}
+						No trade shows are scheduled in the calendar yet.
+					{/if}
+				</EmptyDescription>
+			</EmptyHeader>
+			<EmptyContent>
+				{#if search.trim() || selectedRegion !== 'all'}
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={() => {
+							search = '';
+							selectedRegion = 'all';
+						}}>Clear filters</Button
+					>
+				{:else}
+					<Button size="sm" href={localizeHref('/suppliers')}>Browse suppliers</Button
+					>
+				{/if}
+				<Button variant="link" size="sm" href={localizeHref('/contact')}
+					>Suggest an event</Button
+				>
+			</EmptyContent>
 		</Empty>
 	{:else if viewMode === 'list'}
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
@@ -205,6 +255,7 @@
 				{@const ongoing = isOngoing(show.startDate, show.endDate)}
 				{@const upcoming = isUpcoming(show.startDate)}
 				{@const past = isPast(show.endDate)}
+				{@const tags = show.focus ?? []}
 				<Card class="flex flex-col bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md {past ? 'opacity-50' : ''}">
 					<CardContent class="flex flex-1 flex-col gap-2.5 p-3 sm:p-4">
 						<div class="flex items-start justify-between gap-2">
@@ -217,7 +268,7 @@
 									<span class="truncate">{show.city}, {show.country}{#if show.venue} · {show.venue}{/if}</span>
 								</div>
 							</div>
-							<span class="shrink-0 text-lg" title={show.region}>{regionIcons[show.region] ?? '🌐'}</span>
+							<span class="shrink-0 text-lg" title={show.region}>{regionIcons[show.region ?? ''] ?? '🌐'}</span>
 						</div>
 
 						<p class="hidden text-xs leading-relaxed text-muted-foreground line-clamp-2 sm:block">
@@ -225,11 +276,11 @@
 						</p>
 
 						<div class="flex flex-wrap gap-1.5">
-							{#each show.focus.slice(0, 3) as tag, j (tag)}
-								<Badge variant="secondary" class="text-[10px]">{tag}</Badge>
+							{#each tags.slice(0, 3) as tag (tag)}
+								<Badge variant="secondary" class="text-2xs">{tag}</Badge>
 							{/each}
-							{#if show.focus.length > 3}
-								<Badge variant="secondary" class="text-[10px]">+{show.focus.length - 3}</Badge>
+							{#if tags.length > 3}
+								<Badge variant="secondary" class="text-2xs">+{tags.length - 3}</Badge>
 							{/if}
 						</div>
 
@@ -238,7 +289,7 @@
 								<CalendarDaysIcon class="size-3.5 shrink-0" />
 								{formatDateRange(show.startDate, show.endDate)}
 							</span>
-							<span class={cn('rounded-full px-1.5 py-0.5 text-[10px] font-medium', scaleColors[show.scale])}>
+							<span class={cn('rounded-full px-1.5 py-0.5 text-2xs font-medium', scaleColors[show.scale ?? ''])}>
 								{show.scale}
 							</span>
 							{#if show.exhibitors}
@@ -289,9 +340,16 @@
 			</div>
 			{#if mappedShows.length === 0}
 				<Empty>
-					<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
-					<EmptyTitle>No coordinates available for current filters.</EmptyTitle>
-					<EmptyDescription>Showing events with lat/lng data. Switch to list view for full details.</EmptyDescription>
+					<EmptyHeader>
+						<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
+						<EmptyTitle>No mapped events</EmptyTitle>
+						<EmptyDescription>The map only shows events with coordinates. Switch to list view for full details.</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						<Button variant="outline" size="sm" onclick={() => (viewMode = 'list')}
+							><LayoutGridIcon class="size-3.5" data-icon="inline-start" />Show list view</Button
+						>
+					</EmptyContent>
 				</Empty>
 			{:else}
 				<div class="mx-auto overflow-hidden rounded-xl border border-border bg-card">
@@ -312,7 +370,6 @@
 							{@const pos = latLngToXY(show.lat, show.lng)}
 							{@const ongoing = isOngoing(show.startDate, show.endDate)}
 							{@const upcoming = isUpcoming(show.startDate)}
-							{@const past = isPast(show.endDate)}
 							<g>
 								<circle
 									cx={pos.x}

@@ -21,19 +21,19 @@
 	let countryFilter = $state('all');
 	let sortBy = $state('default');
 
-	const countries = $derived([
-		...new Set(products.map((p: any) => p.originCountry).filter(Boolean))
-	]);
+	const countries = $derived(
+		[...new Set(products.map((p) => p.originCountry).filter((c): c is string => Boolean(c)))]
+	);
 
 	const filtered = $derived.by(() => {
 		let list = [...products];
-		if (certFilter !== 'all') list = list.filter((p: any) => p.certStatus === certFilter);
-		if (countryFilter !== 'all') list = list.filter((p: any) => p.originCountry === countryFilter);
+		if (certFilter !== 'all') list = list.filter((p) => p.certStatus === certFilter);
+		if (countryFilter !== 'all') list = list.filter((p) => p.originCountry === countryFilter);
 		if (sortBy === 'price-asc')
-			list.sort((a: any, b: any) => (a.priceMin ?? Infinity) - (b.priceMin ?? Infinity));
+			list.sort((a, b) => (a.priceMin ?? Infinity) - (b.priceMin ?? Infinity));
 		if (sortBy === 'price-desc')
-			list.sort((a: any, b: any) => (b.priceMin ?? -Infinity) - (a.priceMin ?? -Infinity));
-		if (sortBy === 'name') list.sort((a: any, b: any) => a.name.localeCompare(b.name));
+			list.sort((a, b) => (b.priceMin ?? -Infinity) - (a.priceMin ?? -Infinity));
+		if (sortBy === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
 		return list;
 	});
 
@@ -120,7 +120,7 @@
 							<img
 								src={product.image}
 								alt={product.name}
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+								class="h-full w-full object-cover transition-transform duration-slow group-hover:scale-105"
 								loading="lazy"
 								decoding="async"
 							/>
@@ -138,7 +138,7 @@
 					{/if}
 					</div>
 					{#if product.moq}
-						<p class="mb-1 text-[10px] text-muted-foreground">MOQ: {product.moq}</p>
+						<p class="mb-1 text-2xs text-muted-foreground">MOQ: {product.moq}</p>
 					{/if}
 					<h3
 						class="line-clamp-2 text-sm font-medium text-foreground transition-colors group-hover:text-primary"
@@ -169,8 +169,8 @@
 
 	<RelatedLinks
 		title="Related guides"
-		items={(data.relatedArticles ?? []).map((a: any) => ({
-			label: a.title,
+		items={(data.relatedArticles ?? []).map((a) => ({
+			label: a.title ?? '',
 			description: a.excerpt?.slice(0, 80) ?? '',
 			href: `/knowledge-base/${a.section ?? a.sectionSlug}/${a.slug}`
 		}))}

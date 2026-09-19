@@ -1,13 +1,32 @@
 import type { PageLoad } from './$types';
+import { readJson } from '#lib/utils/api-response.js';
 import { getSection } from '#lib/data/kb-sections.js';
 
 const BASE_URL = 'https://halalneo.com';
 
 export const prerender = false;
 
+/**
+ * `/api/knowledge-base` list projection (`getKbListItems`): slug/title/section/
+ * status/excerpt/views. The JSON-LD builders below also read summary/tags/
+ * publishedAt/updatedAt, which the current projection omits — hence optional.
+ */
+interface KbListRow {
+	slug: string;
+	title: string | null;
+	section: string | null;
+	status: string | null;
+	excerpt: string | null;
+	views: number | null;
+	summary?: string | null;
+	tags?: string | string[] | null;
+	publishedAt?: string | number | null;
+	updatedAt?: string | number | null;
+}
+
 interface KbSectionResponse {
-	items?: unknown[];
-	articles?: unknown[];
+	items?: KbListRow[];
+	articles?: KbListRow[];
 }
 
 export const load: PageLoad = async ({ params, fetch }) => {
@@ -19,10 +38,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	try {
 		const res = await fetch(`/api/knowledge-base?section=${params.section}&limit=50`);
 		if (res.ok) {
-			const data: KbSectionResponse = (await res.json()) as any;
-			const articles = (data.items ?? data.articles ?? []).map((a: any) => ({
+			const data: KbSectionResponse = await readJson<KbSectionResponse>(res);
+			const articles = (data.items ?? data.articles ?? []).map((a) => ({
 				...a,
-				tags: typeof a.tags === 'string' ? JSON.parse(a.tags || '[]') : a.tags ?? []
+				tags:
+					typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : (a.tags ?? [])
 			}));
 
 			// ItemList for articles within this section
@@ -31,7 +51,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				'@type': 'ItemList',
 				name: `${sectionTitle} Articles`,
 				description: `Collection of articles within ${sectionTitle} section on HalalNeo Knowledge Base`,
-				itemListElement: articles.slice(0, 50).map((article: any, i: number) => ({
+				itemListElement: articles.slice(0, 50).map((article, i) => ({
 					'@type': 'ListItem',
 					position: i + 1,
 					item: {
@@ -53,7 +73,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				description: `Explore ${sectionTitle.toLowerCase()} articles and guides on HalalNeo — halal certification and compliance resources.`,
 				url: `${BASE_URL}/knowledge-base/${params.section}`,
 				isPartOf: { '@type': 'WebSite', name: 'HalalNeo', url: 'https://halalneo.com' },
-				hasPart: articles.map((article: any) => ({
+				hasPart: articles.map((article) => ({
 					'@type': 'NewsArticle',
 					name: article.title,
 					url: `${BASE_URL}/knowledge-base/${params.section}/${article.slug}`
@@ -79,7 +99,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				collectionPage
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		seo: {

@@ -1,17 +1,24 @@
 import type { PageLoad } from './$types';
+import { fetchSafe, firstFailure, type LoadFailure } from '#lib/utils/load-error.js';
+import { readItems } from '#lib/utils/api-response.js';
+import type { CategoryRecord } from '#lib/schemas/categories.js';
+import type { ProductListItem } from '#lib/schemas/products.js';
 
 export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
+	const failures: LoadFailure[] = [];
 	const [categoriesRes, productsRes] = await Promise.all([
-		fetch('/api/categories'),
-		fetch('/api/products?limit=100')
+		fetchSafe(fetch, '/api/categories', failures),
+		fetchSafe(fetch, '/api/products?limit=100', failures)
 	]);
 
-	const categories = categoriesRes.ok ? ((await categoriesRes.json()) as { items?: any[] }).items ?? [] : [];
-	const products = (productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : []).map((p: any) => ({
+	const categories = await readItems<CategoryRecord>(categoriesRes);
+	// `/api/products` list rows are projected (§5.9.3) and carry no `features` column,
+	// so the defensive parse below collapses to `[]` — kept because the cards render it.
+	const products = (await readItems<ProductListItem & { features?: string | unknown[] | null }>(productsRes)).map((p) => ({
 		...p,
-		features: typeof p.features === 'string' ? JSON.parse(p.features || '[]') : p.features ?? [],
+		features: typeof p.features === 'string' ? (JSON.parse(p.features || '[]') as string[]) : p.features ?? [],
 	}));
 
  	return {
@@ -24,6 +31,7 @@ export const load: PageLoad = async ({ fetch }) => {
  		},
  		categories,
  		products,
+ 		loadError: firstFailure(failures),
  		itemList: {
  			'@context': 'https://schema.org',
  			'@type': 'ItemList',

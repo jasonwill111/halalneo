@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
-	import FilterPills from '#lib/components/site/filter-pills.svelte';
-	import GuideHero from '#lib/components/site/guide-hero.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
-	import { MANDATE_STATUSES, type MandateStatus } from '#lib/utils/mandate.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
-	import { cn } from '#lib/utils.js';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
@@ -25,26 +24,30 @@
 
 	let { data } = $props();
 
-	let selectedRegion = $state('all');
+	interface MarketGuideRow {
+		region?: string | null;
+		country?: string | null;
+		category?: string | null;
+	}
 
-	const countryImages = COUNTRY_IMAGES;
+	let selectedRegion = $state('all');
 
 	// Regions derived from data — sorted unique region values with counts, 'all' first
 	const regionOptions = $derived.by(() => [
 		{ value: 'all', label: 'All Regions', count: data.guides.length },
-		...Array.from(new Set(data.guides.map((g: any) => g.region).filter((r): r is string => !!r)))
+		...Array.from(new Set(data.guides.map((g: MarketGuideRow) => g.region).filter((r): r is string => !!r)))
 			.sort()
 			.map((region) => ({
 				value: region,
 				label: region,
-				count: data.guides.filter((g: any) => g.region === region).length
+				count: data.guides.filter((g: MarketGuideRow) => g.region === region).length
 			}))
 	]);
 
 	const filteredGuides = $derived(
 		selectedRegion === 'all'
 			? data.guides
-			: data.guides.filter((g: any) => g.region === selectedRegion)
+			: data.guides.filter((g: MarketGuideRow) => g.region === selectedRegion)
 	);
 
 	const PAGE_SIZE = 9;
@@ -56,27 +59,12 @@
 		page = 1;
 	});
 
-	function statusBadge(s: MandateStatus) {
-		switch (s) {
-			case 'mandatory':
-				return { text: 'Mandatory', cls: 'bg-success/10 text-success border-success/20' };
-			case 'phasing-in':
-				return { text: 'Phasing in', cls: 'bg-warn/10 text-warn border-warn/20' };
-			default:
-				return { text: 'Optional', cls: 'bg-muted text-muted-foreground border-border' };
-		}
-	}
-
-	function metadata(s: MandateStatus) {
-		return MANDATE_STATUSES[s]?.description ?? 'Unknown requirement';
-	}
-
 	// Stats derived from data (recomputed on data change, no stale initial capture)
 	const guideStats = $derived.by(() => ({
 		totalGuides: data.guides.length,
 		regions: regionOptions.length - 1, // exclude all
-		countries: new Set(data.guides.map((g: any) => g.country)).size,
-		categories: new Set(data.guides.map((g: any) => g.category)).size
+		countries: new Set(data.guides.map((g: MarketGuideRow) => g.country)).size,
+		categories: new Set(data.guides.map((g: MarketGuideRow) => g.category)).size
 	}));
 
 	function seoFriendlyDescription(): string {
@@ -110,7 +98,7 @@
 
 <svelte:head>
 	<!-- Structured Data: Breadcrumb -->
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
 		itemListElement: [
@@ -122,10 +110,10 @@
 				item: 'https://halalneo.com/market-guides'
 			}
 		]
-	})}</script>`}
+	})}\u003c/script>`}
 
 	<!-- Structured Data: FAQ Schema -->
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
 		mainEntity: [
@@ -146,7 +134,7 @@
 				}
 			}
 		]
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 <section class="space-y-4 py-8 sm:space-y-6">
@@ -160,11 +148,11 @@
 
 	<!-- Stats Cards -->
 	<div class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
-		{#each stats as stat, i}
+		{#each stats as stat (stat.title)}
 			<Card class="p-3 sm:p-4">
 				<div class="space-y-1">
 					<div class="text-2xl font-bold">{stat.value}</div>
-					<div class="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+					<div class="text-2xs-plus font-medium tracking-wider text-muted-foreground uppercase">
 						{stat.title}
 					</div>
 					<p class="line-clamp-2 text-xs text-muted-foreground">
@@ -178,15 +166,15 @@
 	<!-- Filter Pills -->
 	<div class="space-y-4">
 		<div class="flex flex-wrap gap-2">
-			{#each regionOptions as region}
+			{#each regionOptions as region (region.value)}
 				<Button
 					variant={selectedRegion === region.value ? 'default' : 'outline'}
 					size="sm"
-					class="text-[11px]"
+					class="text-2xs-plus"
 					onclick={() => (selectedRegion = region.value)}
 				>
 					{region.label}
-					<Badge variant="secondary" class="ml-1 text-[9px]">
+					<Badge variant="secondary" class="ml-1 text-3xs">
 						{region.count}
 					</Badge>
 				</Button>
@@ -196,19 +184,31 @@
 
 	<!-- Guides Grid -->
 	<div class="space-y-4">
-		{#if paged.length === 0}
+		{#if data.loadError}
+			<ErrorRetry failure={data.loadError} subject="market guides" />
+		{:else if paged.length === 0}
 			<Empty>
-				<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
-				<EmptyTitle>No market guides available yet</EmptyTitle>
-				<EmptyDescription
-					>New country guides are added as market research completes.</EmptyDescription
-				>
+				<EmptyHeader>
+					<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
+					<EmptyTitle>No market guides available yet</EmptyTitle>
+					<EmptyDescription
+						>New country guides are added as market research completes.</EmptyDescription
+					>
+				</EmptyHeader>
+				<EmptyContent>
+					{#if selectedRegion !== 'all'}
+						<Button variant="outline" size="sm" onclick={() => (selectedRegion = 'all')}
+							>Show all regions</Button
+						>
+					{/if}
+					<Button size="sm" href={localizeHref('/contact')}>Request a country guide</Button>
+				</EmptyContent>
 			</Empty>
 		{:else}
-			<div class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-				{#each paged as guide, i}
+			<div class="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{#each paged as guide (guide.country)}
 					<a
-						href={localizeHref(`/market-guide/${guide.country}`)}
+						href={localizeHref(`/market-guides/${guide.country}`)}
 						class="group press-scale flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<div class="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -216,7 +216,7 @@
 								<img
 									src={COUNTRY_IMAGES[guide.country]}
 									alt={guide.country}
-									class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+									class="h-full w-full object-cover transition-transform duration-slow group-hover:scale-105"
 									loading="lazy"
 									decoding="async"
 									width="400"
@@ -228,43 +228,45 @@
 								</div>
 							{/if}
 							<div
-								class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+								class="absolute inset-0 bg-gradient-to-t from-scrim/80 via-scrim/40 to-transparent"
 							></div>
-							<div class="absolute right-3 bottom-3 left-3">
-								<h3 class="text-base font-semibold text-white sm:text-lg">{guide.country}</h3>
-								<p class="text-xs text-on-dark/80">{guide.region}</p>
+							<div class="absolute right-2 bottom-2 left-2 sm:right-3 sm:bottom-3 sm:left-3">
+								<h3 class="truncate text-sm font-semibold text-on-dark sm:text-base lg:text-lg">
+									{guide.country}
+								</h3>
+								<p class="truncate text-2xs-plus text-on-dark/80 sm:text-xs">{guide.region}</p>
 							</div>
-							<div class="absolute top-3 right-3">
-								<Badge class="backdrop-blur-sm">{guide.region}</Badge>
+							<div class="absolute top-2 right-2 hidden sm:top-3 sm:right-3 sm:block">
+								<Badge>{guide.region}</Badge>
 							</div>
 						</div>
-						<div class="flex flex-1 flex-col gap-2 p-3 sm:p-4">
-							<div class="space-y-1.5">
-								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-									<UsersIcon class="size-3.5" />
-									{guide.muslimPopulation}m
+						<div class="flex flex-1 flex-col gap-1.5 p-2.5 sm:gap-2 sm:p-4">
+							<div class="space-y-1 sm:space-y-1.5">
+								<div class="flex items-center gap-1.5 truncate text-3xs sm:text-2xs-plus text-muted-foreground">
+									<UsersIcon class="size-3 sm:size-3.5 shrink-0" />
+									<span class="truncate tabular-nums">{guide.muslimPopulation}m</span>
 								</div>
-								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-									<BanknoteIcon class="size-3.5" />
-									{guide.marketSizeUsd}
+								<div class="flex items-center gap-1.5 truncate text-3xs sm:text-2xs-plus text-muted-foreground">
+									<BanknoteIcon class="size-3 sm:size-3.5 shrink-0" />
+									<span class="truncate">{guide.marketSizeUsd}</span>
 								</div>
-								<div class="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-									<ScaleIcon class="size-3.5" />
-									{guide.mandateStatus}
+								<div class="flex items-center gap-1.5 truncate text-3xs sm:text-2xs-plus text-muted-foreground">
+									<ScaleIcon class="size-3 sm:size-3.5 shrink-0" />
+									<span class="truncate">{guide.mandateStatus}</span>
 								</div>
 							</div>
-							<p class="line-clamp-2 text-sm text-muted-foreground">
+							<p class="hidden text-sm text-muted-foreground sm:line-clamp-2 sm:block">
 								{guide.summary ||
 									'Comprehensive guide available - covers regulatory framework, import requirements, and market opportunities.'}
 							</p>
 							<div class="mt-auto flex items-center justify-between gap-2 pt-2">
-								<Badge variant="outline" class="text-[10px]"
+								<Badge variant="outline" class="text-2xs"
 									>{guide.certifyingBodies?.length ?? 0} cert.{(guide.certifyingBodies?.length ??
 										0) === 1
 										? ''
 										: 's'}</Badge
 								>
-								<div class="flex items-center gap-1 text-[11px] text-primary">
+								<div class="flex items-center gap-1 text-2xs-plus text-primary">
 									Read guide
 									<ArrowRight class="size-3.5" />
 								</div>
@@ -280,7 +282,7 @@
 	<!-- Structured Data Keywords -->
 	{#if data.guides.length > 0}
 		<!-- Schema: Collection -->
-		{@html `<script type="application/ld+json">${JSON.stringify({
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'CollectionPage',
 			name: 'Halal Market Entry Guides',
@@ -293,8 +295,8 @@
 			hasPart: data.guides.slice(0, 10).map((guide) => ({
 				'@type': 'DigitalResource',
 				name: guide.country,
-				url: `https://halalneo.com/market-guide/${guide.country}`
+				url: `https://halalneo.com/market-guides/${guide.country}`
 			}))
-		})}</script>`}
+		})}\u003c/script>`}
 	{/if}
 </section>

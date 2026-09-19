@@ -66,7 +66,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(data.itemList ?? {})}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(data.itemList ?? {})}\u003c/script>`}
 </svelte:head>
 
 <Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
@@ -84,7 +84,7 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-		{#each tools as tool}
+		{#each tools as tool (tool.href)}
 			<a href={localizeHref(tool.href)} class="group h-full">
 				<Card
 					class="press-scale h-full p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
@@ -96,7 +96,7 @@
 							>
 								<tool.icon class="size-4" />
 							</div>
-							<Badge variant={tool.badge === 'Live' ? 'secondary' : 'outline'} class="text-[10px]">
+							<Badge variant={tool.badge === 'Live' ? 'secondary' : 'outline'} class="text-2xs">
 								{tool.badge}
 							</Badge>
 						</div>
@@ -110,7 +110,7 @@
 								/>
 							</h2>
 							<p
-								class="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground sm:text-xs sm:leading-relaxed"
+								class="mt-0.5 line-clamp-2 text-2xs-plus leading-snug text-muted-foreground sm:text-xs sm:leading-relaxed"
 							>
 								{tool.desc}
 							</p>

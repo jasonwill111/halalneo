@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 export const load: PageServerLoad = async ({ url }) => {
 	const q = url.searchParams.get('q') ?? '';
 
-	let certifiers: { id: string; name: string; country: string }[] = [];
+	let certifiers: { id: string; name: string; country: string }[];
 	try {
 		const db = getDb(getBindings().DB);
 		certifiers = await db

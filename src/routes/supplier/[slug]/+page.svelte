@@ -20,7 +20,6 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
 	import Send from '@lucide/svelte/icons/send';
-	import Heart from '@lucide/svelte/icons/heart';
 	import Globe from '@lucide/svelte/icons/globe';
 	import Mail from '@lucide/svelte/icons/mail';
 	import Phone from '@lucide/svelte/icons/phone';
@@ -34,29 +33,14 @@
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
-	import { isFavorite, toggleFavorite } from '#lib/favorites.js';
 	import { z } from 'zod';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import type { ApiList, SupplierMembershipItem, SupplierUpdateItem } from '#lib/types/api.js';
 	import Package from '@lucide/svelte/icons/package';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
 	import Megaphone from '@lucide/svelte/icons/megaphone';
 
 	let { data } = $props();
-
-	// Save/favorite state — uses shared favorites util (same store as products)
-	let saved = $state(false);
-
-	function toggleSave() {
-		if (!data.item?.slug) return;
-		saved = toggleFavorite(data.item.slug);
-	}
-
-	// Initialize saved state from localStorage
-	$effect(() => {
-		if (data.item?.slug) {
-			saved = isFavorite(data.item.slug);
-		}
-	});
 
 	// Follow state (server-backed) + follower count + owner membership.
 	// Fetched client-side: follows require a session, counts are public.
@@ -64,6 +48,12 @@
 	let followerCount = $state(0);
 	let isOwner = $state(false);
 
+	interface FollowStateResult {
+		following?: boolean;
+	}
+	interface FollowCountResult {
+		count?: number;
+	}
 	async function refreshFollow() {
 		const slug = data.item?.slug;
 		if (!slug) return;
@@ -73,11 +63,12 @@
 				fetch(`/api/follows?countFor=${encodeURIComponent(slug)}`),
 				fetch('/api/supplier-memberships')
 			]);
-			if (stRes.ok) following = ((await stRes.json()) as any).following ?? false;
-			if (countRes.ok) followerCount = ((await countRes.json()) as any).count ?? 0;
+			if (stRes.ok)
+				following = ((await stRes.json()) as FollowStateResult).following ?? false;
+			if (countRes.ok) followerCount = ((await countRes.json()) as FollowCountResult).count ?? 0;
 			if (memRes.ok) {
-				const j = (await memRes.json()) as any;
-				isOwner = (j.items ?? []).some((m: any) => m.supplierSlug === slug);
+				const j = (await memRes.json()) as ApiList<SupplierMembershipItem>;
+				isOwner = (j.items ?? []).some((m) => m.supplierSlug === slug);
 			}
 		} catch {
 			// follow UI degrades to signed-out state; never blocks the page
@@ -117,7 +108,7 @@
 	}
 
 	// Supplier updates feed + owner composer (1 post/week on free plan).
-	let updates = $state<any[]>([]);
+	let updates = $state<SupplierUpdateItem[]>([]);
 	let updateBody = $state('');
 	let updateSending = $state(false);
 	let updateResult = $state<string | null>(null);
@@ -129,7 +120,7 @@
 			const res = await fetch(
 				`/api/supplier-updates?supplierSlug=${encodeURIComponent(slug)}&limit=5`
 			);
-			if (res.ok) updates = ((await res.json()) as any).items ?? [];
+			if (res.ok) updates = ((await res.json()) as ApiList<SupplierUpdateItem>).items ?? [];
 		} catch {
 			updates = [];
 		}
@@ -146,7 +137,7 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ supplierSlug: slug, body: updateBody.trim() })
 			});
-			const j = (await res.json().catch(() => ({}))) as any;
+			const j = (await res.json().catch(() => ({}))) as { error?: string };
 			if (res.ok) {
 				updateBody = '';
 				updateResult = null;
@@ -230,7 +221,10 @@
 				inquiryEmail = '';
 				inquiryFieldErrors = {};
 			} else {
-				const errBody = (await res.json()) as any;
+				const errBody = (await res.json()) as {
+					error?: string;
+					details?: Record<string, string[] | string | undefined>;
+				};
 				inquiryResult = { type: 'error', message: errBody.error ?? 'Failed to send inquiry.' };
 				if (res.status === 400 && errBody.details) {
 					inquiryFieldErrors = mergeServerDetails(inquiryFieldErrors, {
@@ -267,7 +261,13 @@
 		return '';
 	}
 
-	function productPrice(p: any): string {
+	interface ProductPriceFields {
+		priceMin?: number | string | null;
+		priceMax?: number | string | null;
+		priceUnit?: string | null;
+	}
+
+	function productPrice(p: ProductPriceFields): string {
 		if (!p?.priceMin) return '';
 		const range = p.priceMax ? `$${p.priceMin}–$${p.priceMax}` : `$${p.priceMin}`;
 		return p.priceUnit ? `${range}/${p.priceUnit}` : range;
@@ -294,10 +294,39 @@
 			: null
 	);
 
-	const certifications = $derived.by(() => {
+	interface SupplierCertRow {
+		name: string;
+		bodyId: string;
+		country: string;
+		standard: string;
+		scope: string;
+		number: string;
+		expiry: string;
+		status: string;
+	}
+
+	interface SupplierCertRaw {
+		body?: {
+			id?: string | null;
+			name?: string | null;
+			country?: string | null;
+			standard?: string | null;
+		} | null;
+		name?: string | null;
+		bodyId?: string | null;
+		country?: string | null;
+		standard?: string | null;
+		scope?: string | null;
+		number?: string | null;
+		id?: string | null;
+		expiry?: string | null;
+		status?: string | null;
+	}
+
+	const certifications = $derived.by((): SupplierCertRow[] => {
 		const raw = item?.certifications;
 		if (!raw) return [];
-		let arr: any[];
+		let arr: (string | SupplierCertRaw)[];
 		if (typeof raw === 'string') {
 			try {
 				arr = JSON.parse(raw);
@@ -319,7 +348,7 @@
 			arr = raw;
 		}
 		if (!Array.isArray(arr)) return [];
-		return arr.map((c: any) => {
+		return arr.map((c) => {
 			if (typeof c === 'string')
 				return {
 					name: c,
@@ -391,7 +420,9 @@
 			try {
 				const parsed = JSON.parse(kw);
 				if (Array.isArray(parsed)) return parsed.filter(Boolean).join(', ') || null;
-			} catch {}
+			} catch {
+				// not JSON — fall through and treat as a raw comma-separated string
+			}
 			return kw.trim() || null;
 		}
 		return null;
@@ -405,7 +436,7 @@
 		<meta name="keywords" content={metaKeywords} />
 	{/if}
 	{#if supplierSchema}
-		{@html `<script type="application/ld+json">${JSON.stringify(supplierSchema)}</script>`}
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify(supplierSchema)}\u003c/script>`}
 	{/if}
 	{#if item?.coverImage}
 		<link rel="preload" as="image" href={item.coverImage} fetchpriority="high" />
@@ -450,16 +481,16 @@
 				<div class="flex flex-wrap items-center gap-2">
 					<h1 class="text-xl font-bold tracking-tight">{item.name}</h1>
 					{#if item.isBrand}
-						<Badge variant="secondary" class="text-[10px]">Brand owner</Badge>
+						<Badge variant="secondary" class="text-2xs">Brand owner</Badge>
 					{/if}
 				</div>
-				<p class="mt-0.5 text-[10px] text-muted-foreground">
+				<p class="mt-0.5 text-2xs text-muted-foreground">
 					Est. {item.yearEstablished ?? '—'}
 				</p>
 				<div class="mt-1 flex flex-wrap gap-1">
 					{#if item.status === 'active'}
 						<span
-							class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success"
+							class="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-2xs font-semibold text-success"
 						>
 							<ShieldCheck class="size-2.5"></ShieldCheck>
 							Verified
@@ -468,7 +499,7 @@
 					{#if item.country}
 						<Badge
 							variant="outline"
-							class="text-[10px] font-medium {regionBadgeClass(getRegion(item.country))}"
+							class="text-2xs font-medium {regionBadgeClass(getRegion(item.country))}"
 						>
 							{item.country}
 						</Badge>
@@ -476,7 +507,7 @@
 					{#if item.businessType}
 						<Badge
 							variant="outline"
-							class="text-[10px] font-medium capitalize {typeBadgeCls(item.businessType)}"
+							class="text-2xs font-medium capitalize {typeBadgeCls(item.businessType)}"
 						>
 							{item.businessType}
 						</Badge>
@@ -502,7 +533,7 @@
 					{/each}
 					{#if hiddenCertCount > 0}
 						<a href="#certifications">
-							<Badge variant="secondary" class="text-[10px]">+{hiddenCertCount} more</Badge>
+							<Badge variant="secondary" class="text-2xs">+{hiddenCertCount} more</Badge>
 						</a>
 					{/if}
 				</div>
@@ -511,10 +542,6 @@
 
 		<!-- Action buttons -->
 		<div class="mb-3 flex gap-1">
-			<Button variant="outline" size="sm" class="h-7 flex-1 gap-1 text-[10px]" onclick={toggleSave}>
-				<Heart class="size-2.5" fill={saved ? 'currentColor' : 'none'}></Heart>
-				{saved ? 'Saved' : 'Save'}
-			</Button>
 			{#if item.website}
 				<Button
 					href={item.website}
@@ -522,7 +549,7 @@
 					rel="noopener"
 					variant="outline"
 					size="sm"
-					class="h-7 flex-1 gap-1 text-[10px]"
+					class="h-7 flex-1 gap-1 text-2xs"
 				>
 					<Globe class="size-2.5"></Globe>
 					Website
@@ -530,7 +557,7 @@
 			{/if}
 			<Button
 				size="sm"
-				class="h-7 flex-[2] text-[10px]"
+				class="h-7 flex-[2] text-2xs"
 				onclick={() => {
 					inquiryResult = null;
 					inquiryFieldErrors = {};
@@ -547,14 +574,14 @@
 			<Button
 				variant="outline"
 				size="sm"
-				class="h-7 gap-1 text-[10px]"
+				class="h-7 gap-1 text-2xs"
 				onclick={toggleFollow}
 				aria-label={following ? 'Unfollow supplier' : 'Follow supplier'}
 			>
 				<UserPlus class="size-2.5" />
 				{following ? 'Following' : 'Follow'}{#if followerCount > 0}&nbsp;· {followerCount}{/if}
 			</Button>
-			<span class="text-[10px] text-muted-foreground">Share:</span>
+			<span class="text-2xs text-muted-foreground">Share:</span>
 			<ShareButtons title={item.name ?? 'HalalNeo supplier'} text={item.description ?? ''} />
 		</div>
 
@@ -601,26 +628,26 @@
 												{#if cert.bodyId}
 													<a
 														href={localizeHref(`/certifying-bodies/${cert.bodyId}`)}
-														class="text-[11px] font-semibold hover:text-primary"
+														class="text-2xs-plus font-semibold hover:text-primary"
 													>
 														{cert.name}
 													</a>
 												{:else}
-													<h3 class="text-[11px] font-semibold">{cert.name}</h3>
+													<h3 class="text-2xs-plus font-semibold">{cert.name}</h3>
 												{/if}
 											</div>
 											{#if expired}
-												<Badge variant="destructive" class="shrink-0 text-[10px]">Expired</Badge>
+												<Badge variant="destructive" class="shrink-0 text-2xs">Expired</Badge>
 											{:else if cert.status}
-												<Badge variant="secondary" class="shrink-0 text-[10px] capitalize"
+												<Badge variant="secondary" class="shrink-0 text-2xs capitalize"
 													>{cert.status}</Badge
 												>
 											{/if}
 										</div>
 										{#if cert.scope}
-											<p class="text-[11px] text-muted-foreground">Scope: {cert.scope}</p>
+											<p class="text-2xs-plus text-muted-foreground">Scope: {cert.scope}</p>
 										{/if}
-										<dl class="space-y-0.5 text-[10px]">
+										<dl class="space-y-0.5 text-2xs">
 											{#if cert.standard}
 												<div class="flex justify-between gap-2">
 													<dt class="text-muted-foreground">Standard</dt>
@@ -666,7 +693,7 @@
 											<img
 												src={product.image}
 												alt={product.name}
-												class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+												class="h-full w-full object-cover transition-transform duration-slow group-hover:scale-105"
 												loading="lazy"
 											/>
 										{:else}
@@ -680,7 +707,7 @@
 										{/if}
 										{#if product.certStatus === 'certified'}
 											<span
-												class="absolute top-1 left-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-[9px] font-semibold text-success"
+												class="absolute top-1 left-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-3xs font-semibold text-success"
 											>
 												<ShieldCheck class="size-2.5"></ShieldCheck>
 												Cert
@@ -689,16 +716,16 @@
 									</div>
 									<div class="flex flex-1 flex-col gap-1 p-2.5">
 										<h3
-											class="line-clamp-2 text-[11px] leading-snug font-medium transition-colors group-hover:text-primary"
+											class="line-clamp-2 text-2xs-plus leading-snug font-medium transition-colors group-hover:text-primary"
 										>
 											{product.name}
 										</h3>
 										<div class="mt-auto flex items-center justify-between gap-1.5">
-											<span class="truncate text-[10px] font-semibold text-primary">
+											<span class="truncate text-2xs font-semibold text-primary">
 												{productPrice(product) || (product.moq ? `MOQ ${product.moq}` : '')}
 											</span>
 											{#if product.moq && product.priceMin}
-												<span class="truncate text-[9px] text-muted-foreground"
+												<span class="truncate text-3xs text-muted-foreground"
 													>MOQ {product.moq}</span
 												>
 											{/if}
@@ -729,10 +756,10 @@
 								<p class="mt-1.5 text-xs text-destructive">{updateResult}</p>
 							{/if}
 							<div class="mt-2 flex items-center justify-between gap-2">
-								<p class="text-[10px] text-muted-foreground">Free plan: 1 post/week</p>
+								<p class="text-2xs text-muted-foreground">Free plan: 1 post/week</p>
 								<Button
 									size="sm"
-									class="h-7 text-[11px]"
+									class="h-7 text-2xs-plus"
 									disabled={updateSending || !updateBody.trim()}
 									onclick={publishUpdate}
 								>
@@ -743,7 +770,7 @@
 					{/if}
 					{#if updates.length === 0}
 						<p
-							class="rounded-xl bg-muted/40 px-3 py-4 text-center text-[11px] text-muted-foreground"
+							class="rounded-xl bg-muted/40 px-3 py-4 text-center text-2xs-plus text-muted-foreground"
 						>
 							No updates yet. {#if isOwner}Post the first one above.{:else}Follow this supplier to
 								see their news here.{/if}
@@ -754,7 +781,7 @@
 								<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 									<p class="text-xs leading-relaxed">{u.body}</p>
 									{#if fmtShortDate(u.createdAt)}
-										<p class="mt-1.5 text-[10px] text-muted-foreground">
+										<p class="mt-1.5 text-2xs text-muted-foreground">
 											{fmtShortDate(u.createdAt)}
 										</p>
 									{/if}
@@ -773,7 +800,7 @@
 						<div class="flex items-start gap-2">
 							<Building2 class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
 							<div class="min-w-0 flex-1">
-								<p class="text-[10px] text-muted-foreground">Business type</p>
+								<p class="text-2xs text-muted-foreground">Business type</p>
 								<p class="font-medium">{item.businessType ?? '—'}</p>
 							</div>
 						</div>
@@ -781,7 +808,7 @@
 						<div class="flex items-start gap-2">
 							<CalendarCheck class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
 							<div class="min-w-0 flex-1">
-								<p class="text-[10px] text-muted-foreground">Established</p>
+								<p class="text-2xs text-muted-foreground">Established</p>
 								<p class="font-medium">{item.yearEstablished ?? '—'}</p>
 							</div>
 						</div>
@@ -790,7 +817,7 @@
 							<div class="flex items-start gap-2">
 								<CalendarPlus class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
 								<div class="min-w-0 flex-1">
-									<p class="text-[10px] text-muted-foreground">Member since</p>
+									<p class="text-2xs text-muted-foreground">Member since</p>
 									<p class="font-medium">{memberSinceYear}</p>
 								</div>
 							</div>
@@ -800,7 +827,7 @@
 							<div class="flex items-start gap-2">
 								<Users class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
 								<div class="min-w-0 flex-1">
-									<p class="text-[10px] text-muted-foreground">Employees</p>
+									<p class="text-2xs text-muted-foreground">Employees</p>
 									<p class="font-medium">{item.employeeCount}</p>
 								</div>
 							</div>
@@ -810,7 +837,7 @@
 							<div class="flex items-start gap-2">
 								<Factory class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
 								<div class="min-w-0 flex-1">
-									<p class="text-[10px] text-muted-foreground">Production capacity</p>
+									<p class="text-2xs text-muted-foreground">Production capacity</p>
 									<p class="font-medium">{item.productionCapacity}</p>
 								</div>
 							</div>
@@ -820,10 +847,10 @@
 							<div class="flex items-start gap-2">
 								<MapPin class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
 								<div class="min-w-0 flex-1">
-									<p class="text-[10px] text-muted-foreground">Markets served</p>
+									<p class="text-2xs text-muted-foreground">Markets served</p>
 									<div class="mt-1 flex flex-wrap gap-1">
 										{#each mainMarkets as m (m)}
-											<Badge variant="secondary" class="text-[10px]">{m}</Badge>
+											<Badge variant="secondary" class="text-2xs">{m}</Badge>
 										{/each}
 									</div>
 								</div>
@@ -886,23 +913,23 @@
 								class="flex items-center gap-2 font-medium hover:text-primary"
 							>
 								<span
-									class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-[7px] font-black text-success"
+									class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-4xs font-black text-success"
 									>L</span
 								>
-								LINE<span class="truncate text-[10px] font-normal text-muted-foreground"
+								LINE<span class="truncate text-2xs font-normal text-muted-foreground"
 									>{item.line}</span
 								>
 							</a>
 						{/if}
 						{#if !hasDirectContact}
-							<p class="text-[11px] leading-relaxed text-muted-foreground">
+							<p class="text-2xs-plus leading-relaxed text-muted-foreground">
 								This supplier has not listed direct contact details. Send an inquiry and they
 								typically respond within 2 business days.
 							</p>
 						{/if}
 						<Button
 							size="sm"
-							class="mt-1 w-full text-[11px]"
+							class="mt-1 w-full text-2xs-plus"
 							onclick={() => {
 								inquiryResult = null;
 								inquiryFieldErrors = {};
@@ -919,7 +946,7 @@
 
 		<RelatedLinks
 			title="More suppliers"
-			items={(data.relatedSuppliers ?? []).map((s: any) => ({
+			items={(data.relatedSuppliers ?? []).map((s) => ({
 				label: s.name,
 				description: [s.businessType, s.country].filter(Boolean).join(' · '),
 				href: `/supplier/${s.slug}`
@@ -927,9 +954,9 @@
 		/>
 		<RelatedLinks
 			title="Success stories"
-			items={(data.supplierStories ?? []).map((s: any) => ({
+			items={(data.supplierStories ?? []).map((s) => ({
 				label: s.title,
-				description: s.dealValue ?? s.buyerCountry,
+				description: s.dealValue ?? s.buyerCountry ?? '',
 				href: `/success-stories/${s.slug}`
 			}))}
 		/>

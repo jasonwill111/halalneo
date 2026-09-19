@@ -15,7 +15,7 @@
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'Article',
 		headline: story?.title ?? '',
@@ -49,7 +49,7 @@
 		...(story.dealValue
 			? { about: [{ '@type': 'MonetaryAmount', currency: 'USD', value: story.dealValue }] }
 			: {})
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>
 
 {#if story}
@@ -65,12 +65,12 @@
 			<main class="space-y-4 sm:space-y-6">
 				<header class="space-y-3">
 					<div class="flex flex-wrap items-center gap-1.5">
-						<Badge class="bg-success/15 text-[10px] text-success">
+						<Badge class="bg-success/15 text-2xs text-success">
 							<TrophyIcon class="size-3" />
 							Success story
 						</Badge>
 						{#if story.dealValue}
-							<Badge variant="outline" class="text-[10px]">{story.dealValue}</Badge>
+							<Badge variant="outline" class="text-2xs">{story.dealValue}</Badge>
 						{/if}
 						{#if story.buyerCountry}
 							<span class="inline-flex items-center gap-1 text-xs text-muted-foreground">
@@ -126,9 +126,9 @@
 
 				<RelatedLinks
 					title="More success stories"
-					items={(data.related ?? []).map((s: any) => ({
+					items={(data.related ?? []).map((s) => ({
 						label: s.title,
-						description: s.dealValue ?? s.buyerCountry,
+						description: s.dealValue ?? s.buyerCountry ?? '',
 						href: `/success-stories/${s.slug}`
 					}))}
 				/>
@@ -171,7 +171,7 @@
 											<h5 class="line-clamp-2 text-xs font-medium group-hover:text-primary">
 												{s.title}
 											</h5>
-											<p class="mt-0.5 text-[10px] text-muted-foreground">
+											<p class="mt-0.5 text-2xs text-muted-foreground">
 												{s.dealValue ?? s.buyerCountry}
 											</p>
 										</a>

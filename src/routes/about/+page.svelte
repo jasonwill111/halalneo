@@ -173,7 +173,7 @@
 			</p>
 		</div>
 		<div class="flex flex-wrap gap-2">
-			{#each (data.certifiers ?? []) as body}
+			{#each (data.certifiers ?? []) as body (body.id)}
 				<Badge variant="outline">{body.name} · {body.standard}</Badge>
 			{/each}
 		</div>

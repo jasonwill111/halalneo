@@ -1,4 +1,6 @@
 import type { PageLoad } from './$types';
+import { readItems } from '#lib/utils/api-response.js';
+import type { PageDto } from '#lib/schemas/pages.js';
 
 const BASE_URL = 'https://halalneo.com';
 
@@ -6,7 +8,7 @@ export const prerender = false;
 
 export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch('/api/pages?type=blog&limit=20');
-	const posts = res.ok ? ((await res.json()) as { items?: any[] }).items ?? [] : [];
+	const posts = await readItems<PageDto>(res);
 
 	// D1 stores publishedAt as epoch seconds; the svelte renders `post.date`
 	// directly (<time datetime>) so map it to ISO 8601 here.
@@ -17,10 +19,10 @@ export const load: PageLoad = async ({ fetch }) => {
 		return isNaN(d.getTime()) ? '' : d.toISOString();
 	};
 
-	const postsParsed = posts.map((p: any) => ({
+	const postsParsed = posts.map((p) => ({
 		...p,
 		date: toIsoDate(p.publishedAt),
-		tags: typeof p.tags === 'string' ? JSON.parse(p.tags || '[]') : p.tags ?? [],
+		tags: typeof p.tags === 'string' ? (JSON.parse(p.tags || '[]') as string[]) : (p.tags ?? []),
 	}));
 
 	const itemList = {
@@ -28,7 +30,7 @@ export const load: PageLoad = async ({ fetch }) => {
 		'@type': 'ItemList',
 		name: 'Halal Trade Blog',
 		description: 'Industry insights, market reports, and updates on halal trade, certification, and sourcing.',
-		itemListElement: postsParsed.slice(0, 20).map((p: any, i: number) => ({
+		itemListElement: postsParsed.slice(0, 20).map((p, i) => ({
 			'@type': 'ListItem',
 			position: i + 1,
 			item: {

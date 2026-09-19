@@ -1,5 +1,7 @@
-import { error } from '@sveltejs/kit';
+import { error, isHttpError } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { readItems, readJson } from '#lib/utils/api-response.js';
+import type { BuyingRequestItem } from '#lib/types/api.js';
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	try {
@@ -10,8 +12,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		if (!res.ok) throw error(404, 'Buying request not found');
 
-		const rfq = (await res.json()) as any;
-		const related = relatedRes.ok ? ((((await relatedRes.json()) as any)).items ?? []) : [];
+		const rfq = await readJson<BuyingRequestItem>(res);
+		const related = await readItems<BuyingRequestItem>(relatedRes);
 
 		return {
 			seo: {
@@ -22,10 +24,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			},
 			id: params.id,
 			rfq,
-			related: related.filter((r: any) => r.id !== params.id).slice(0, 3)
+			related: related.filter((r) => r.id !== params.id).slice(0, 3)
 		};
-	} catch (e: any) {
-		if (e?.status === 404) throw e;
+	} catch (e: unknown) {
+		if (isHttpError(e) && e.status === 404) throw e;
 		throw error(404, 'Buying request not found');
 	}
 };

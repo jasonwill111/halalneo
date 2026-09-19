@@ -3,19 +3,18 @@
 	import favicon from '#lib/assets/favicon.svg';
 	import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
-	import { mode, toggleMode } from 'mode-watcher';
+	import { mode, toggleMode, userPrefersMode } from 'mode-watcher';
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/state';
 	import Sun from '@lucide/svelte/icons/sun';
 	import Moon from '@lucide/svelte/icons/moon';
-	import MenuIcon from '@lucide/svelte/icons/menu';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import UserIcon from '@lucide/svelte/icons/user';
 	import { Button } from '#lib/components/ui/button/index.js';
-	import { Sheet, SheetContent, SheetTrigger } from '#lib/components/ui/sheet/index.js';
 	import { Toaster } from '#lib/components/ui/sonner/index.js';
 	import MobileTab from '#lib/components/mobile-tab.svelte';
 	import BackToTop from '#lib/components/site/back-to-top.svelte';
+	import NavProgress from '#lib/components/site/nav-progress.svelte';
 	import { initWebVitals } from '#lib/vitals.js';
 	import {
 		NavigationMenuRoot,
@@ -37,6 +36,40 @@
 	afterNavigate((navigation) => {
 		const url = navigation.to?.url;
 		if (url) trackPageView(url, document.title);
+	});
+
+	// §1.3 theme-color follows the *effective* mode: the static media-query
+	// metas in app.html cover pre-JS; once hydrated, a manual light/dark pick
+	// rewrites them (system mode restores the originals).
+	const THEME_COLOR_LIGHT = 'oklch(0.978 0.01 88)'; // == light --background
+	const THEME_COLOR_DARK = 'oklch(0.15 0.028 205)'; // == dark --background
+	let themeMetaDefaults: {
+		el: HTMLMetaElement;
+		media: string | null;
+		content: string;
+	}[] = [];
+	$effect(() => {
+		const m = userPrefersMode.current;
+		if (typeof document === 'undefined') return;
+		if (themeMetaDefaults.length === 0) {
+			themeMetaDefaults = Array.from(
+				document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
+			).map((el) => ({
+				el,
+				media: el.getAttribute('media'),
+				content: el.getAttribute('content') ?? ''
+			}));
+		}
+		for (const t of themeMetaDefaults) {
+			if (m === 'system') {
+				if (t.media) t.el.setAttribute('media', t.media);
+				else t.el.removeAttribute('media');
+				t.el.setAttribute('content', t.content);
+			} else {
+				t.el.removeAttribute('media');
+				t.el.setAttribute('content', m === 'dark' ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
+			}
+		}
 	});
 
 	// 增强运动效果的初始化
@@ -75,7 +108,23 @@
 		});
 	}
 
-	const isAdminRoute = $derived(deLocalizeUrl(page.url.href).pathname.startsWith('/admin'));
+	// Chromeless portals: these routes render their own fixed-height shell
+	// (sidebar + internal scroll), so the site header / footer / mobile bottom
+	// tab must not stack on top of them. Public supplier pages
+	// (`/supplier/onboarding`, `/supplier/[slug]`) keep the normal site chrome.
+	const PORTAL_PREFIXES = [
+		'/admin',
+		'/supplier/dashboard',
+		'/supplier/products',
+		'/supplier/orders',
+		'/supplier/manage',
+		'/supplier/profile',
+		'/supplier/login'
+	];
+	const isPortalRoute = $derived.by(() => {
+		const path = deLocalizeUrl(page.url.href).pathname;
+		return PORTAL_PREFIXES.some((p) => path === p || path.startsWith(p + '/'));
+	});
 
 	const siteName = 'HalalNeo';
 	const defaultDescription =
@@ -175,6 +224,7 @@
 
 <ModeWatcher />
 <Toaster offset={76} />
+<NavProgress />
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
@@ -191,7 +241,7 @@
 	<meta property="og:image:height" content="630" />
 	<meta property="og:image:alt" content={seo.title} />
 	<meta property="og:locale" content="en" />
-	{#each supportedLocales as locale}
+	{#each supportedLocales as locale (locale)}
 		<link
 			rel="alternate"
 			hreflang={locale}
@@ -216,20 +266,20 @@
 	<meta name="twitter:title" content={seo.title} />
 	<meta name="twitter:description" content={seo.description} />
 	<meta name="twitter:image" content={seo.ogImage} />
-	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}</script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify(organizationSchema)}\u003c/script>`}
 	{#if breadcrumbSchema}
-		{@html `<script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>`}
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify(breadcrumbSchema)}\u003c/script>`}
 	{/if}
 </svelte:head>
 
 <svelte:window onscroll={onScroll} />
 
 <div class="flex min-h-dvh flex-col bg-background text-foreground">
-	{#if isAdminRoute}
+	{#if isPortalRoute}
 		{@render children()}
 	{:else}
 		<header
-			class="header-scroll-edge sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-transform duration-300 supports-[backdrop-filter]:bg-background/90 max-md:transition-transform max-md:duration-300 {headerHidden
+			class="header-scroll-edge sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl transition-transform duration-slow supports-[backdrop-filter]:bg-background/90 max-md:transition-transform max-md:duration-slow {headerHidden
 				? 'max-md:-translate-y-full'
 				: 'max-md:translate-y-0'} {headerHasContent ? 'has-content' : ''}"
 		>
@@ -252,7 +302,7 @@
 					<span class="text-lg font-bold tracking-tight text-primary">HalalNeo</span>
 				</a>
 
-				<NavigationMenuRoot viewport={false} class="hidden lg:flex lg:justify-start">
+				<NavigationMenuRoot viewport={false} class="hidden md:flex md:justify-start">
 					<NavigationMenuList>
 						{#each primaryNav as item (item.href)}
 							<NavigationMenuItem>
@@ -260,6 +310,7 @@
 									href={localizeHref(item.href)}
 									class={cn(
 										navigationMenuTriggerStyle(),
+										'md:px-2.5 md:text-xs lg:px-4 lg:text-sm',
 										isActive(deLocalizeUrl(page.url.href).pathname, item.href) && 'bg-muted'
 									)}
 								>
@@ -267,10 +318,11 @@
 								</NavigationMenuLink>
 							</NavigationMenuItem>
 						{/each}
-						{#each navGroups as group}
+						{#each navGroups as group (group.label)}
 							<NavigationMenuItem>
 								<NavigationMenuTrigger
 									class={cn(
+										'md:px-2.5 md:text-xs lg:px-4 lg:text-sm',
 										isGroupActive(deLocalizeUrl(page.url.href).pathname, group.items) && 'bg-muted'
 									)}
 								>
@@ -325,7 +377,6 @@
 						variant="ghost"
 						size="icon"
 						aria-label="Account"
-						class="md:hidden"
 					>
 						<UserIcon class="size-4" />
 					</Button>
@@ -333,87 +384,10 @@
 						href={localizeHref('/login')}
 						variant="default"
 						size="sm"
-						class="hidden sm:inline-flex"
+						class="hidden lg:inline-flex"
 					>
 						Sign in
 					</Button>
-					<Sheet>
-						<SheetTrigger>
-							{#snippet child({ props })}
-								<Button
-									{...props}
-									variant="ghost"
-									size="icon"
-									aria-label="Open menu"
-									class="hidden md:inline-flex lg:hidden"
-								>
-									<MenuIcon class="size-4" />
-								</Button>
-							{/snippet}
-						</SheetTrigger>
-						<SheetContent side="right" class="w-3/4 overflow-y-auto sm:max-w-sm">
-							<div class="flex flex-col gap-4 px-2 pt-6">
-								<!-- Primary -->
-								<div class="flex flex-col gap-1">
-									<p
-										class="px-3 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
-									>
-										Browse
-									</p>
-									<Button
-										href={localizeHref('/')}
-										variant={isActive(deLocalizeUrl(page.url.href).pathname, '/')
-											? 'secondary'
-											: 'ghost'}
-										class="justify-start"
-									>
-										Home
-									</Button>
-									{#each primaryNav as item}
-										<Button
-											href={localizeHref(item.href)}
-											variant={isActive(deLocalizeUrl(page.url.href).pathname, item.href)
-												? 'secondary'
-												: 'ghost'}
-											class="justify-start"
-										>
-											{item.label}
-										</Button>
-									{/each}
-								</div>
-								<!-- Groups -->
-								{#each navGroups as group}
-									<div class="flex flex-col gap-1">
-										<p
-											class="px-3 pb-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase"
-										>
-											{group.label}
-										</p>
-										{#each group.items as item}
-											<Button
-												href={localizeHref(item.href)}
-												variant={isActive(deLocalizeUrl(page.url.href).pathname, item.href)
-													? 'secondary'
-													: 'ghost'}
-												class="justify-start"
-											>
-												<item.icon class="size-4 text-muted-foreground" />
-												{item.label}
-											</Button>
-										{/each}
-									</div>
-								{/each}
-								<div class="mt-2 border-t border-border pt-4">
-									<Button href={localizeHref('/login')} variant="default" class="w-full">
-										Sign in
-									</Button>
-									<Button href={localizeHref('/register')} variant="outline" class="mt-2 w-full">
-										Create account
-									</Button>
-								</div>
-							</div>
-						</SheetContent>
-					</Sheet>
 				</div>
 			</div>
 		</header>
@@ -425,7 +399,7 @@
 		</main>
 
 		<footer class="border-t border-border/50 bg-muted/30">
-			<div class="mx-auto max-w-7xl px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-3">
+			<div class="mx-auto max-w-7xl px-4 pt-2 pb-24 sm:px-6 sm:pt-4 md:pb-3">
 				<div class="hidden gap-3 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-7">
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
@@ -450,7 +424,7 @@
 					<nav class="space-y-1" aria-label="Marketplace">
 						<p class="text-xs font-semibold tracking-wide text-foreground">Marketplace</p>
 						<ul class="space-y-0.5">
-							{#each primaryNav as item}
+							{#each primaryNav as item (item.href)}
 								<li>
 									<a
 										href={localizeHref(item.href)}
@@ -470,11 +444,11 @@
 						</ul>
 					</nav>
 					<!-- Link columns -->
-					{#each navGroups as group}
+					{#each navGroups as group (group.label)}
 						<nav class="space-y-1" aria-label={group.label}>
 							<p class="text-xs font-semibold tracking-wide text-foreground">{group.label}</p>
 							<ul class="space-y-0.5">
-								{#each group.items as item}
+								{#each group.items as item (item.href)}
 									<li>
 										<a
 											href={localizeHref(item.href)}
@@ -491,7 +465,7 @@
 				<div
 					class="mt-2 flex items-center justify-center border-t border-border/50 pt-2 sm:mt-3 sm:justify-between sm:pt-2"
 				>
-					<p class="text-[10px] text-muted-foreground sm:text-xs">
+					<p class="text-2xs text-muted-foreground sm:text-xs">
 						© {new Date().getFullYear()} HalalNeo. All rights reserved.
 					</p>
 				</div>

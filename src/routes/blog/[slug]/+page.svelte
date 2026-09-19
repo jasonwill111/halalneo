@@ -25,7 +25,7 @@
 
 	const seo = $derived(data.seo ?? {});
 	const item = $derived(data.item);
-	const readTime = $derived((data.item as any)?.readTime as string | undefined);
+	const readTime = $derived<string | null | undefined>(data.item?.readTime);
 
 	const baseUrl = 'https://halalneo.com';
 	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
@@ -133,7 +133,7 @@
 	     (which prefers metaTitle/metaDescription). -->
 	<link rel="preload" as="image" href={data.item?.image ?? blogImages[0]} fetchpriority="high" />
 	{#if blogSchema}
-		{@html `<script type="application/ld+json">${JSON.stringify(blogSchema)}</script>`}
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify(blogSchema)}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -238,7 +238,7 @@
           </aside>
         {/if}
         <div class="flex flex-wrap gap-2 border-t border-border pt-6">
-          {#each data.item.tags as tag}
+          {#each data.item.tags as tag (tag)}
             <Badge variant="secondary">{tag}</Badge>
           {/each}
         </div>
@@ -282,7 +282,7 @@
                     <div class="mt-3 flex flex-wrap gap-1.5">
                       {#each related.tags as tag (tag)}
                         <span
-                          class="inline-flex items-center rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground"
+                          class="inline-flex items-center rounded bg-secondary px-1.5 py-0.5 text-2xs font-medium text-secondary-foreground"
                           >{tag}</span
                         >
                       {/each}
@@ -337,7 +337,7 @@
                   </Avatar>
                   <div>
                     <p class="text-sm font-medium">{data.item.author.name}</p>
-                    <p class="text-[10px] text-muted-foreground">Content Strategist</p>
+                    <p class="text-2xs text-muted-foreground">Content Strategist</p>
                   </div>
                 </div>
               </div>
@@ -352,7 +352,7 @@
                   {#each data.related.slice(0, 5) as related (related.slug)}
                     <a href={localizeHref(`/blog/${related.slug}`)}>
                       <h5 class="text-xs font-medium group-hover:text-primary line-clamp-2">{related.title}</h5>
-                      <p class="mt-0.5 text-[10px] text-muted-foreground">{related.excerpt}</p>
+                      <p class="mt-0.5 text-2xs text-muted-foreground">{related.excerpt}</p>
                     </a>
                   {/each}
                 </div>

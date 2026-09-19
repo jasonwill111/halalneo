@@ -27,7 +27,7 @@
 </script>
 
 <div
-	class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 transition-all duration-200 ease-out hover:shadow-sm sm:rounded-xl sm:px-3 sm:py-3"
+	class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 transition-all duration-base ease-out hover:shadow-sm sm:rounded-xl sm:px-3 sm:py-3"
 >
 	<div class="flex items-center justify-center gap-1.5">
 		{#if icon}
@@ -41,8 +41,8 @@
 			<div class="text-base font-bold tabular-nums sm:text-2xl {toneClass}">{value}</div>
 		{/if}
 	</div>
-	<div class="truncate text-[10px] text-muted-foreground sm:text-xs">{label}</div>
+	<div class="truncate text-2xs text-muted-foreground sm:text-xs">{label}</div>
 	{#if hint}
-		<div class="hidden truncate text-[10px] text-muted-foreground/70 sm:block">{hint}</div>
+		<div class="hidden truncate text-2xs text-muted-foreground/70 sm:block">{hint}</div>
 	{/if}
 </div>

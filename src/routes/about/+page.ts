@@ -1,4 +1,11 @@
 import type { PageLoad } from './$types';
+import { readItems } from '#lib/utils/api-response.js';
+import type { SupplierListItem } from '#lib/schemas/suppliers.js';
+import type { ProductListItem } from '#lib/schemas/products.js';
+import type { CertifyingBodyRecord } from '#lib/schemas/certifying-bodies.js';
+import type { MarketGuideDto } from '#lib/schemas/market-guides.js';
+import type { TradeShowDto } from '#lib/schemas/trade-shows.js';
+import type { KbSectionCountItem } from '#lib/types/api.js';
 
 export const prerender = false;
 
@@ -12,15 +19,15 @@ export const load: PageLoad = async ({ fetch }) => {
 		fetch('/api/trade-shows?limit=100')
 	]);
 
-	const suppliers = suppliersRes.ok ? ((await suppliersRes.json()) as { items?: any[] }).items ?? [] : [];
-	const products = productsRes.ok ? ((await productsRes.json()) as { items?: any[] }).items ?? [] : [];
-	const kbSections = kbRes.ok ? ((await kbRes.json()) as { items?: any[] }).items ?? [] : [];
-	const certifiers = certifiersRes.ok ? ((await certifiersRes.json()) as { items?: any[] }).items ?? [] : [];
-	const guides = guidesRes.ok ? ((await guidesRes.json()) as { items?: any[] }).items ?? [] : [];
-	const shows = showsRes.ok ? ((await showsRes.json()) as { items?: any[] }).items ?? [] : [];
+	const suppliers = await readItems<SupplierListItem>(suppliersRes);
+	const products = await readItems<ProductListItem>(productsRes);
+	const kbSections = await readItems<KbSectionCountItem>(kbRes);
+	const certifiers = await readItems<CertifyingBodyRecord>(certifiersRes);
+	const guides = await readItems<MarketGuideDto>(guidesRes);
+	const shows = await readItems<TradeShowDto>(showsRes);
 
-	const supplierCount = suppliers.filter((s: any) => s.status === 'active').length;
-	const marketCountries = [...new Set(suppliers.map((s: any) => s.country))].length;
+	const supplierCount = suppliers.filter((s) => s.status === 'active').length;
+	const marketCountries = [...new Set(suppliers.map((s) => s.country))].length;
 
 	return {
 		seo: {

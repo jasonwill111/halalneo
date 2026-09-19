@@ -1,16 +1,14 @@
 import type { PageLoad } from './$types';
+import { readList } from '#lib/utils/api-response.js';
+import type { PageDto } from '#lib/schemas/pages.js';
 
 export const prerender = false;
-
-interface PagesResponse {
-	items?: unknown[];
-}
 
 export const load: PageLoad = async ({ fetch }) => {
 	try {
 		const res = await fetch('/api/pages?type=faq&limit=50');
 		if (res.ok) {
-			const data: PagesResponse = (await res.json()) as any;
+			const data = await readList<PageDto>(res);
 			return {
 				seo: {
 					title: 'Frequently Asked Questions — HalalNeo',
@@ -22,7 +20,9 @@ export const load: PageLoad = async ({ fetch }) => {
 				faqs: data.items ?? []
 			};
 		}
-	} catch {}
+	} catch {
+		// fetch/parse failed — fall back to the static payload below
+	}
 
 	return {
 		seo: {

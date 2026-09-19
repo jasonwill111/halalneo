@@ -37,7 +37,7 @@
 	);
 
 	const recognitionEntries = $derived(
-		RECOGNITION_DATA[slug] ?? RECOGNITION_DATA[body?.id] ?? []
+		RECOGNITION_DATA[slug] ?? RECOGNITION_DATA[body?.id ?? ''] ?? []
 	);
 </script>
 
@@ -45,19 +45,19 @@
 	<!-- Title + description render once via root layout from loader `seo`
 	     (which prefers body.metaTitle/metaDescription). -->
 	{#if certBodySchema}
-		{@html `<script type="application/ld+json">${JSON.stringify({
+		{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'Organization',
-			name: body.name,
-			description: body.description ?? '',
+			name: body?.name,
+			description: body?.description ?? '',
 			url: `${baseUrl}/certifying-bodies/${data.slug}`,
 			image: 'https://halalneo.com/api/media/og-certifiers.png',
-			address: body.country
+			address: body?.country
 				? { '@type': 'PostalAddress', addressCountry: body.country }
 				: undefined,
 			parentOrganization: { '@type': 'Organization', name: 'HalalNeo' },
-			...(body.website ? { sameAs: [body.website, `${baseUrl}/certifying-bodies/${data.slug}`] } : {})
-		})}</script>`}
+			...(body?.website ? { sameAs: [body.website, `${baseUrl}/certifying-bodies/${data.slug}`] } : {})
+		})}\u003c/script>`}
 	{/if}
 </svelte:head>
 
@@ -92,7 +92,7 @@
             >
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <ExternalLink href={body.website} label="Official website" />
+            <ExternalLink href={body.website ?? ''} label="Official website" />
             <a
               href={localizeHref('/verify')}
               class="text-xs font-medium text-primary underline-offset-4 hover:underline"
@@ -175,7 +175,7 @@
                         : 'bg-info'}"
                   ></span>
                   {entry.country}
-                  <span class="text-[10px] opacity-70">· {recognitionStatusLabel(entry.status)}</span>
+                  <span class="text-2xs opacity-70">· {recognitionStatusLabel(entry.status)}</span>
                 </Badge>
               {/each}
             </div>
@@ -222,9 +222,9 @@
 
         <RelatedLinks
           title="Related market guides"
-          items={(data.relatedGuides ?? []).map((g: any) => ({
+          items={(data.relatedGuides ?? []).map((g) => ({
             label: g.country,
-            description: g.region,
+            description: g.region ?? '',
             href: `/market-guides/${g.slug}`
           }))}
         />
@@ -237,12 +237,12 @@
               <div class="space-y-3">
                 <h4 class="text-sm font-semibold">Contact & Links</h4>
                 <a
-                  href={localizeHref(body.website)}
+                  href={localizeHref(body.website ?? '')}
                   target="_blank"
                   rel="noopener"
                   class="text-sm text-foreground/80 hover:text-primary"
                 >
-                  {body.website.replace(/^https?:\/\//, '')}
+                  {(body.website ?? '').replace(/^https?:\/\//, '')}
                 </a>
                 <a
                   href={localizeHref('/verify')}
@@ -262,13 +262,13 @@
                   Recognized in {recognitionEntries.length} countries/regions
                 </p>
                 <div class="flex flex-wrap gap-1.5">
-                  {#each recognitionEntries.slice(0, 4) as entry}
-                    <Badge variant="outline" class="text-[10px] gap-1">
+                  {#each recognitionEntries.slice(0, 4) as entry (entry.country)}
+                    <Badge variant="outline" class="text-2xs gap-1">
                       {entry.country}
                     </Badge>
                   {/each}
                   {#if recognitionEntries.length > 4}
-                    <Badge variant="outline" class="text-[10px]">
+                    <Badge variant="outline" class="text-2xs">
                       +{recognitionEntries.length - 4} more
                     </Badge>
                   {/if}
@@ -286,7 +286,7 @@
                     {#each data.relatedGuides.slice(0, 3) as g (g.slug)}
                       <a href={localizeHref(`/market-guides/${g.slug}`)}>
                         <h5 class="text-xs font-medium group-hover:text-primary">{g.country}</h5>
-                        <p class="text-[10px] text-muted-foreground">{g.region}</p>
+                        <p class="text-2xs text-muted-foreground">{g.region}</p>
                       </a>
                     {/each}
                   </div>

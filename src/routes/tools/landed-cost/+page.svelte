@@ -106,7 +106,7 @@
 					<FieldLabel>Shipments per year (amortises certification)</FieldLabel>
 					<Input type="number" min="1" bind:value={shipmentsPerYear} />
 				</Field>
-				<p class="text-[11px] leading-relaxed text-muted-foreground">
+				<p class="text-2xs-plus leading-relaxed text-muted-foreground">
 					Duty and VAT rates vary by HS code and destination — confirm with your
 					broker. VAT here applies to CIF + duty, the common GCC treatment.
 				</p>
@@ -121,7 +121,7 @@
 			<Card class="p-4 sm:p-5">
 				<CardContent class="space-y-2.5 p-0">
 					<CardTitle class="text-base">Cost breakdown</CardTitle>
-					{#each breakdown as b}
+					{#each breakdown as b (b.label)}
 						<div>
 							<div class="mb-1 flex items-center justify-between text-xs">
 								<span class="text-muted-foreground">{b.label}</span>
@@ -132,7 +132,7 @@
 							</div>
 						</div>
 					{/each}
-					<p class="pt-1 text-[11px] text-muted-foreground">
+					<p class="pt-1 text-2xs-plus text-muted-foreground">
 						Certification share: {fmt(certPerShipment)} per shipment — invisible in
 						quotes, real in margins.
 					</p>
@@ -158,7 +158,7 @@
 
 	<div class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground">
 		<AlertTriangle class="mx-auto mb-2 size-6 opacity-40" />
-		<p class="text-[11px] leading-relaxed">
+		<p class="text-2xs-plus leading-relaxed">
 			Estimates only — duty depends on HS classification and trade agreements, VAT rules
 			differ by market. Confirm with your customs broker before contracting.
 		</p>

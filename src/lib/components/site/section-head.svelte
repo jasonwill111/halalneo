@@ -39,10 +39,10 @@
 		{#if href && linkLabel}
 			<a
 				href={localizeHref(href)}
-				class="ml-auto text-[11px] text-primary hover:underline sm:text-xs">{linkLabel}</a
+				class="ml-auto text-2xs-plus text-primary hover:underline sm:text-xs">{linkLabel}</a
 			>
 		{:else if description}
-			<p class="w-full text-[11px] text-muted-foreground sm:text-xs sm:w-auto sm:ml-auto sm:text-right">
+			<p class="w-full text-2xs-plus text-muted-foreground sm:text-xs sm:w-auto sm:ml-auto sm:text-right">
 				{description}
 			</p>
 		{/if}

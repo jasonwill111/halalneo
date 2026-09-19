@@ -4,31 +4,48 @@
 	import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import {
 		Empty,
+		EmptyHeader,
 		EmptyMedia,
 		EmptyTitle,
-		EmptyDescription
+		EmptyDescription,
+		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import SeoMeta from '#lib/components/seo-meta.svelte';
+	import type { CategoryRecord } from '#lib/schemas/categories.js';
 
 	let { data } = $props();
 	let search = $state('');
 	const PAGE_SIZE = 9;
 	let page = $state(1);
 	$effect(() => {
+		void search;
 		page = 1;
 	});
 
+	/**
+	 * `shortDescription` / `requirements` / `certifications` are legacy columns that the
+	 * `/api/categories` projection no longer emits, so they stay optional here and the
+	 * cards fall through to their existing fallbacks.
+	 */
+	type CategoryRow = CategoryRecord & {
+		shortDescription?: string | null;
+		requirements?: unknown[] | null;
+		certifications?: unknown[] | null;
+	};
+
+	const rows: CategoryRow[] = $derived(data.categories ?? []);
+
 	const filteredCategories = $derived(
 		search.trim()
-			? (data.categories ?? []).filter((c: any) =>
-					c.name.toLowerCase().includes(search.toLowerCase())
-				)
-			: data.categories
+			? rows.filter((c: CategoryRow) => c.name.toLowerCase().includes(search.toLowerCase()))
+			: rows
 	);
 
 	const pagedCategories = $derived(
@@ -68,16 +85,34 @@
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
-		{#if pagedCategories.length === 0}
+		{#if data.loadError && pagedCategories.length === 0}
+			<div class="col-span-full">
+				<ErrorRetry failure={data.loadError} subject="categories" />
+			</div>
+		{:else if pagedCategories.length === 0}
 			<div class="col-span-full">
 				<Empty>
-					<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
-					<EmptyTitle>No categories found</EmptyTitle>
-					<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
+					<EmptyHeader>
+						<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+						<EmptyTitle>No categories found</EmptyTitle>
+						<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						{#if search.trim()}
+							<Button variant="outline" size="sm" onclick={() => (search = '')}
+								>Clear search</Button
+							>
+						{:else}
+							<Button size="sm" href={localizeHref('/products')}>Browse products</Button>
+						{/if}
+						<Button variant="link" size="sm" href={localizeHref('/contact')}
+							>Suggest a category</Button
+						>
+					</EmptyContent>
 				</Empty>
 			</div>
 		{:else}
-			{#each pagedCategories as category, i}
+			{#each pagedCategories as category, i (category.slug)}
 				<a
 					href={localizeHref(`/category/${category.slug}`)}
 					class="group press-scale flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
@@ -88,7 +123,7 @@
 								i % TILE_COLORS.length
 							]}"
 						>
-							<Icon name={category.icon} class="size-4 sm:size-5" />
+							<Icon name={category.icon ?? ''} class="size-4 sm:size-5" />
 						</div>
 						<div class="min-w-0 flex-1">
 							<h2
@@ -108,13 +143,13 @@
 					>
 						<div class="flex flex-wrap gap-2">
 							{#if category.requirements?.length}
-								<Badge variant="outline" class="text-[10px]"
-									>{category.requirements.length} cert. req.</Badge
+								<Badge variant="outline" class="text-2xs"
+									>{category.requirements?.length ?? 0} cert. req.</Badge
 								>
 							{/if}
 							{#if category.certifications?.length}
-								<Badge variant="secondary" class="text-[10px]"
-									>{category.certifications.length} certs. recognized</Badge
+								<Badge variant="secondary" class="text-2xs"
+									>{category.certifications?.length ?? 0} certs. recognized</Badge
 								>
 							{/if}
 						</div>
@@ -134,7 +169,7 @@
 
 <svelte:head>
 	<!-- Structured Data: Breadcrumb -->
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'BreadcrumbList',
 		itemListElement: [
@@ -146,10 +181,10 @@
 				item: 'https://halalneo.com/categories'
 			}
 		]
-	})}</script>`}
+	})}\u003c/script>`}
 
 	<!-- Structured Data: Collection -->
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'CollectionPage',
 		name: 'Halal Product Categories',
@@ -161,5 +196,5 @@
 			sku: cat.slug,
 			category: 'Halal Products'
 		}))
-	})}</script>`}
+	})}\u003c/script>`}
 </svelte:head>

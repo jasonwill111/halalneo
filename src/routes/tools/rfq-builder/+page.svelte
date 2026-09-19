@@ -11,14 +11,18 @@
 		SelectItem,
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
-	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
+	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import { z } from 'zod';
+	import { toast } from 'svelte-sonner';
+	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import Copy from '@lucide/svelte/icons/copy';
 	import Check from '@lucide/svelte/icons/check';
-import Download from '@lucide/svelte/icons/download';
-import Send from '@lucide/svelte/icons/send';
-import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Download from '@lucide/svelte/icons/download';
+	import Send from '@lucide/svelte/icons/send';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 
 	let product = $state('');
 	let specs = $state('');
@@ -42,17 +46,61 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 		'United States'
 	];
 
-	const certOptions = ['JAKIM', 'BPJPH / MUI', 'MUIS', 'SFDA-recognised', 'MOIAT-accredited', 'IFANCA', 'Any recognised body'];
+	const certOptions = [
+		'JAKIM',
+		'BPJPH / MUI',
+		'MUIS',
+		'SFDA-recognised',
+		'MOIAT-accredited',
+		'IFANCA',
+		'Any recognised body'
+	];
 	let selectedCerts = $state<string[]>(['Any recognised body']);
 
-	const docOptions = ['Halal certificate (product scope)', 'Certificate of analysis per batch', 'Slaughter certificate (meat/poultry)', 'Ingredient declaration', 'Shelf-life & storage statement'];
-	let selectedDocs = $state<string[]>(['Halal certificate (product scope)', 'Certificate of analysis per batch']);
+	const docOptions = [
+		'Halal certificate (product scope)',
+		'Certificate of analysis per batch',
+		'Slaughter certificate (meat/poultry)',
+		'Ingredient declaration',
+		'Shelf-life & storage statement'
+	];
+	let selectedDocs = $state<string[]>([
+		'Halal certificate (product scope)',
+		'Certificate of analysis per batch'
+	]);
 
 	function toggle(list: string[], v: string): string[] {
 		return list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
 	}
 
 	let copied = $state(false);
+	let fieldErrors = $state<Record<string, string>>({});
+	let fieldsEl = $state<HTMLDivElement | undefined>(undefined);
+
+	const builderSchema = z.object({
+		product: z.string().trim().min(1, 'Enter a product name first.'),
+		quantity: z.string().trim().max(200, 'Keep the quantity under 200 characters.'),
+		contactEmail: z
+			.string()
+			.trim()
+			.optional()
+			.refine((v) => !v || z.string().email().safeParse(v).success, {
+				message: 'Enter a valid email, or leave it blank.'
+			})
+	});
+
+	/** §3.4 — validate the builder inputs and focus the first invalid one. */
+	function validateBuilder(): boolean {
+		fieldErrors = {};
+		const parsed = builderSchema.safeParse({ product, quantity, contactEmail });
+		if (parsed.success) return true;
+		for (const issue of parsed.error.issues) {
+			const key = String(issue.path[0] ?? '');
+			if (key && !fieldErrors[key]) fieldErrors = { ...fieldErrors, [key]: issue.message };
+		}
+		focusFirstInvalid(fieldsEl);
+		return false;
+	}
 
 	const rfqText = $derived(
 		[
@@ -84,8 +132,9 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 			await navigator.clipboard.writeText(rfqText);
 			copied = true;
 			setTimeout(() => (copied = false), 2000);
+			toast.success('RFQ copied to clipboard.');
 		} catch {
-			// clipboard unavailable
+			toast.error('Clipboard unavailable — select the preview text and copy manually.');
 		}
 	}
 
@@ -99,18 +148,22 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 		a.click();
 		a.remove();
 		URL.revokeObjectURL(url);
+		toast.success('RFQ downloaded as .txt.');
 	}
 
 	let publishing = $state(false);
-	let publishResult = $state<{ type: 'success' | 'error'; message: string; needsLogin?: boolean; id?: string } | null>(null);
+	let publishResult = $state<{
+		type: 'success' | 'error';
+		message: string;
+		needsLogin?: boolean;
+		id?: string;
+	} | null>(null);
 
 	// Publish the built RFQ to the public Buying Requests board
 	// (1 free post/week; server enforces the quota + login).
 	async function publishRfq() {
-		if (!product.trim()) {
-			publishResult = { type: 'error', message: 'Enter a product name first.' };
-			return;
-		}
+		if (publishing) return;
+		if (!validateBuilder()) return;
 		publishing = true;
 		publishResult = null;
 		try {
@@ -125,18 +178,37 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 					destination: `${incoterm} ${destination}`.trim() || null
 				})
 			});
-			const j = (await res.json().catch(() => ({}))) as any;
+			const j = (await res.json().catch(() => ({}))) as {
+				id?: string;
+				error?: string;
+				details?: Record<string, string[]>;
+			};
 			if (res.ok && j.id) {
-				publishResult = { type: 'success', message: 'Published! Suppliers can now quote.', id: j.id };
+				publishResult = {
+					type: 'success',
+					message: 'Published! Suppliers can now quote.',
+					id: j.id
+				};
+				toast.success('Buying request published. Suppliers can now quote.');
 			} else {
+				const failMessage = j.error ?? 'Failed to publish.';
 				publishResult = {
 					type: 'error',
-					message: j.error ?? 'Failed to publish.',
+					message: failMessage,
 					needsLogin: res.status === 401
 				};
+				toast.error(failMessage);
+				if (res.status === 400 && j.details) {
+					fieldErrors = mergeServerDetails(fieldErrors, {
+						product: j.details.title ?? j.details.description,
+						quantity: j.details.quantity
+					});
+					focusFirstInvalid(fieldsEl);
+				}
 			}
 		} catch {
 			publishResult = { type: 'error', message: 'Network error. Please try again.' };
+			toast.error('Network error. Please try again.');
 		} finally {
 			publishing = false;
 		}
@@ -148,7 +220,10 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 </svelte:head>
 
 <Breadcrumb
-	items={[{ label: 'Tools', href: '/tools' }, { label: 'RFQ Builder', href: '/tools/rfq-builder' }]}
+	items={[
+		{ label: 'Tools', href: '/tools' },
+		{ label: 'RFQ Builder', href: '/tools/rfq-builder' }
+	]}
 />
 
 <section class="space-y-4 sm:space-y-6">
@@ -159,8 +234,8 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">RFQs suppliers answer</h1>
 		<p class="text-muted-foreground">
-			Vague RFQs get vague quotes. Specify certification, documents and delivery terms
-			up front — then copy or download the finished text.
+			Vague RFQs get vague quotes. Specify certification, documents and delivery terms up front —
+			then copy or download the finished text.
 		</p>
 	</div>
 
@@ -168,29 +243,51 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 		<Card class="p-4 sm:p-5">
 			<CardContent class="space-y-3 p-0">
 				<CardTitle class="text-base">Your requirements</CardTitle>
-				<div class="grid gap-3 sm:grid-cols-2">
+				<div class="grid gap-3 sm:grid-cols-2" bind:this={fieldsEl}>
 					<Field class="sm:col-span-2">
 						<FieldLabel>Product</FieldLabel>
-						<Input placeholder="e.g. Frozen boneless chicken breast" bind:value={product} />
+						<Input
+							placeholder="e.g. Frozen boneless chicken breast"
+							bind:value={product}
+							maxlength={200}
+							aria-invalid={fieldErrors.product ? true : undefined}
+							oninput={() => {
+								if (fieldErrors.product) fieldErrors = { ...fieldErrors, product: '' };
+							}}
+						/>
+						{#if fieldErrors.product}<FieldError>{fieldErrors.product}</FieldError>{/if}
 					</Field>
 					<Field class="sm:col-span-2">
 						<FieldLabel>Key specifications</FieldLabel>
-						<Textarea rows={2} placeholder="Grade, size, packaging, shelf life…" bind:value={specs} />
+						<Textarea
+							rows={2}
+							placeholder="Grade, size, packaging, shelf life…"
+							bind:value={specs}
+						/>
 					</Field>
 					<Field>
 						<FieldLabel>Quantity</FieldLabel>
-						<Input placeholder="e.g. 20ft container / 12 MT" bind:value={quantity} />
+						<Input
+							placeholder="e.g. 20ft container / 12 MT"
+							bind:value={quantity}
+							maxlength={200}
+							aria-invalid={fieldErrors.quantity ? true : undefined}
+							oninput={() => {
+								if (fieldErrors.quantity) fieldErrors = { ...fieldErrors, quantity: '' };
+							}}
+						/>
+						{#if fieldErrors.quantity}<FieldError>{fieldErrors.quantity}</FieldError>{/if}
 					</Field>
 					<Field>
 						<FieldLabel>Target price (optional)</FieldLabel>
-						<Input placeholder="e.g. USD 2,400 / MT CIF" bind:value={targetPrice} />
+						<Input placeholder="e.g. USD 2,400 / MT CIF" bind:value={targetPrice} maxlength={200} />
 					</Field>
 					<Field>
 						<FieldLabel>Destination market</FieldLabel>
 						<Select type="single" bind:value={destination}>
 							<SelectTrigger>{destination}</SelectTrigger>
 							<SelectContent>
-								{#each destinations as d}
+								{#each destinations as d (d)}
 									<SelectItem value={d}>{d}</SelectItem>
 								{/each}
 							</SelectContent>
@@ -201,7 +298,7 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 						<Select type="single" bind:value={incoterm}>
 							<SelectTrigger>{incoterm}</SelectTrigger>
 							<SelectContent>
-								{#each ['EXW', 'FOB', 'CFR', 'CIF', 'DAP', 'DDP'] as t}
+								{#each ['EXW', 'FOB', 'CFR', 'CIF', 'DAP', 'DDP'] as t (t)}
 									<SelectItem value={t}>{t}</SelectItem>
 								{/each}
 							</SelectContent>
@@ -213,14 +310,33 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 					</Field>
 					<Field>
 						<FieldLabel>Contact email</FieldLabel>
-						<Input type="email" placeholder="you@company.com" bind:value={contactEmail} />
+						<Input
+							type="email"
+							placeholder="you@company.com"
+							bind:value={contactEmail}
+							autocomplete="email"
+							maxlength={200}
+							aria-invalid={fieldErrors.contactEmail ? true : undefined}
+							oninput={() => {
+								if (fieldErrors.contactEmail) fieldErrors = { ...fieldErrors, contactEmail: '' };
+							}}
+						/>
+						{#if fieldErrors.contactEmail}
+							<FieldError>{fieldErrors.contactEmail}</FieldError>
+						{/if}
 					</Field>
 				</div>
 				<div>
 					<FieldLabel class="mb-1.5 block">Accepted certification</FieldLabel>
 					<div class="flex flex-wrap gap-1.5">
-						{#each certOptions as c}
-							<label class="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs transition-colors {selectedCerts.includes(c) ? 'border-primary bg-primary/5' : 'hover:bg-muted'}">
+						{#each certOptions as c (c)}
+							<label
+								class="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs transition-colors {selectedCerts.includes(
+									c
+								)
+									? 'border-primary bg-primary/5'
+									: 'hover:bg-muted'}"
+							>
 								<Checkbox
 									checked={selectedCerts.includes(c)}
 									onCheckedChange={() => (selectedCerts = toggle(selectedCerts, c))}
@@ -233,8 +349,14 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 				<div>
 					<FieldLabel class="mb-1.5 block">Documents with quotation</FieldLabel>
 					<div class="flex flex-wrap gap-1.5">
-						{#each docOptions as d}
-							<label class="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs transition-colors {selectedDocs.includes(d) ? 'border-primary bg-primary/5' : 'hover:bg-muted'}">
+						{#each docOptions as d (d)}
+							<label
+								class="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs transition-colors {selectedDocs.includes(
+									d
+								)
+									? 'border-primary bg-primary/5'
+									: 'hover:bg-muted'}"
+							>
 								<Checkbox
 									checked={selectedDocs.includes(d)}
 									onCheckedChange={() => (selectedDocs = toggle(selectedDocs, d))}
@@ -260,31 +382,45 @@ import ArrowRight from '@lucide/svelte/icons/arrow-right';
 									<Copy class="size-3.5" /> Copy
 								{/if}
 							</Button>
-						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={downloadRfq}>
-							<Download class="size-3.5" /> .txt
-						</Button>
-						<Button size="sm" class="h-7 text-xs" disabled={publishing} onclick={publishRfq}>
-							<Send class="size-3.5" />
-							{publishing ? 'Publishing...' : 'Publish'}
-						</Button>
+							<Button variant="outline" size="sm" class="h-7 text-xs" onclick={downloadRfq}>
+								<Download class="size-3.5" /> .txt
+							</Button>
+							<Button
+								size="sm"
+								class="h-7 text-xs"
+								disabled={publishing}
+								aria-busy={publishing}
+								onclick={publishRfq}
+							>
+								{#if publishing}
+									<Loader2 class="size-3.5 animate-spin" />
+								{:else}
+									<Send class="size-3.5" />
+								{/if}
+								{publishing ? 'Publishing...' : 'Publish'}
+							</Button>
+						</div>
 					</div>
-				</div>
-				<pre class="max-h-[420px] overflow-auto rounded-lg bg-muted/60 p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap">{rfqText}</pre>
-				{#if publishResult}
-					<div
-						class={`rounded-xl px-3 py-2 text-xs ${publishResult.type === 'success' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
-					>
-						{publishResult.message}
-						{#if publishResult.id}
-							<a href={localizeHref(`/rfqs/${publishResult.id}`)} class="ml-1 font-semibold underline">
-								View request
-							</a>
-						{/if}
-						{#if publishResult.needsLogin}
-							<a href={localizeHref('/login')} class="ml-1 font-semibold underline"> Sign in </a>
-						{/if}
-					</div>
-				{/if}
+					<pre
+						class="max-h-[420px] overflow-auto rounded-lg bg-muted/60 p-3 font-mono text-2xs-plus leading-relaxed whitespace-pre-wrap">{rfqText}</pre>
+					{#if publishResult}
+						<div
+							class={`rounded-xl px-3 py-2 text-xs ${publishResult.type === 'success' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
+						>
+							{publishResult.message}
+							{#if publishResult.id}
+								<a
+									href={localizeHref(`/rfqs/${publishResult.id}`)}
+									class="ml-1 font-semibold underline"
+								>
+									View request
+								</a>
+							{/if}
+							{#if publishResult.needsLogin}
+								<a href={localizeHref('/login')} class="ml-1 font-semibold underline"> Sign in </a>
+							{/if}
+						</div>
+					{/if}
 				</CardContent>
 			</Card>
 			<Card class="p-4">
