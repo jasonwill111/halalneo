@@ -52,6 +52,7 @@
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import ImageUpload from '#lib/components/site/image-upload.svelte';
 	import { toast } from 'svelte-sonner';
 	import {
 		describeFetchFailure,
@@ -1168,6 +1169,12 @@
 							placeholder="https://..."
 							aria-invalid={!!fieldErrors.image || undefined}
 						/>
+						<div class="mt-1.5">
+							<ImageUpload
+								alt={form.name ? `${form.name} — main image` : 'Product main image'}
+								onuploaded={(url) => (form.imageUrl = url)}
+							/>
+						</div>
 						{#if fieldErrors.image}<FieldError>{fieldErrors.image}</FieldError>{/if}
 					</Field.Field>
 
@@ -1178,6 +1185,16 @@
 							placeholder="Comma separated image URLs"
 							aria-invalid={!!fieldErrors.images || undefined}
 						/>
+						<div class="mt-1.5">
+							<ImageUpload
+								multiple
+								alt={form.name ? `${form.name} — gallery image` : 'Product gallery image'}
+								onuploaded={(url) =>
+									(form.images = form.images.trim()
+										? `${form.images.replace(/\s*,\s*$/, '')}, ${url}`
+										: url)}
+							/>
+						</div>
 						<Field.FieldDescription
 							>Comma-separated list of additional image URLs.</Field.FieldDescription
 						>

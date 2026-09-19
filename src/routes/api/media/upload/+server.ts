@@ -36,9 +36,14 @@ function extensionOf(contentType: string): string | null {
 	return COMPRESSED_IMAGE_TYPES[contentType.toLowerCase().split(';')[0].trim()] ?? null;
 }
 
-/** Content-addressed key: same bytes ⇒ same key ⇒ `head()` dedupe can hit. */
+/**
+ * Content-addressed key: same bytes ⇒ same key ⇒ `head()` dedupe can hit.
+ * Flat under `media/` on purpose: the read route `/api/media/[key]` is a
+ * single-segment param (and re-prefixes `media/` itself), so nested keys
+ * like `media/sha256/…` would 404.
+ */
 function buildKey(hash: string, ext: string): string {
-	return `media/sha256/${hash}.${ext}`;
+	return `media/${hash}.${ext}`;
 }
 
 async function sha256Hex(bytes: Uint8Array): Promise<string> {
@@ -160,7 +165,9 @@ export const POST: RequestHandler = async (event) => {
 		return json(
 			{
 				id: record.id,
-				url: `${baseUrl}/api/media/${record.key}`,
+				// Served URLs omit the `media/` storage prefix — the read route
+				// re-adds it (see buildKey above).
+				url: `${baseUrl}/api/media/${record.key.replace(/^media\//, '')}`,
 				key: record.key,
 				contentType: record.contentType,
 				size: record.size,
