@@ -5,7 +5,12 @@
 	import { Card } from '#lib/components/ui/card/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '#lib/components/ui/select/index.js';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.js';
 	import {
 		Dialog,
 		DialogContent,
@@ -20,6 +25,7 @@
 	import { sanitizeHtml } from '#lib/sanitize.js';
 	import { z } from 'zod';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
+	import { toast } from 'svelte-sonner';
 	import type { ApiList, SupplierMembershipItem } from '#lib/types/api.js';
 
 	let { data } = $props();
@@ -30,7 +36,7 @@
 	let quoteSupplier = $state('');
 	let quoteMessage = $state('');
 	let quoteSending = $state(false);
-	let quoteResult = $state<{ type: 'success' | 'error'; message: string } | null>(null);
+	let quoteResult = $state<{ message: string } | null>(null);
 	let fieldErrors = $state<Record<string, string>>({});
 	let formEl = $state<HTMLFormElement | undefined>(undefined);
 
@@ -62,7 +68,10 @@
 	async function submitQuote() {
 		if (quoteSending) return;
 		fieldErrors = {};
-		const parsed = quoteClientSchema.safeParse({ supplierSlug: quoteSupplier, message: quoteMessage });
+		const parsed = quoteClientSchema.safeParse({
+			supplierSlug: quoteSupplier,
+			message: quoteMessage
+		});
 		if (!parsed.success) {
 			for (const issue of parsed.error.issues) {
 				const key = String(issue.path[0] ?? '');
@@ -90,17 +99,18 @@
 				details?: Record<string, string[] | string | undefined>;
 			};
 			if (res.ok) {
-				quoteResult = { type: 'success', message: 'Quote sent to the buyer!' };
 				quoteMessage = '';
+				quoteOpen = false;
+				toast.success('Quote sent to the buyer!');
 			} else {
-				quoteResult = { type: 'error', message: j.error ?? 'Failed to send quote.' };
+				quoteResult = { message: j.error ?? 'Failed to send quote.' };
 				if (res.status === 400 && j.details) {
 					fieldErrors = mergeServerDetails(fieldErrors, j.details);
 					focusFirstInvalid(formEl);
 				}
 			}
 		} catch {
-			quoteResult = { type: 'error', message: 'Network error. Please try again.' };
+			quoteResult = { message: 'Network error. Please try again.' };
 		} finally {
 			quoteSending = false;
 		}
@@ -127,20 +137,24 @@
 
 {#if rfq}
 	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
-		<Breadcrumb items={[{ label: 'Buying Requests', href: '/rfqs' }, { label: rfq.title ?? 'Request' }]} />
+		<Breadcrumb
+			items={[{ label: 'Buying Requests', href: '/rfqs' }, { label: rfq.title ?? 'Request' }]}
+		/>
 
 		<div class="grid gap-4 lg:grid-cols-[1fr_320px]">
 			<div class="min-w-0 space-y-4">
 				<div class="space-y-2">
 					<div class="flex flex-wrap items-center gap-1.5">
-						<Badge class="bg-success/15 text-success text-2xs">Open</Badge>
+						<Badge class="bg-success/15 text-2xs text-success">Open</Badge>
 						{#if rfq.categorySlug}
-							<Badge variant="outline" class="text-2xs">{rfq.categorySlug.replace(/-/g, ' ')}</Badge>
+							<Badge variant="outline" class="text-2xs">{rfq.categorySlug.replace(/-/g, ' ')}</Badge
+							>
 						{/if}
 					</div>
 					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{rfq.title}</h1>
 					<p class="text-xs text-muted-foreground">
-						Posted {fmtDate(rfq.createdAt)}{#if rfq.destination} · ships to {rfq.destination}{/if}
+						Posted {fmtDate(rfq.createdAt)}{#if rfq.destination}
+							· ships to {rfq.destination}{/if}
 					</p>
 				</div>
 
@@ -222,17 +236,15 @@
 		</DialogHeader>
 
 		{#if quoteResult}
-			<div
-				class={`rounded-xl px-3 py-2 text-sm ${quoteResult.type === 'success' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
-			>
+			<div class="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">
 				{quoteResult.message}
 			</div>
 		{/if}
 
 		{#if mySuppliers.length === 0}
 			<p class="rounded-xl bg-muted/60 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
-				No supplier profile is linked to your account yet. Ask an admin to link your
-				company after your supplier application is approved — then you can quote.
+				No supplier profile is linked to your account yet. Ask an admin to link your company after
+				your supplier application is approved — then you can quote.
 			</p>
 		{:else}
 			<form

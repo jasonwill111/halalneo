@@ -18,11 +18,6 @@
 
 	let firstName = $state('');
 	let lastName = $state('');
-	// Optional free-text field kept in the form for parity with the buyer onboarding
-	// copy. The Better Auth `user` table has no company column (and no
-	// `additionalFields` are registered), so it is intentionally not part of the
-	// sign-up payload — it needs a buyer-profile table before it can be stored.
-	let company = $state('');
 	let email = $state('');
 	let password = $state('');
 	let termsAccepted = $state(false);
@@ -196,16 +191,6 @@
 						{#if fieldErrors.lastName}<FieldError>{fieldErrors.lastName}</FieldError>{/if}
 					</Field>
 				</div>
-
-				<Field>
-					<FieldLabel>Company Name</FieldLabel>
-					<Input
-						bind:value={company}
-						type="text"
-						placeholder="Your company"
-						autocomplete="organization"
-					/>
-				</Field>
 
 				<Field>
 					<FieldLabel>Email</FieldLabel>

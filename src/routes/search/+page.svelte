@@ -27,9 +27,12 @@
 	import SlidersHorizontal from '@lucide/svelte/icons/sliders-horizontal';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Paginator from '#lib/components/site/paginator.svelte';
+	import { page } from '$app/state';
 
 	let { data } = $props();
-	let query = $state('');
+	// Deep links like /search?q=halal must prefill the box (initial value only,
+	// so SSR and hydration read the same URL).
+	let query = $state(page.url.searchParams.get('q') ?? '');
 
 	// One glossary/cert entry as stored: either a bare label or an object with a name.
 	type SearchCertEntry = string | { name?: string | null; bodyName?: string | null };
