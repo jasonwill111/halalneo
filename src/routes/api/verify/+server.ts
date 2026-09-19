@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		);
 
 		return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Search failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Search failed' }, { status: 500 });
 	}
 };

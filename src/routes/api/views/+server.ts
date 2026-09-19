@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async (event) => {
 	const { url } = event;
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async (event) => {
 			daily: daily.map((d) => ({ day: d.day, views: d.n })),
 			topProducts: productSlugs
 		});
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };

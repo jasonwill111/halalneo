@@ -1,228 +1,160 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { createAuth } from '#lib/server/auth.js';
-import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
+import { getDb } from '#lib/server/db/index.js';
+import { requireAdmin } from '#lib/server/auth-guard.js';
+import { getSession } from '#lib/server/auth.js';
 import { media } from '#lib/server/db/schema.js';
+import { eq } from 'drizzle-orm';
 
-const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
-const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
-const THUMBNAIL_WIDTH = 300;
-const COMPRESS_QUALITY = 82;
+/**
+ * Media upload — cost red line (§5.11 / §5.12 of docs/development-rules.md).
+ *
+ * Workers must never process images (§5.10.4) and Cloudflare Image Resizing is
+ * a paid feature (§5.12), so compression happens on the CLIENT before the
+ * request is sent (see `#lib/utils/image-compress.ts` → `compressImageToWebP`).
+ * The server only:
+ *   1. rejects anything that is not already WebP/AVIF — original JPEG/PNG
+ *      uploads are forbidden (§5.11 "禁止直接上传原图到 R2");
+ *   2. derives the storage key from the SHA-256 of the bytes, so identical
+ *      content always maps to the same key;
+ *   3. `head()`s that key and skips `put()` when the object already exists
+ *      (real dedupe: a Class B head instead of a Class A put + extra storage);
+ *   4. writes immutable `Cache-Control` on every object (§5.12.2).
+ */
 
-function generateKey(filename: string, suffix = ''): string {
-	const ext = getExtension(filename);
-	const hash = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
-	const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-	const suffixPart = suffix ? `_${suffix}` : '';
-	return `media/${date}/${hash}${suffixPart}.${ext}`;
+const MAX_SIZE = 10 * 1024 * 1024; // 10 MB — generous for an already-compressed still
+const CACHE_CONTROL = 'public, max-age=31536000, immutable';
+
+/** Content types accepted post-compression → key extension. */
+const COMPRESSED_IMAGE_TYPES: Record<string, string> = {
+	'image/webp': 'webp',
+	'image/avif': 'avif'
+};
+
+function extensionOf(contentType: string): string | null {
+	return COMPRESSED_IMAGE_TYPES[contentType.toLowerCase().split(';')[0].trim()] ?? null;
 }
 
-function getExtension(filename: string): string {
-	const dot = filename.lastIndexOf('.');
-	if (dot === -1) return 'bin';
-	return filename.slice(dot + 1).toLowerCase();
+/** Content-addressed key: same bytes ⇒ same key ⇒ `head()` dedupe can hit. */
+function buildKey(hash: string, ext: string): string {
+	return `media/sha256/${hash}.${ext}`;
 }
 
-function isImageType(type: string): boolean {
-	return (IMAGE_TYPES as readonly string[]).includes(type);
-}
-
-function uint8ToStream(data: Uint8Array): ReadableStream<Uint8Array> {
-	return new Response(new Blob([data as unknown as BlobPart])).body as ReadableStream<Uint8Array>;
-}
-
-async function compressImage(
-	images: ImagesBinding | undefined,
-	data: Uint8Array,
-	contentType: string
-): Promise<{ data: Uint8Array; contentType: string } | null> {
-	if (!images) return null;
-
-	try {
-		const stream = uint8ToStream(data);
-		const result = await images
-			.input(stream)
-			.transform({})
-			.output({
-				format: 'image/webp',
-				quality: COMPRESS_QUALITY
-			});
-
-		const outputData = await collectStream(result.image());
-		return {
-			data: outputData,
-			contentType: result.contentType()
-		};
-	} catch {
-		return null;
-	}
-}
-
-async function generateThumbnail(
-	images: ImagesBinding | undefined,
-	data: Uint8Array
-): Promise<{ data: Uint8Array; contentType: string } | null> {
-	if (!images) return null;
-
-	try {
-		const stream = uint8ToStream(data);
-		const result = await images
-			.input(stream)
-			.transform({
-				width: THUMBNAIL_WIDTH,
-				fit: 'scale-down'
-			})
-			.output({
-				format: 'image/webp',
-				quality: COMPRESS_QUALITY
-			});
-
-		const outputData = await collectStream(result.image());
-		return {
-			data: outputData,
-			contentType: result.contentType()
-		};
-	} catch {
-		return null;
-	}
-}
-
-async function collectStream(stream: ReadableStream<Uint8Array>): Promise<Uint8Array> {
-	const reader = stream.getReader();
-	const chunks: Uint8Array[] = [];
-	let totalLength = 0;
-
-	while (true) {
-		const { done, value } = await reader.read();
-		if (done) break;
-		chunks.push(value);
-		totalLength += value.length;
-	}
-
-	const result = new Uint8Array(totalLength);
-	let offset = 0;
-	for (const chunk of chunks) {
-		result.set(chunk, offset);
-		offset += chunk.length;
-	}
-	return result;
+async function sha256Hex(bytes: Uint8Array): Promise<string> {
+	const digest = await crypto.subtle.digest('SHA-256', bytes as unknown as ArrayBuffer);
+	return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 // ==================== POST: Upload ====================
-export const POST: RequestHandler = async ({ request }) => {
-	let db: any = null;
-	try {
-		db = getBindings().DB;
-	} catch {
-		db = null;
-	}
-	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
+export const POST: RequestHandler = async (event) => {
+	// Early return before touching the request body (§5.10.3).
+	const denied = await requireAdmin(event);
+	if (denied) return denied;
 
-	// Pre-check file size before reading into memory
-	const contentLength = Number(request.headers.get('content-length') || 0);
+	let r2: R2Bucket | undefined;
+	let d1: D1Database | undefined;
+	try {
+		const b = getBindings();
+		r2 = b.halalneo_assets;
+		d1 = b.DB;
+	} catch {
+		r2 = undefined;
+		d1 = undefined;
+	}
+	if (!d1) return json({ error: 'Database unavailable' }, { status: 503 });
+	if (!r2) return json({ error: 'R2 bucket unavailable' }, { status: 503 });
+
+	// Reject oversized uploads before reading them into memory.
+	const contentLength = Number(event.request.headers.get('content-length') || 0);
 	if (contentLength > MAX_SIZE) {
 		return json({ error: `File too large (max ${MAX_SIZE / 1024 / 1024} MB)` }, { status: 413 });
 	}
 
-	const auth = createAuth(db);
-	const session = await auth.api.getSession({ headers: request.headers });
-	if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
-
-	const formData = await request.formData();
+	const formData = await event.request.formData();
 	const file = formData.get('file');
-
 	if (!file || !(file instanceof File)) {
 		return json({ error: 'No file provided' }, { status: 400 });
 	}
 
-	const contentType = file.type;
-	if (!isImageType(contentType)) {
+	const contentType = file.type.toLowerCase().split(';')[0].trim();
+	const ext = extensionOf(contentType);
+	if (!ext) {
 		return json(
-			{ error: `Unsupported type: ${contentType}. Allowed: JPEG, PNG, WebP` },
+			{
+				error:
+					'Only pre-compressed image/webp or image/avif uploads are accepted. ' +
+					'Compress on the client first (see #lib/utils/image-compress.ts compressImageToWebP) — ' +
+					'uploading originals to R2 is forbidden by docs/development-rules.md §5.11.'
+			},
 			{ status: 400 }
 		);
 	}
 
 	if (file.size > MAX_SIZE) {
-		return json({ error: `File too large (max ${MAX_SIZE / 1024 / 1024} MB)` }, { status: 400 });
+		return json({ error: `File too large (max ${MAX_SIZE / 1024 / 1024} MB)` }, { status: 413 });
 	}
 
-	let images: ImagesBinding | undefined;
-	let r2: R2Bucket | undefined;
 	try {
-		const b = getBindings();
-		images = b.IMAGES as ImagesBinding | undefined;
-		r2 = b.halalneo_assets as R2Bucket | undefined;
-	} catch {
-		images = undefined;
-		r2 = undefined;
-	}
-	if (!r2) return json({ error: 'R2 bucket unavailable' }, { status: 503 });
+		const bytes = new Uint8Array(await file.arrayBuffer());
+		const hash = await sha256Hex(bytes);
+		const key = buildKey(hash, ext);
+		const db = getDb(d1);
+		// /api/media sits in hooks.server.ts PUBLIC_PATHS, so handleBetterAuth
+		// never fills event.locals — resolve the session explicitly.
+		const session = await getSession(event);
+		const userId = typeof session?.user?.id === 'string' ? session.user.id : '';
+		if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
-	try {
-		const originalKey = generateKey(file.name);
-		const originalData = new Uint8Array(await file.arrayBuffer());
-
-		// Compress original
-		let finalData = originalData;
-		let finalContentType = contentType;
-		let compressed = false;
-
-		if (images) {
-			const compressedResult = await compressImage(images, originalData, contentType);
-			if (compressedResult) {
-				finalData = new Uint8Array(compressedResult.data.buffer as ArrayBuffer);
-				finalContentType = compressedResult.contentType;
-				compressed = true;
-			}
+		// §5.12.1 — head() before put(): skip the Class A write when the exact
+		// bytes already live in the bucket.
+		const existing = await r2.head(key);
+		const deduped = Boolean(existing);
+		if (!deduped) {
+			await r2.put(key, bytes, {
+				httpMetadata: { contentType, cacheControl: CACHE_CONTROL }
+			});
 		}
 
-		// Generate thumbnail
-		let thumbnailKey: string | null = null;
-		if (images) {
-			const thumbResult = await generateThumbnail(images, originalData);
-			if (thumbResult) {
-				thumbnailKey = generateKey(file.name, 'thumb');
-				await r2.put(thumbnailKey, thumbResult.data, {
-					httpMetadata: {
-						contentType: thumbResult.contentType,
-						cacheControl: 'public, max-age=31536000, immutable'
-					}
-				});
-			}
-		}
-
-		// Upload final image to R2
-		await r2.put(originalKey, finalData, {
-			httpMetadata: {
-				contentType: finalContentType,
-				cacheControl: 'public, max-age=31536000, immutable'
-			}
-		});
-
-		// Save metadata to D1
 		const alt = formData.get('alt')?.toString() || null;
-		const dbClient = getDb(db);
-		const record = await dbClient
-			.insert(media)
-			.values({
-				key: originalKey,
-				filename: file.name,
-				contentType: finalContentType,
-				size: finalData.byteLength,
-				uploadedBy: session.user.id,
-				thumbnailKey,
-				alt
+
+		// Metadata dedupe mirrors the object dedupe (media.key is UNIQUE).
+		const [existingRow] = await db
+			.select({
+				id: media.id,
+				key: media.key,
+				contentType: media.contentType,
+				size: media.size
 			})
-			.returning()
-			.get();
+			.from(media)
+			.where(eq(media.key, key))
+			.limit(1);
+
+		const record =
+			existingRow ??
+			(await db
+				.insert(media)
+				.values({
+					key,
+					filename: file.name,
+					contentType,
+					size: bytes.byteLength,
+					uploadedBy: userId,
+					alt
+				})
+				.returning({
+					id: media.id,
+					key: media.key,
+					contentType: media.contentType,
+					size: media.size
+				})
+				.get());
 
 		let baseUrl = '';
 		try {
 			baseUrl = getBindings().ORIGIN || '';
 		} catch {
-			baseUrl = '';
+			baseUrl = new URL(event.request.url).origin;
 		}
 
 		return json(
@@ -230,20 +162,15 @@ export const POST: RequestHandler = async ({ request }) => {
 				id: record.id,
 				url: `${baseUrl}/api/media/${record.key}`,
 				key: record.key,
-				thumbnailUrl: thumbnailKey ? `${baseUrl}/api/media/${thumbnailKey}` : null,
-				thumbnailKey,
-				contentType: finalContentType,
-				originalContentType: contentType,
-				size: finalData.byteLength,
-				originalSize: originalData.byteLength,
-				compressed,
+				contentType: record.contentType,
+				size: record.size,
+				deduped,
 				alt
 			},
-			{ status: 201 }
+			{ status: existingRow ? 200 : 201 }
 		);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Upload failed' }, { status: 500 });
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Upload failed';
+		return json({ error: message }, { status: 500 });
 	}
 };
-
-

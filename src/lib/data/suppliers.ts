@@ -1,4 +1,4 @@
-import type { Supplier } from './types';
+import type { Supplier } from '#lib/types/index.js';
 
 /**
  * Supplier directory.

@@ -28,13 +28,13 @@ export const GET: RequestHandler = async (event) => {
 				.from(follows)
 				.where(eq(follows.supplierSlug, countFor));
 			return json({ count: r?.n ?? 0 });
-		} catch (e: any) {
-			return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+		} catch (e: unknown) {
+			return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 		}
 	}
 
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
 	const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
@@ -59,8 +59,8 @@ export const GET: RequestHandler = async (event) => {
 			.leftJoin(suppliers, eq(follows.supplierSlug, suppliers.slug))
 			.where(eq(follows.userId, userId));
 		return json({ items: rows });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async (event) => {
 export const POST: RequestHandler = async (event) => {
 	const { request } = event;
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Please sign in to follow suppliers.' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
@@ -85,8 +85,8 @@ export const POST: RequestHandler = async (event) => {
 			.onConflictDoNothing();
 		await invalidateCache('/api/follows');
 		return json({ following: true }, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async (event) => {
 export const DELETE: RequestHandler = async (event) => {
 	const { url } = event;
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
@@ -109,7 +109,7 @@ export const DELETE: RequestHandler = async (event) => {
 			.where(and(eq(follows.userId, userId), eq(follows.supplierSlug, supplierSlug)));
 		await invalidateCache('/api/follows');
 		return json({ following: false });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };

@@ -6,11 +6,24 @@ import { categories } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
+import { requireAdmin } from '#lib/server/auth-guard.js';
+import { categoryUpdateSchema } from '#lib/schemas/categories.js';
 
-const ALLOWED_CATEGORY_FIELDS = new Set([
-	'name', 'description', 'parentSlug', 'icon', 'status', 'sortOrder',
-	'metaTitle', 'metaDescription', 'keywords'
-]);
+/** Explicit column projection — never SELECT * (§5.9). */
+const CATEGORY_COLUMNS = {
+	slug: categories.slug,
+	name: categories.name,
+	description: categories.description,
+	parentSlug: categories.parentSlug,
+	icon: categories.icon,
+	status: categories.status,
+	sortOrder: categories.sortOrder,
+	metaTitle: categories.metaTitle,
+	metaDescription: categories.metaDescription,
+	keywords: categories.keywords,
+	createdAt: categories.createdAt,
+	updatedAt: categories.updatedAt
+};
 
 export const GET: RequestHandler = async (event) => {
 	const { params, url } = event;
@@ -21,7 +34,11 @@ export const GET: RequestHandler = async (event) => {
 		const row = await cachedQuery(
 			url.toString(),
 			async () => {
-				const [row] = await db.select().from(categories).where(eq(categories.slug, params.slug)).limit(1);
+				const [row] = await db
+					.select(CATEGORY_COLUMNS)
+					.from(categories)
+					.where(eq(categories.slug, params.slug))
+					.limit(1);
 				return row ?? null;
 			},
 			{ ...cacheLong() }
@@ -36,51 +53,69 @@ export const GET: RequestHandler = async (event) => {
 			if (!session) return json({ error: 'Not found' }, { status: 404 });
 		}
 		return json(row);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		const message = e instanceof Error ? e.message : '';
+		return json({ error: message || 'Failed' }, { status: 500 });
 	}
 };
 
+/**
+ * Full-record update (the admin form always submits every editable column).
+ * `slug` is the primary key and stays immutable — it is taken from the path.
+ */
 export const PUT: RequestHandler = async (event) => {
 	const { params, request } = event;
-	const session = await getSession(event);
-	if (!session) {
-		return json({ error: 'Unauthorized' }, { status: 401 });
-	}
+	const denied = await requireAdmin(event);
+	if (denied) return denied;
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
-	if (!body) return json({ error: 'Invalid body' }, { status: 400 });
-
-	const { slug: _slug, ...rawUpdates } = body;
-	const updates: Record<string, unknown> = {};
-	for (const [k, v] of Object.entries(rawUpdates)) {
-		if (ALLOWED_CATEGORY_FIELDS.has(k)) updates[k] = v;
+	const body: unknown = await request.json().catch(() => null);
+	const parsed = categoryUpdateSchema.safeParse(body);
+	if (!parsed.success) {
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
-	updates.updatedAt = new Date();
+	if (parsed.data.parentSlug && parsed.data.parentSlug === params.slug) {
+		return json(
+			{ error: 'Validation failed', details: { parentSlug: ['A category cannot be its own parent.'] } },
+			{ status: 400 }
+		);
+	}
 
 	try {
 		const [row] = await db
 			.update(categories)
-			.set(updates as any)
+			.set({
+				name: parsed.data.name,
+				description: parsed.data.description ?? null,
+				parentSlug: parsed.data.parentSlug ?? null,
+				icon: parsed.data.icon ?? null,
+				status: parsed.data.status ?? 'active',
+				sortOrder: parsed.data.sortOrder ?? 0,
+				metaTitle: parsed.data.metaTitle ?? null,
+				metaDescription: parsed.data.metaDescription ?? null,
+				keywords: parsed.data.keywords ?? null,
+				updatedAt: new Date()
+			})
 			.where(eq(categories.slug, params.slug))
-			.returning();
+			.returning(CATEGORY_COLUMNS);
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 		await invalidateCache('/api/categories', `/api/categories/${params.slug}`);
 		return json(row);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Update failed' }, { status: 500 });
+	} catch (e: unknown) {
+		const message = e instanceof Error ? e.message : '';
+		return json({ error: message || 'Update failed' }, { status: 500 });
 	}
 };
 
 export const DELETE: RequestHandler = async (event) => {
-	const { params, request } = event;
-	const session = await getSession(event);
-	if (!session) {
-		return json({ error: 'Unauthorized' }, { status: 401 });
-	}
+	const { params } = event;
+	const denied = await requireAdmin(event);
+	if (denied) return denied;
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
@@ -89,11 +124,20 @@ export const DELETE: RequestHandler = async (event) => {
 		const [row] = await db
 			.delete(categories)
 			.where(eq(categories.slug, params.slug))
-			.returning();
+			.returning({ slug: categories.slug });
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
+
+		// Orphaned children become top-level in a single indexed UPDATE
+		// (idx_categories_parent) instead of a client-side N+1 loop (§5.9).
+		await db
+			.update(categories)
+			.set({ parentSlug: null, updatedAt: new Date() })
+			.where(eq(categories.parentSlug, params.slug));
+
 		await invalidateCache('/api/categories', `/api/categories/${params.slug}`);
 		return json({ deleted: true });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Delete failed' }, { status: 500 });
+	} catch (e: unknown) {
+		const message = e instanceof Error ? e.message : '';
+		return json({ error: message || 'Delete failed' }, { status: 500 });
 	}
 };

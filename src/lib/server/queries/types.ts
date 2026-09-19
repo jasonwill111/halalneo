@@ -1,4 +1,4 @@
-import type { KnowledgeSection } from '#lib/data/types.js';
+import type { KnowledgeSection } from '#lib/types/index.js';
 
 export interface PaginationOptions {
 	limit?: number;

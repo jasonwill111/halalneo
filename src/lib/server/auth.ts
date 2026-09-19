@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
+import type { Session, User } from 'better-auth';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -26,13 +27,15 @@ export const createAuth = (d1: D1Database) =>
  * Get the current session from a request event.
  * Returns null if not authenticated.
  */
-export async function getSession(event: RequestEvent): Promise<{ session: any; user: any } | null> {
+export async function getSession(
+	event: RequestEvent
+): Promise<{ session: Session; user: User } | null> {
 	// Prefer session already resolved by handleBetterAuth middleware
 	if (event.locals.session && event.locals.user) {
 		return { session: event.locals.session, user: event.locals.user };
 	}
 
-	let db: any = null;
+	let db: D1Database | null;
 	try {
 		db = getBindings().DB;
 	} catch {

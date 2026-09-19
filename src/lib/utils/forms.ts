@@ -33,6 +33,35 @@ export function mergeServerDetails(
 	return next;
 }
 
+/**
+ * Normalise a Better Auth client error into the project's `{ field: messages }`
+ * shape (§3.4) so it can be fed straight to `mergeServerDetails`.
+ *
+ * better-auth wraps server failures as `{ message, status, body }`. When the
+ * body carries our `{ error, details: { field: [msg] } }` contract we hand back
+ * those field messages; otherwise the single message is attached to the field
+ * the user can actually act on (anything mentioning email → `email`, else
+ * `fallback`). Returns `null` when there is nothing mappable.
+ */
+export function readAuthErrorDetails(
+	err: unknown,
+	fallback = 'password'
+): Record<string, string[] | string> | null {
+	if (!err || typeof err !== 'object') return null;
+	const body = (err as { body?: unknown }).body;
+	if (body && typeof body === 'object') {
+		const details = (body as { details?: unknown }).details;
+		if (details && typeof details === 'object') {
+			return details as Record<string, string[] | string>;
+		}
+	}
+	const { status, message } = err as { status?: number; message?: string };
+	if (status && status >= 400 && message) {
+		return /email/i.test(message) ? { email: message } : { [fallback]: message };
+	}
+	return null;
+}
+
 const FOCUSABLE = 'input,textarea,select,button,a[href],[tabindex]:not([tabindex="-1"])';
 
 /** Focus the first `aria-invalid="true"` control inside a form after failed validation. */

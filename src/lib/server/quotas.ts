@@ -1,7 +1,14 @@
 import { gte, and, eq, sql } from 'drizzle-orm';
+import type { SQLWrapper } from 'drizzle-orm';
+import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 import { getDb } from '#lib/server/db/index.js';
 
 type Db = ReturnType<typeof getDb>;
+
+/** A quota-tracked table: a real Drizzle SQLite table exposing its `createdAt` column. */
+type QuotaTable = SQLiteTable & { readonly createdAt: SQLWrapper };
+/** The identity column the quota counts by (`buyerId` / `supplierSlug`). */
+type QuotaColumn = SQLWrapper;
 
 // Weekly publishing quotas (anti-spam by design). Paid plans raise the cap
 // but NEVER remove it. Plan resolution is a stub returning 'free' until
@@ -30,8 +37,8 @@ const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
  */
 export async function checkWeeklyQuota(
 	db: Db,
-	table: any,
-	column: any,
+	table: QuotaTable,
+	column: QuotaColumn,
 	key: string,
 	kind: QuotaKind,
 	plan: Plan = 'free'

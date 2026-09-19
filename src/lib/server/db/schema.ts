@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, real, index } from 'drizzle-orm/sqlite-core';
+import { integer, sqliteTable, text, real, index, primaryKey } from 'drizzle-orm/sqlite-core';
 
 // ==================== Media ====================
 export const media = sqliteTable('media', {
@@ -215,23 +215,29 @@ export const serviceProviders = sqliteTable('service_providers', {
 });
 
 // ==================== Inquiries ====================
-export const inquiries = sqliteTable('inquiries', {
-	id: text('id')
-		.primaryKey()
-		.$defaultFn(() => crypto.randomUUID()),
-	buyerSlug: text('buyer_slug').notNull(),
-	supplierSlug: text('supplier_slug').references(() => suppliers.slug),
-	productSlug: text('product_slug').references(() => products.slug),
-	subject: text('subject').notNull(),
-	message: text('message').notNull(),
-	status: text('status', { enum: ['active', 'pending', 'closed', 'flagged'] }).default('active'),
-	createdAt: integer('created_at', { mode: 'timestamp' })
-		.$defaultFn(() => new Date())
-		.notNull(),
-	updatedAt: integer('updated_at', { mode: 'timestamp' })
-		.$defaultFn(() => new Date())
-		.notNull()
-});
+export const inquiries = sqliteTable(
+	'inquiries',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		// Signed-in buyer who sent the inquiry (NULL for anonymous/legacy rows).
+		userId: text('user_id'),
+		buyerSlug: text('buyer_slug').notNull(),
+		supplierSlug: text('supplier_slug').references(() => suppliers.slug),
+		productSlug: text('product_slug').references(() => products.slug),
+		subject: text('subject').notNull(),
+		message: text('message').notNull(),
+		status: text('status', { enum: ['active', 'pending', 'closed', 'flagged'] }).default('active'),
+		createdAt: integer('created_at', { mode: 'timestamp' })
+			.$defaultFn(() => new Date())
+			.notNull(),
+		updatedAt: integer('updated_at', { mode: 'timestamp' })
+			.$defaultFn(() => new Date())
+			.notNull()
+	},
+	(table) => [index('idx_inquiries_user').on(table.userId)]
+);
 
 // ==================== Site Settings ====================
 export const siteSettings = sqliteTable('site_settings', {
@@ -297,6 +303,24 @@ export const tradeShows = sqliteTable('trade_shows', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
+// ==================== AI Tools ====================
+// Catalogue of AI-powered tools offered on the platform.
+// category: assistant|compliance|sourcing|documentation — status: active|disabled.
+export const aiTools = sqliteTable('ai_tools', {
+	id: text('id').primaryKey(),
+	slug: text('slug').notNull().unique(),
+	name: text('name').notNull(),
+	description: text('description').default(''),
+	longDescription: text('long_description').default(''),
+	features: text('features', { mode: 'json' }).default([]).$type<string[]>(),
+	category: text('category', {
+		enum: ['assistant', 'compliance', 'sourcing', 'documentation']
+	}).default('assistant'),
+	status: text('status', { enum: ['active', 'disabled'] }).default('disabled'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
 // ==================== Buying Requests (public RFQ board) ====================
 // Buyer-posted sourcing needs. status: active|closed|expired|flagged.
 export const buyingRequests = sqliteTable('buying_requests', {
@@ -356,6 +380,22 @@ export const follows = sqliteTable('follows', {
 	supplierSlug: text('supplier_slug').notNull(),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });
+
+// ==================== Favorites (buyers save products) ====================
+// DDL: drizzle/2026-09-favorites.sql. PK is (user_id, product_slug);
+// idx_favorites_user covers "my saved items" lookups.
+export const favorites = sqliteTable(
+	'favorites',
+	{
+		userId: text('user_id').notNull(),
+		productSlug: text('product_slug').notNull(),
+		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.userId, table.productSlug] }),
+		index('idx_favorites_user').on(table.userId)
+	]
+);
 
 // ==================== Supplier Updates (supplier posts feed) ====================
 // Short posts published on the supplier detail page. status: active|archived.
@@ -474,6 +514,10 @@ export const mgStatusIdx = index('idx_mg_status').on(marketGuides.status);
 export const tsCountryIdx = index('idx_ts_country').on(tradeShows.country);
 export const tsStatusIdx = index('idx_ts_status').on(tradeShows.status);
 export const tsStartDateIdx = index('idx_ts_start_date').on(tradeShows.startDate);
+
+// AI Tools
+export const aiToolsStatusIdx = index('idx_ai_tools_status').on(aiTools.status);
+export const aiToolsCategoryIdx = index('idx_ai_tools_category').on(aiTools.category);
 
 // Auth tables are provided by Better Auth
 export * from './auth.schema';

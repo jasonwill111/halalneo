@@ -12,9 +12,8 @@ declare const caches: CacheStorage;
 
 async function getDefaultCache(): Promise<Cache | null> {
 	try {
-		// Cloudflare Workers expose caches.default
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		return await (caches as any).open('halalneo:d1-cache');
+		// Cloudflare Workers expose caches.default plus named caches via open()
+		return await caches.open('halalneo:d1-cache');
 	} catch {
 		return null;
 	}
@@ -98,7 +97,7 @@ export async function cachedQuery<T>(
 			cached = undefined;
 		}
 		if (cached) {
-			const data = (((await cached.json()) as any) as T) as T;
+			const data = (await cached.json()) as T;
 			memorySet(key, data, ttl);
 			return data;
 		}

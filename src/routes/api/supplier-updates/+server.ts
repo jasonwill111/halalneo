@@ -50,8 +50,8 @@ export const GET: RequestHandler = async ({ url }) => {
 		);
 
 		return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async (event) => {
 	const { request } = event;
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Please sign in as a supplier to post updates.' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async (event) => {
 
 		await invalidateCache('/api/supplier-updates');
 		return json({ id: row.id, remaining: quota.remaining - 1 }, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed to publish' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed to publish' }, { status: 500 });
 	}
 };

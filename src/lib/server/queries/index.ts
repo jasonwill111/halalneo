@@ -2,7 +2,7 @@ import { eq, and, or, sql, desc, asc, inArray, like } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import type { drizzle } from 'drizzle-orm/d1';
 import * as schema from '#lib/server/db/schema.js';
-import { cachedQuery, cacheMedium } from '../cache.js';
+import { cachedQuery, cacheMedium, queryCacheKey } from '../cache.js';
 import { ftsQuery, ftsSlugs } from '../fts.js';
 import type {
 	PaginatedResult,
@@ -23,6 +23,26 @@ function buildConditions(conditions: SQL[]) {
 	return conditions.length ? and(...conditions) : undefined;
 }
 
+/**
+ * §5.9.4 — no list query may return more than 100 rows per page. Callers that
+ * genuinely need everything (sitemaps, exports) page with `offset` instead of
+ * raising this number; see src/routes/sitemap.xml/+server.ts.
+ */
+export const LIST_LIMIT_MAX = 100;
+const DEFAULT_LIMIT = 20;
+
+/** Clamp any caller-supplied page size into `1..LIST_LIMIT_MAX`. */
+export function clampLimit(limit: number | undefined, fallback = DEFAULT_LIMIT): number {
+	const n = typeof limit === 'number' && Number.isFinite(limit) ? Math.trunc(limit) : fallback;
+	return Math.min(Math.max(n, 1), LIST_LIMIT_MAX);
+}
+
+/** §5.9.1 — even "small" dictionary tables get an explicit LIMIT. */
+const CATEGORY_LIMIT = 100;
+/** The category tree must be whole to nest correctly, so it gets a wider cap. */
+const CATEGORY_TREE_LIMIT = 300;
+const SETTINGS_LIMIT = 100;
+
 // ==================== Products ====================
 
 export async function getProducts(
@@ -31,7 +51,8 @@ export async function getProducts(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.products.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
+		const { offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [];
 		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
@@ -78,9 +99,8 @@ export async function getProducts(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -104,7 +124,8 @@ export async function getProductsBySupplier(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.products.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, status } = opts;
+		const { offset = 0, status } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [eq(schema.products.supplierSlug, supplierSlug)];
 		if (status)
@@ -153,7 +174,8 @@ export async function getProductsByCategory(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.products.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, status } = opts;
+		const { offset = 0, status } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [eq(schema.products.categorySlug, categorySlug)];
 		if (status)
@@ -203,7 +225,8 @@ export async function getSuppliers(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.suppliers.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, status, country } = opts;
+		const { offset = 0, search, status, country } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [];
 		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
@@ -244,9 +267,8 @@ export async function getSuppliers(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -270,7 +292,8 @@ export async function getSuppliersByCategory(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.suppliers.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0 } = opts;
+		const { offset = 0 } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const subquery = db
 			.select({ supplierSlug: schema.products.supplierSlug })
@@ -317,11 +340,18 @@ export async function getSuppliersByCategory(
 
 export async function getCategories(db: Db, request?: Request) {
 	const queryFn = async () => {
-		return db.select().from(schema.categories).orderBy(asc(schema.categories.sortOrder));
+		return db
+			.select()
+			.from(schema.categories)
+			.orderBy(asc(schema.categories.sortOrder))
+			.limit(CATEGORY_LIMIT);
 	};
 
 	if (request) {
-		return cachedQuery(request, queryFn, cacheMedium());
+		return cachedQuery(request, queryFn, {
+			cacheKey: queryCacheKey(new URL(request.url)),
+			...cacheMedium()
+		});
 	}
 
 	return queryFn();
@@ -340,7 +370,13 @@ type CategoryRow = typeof schema.categories.$inferSelect;
 type CategoryWithChildren = CategoryRow & { children: CategoryWithChildren[] };
 
 export async function getCategoryTree(db: Db): Promise<CategoryWithChildren[]> {
-	const all = await db.select().from(schema.categories).orderBy(asc(schema.categories.sortOrder));
+	// Wider than the 100-row list cap on purpose: the tree is built from a
+	// single read, so a truncated page would silently drop whole branches.
+	const all = await db
+		.select()
+		.from(schema.categories)
+		.orderBy(asc(schema.categories.sortOrder))
+		.limit(CATEGORY_TREE_LIMIT);
 	const map = new Map<string, CategoryWithChildren>();
 
 	for (const cat of all) {
@@ -368,7 +404,8 @@ export async function getKbArticles(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.knowledgeBase.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, section } = opts;
+		const { offset = 0, search, section } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions: SQL[] = [eq(schema.knowledgeBase.status, 'published')];
 		// LIKE only — knowledge_base_fts does not exist in production D1,
@@ -409,9 +446,8 @@ export async function getKbArticles(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -447,7 +483,8 @@ export async function getBlogPosts(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.pages.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, category } = opts;
+		const { offset = 0, search, category } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [eq(schema.pages.type, 'blog'), eq(schema.pages.status, 'published')];
 		// LIKE only — pages_fts does not exist in production D1,
@@ -481,9 +518,8 @@ export async function getBlogPosts(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -514,7 +550,8 @@ export async function getPages(
 	db: Db,
 	opts: PageQueryOptions = {}
 ): Promise<PaginatedResult<typeof schema.pages.$inferSelect>> {
-	const { limit = 20, offset = 0, type, status } = opts;
+	const { offset = 0, type, status } = opts;
+	const limit = clampLimit(opts.limit);
 
 	const conditions = [];
 	if (type) conditions.push(eq(schema.pages.type, type));
@@ -556,7 +593,8 @@ export async function getServiceProviders(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.serviceProviders.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, type } = opts;
+		const { offset = 0, search, type } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [eq(schema.serviceProviders.status, 'active')];
 		// LIKE only — service_providers_fts does not exist in production D1,
@@ -590,9 +628,8 @@ export async function getServiceProviders(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -617,7 +654,8 @@ export async function getCertifyingBodies(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.certifyingBodies.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, country } = opts;
+		const { offset = 0, search, country } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [];
 		// LIKE only — certifying_bodies_fts does not exist in production D1,
@@ -651,9 +689,8 @@ export async function getCertifyingBodies(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -689,11 +726,18 @@ export async function getSuppliersByCertifyingBody(
 	certificationTypes: string[];
 }> {
 	const queryFn = async () => {
-		// Push the bodyId predicate into D1 via LIKE on the JSON certifications
-		// column — without this the query is a full-table scan, then we
-		// JSON.parse every row's certifications in JS to match bodyId.
-		// LIKE on a JSON TEXT column still scans, but LIMIT 50 caps the work
-		// and dramatically reduces rows-read vs scanning the whole table.
+		// Push the bodyId predicate into D1 through the indexed suppliers_fts
+		// lookup — without it this is a full-table scan followed by a JS
+		// JSON.parse of every row's certifications.
+		// The term MUST go through ftsQuery(): bodyId is caller-controlled and
+		// interpolating it raw into a MATCH string breaks (or injects into) the
+		// FTS5 query syntax.
+		const empty = { suppliers: [], certificationTypes: [] };
+		const match = ftsQuery(bodyId);
+		if (!match) return empty;
+		const matchedSlugs = await ftsSlugs(db, 'suppliers', match, 200);
+		if (matchedSlugs.length === 0) return empty;
+
 		const allSuppliers = await db
 			.select({
 				slug: schema.suppliers.slug,
@@ -707,25 +751,25 @@ export async function getSuppliersByCertifyingBody(
 				certifications: schema.suppliers.certifications
 			})
 			.from(schema.suppliers)
-			.where(inArray(schema.suppliers.slug, await ftsSlugs(db, 'suppliers', `"${bodyId}"`, 200)))
+			.where(inArray(schema.suppliers.slug, matchedSlugs))
 			.limit(50);
 
-		// Re-verify in JS to avoid false positives from LIKE substring matches
-		// (e.g. bodyId "j" matching any string containing the letter j).
-		function parseCerts(s: any): any[] {
-			if (Array.isArray(s.certifications)) return s.certifications;
-			if (typeof s.certifications === 'string') {
-				try {
-					return JSON.parse(s.certifications);
-				} catch {
-					return [];
-				}
+		type SupplierCertRow = (typeof allSuppliers)[number];
+
+		// FTS tokenises the JSON blob, so a match can still be a false positive
+		// (another field mentioning the bodyId). Re-verify the parsed JSON.
+		function parseCerts(row: SupplierCertRow): Array<{ bodyId?: unknown }> {
+			if (typeof row.certifications !== 'string') return [];
+			try {
+				const parsed: unknown = JSON.parse(row.certifications);
+				return Array.isArray(parsed) ? (parsed as Array<{ bodyId?: unknown }>) : [];
+			} catch {
+				return [];
 			}
-			return [];
 		}
 
-		const certifiedSuppliers = allSuppliers.filter((s: any) =>
-			parseCerts(s).some((c: any) => c.bodyId === bodyId)
+		const certifiedSuppliers = allSuppliers.filter((s) =>
+			parseCerts(s).some((c) => c.bodyId === bodyId)
 		);
 
 		// Only fetch product categorySlugs for the suppliers we kept
@@ -738,9 +782,13 @@ export async function getSuppliersByCertifyingBody(
 					})
 					.from(schema.products)
 					.where(inArray(schema.products.supplierSlug, supplierSlugs))
+					// Aggregation-only read over ≤50 suppliers; capped so a single
+					// supplier with a huge catalogue cannot turn this into a
+					// wide scan (§5.9.1).
+					.limit(300)
 			: [];
 
-		const certificationTypes = allProducts.reduce((acc: string[], p: any) => {
+		const certificationTypes = allProducts.reduce((acc: string[], p) => {
 			if (!acc.includes(p.categorySlug)) acc.push(p.categorySlug);
 			return acc;
 		}, []);
@@ -766,7 +814,8 @@ export async function getInquiries(
 	request?: Request
 ): Promise<PaginatedResult<typeof schema.inquiries.$inferSelect>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, status, buyerSlug } = opts;
+		const { offset = 0, status, buyerSlug } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [];
 		if (status)
@@ -801,9 +850,8 @@ export async function getInquiries(
 
 	if (request) {
 		const url = new URL(request.url);
-		url.searchParams.sort();
 		return cachedQuery(request, queryFn, {
-			cacheKey: url.toString(),
+			cacheKey: queryCacheKey(url),
 			...cacheMedium()
 		});
 	}
@@ -828,7 +876,11 @@ export async function getSetting(db: Db, key: string) {
 }
 
 export async function getSettings(db: Db) {
-	return db.select().from(schema.siteSettings);
+	return db
+		.select()
+		.from(schema.siteSettings)
+		.orderBy(asc(schema.siteSettings.key))
+		.limit(SETTINGS_LIMIT);
 }
 
 // ==================== Media ====================
@@ -859,7 +911,8 @@ export async function getProductListItems(
 	request?: Request
 ): Promise<PaginatedResult<ProductListItem>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
+		const { offset = 0, search, categorySlug, supplierSlug, certStatus, status } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [];
 		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
@@ -944,7 +997,8 @@ export async function getSupplierListItems(
 	request?: Request
 ): Promise<PaginatedResult<SupplierListItem>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, status, country, businessType } = opts;
+		const { offset = 0, search, status, country, businessType } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions = [];
 		// Indexed FTS lookup instead of LIKE '%…%' (full-table scan).
@@ -1023,7 +1077,8 @@ export async function getKbListItems(
 	request?: Request
 ): Promise<PaginatedResult<KbListItem>> {
 	const queryFn = async () => {
-		const { limit = 20, offset = 0, search, section, status } = opts;
+		const { offset = 0, search, section, status } = opts;
+		const limit = clampLimit(opts.limit);
 
 		const conditions: SQL[] = [
 			eq(schema.knowledgeBase.status, (status ?? 'published') as 'published' | 'draft' | 'archived')

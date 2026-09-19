@@ -4,6 +4,7 @@ import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { suppliers, inquiries } from '#lib/server/db/schema.js';
 import { eq, sql, and } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 import { invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
@@ -84,7 +85,7 @@ export const GET: RequestHandler = async (event) => {
 	const status = url.searchParams.get('status') || undefined;
 
 	try {
-		const conditions = [];
+		const conditions: SQL[] = [];
 		if (status) conditions.push(eq(suppliers.status, status as 'active' | 'pending' | 'suspended'));
 
 		const where = conditions.length > 1 ? and(...conditions) : conditions.length === 1 ? conditions[0] : undefined;
@@ -111,8 +112,8 @@ export const GET: RequestHandler = async (event) => {
 			.limit(limit);
 
 		return json({ items: rows, total: countResult?.count ?? 0 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Query failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Query failed' }, { status: 500 });
 	}
 };
 
@@ -197,10 +198,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			},
 			{ status: 201 }
 		);
-	} catch (e: any) {
-		if (e?.message?.includes('UNIQUE constraint')) {
+	} catch (e: unknown) {
+		if (e instanceof Error && e.message.includes('UNIQUE constraint')) {
 			return json({ error: 'A supplier with this name already exists. Please contact us directly.' }, { status: 409 });
 		}
-		return json({ error: e?.message ?? 'Internal error' }, { status: 500 });
+		return json({ error: e instanceof Error ? e.message : 'Internal error' }, { status: 500 });
 	}
 };

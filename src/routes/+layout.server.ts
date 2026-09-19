@@ -1,6 +1,6 @@
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ url }) => {
+export const load: LayoutServerLoad = async () => {
 	return {
 		seo: {
 			title: 'HalalNeo — Halal Trade Intelligence',

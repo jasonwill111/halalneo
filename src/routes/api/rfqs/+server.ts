@@ -36,9 +36,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
 				const conditions = [eq(buyingRequests.status, status)];
 				if (search) {
-					conditions.push(
-						or(like(buyingRequests.title, `%${search}%`), like(buyingRequests.description, `%${search}%`)) as any
+					const textMatch = or(
+						like(buyingRequests.title, `%${search}%`),
+						like(buyingRequests.description, `%${search}%`)
 					);
+					if (textMatch) conditions.push(textMatch);
 				}
 				if (categorySlug) conditions.push(eq(buyingRequests.categorySlug, categorySlug));
 
@@ -72,8 +74,8 @@ export const GET: RequestHandler = async ({ url }) => {
 		);
 
 		return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -93,8 +95,8 @@ export const POST: RequestHandler = async (event) => {
 		return json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }, { status: 400 });
 	}
 
-	const userId = (session.user as any).id as string | undefined;
-	const quotaKey = userId ?? (session.user as any).email ?? '';
+	const userId = session.user.id;
+	const quotaKey = userId ?? session.user.email ?? '';
 	const quota = await checkWeeklyQuota(db, buyingRequests, buyingRequests.buyerId, quotaKey, 'buyingRequest', resolvePlan(userId));
 	if (!quota.allowed) {
 		return json(
@@ -109,7 +111,7 @@ export const POST: RequestHandler = async (event) => {
 			.insert(buyingRequests)
 			.values({
 				buyerId: userId ?? null,
-				buyerEmail: ((session.user as any).email as string | undefined) ?? null,
+				buyerEmail: session.user.email ?? null,
 				buyerCountry: parsed.data.buyerCountry || null,
 				title: parsed.data.title.trim(),
 				description: parsed.data.description.trim(),
@@ -126,7 +128,7 @@ export const POST: RequestHandler = async (event) => {
 
 		await invalidateCache('/api/rfqs');
 		return json({ id: row.id, remaining: quota.remaining - 1 }, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed to publish' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed to publish' }, { status: 500 });
 	}
 };

@@ -8,7 +8,7 @@ import { invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
 export const GET: RequestHandler = async (event) => {
-	const { params, url } = event;
+	const { params } = event;
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
@@ -16,8 +16,8 @@ export const GET: RequestHandler = async (event) => {
 		const [r] = await db.select().from(buyingRequests).where(eq(buyingRequests.id, params.id)).limit(1);
 		if (!r) return json({ error: 'Not found' }, { status: 404 });
 		return json(r);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -55,8 +55,8 @@ export const PUT: RequestHandler = async (event) => {
 
 		await invalidateCache('/api/rfqs');
 		return json({ ok: true });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -75,7 +75,7 @@ export const DELETE: RequestHandler = async (event) => {
 		await db.delete(buyingRequests).where(eq(buyingRequests.id, params.id));
 		await invalidateCache('/api/rfqs');
 		return json({ ok: true });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };

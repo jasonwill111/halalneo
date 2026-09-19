@@ -1,13 +1,15 @@
-﻿import { json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { parseQuery } from '#lib/server/db/api-helpers.js';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { inquiries } from '#lib/server/db/schema.js';
-import { eq, like, sql, and } from 'drizzle-orm';
-import { cachedQuery, cacheShort, queryCacheKey } from '#lib/server/cache.js';
+import { inquiryColumns } from '#lib/server/db/projections.js';
+import { and, eq, like, sql } from 'drizzle-orm';
+import { invalidateCache } from '#lib/server/cache.js';
+import { requireAdmin } from '#lib/server/auth-guard.js';
 import { getSession } from '#lib/server/auth.js';
-import { z } from 'zod';
+import { INQUIRY_STATUSES, inquiryCreateSchema } from '#lib/schemas/inquiries.js';
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW = 60_000;
@@ -25,59 +27,60 @@ function checkRateLimit(ip: string): boolean {
 	return true;
 }
 
-const inquirySchema = z.object({
-	buyerSlug: z.string().optional(),
-	supplierSlug: z.string().min(1, 'supplierSlug is required'),
-	productSlug: z.string().optional(),
-	subject: z.string().min(3, 'Subject must be at least 3 characters').max(200, 'Subject must be at most 200 characters'),
-	message: z.string().min(10, 'Message must be at least 10 characters').max(5000, 'Message must be at most 5000 characters')
-});
-
+/**
+ * Admin triage list. Every inquiry belongs to a buyer/supplier pair, so this
+ * response is session-scoped: it is never cached (hooks also force `no-store`
+ * for /api/inquiries) and requires an allowlisted admin.
+ */
 export const GET: RequestHandler = async (event) => {
-	const { url } = event;
-	const session = await getSession(event);
-	if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
+	const denied = await requireAdmin(event);
+	if (denied) return denied;
+
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
+	const { url } = event;
 	const { limit, offset, search } = parseQuery(url);
-	const status = url.searchParams.get('status') || undefined;
+	const rawStatus = url.searchParams.get('status');
 	const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
 
 	const conditions = [];
 	if (search) conditions.push(like(inquiries.subject, `%${search}%`));
-	if (status) conditions.push(eq(inquiries.status, status as 'active' | 'pending' | 'closed' | 'flagged'));
+	if (rawStatus && INQUIRY_STATUSES.includes(rawStatus as (typeof INQUIRY_STATUSES)[number])) {
+		conditions.push(eq(inquiries.status, rawStatus as 'active' | 'pending' | 'closed' | 'flagged'));
+	}
 	if (supplierSlug) conditions.push(eq(inquiries.supplierSlug, supplierSlug));
 
-	const where = conditions.length > 1 ? and(...conditions) : conditions.length === 1 ? conditions[0] : undefined;
+	const where = conditions.length ? and(...conditions) : undefined;
 
 	try {
-		const data = await cachedQuery(
-			url.toString(),
-			async () => {
-				const [countResult] = await db
-					.select({ count: sql<number>`count(*)` })
-					.from(inquiries)
-					.where(where);
+		const [countResult] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(inquiries)
+			.where(where);
 
-				const rows = await db
-					.select()
-					.from(inquiries)
-					.where(where)
-					.limit(limit)
-					.offset(offset);
+		const rows = await db
+			.select(inquiryColumns)
+			.from(inquiries)
+			.where(where)
+			.orderBy(sql`${inquiries.createdAt} DESC`)
+			.limit(limit)
+			.offset(offset);
 
-				return { items: rows, total: countResult?.count ?? 0, limit, offset };
-			},
-			{ ...cacheShort(), cacheKey: queryCacheKey(url) }
+		return json(
+			{ items: rows, total: countResult?.count ?? 0, limit, offset },
+			{ headers: { 'Cache-Control': 'no-store' } }
 		);
-		return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Query failed' }, { status: 500 });
+	} catch (error: unknown) {
+		return json(
+			{ error: error instanceof Error ? error.message : 'Query failed' },
+			{ status: 500 }
+		);
 	}
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async (event) => {
+	const { request } = event;
 	const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
 	if (!checkRateLimit(ip)) {
 		return json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
@@ -86,21 +89,46 @@ export const POST: RequestHandler = async ({ request }) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+	const body = (await request.json().catch(() => null)) as unknown;
 	if (!body) {
 		return json({ error: 'Request body is required' }, { status: 400 });
 	}
 
-	const parsed = inquirySchema.safeParse(body);
+	const parsed = inquiryCreateSchema.safeParse(body);
 	if (!parsed.success) {
-		const errors = parsed.error.flatten().fieldErrors;
-		return json({ error: 'Validation failed', details: errors }, { status: 400 });
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
+	const now = new Date();
+	// Stamp the signed-in buyer (when any) so Account → Inquiries can list
+	// their own inquiries; anonymous submissions keep NULL.
+	const session = await getSession(event);
+	const values: typeof inquiries.$inferInsert = {
+		userId: session?.user.id ?? null,
+		buyerSlug: parsed.data.buyerSlug,
+		supplierSlug: parsed.data.supplierSlug || null,
+		productSlug: parsed.data.productSlug || null,
+		subject: parsed.data.subject,
+		message: parsed.data.message,
+		status: 'active',
+		createdAt: now,
+		updatedAt: now
+	};
+
 	try {
-		const [row] = await db.insert(inquiries).values(parsed.data as any).returning();
+		const [row] = await db
+			.insert(inquiries)
+			.values(values)
+			.returning({ id: inquiries.id, status: inquiries.status });
+		await invalidateCache('/api/inquiries');
 		return json(row, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Internal error' }, { status: 500 });
+	} catch (error: unknown) {
+		return json(
+			{ error: error instanceof Error ? error.message : 'Internal error' },
+			{ status: 500 }
+		);
 	}
 };

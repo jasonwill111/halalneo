@@ -1,4 +1,4 @@
-import type { AiTool } from './types';
+import type { AiTool } from '#lib/types/index.js';
 
 export const aiTools: AiTool[] = [
 	{

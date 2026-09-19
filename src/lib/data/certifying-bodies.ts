@@ -1,4 +1,4 @@
-import type { CertifyingBody } from './types';
+import type { CertifyingBody } from '#lib/types/index.js';
 
 export const certifyingBodies: CertifyingBody[] = [
 	{

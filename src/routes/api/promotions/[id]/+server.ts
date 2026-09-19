@@ -16,8 +16,8 @@ export const GET: RequestHandler = async (event) => {
 		const [r] = await db.select().from(promotions).where(eq(promotions.id, params.id)).limit(1);
 		if (!r) return json({ error: 'Not found' }, { status: 404 });
 		return json(r);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -58,8 +58,8 @@ export const PUT: RequestHandler = async (event) => {
 
 		await invalidateCache('/api/promotions');
 		return json({ ok: true });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -78,7 +78,7 @@ export const DELETE: RequestHandler = async (event) => {
 		await db.delete(promotions).where(eq(promotions.id, params.id));
 		await invalidateCache('/api/promotions');
 		return json({ ok: true });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };

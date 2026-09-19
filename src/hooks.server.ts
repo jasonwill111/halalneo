@@ -8,8 +8,8 @@ import { paraglideMiddleware } from '#lib/paraglide/server.js';
 
 // Cache auth instance to avoid recreating on every request (~5-20ms saved per request)
 let cachedAuth: ReturnType<typeof createAuth> | null = null;
-let cachedDb: any = null;
-function getOrCreateAuth(db: any) {
+let cachedDb: D1Database | null = null;
+function getOrCreateAuth(db: D1Database) {
 	if (cachedDb === db && cachedAuth) return cachedAuth;
 	cachedDb = db;
 	cachedAuth = createAuth(db);
@@ -76,6 +76,22 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
+/**
+ * Content APIs that serve an admin overview through `?status=all` (draft +
+ * archived rows included). Those responses are session-scoped, so they must
+ * never pick up the public cache directives applied further down this handler.
+ */
+const ADMIN_SCOPED_STATUS_APIS = [
+	'/api/success-stories',
+	'/api/blog',
+	'/api/glossary',
+	'/api/knowledge-base',
+	'/api/market-guides',
+	'/api/trade-shows',
+	'/api/pages',
+	'/api/ai-tools'
+];
+
 const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	// Strip locale prefix (e.g. /en/products → /products) so cache rules match
 	const rawPathname = event.url.pathname;
@@ -137,9 +153,11 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname.startsWith('/api/inquiries') ||
 		pathname.startsWith('/api/supplier-applications') ||
 		pathname.startsWith('/api/follows') ||
+		pathname.startsWith('/api/favorites') ||
 		pathname.startsWith('/api/supplier-memberships') ||
 		pathname.startsWith('/api/views') ||
-		(pathname.startsWith('/api/success-stories') && event.url.searchParams.get('status') === 'all')
+		(ADMIN_SCOPED_STATUS_APIS.some((prefix) => pathname.startsWith(prefix)) &&
+			event.url.searchParams.get('status') === 'all')
 	) {
 		const response = await resolve(event);
 		response.headers.set('Cache-Control', 'no-store');
@@ -158,8 +176,7 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		pathname.startsWith('/api/settings') ||
 		pathname.startsWith('/api/pages') ||
 		pathname.startsWith('/api/trade-shows') ||
-		pathname.startsWith('/api/market-guides') ||
-		pathname.startsWith('/api/inquiries')
+		pathname.startsWith('/api/market-guides')
 	) {
 		const response = await resolve(event);
 		response.headers.set(
@@ -369,7 +386,7 @@ function isPublicPath(pathname: string): boolean {
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	if (building) return resolve(event);
 
-	let db: any = null;
+	let db: D1Database | null;
 	try {
 		db = getBindings().DB;
 	} catch {
@@ -396,7 +413,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	// The admin login page itself stays reachable without a session.
 	const isAdminLogin = pathname === '/admin/login' || pathname.startsWith('/admin/login/');
 	if (pathname.startsWith('/admin') && !isAdminLogin) {
-		let allowlist: string[] = [];
+		let allowlist: string[];
 		try {
 			allowlist = ((getBindings().ADMIN_EMAILS as string | undefined) ?? '')
 				.split(',')

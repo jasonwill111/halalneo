@@ -1,4 +1,4 @@
-import type { GlossaryTerm } from './types';
+import type { GlossaryTerm } from '#lib/types/index.js';
 
 export const glossaryTerms: GlossaryTerm[] = [
 	{

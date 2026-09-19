@@ -28,8 +28,8 @@ export const GET: RequestHandler = async (event) => {
 			if (!session) return json({ error: 'Not found' }, { status: 404 });
 		}
 		return json(row);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -47,7 +47,7 @@ export const DELETE: RequestHandler = async (event) => {
 	const adminEmails = (getBindings().ADMIN_EMAILS ?? '')
 		.split(',')
 		.map((s: string) => s.trim().toLowerCase());
-	const email = String((session.user as any).email ?? '').toLowerCase();
+	const email = String(session.user.email ?? '').toLowerCase();
 	if (!adminEmails.includes(email)) return json({ error: 'Forbidden' }, { status: 403 });
 
 	try {
@@ -58,7 +58,7 @@ export const DELETE: RequestHandler = async (event) => {
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 		await invalidateCache('/api/success-stories');
 		return json({ slug: row.slug });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed to delete' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed to delete' }, { status: 500 });
 	}
 };

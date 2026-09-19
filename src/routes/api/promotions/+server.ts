@@ -22,7 +22,9 @@ const promoSchema = z.object({
 	validUntil: z.string().max(30).optional().nullable()
 });
 
-async function isMember(db: any, userId: string, supplierSlug: string): Promise<boolean> {
+type Db = NonNullable<ReturnType<typeof getDb>>;
+
+async function isMember(db: Db, userId: string, supplierSlug: string): Promise<boolean> {
 	const rows = await db
 		.select({ userId: supplierMembers.userId })
 		.from(supplierMembers)
@@ -82,8 +84,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
 		if (!data) return json({ items: [], total: 0 }, { status: 503 });
 		return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -91,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async (event) => {
 	const { request } = event;
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId)
 		return json({ error: 'Please sign in as a supplier to publish a deal.' }, { status: 401 });
 
@@ -156,7 +158,7 @@ export const POST: RequestHandler = async (event) => {
 
 		await invalidateCache('/api/promotions');
 		return json({ id: row.id, remaining: quota.remaining - 1 }, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed to publish' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed to publish' }, { status: 500 });
 	}
 };

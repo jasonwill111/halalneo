@@ -1,4 +1,4 @@
-import type { KbSection } from './types';
+import type { KbSection } from '#lib/types/index.js';
 
 export const kbSections: KbSection[] = [
 	{

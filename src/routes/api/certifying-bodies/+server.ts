@@ -6,28 +6,56 @@ import { getBindings } from '#lib/server/bindings.js';
 import { certifyingBodies } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
-import { getSession } from '#lib/server/auth.js';
+import { requireAdmin } from '#lib/server/auth-guard.js';
+import { certifyingBodyCreateSchema, certifyingBodyStatusSchema } from '#lib/schemas/certifying-bodies.js';
+
+/** Explicit column projection — never SELECT * (§5.9). */
+const CB_COLUMNS = {
+	id: certifyingBodies.id,
+	name: certifyingBodies.name,
+	country: certifyingBodies.country,
+	standard: certifyingBodies.standard,
+	website: certifyingBodies.website,
+	description: certifyingBodies.description,
+	status: certifyingBodies.status,
+	metaTitle: certifyingBodies.metaTitle,
+	metaDescription: certifyingBodies.metaDescription,
+	keywords: certifyingBodies.keywords,
+	createdAt: certifyingBodies.createdAt,
+	updatedAt: certifyingBodies.updatedAt
+};
 
 export const GET: RequestHandler = async ({ url }) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
+	// Early return on a bad filter, before touching D1 or the cache (§5.10).
+	const statusResult = certifyingBodyStatusSchema.safeParse(
+		url.searchParams.get('status') ?? 'active'
+	);
+	if (!statusResult.success) {
+		return json(
+			{ error: "status must be one of 'active', 'pending', 'inactive'" },
+			{ status: 400 }
+		);
+	}
+	const status = statusResult.data;
+
 	try {
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
+				// parseQuery clamps limit to <=100 and defaults offset to 0 (§5.9).
 				const { limit, offset, search } = parseQuery(url);
-				const status = url.searchParams.get('status') || 'active';
 				const country = url.searchParams.get('country') || undefined;
 
-				const conditions = [];
+				const conditions = [eq(certifyingBodies.status, status)];
 				// LIKE only — certifying_bodies_fts does not exist in
 				// production D1, and the table is small (<500 rows).
 				if (search) conditions.push(like(certifyingBodies.name, `%${search}%`));
-				if (status) conditions.push(eq(certifyingBodies.status, status as 'active' | 'pending' | 'inactive'));
 				if (country) conditions.push(eq(certifyingBodies.country, country));
 
-				const where = conditions.length ? and(...conditions) : undefined;
+				const where = and(...conditions);
 
 				const [countResult] = await db
 					.select({ count: sql<number>`count(*)` })
@@ -35,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					.where(where);
 
 				const rows = await db
-					.select()
+					.select(CB_COLUMNS)
 					.from(certifyingBodies)
 					.where(where)
 					.limit(limit)
@@ -46,32 +74,58 @@ export const GET: RequestHandler = async ({ url }) => {
 			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
 		);
 
+		if (!data) return json({ items: [], total: 0, limit: 0, offset: 0 }, { status: 503 });
 		return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		const message = e instanceof Error ? e.message : '';
+		return json({ error: message || 'Failed' }, { status: 500 });
 	}
 };
 
 export const POST: RequestHandler = async (event) => {
-	const { request } = event;
-	const session = await getSession(event);
-	if (!session) {
-		return json({ error: 'Unauthorized' }, { status: 401 });
-	}
+	const denied = await requireAdmin(event);
+	if (denied) return denied;
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
-	if (!body?.name || !body?.country) {
-		return json({ error: 'name, country are required' }, { status: 400 });
+	const body: unknown = await event.request.json().catch(() => null);
+	const parsed = certifyingBodyCreateSchema.safeParse(body);
+	if (!parsed.success) {
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
+	const now = new Date();
 	try {
-		const [row] = await db.insert(certifyingBodies).values(body as any).returning();
+		const [row] = await db
+			.insert(certifyingBodies)
+			.values({
+				// Empty id → let the column's $defaultFn generate a UUID.
+				id: parsed.data.id ?? undefined,
+				name: parsed.data.name,
+				country: parsed.data.country,
+				standard: parsed.data.standard ?? null,
+				website: parsed.data.website ?? null,
+				description: parsed.data.description ?? null,
+				status: parsed.data.status ?? 'active',
+				metaTitle: parsed.data.metaTitle ?? null,
+				metaDescription: parsed.data.metaDescription ?? null,
+				keywords: parsed.data.keywords ?? null,
+				createdAt: now,
+				updatedAt: now
+			})
+			.returning(CB_COLUMNS);
+
 		await invalidateCache('/api/certifying-bodies');
 		return json(row, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Internal error' }, { status: 500 });
+	} catch (e: unknown) {
+		const message = e instanceof Error ? e.message : '';
+		if (message.includes('UNIQUE constraint')) {
+			return json({ error: 'A certifying body with this id already exists' }, { status: 409 });
+		}
+		return json({ error: message || 'Internal error' }, { status: 500 });
 	}
 };

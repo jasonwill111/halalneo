@@ -1,4 +1,4 @@
-import type { ServiceProvider } from './types';
+import type { ServiceProvider } from '#lib/types/index.js';
 
 /**
  * Service provider directory.

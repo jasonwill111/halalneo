@@ -10,7 +10,7 @@ import { getSession } from '#lib/server/auth.js';
 // Used by dashboards/publish UIs to scope actions to the caller's suppliers.
 export const GET: RequestHandler = async (event) => {
 	const session = await getSession(event);
-	const userId = (session?.user as any)?.id as string | undefined;
+	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async (event) => {
 			.from(supplierMembers)
 			.where(eq(supplierMembers.userId, userId));
 		return json({ items: rows });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };

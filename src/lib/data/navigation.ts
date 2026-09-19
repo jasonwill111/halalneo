@@ -25,7 +25,6 @@ import LogInIcon from '@lucide/svelte/icons/log-in';
 import HelpCircleIcon from '@lucide/svelte/icons/circle-question-mark';
 import HomeIcon from '@lucide/svelte/icons/home';
 import UserIcon from '@lucide/svelte/icons/user';
-import SearchIcon from '@lucide/svelte/icons/search';
 import TrophyIcon from '@lucide/svelte/icons/trophy';
 
 export interface NavItem {

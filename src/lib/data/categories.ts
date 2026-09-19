@@ -1,4 +1,4 @@
-import type { Category } from './types';
+import type { Category } from '#lib/types/index.js';
 
 export const categories: Category[] = [
 	{

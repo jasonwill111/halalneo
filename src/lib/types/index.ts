@@ -1,3 +1,7 @@
+/**
+ * Global content types (§5.2 — 全局类型定义 live in `src/lib/types/`).
+ * Previously `src/lib/data/types.ts`; moved so `data/` holds seed data only.
+ */
 export type BusinessType = 'manufacturer' | 'wholesaler' | 'trader';
 
 export type CertStatus = 'certified' | 'pending' | 'not-certified' | 'not-applicable';
@@ -9,7 +13,7 @@ export interface CertifyingBody {
 	standard: string;
 	website?: string;
 	description?: string;
-	status?: 'active' | 'inactive';
+	status?: 'active' | 'pending' | 'inactive';
 	metaTitle?: string;
 	metaDescription?: string;
 	keywords?: string;

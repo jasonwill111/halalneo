@@ -4,6 +4,7 @@ import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { successStories } from '#lib/server/db/schema.js';
 import { eq, and, desc, sql } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
@@ -41,7 +42,7 @@ export const GET: RequestHandler = async (event) => {
 				const offset = Number(url.searchParams.get('offset')) || 0;
 				const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
 
-				const conditions: any[] = [];
+				const conditions: SQL[] = [];
 				if (statusFilter) conditions.push(eq(successStories.status, statusFilter));
 				if (supplierSlug) conditions.push(eq(successStories.supplierSlug, supplierSlug));
 				const where = conditions.length > 1 ? and(...conditions) : (conditions[0] ?? undefined);
@@ -75,8 +76,8 @@ export const GET: RequestHandler = async (event) => {
 					: await cachedQuery(url.toString(), runQuery, { ...cacheMedium(), cacheKey: queryCacheKey(url) });
 
 			return json(data);
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
 };
 
@@ -93,7 +94,7 @@ export const POST: RequestHandler = async (event) => {
 
 	// Admin gate: caller must be in the admin allowlist (same rule as dashboard).
 	const adminEmails = (getBindings().ADMIN_EMAILS ?? '').split(',').map((s: string) => s.trim().toLowerCase());
-	const email = String((session.user as any).email ?? '').toLowerCase();
+	const email = String(session.user.email ?? '').toLowerCase();
 	if (!adminEmails.includes(email)) return json({ error: 'Forbidden' }, { status: 403 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
@@ -123,7 +124,7 @@ export const POST: RequestHandler = async (event) => {
 
 		await invalidateCache('/api/success-stories');
 		return json({ slug: row.slug }, { status: 201 });
-	} catch (e: any) {
-		return json({ error: e?.message ?? 'Failed to publish' }, { status: 500 });
+	} catch (e: unknown) {
+		return json({ error: e instanceof Error ? e.message : 'Failed to publish' }, { status: 500 });
 	}
 };

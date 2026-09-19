@@ -1,4 +1,4 @@
-import type { KbArticle } from './types';
+import type { KbArticle } from '#lib/types/index.js';
 
 export const kbArticles: KbArticle[] = [
 	// ── Halal Certification ────────────────────────────────────────────────
@@ -7662,7 +7662,7 @@ Set conservative action limits based on your facility's risk assessment. Example
 
 ## The Dual Imperative: Food Safety + Halal Integrity
 
-Halal food producers face a dual mandate. They must satisfy the same food safety regulations as any conventional producer—FDA, EU food hygiene regulations, Codex Alimentarius—while simultaneously meeting the requirements of halal certification bodies. These are not competing goals; they are complementary. A facility that cannot guarantee food safety cannot credibly claim halal integrity.
+Halal food producers face a dual mandate. They must satisfy the same food safety regulations as a conventional producer—FDA, EU food hygiene regulations, Codex Alimentarius—while simultaneously meeting the requirements of halal certification bodies. These are not competing goals; they are complementary. A facility that cannot guarantee food safety cannot credibly claim halal integrity.
 
 ## Selecting the Right System
 

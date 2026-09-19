@@ -3,7 +3,7 @@ import { createAuth } from '#lib/server/auth.js';
 import { getBindings } from '#lib/server/bindings.js';
 
 async function handleAuth(request: Request) {
-	let d1: any = null;
+	let d1: D1Database | null;
 	try {
 		d1 = getBindings().DB;
 	} catch {
