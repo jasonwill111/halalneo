@@ -288,7 +288,19 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		return response;
 	}
 
-	// Tools pages — static UI, long cache
+	// Tools pages — static UI, long cache.
+	// Exception: the Ingredient Checker SSRs a sign-in gate from the session,
+	// so its HTML differs per user. A shared (s-maxage) copy at the edge would
+	// serve the anonymous gate to signed-in browsers — the cache key does not
+	// vary by Cookie. Must stay private.
+	if (
+		pathname === '/tools/ingredient-checker' ||
+		pathname.startsWith('/tools/ingredient-checker/')
+	) {
+		const response = await resolve(event);
+		response.headers.set('Cache-Control', 'private, no-store, must-revalidate');
+		return response;
+	}
 	if (pathname.startsWith('/tools/')) {
 		const response = await resolve(event);
 		response.headers.set(
@@ -395,6 +407,9 @@ const HTML_CACHE_PREFIXES = [
 
 function isHtmlCacheable(pathname: string): boolean {
 	if (pathname.endsWith('__data.json') || pathname.includes('/_/')) return false;
+	// Session-dependent SSR page (sign-in gate) — see handleCacheHeaders.
+	if (pathname === '/tools/ingredient-checker' || pathname.startsWith('/tools/ingredient-checker/'))
+		return false;
 	if (HTML_CACHE_ROOTS.has(pathname)) return true;
 	return HTML_CACHE_PREFIXES.some((p) => pathname.startsWith(p));
 }
@@ -458,9 +473,16 @@ const handleHtmlCache: Handle = async ({ event, resolve }) => {
 	}
 
 	const response = await resolve(event);
-	if (cache && response.status === 200 && response.headers.get('Content-Type')?.includes('text/html')) {
+	if (
+		cache &&
+		response.status === 200 &&
+		response.headers.get('Content-Type')?.includes('text/html')
+	) {
 		const ttl = htmlCacheTtl(stripped);
-		response.headers.set('Cache-Control', `public, max-age=600, s-maxage=${ttl}, stale-while-revalidate=60`);
+		response.headers.set(
+			'Cache-Control',
+			`public, max-age=600, s-maxage=${ttl}, stale-while-revalidate=60`
+		);
 		const clone = response.clone();
 		// Re-serialize with the aligned Cache-Control so a HIT serves the same
 		// headers, plus the HIT marker baked in (matched responses are immutable).
