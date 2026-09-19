@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { authClient } from '#lib/auth-client.js';
-	import { mode, toggleMode } from 'mode-watcher';
+	import { mode } from 'mode-watcher';
+	import { switchTheme } from '#lib/utils/theme-toggle.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { cn } from '#lib/utils.js';
@@ -78,9 +79,7 @@
 	}
 
 	function handleToggleTheme() {
-		document.documentElement.classList.add('theme-transitioning');
-		toggleMode();
-		setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+		switchTheme();
 	}
 
 	async function handleSignOut() {

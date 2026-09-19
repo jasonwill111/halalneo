@@ -3,7 +3,8 @@
 	import { page } from '$app/state';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { authClient } from '#lib/auth-client.js';
-	import { mode, toggleMode } from 'mode-watcher';
+	import { mode } from 'mode-watcher';
+	import { switchTheme } from '#lib/utils/theme-toggle.js';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
@@ -44,11 +45,9 @@
 		);
 	}
 
-	// Same cross-fade as the site header (src/routes/+layout.svelte).
+	// Instant swap shared with the site header (src/routes/+layout.svelte).
 	function handleToggleTheme() {
-		document.documentElement.classList.add('theme-transitioning');
-		toggleMode();
-		setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+		switchTheme();
 	}
 
 	let signingOut = $state(false);
@@ -127,7 +126,9 @@
 				</a>
 			{/each}
 		</div>
-		<div class="flex items-center justify-between gap-2 rounded-xl bg-card px-2.5 py-2 ring-1 ring-foreground/10">
+		<div
+			class="flex items-center justify-between gap-2 rounded-xl bg-card px-2.5 py-2 ring-1 ring-foreground/10"
+		>
 			{@render identity()}
 			<div class="flex shrink-0 items-center gap-1">
 				{@render actions()}

@@ -5,7 +5,10 @@
 @font-face {
 	font-family: 'Space Grotesk';
 	src: url('/fonts/space-grotesk/space-grotesk-latin-ext.woff2') format('woff2');
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
 	font-weight: 400 700;
 	font-style: normal;
 	font-display: swap;
@@ -13,7 +16,9 @@
 @font-face {
 	font-family: 'Space Grotesk';
 	src: url('/fonts/space-grotesk/space-grotesk-latin.woff2') format('woff2');
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 	font-weight: 400 700;
 	font-style: normal;
 	font-display: swap;
@@ -252,7 +257,9 @@
 		text-wrap: balance;
 		line-height: 1.2;
 	}
-	h4, h5, h6 {
+	h4,
+	h5,
+	h6 {
 		font-family: var(--font-heading);
 		letter-spacing: -0.015em;
 		text-wrap: balance;
@@ -380,8 +387,12 @@
 
 /* ─── Apple Design: Skeleton shimmer (directional wave) ─── */
 @keyframes shimmer {
-	0% { background-position: -200% 0; }
-	100% { background-position: 200% 0; }
+	0% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: 200% 0;
+	}
 }
 .skeleton {
 	background: linear-gradient(
@@ -396,35 +407,49 @@
 
 /* ─── Apple Design: Smooth height animation for collapsibles ─── */
 @keyframes expand {
-	from { height: 0; opacity: 0; }
-	to { height: var(--content-height, auto); opacity: 1; }
+	from {
+		height: 0;
+		opacity: 0;
+	}
+	to {
+		height: var(--content-height, auto);
+		opacity: 1;
+	}
 }
 @keyframes collapse {
-	from { height: var(--content-height, auto); opacity: 1; }
-	to { height: 0; opacity: 0; }
+	from {
+		height: var(--content-height, auto);
+		opacity: 1;
+	}
+	to {
+		height: 0;
+		opacity: 0;
+	}
 }
-.content-animate[data-state="open"] {
+.content-animate[data-state='open'] {
 	animation: expand var(--transition-duration-slow) var(--ease-spring) forwards;
 	overflow: hidden;
 }
-.content-animate[data-state="closed"] {
+.content-animate[data-state='closed'] {
 	animation: collapse var(--transition-duration-base) var(--ease-in) forwards;
 	overflow: hidden;
 }
 
-/* ─── Apple Design: Theme transition (smooth cross-fade) ─── */
+/* ─── Theme switch: suppress all color transitions for the swap (see switchTheme in #lib/utils/theme-toggle.ts) ─── */
 html.theme-transitioning,
 html.theme-transitioning *,
 html.theme-transitioning *::before,
 html.theme-transitioning *::after {
-	transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease !important;
+	transition: none !important;
 }
 
 /* ─── Apple Design: Header scroll-edge gradient ─── */
 .header-scroll-edge::after {
 	content: '';
 	position: absolute;
-	left: 0; right: 0; bottom: -8px;
+	left: 0;
+	right: 0;
+	bottom: -8px;
 	height: 8px;
 	background: linear-gradient(to bottom, oklch(from var(--background) l c h / 0.06), transparent);
 	pointer-events: none;
@@ -630,7 +655,8 @@ html.theme-transitioning *::after {
 }
 
 .content-body :where(code:not(pre > code)) {
-	font-family: ui-monospace, 'SF Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+	font-family:
+		ui-monospace, 'SF Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 	font-size: 0.875em;
 	padding: 0.125rem 0.375rem;
 	border-radius: var(--radius-sm);
@@ -694,9 +720,15 @@ html.theme-transitioning *::after {
 	line-height: 1.6;
 }
 
-.content-body-sm :where(h1) { font-size: clamp(1.5rem, 3vw, 1.875rem); }
-.content-body-sm :where(h2) { font-size: 1.25rem; }
-.content-body-sm :where(h3) { font-size: 1.125rem; }
+.content-body-sm :where(h1) {
+	font-size: clamp(1.5rem, 3vw, 1.875rem);
+}
+.content-body-sm :where(h2) {
+	font-size: 1.25rem;
+}
+.content-body-sm :where(h3) {
+	font-size: 1.125rem;
+}
 
 /* §3.6 — touch targets: on coarse pointers, interactive controls reach ≥44px
    height (44px minimum applies via min-height, so denser desktop sizes stay). */

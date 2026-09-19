@@ -13652,7 +13652,7 @@ declare namespace Cloudflare {
     //     interface GlobalProps {
     //       // Declares the main module's exports. Used to populate Cloudflare.Exports aka the type
     //       // of `ctx.exports`.
-    //       mainModule: typeof import("my-main-module");
+    //       
     //
     //       // Declares which of the main module's exports are configured with durable storage, and
     //       // thus should behave as Durable Object namsepace bindings.

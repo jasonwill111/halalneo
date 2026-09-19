@@ -3,7 +3,8 @@
 	import favicon from '#lib/assets/favicon.svg';
 	import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
-	import { mode, toggleMode, userPrefersMode } from 'mode-watcher';
+	import { mode, userPrefersMode } from 'mode-watcher';
+	import { switchTheme } from '#lib/utils/theme-toggle.js';
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/state';
 	import Sun from '@lucide/svelte/icons/sun';
@@ -270,7 +271,7 @@
 
 				<NavigationMenuRoot
 					viewport={false}
-					class="hidden md:flex md:min-w-0 md:max-w-none md:justify-start"
+					class="hidden md:flex md:max-w-none md:min-w-0 md:justify-start"
 				>
 					<NavigationMenuList class="flex-wrap">
 						{#each primaryNav as item (item.href)}
@@ -326,14 +327,7 @@
 						variant="ghost"
 						size="icon"
 						aria-label="Toggle theme"
-						onclick={() => {
-							document.documentElement.classList.add('theme-transitioning');
-							toggleMode();
-							setTimeout(
-								() => document.documentElement.classList.remove('theme-transitioning'),
-								400
-							);
-						}}
+						onclick={() => switchTheme()}
 					>
 						{#if mode.current === 'dark'}
 							<Sun class="size-4" />
@@ -341,12 +335,7 @@
 							<Moon class="size-4" />
 						{/if}
 					</Button>
-					<Button
-						href={localizeHref('/account')}
-						variant="ghost"
-						size="icon"
-						aria-label="Account"
-					>
+					<Button href={localizeHref('/account')} variant="ghost" size="icon" aria-label="Account">
 						<UserIcon class="size-4" />
 					</Button>
 					<Button

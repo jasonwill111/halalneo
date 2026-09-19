@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { authClient } from '#lib/auth-client.js';
-	import { mode, toggleMode } from 'mode-watcher';
+	import { mode } from 'mode-watcher';
+	import { switchTheme } from '#lib/utils/theme-toggle.js';
 	import { onMount } from 'svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
@@ -26,7 +27,7 @@
 	import Handshake from '@lucide/svelte/icons/handshake';
 	import Globe from '@lucide/svelte/icons/globe';
 	import CalendarDays from '@lucide/svelte/icons/calendar-days';
-import Trophy from '@lucide/svelte/icons/trophy';
+	import Trophy from '@lucide/svelte/icons/trophy';
 
 	interface Props {
 		variant: 'desktop' | 'mobile';
@@ -71,7 +72,7 @@ import Trophy from '@lucide/svelte/icons/trophy';
 		{ label: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
 		{ label: 'Glossary', href: '/admin/glossary', icon: Languages },
 		{ label: 'Blog', href: '/admin/blog', icon: Newspaper },
-	{ label: 'Stories', href: '/admin/stories', icon: Trophy },
+		{ label: 'Stories', href: '/admin/stories', icon: Trophy },
 		{ label: 'AI Tools', href: '/admin/ai-tools', icon: Bot },
 		{ label: 'Settings', href: '/admin/settings', icon: Settings }
 	];
@@ -91,12 +92,9 @@ import Trophy from '@lucide/svelte/icons/trophy';
 			.toUpperCase();
 	}
 
-	// Same cross-fade as the site header (src/routes/+layout.svelte) — the class is
-	// what the reduced-motion-safe transition rule in app.css keys off.
+	// Instant swap shared with the site header (src/routes/+layout.svelte).
 	function handleToggleTheme() {
-		document.documentElement.classList.add('theme-transitioning');
-		toggleMode();
-		setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+		switchTheme();
 	}
 
 	async function handleSignOut() {
@@ -163,13 +161,7 @@ import Trophy from '@lucide/svelte/icons/trophy';
 	>
 		<Home class="size-4" />
 	</Button>
-	<Button
-		variant="ghost"
-		size="icon"
-		aria-label="Sign out"
-		class="size-8"
-		onclick={handleSignOut}
-	>
+	<Button variant="ghost" size="icon" aria-label="Sign out" class="size-8" onclick={handleSignOut}>
 		<LogOut class="size-4" />
 	</Button>
 {/snippet}
