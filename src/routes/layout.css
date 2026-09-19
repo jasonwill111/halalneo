@@ -149,7 +149,7 @@
 	   Deliberately NOT redefined in `.dark`: a scrim over an image must stay dark
 	   in both themes or the gradient inverts and captions become unreadable. */
 	--scrim: oklch(0.17 0.012 265);
-	--destructive: oklch(0.57 0.235 27);
+	--destructive: oklch(0.53 0.235 27);
 	--destructive-foreground: oklch(0.985 0.004 88);
 	--border: oklch(0.895 0.012 85);
 	--input: oklch(0.895 0.012 85);
@@ -196,7 +196,7 @@
 	--accent: oklch(0.245 0.034 205);
 	--accent-foreground: oklch(0.91 0.008 210);
 	--on-dark: oklch(0.935 0.008 210);
-	--destructive: oklch(0.62 0.22 27);
+	--destructive: oklch(0.66 0.22 27);
 	--destructive-foreground: oklch(0.935 0.008 210);
 	--border: oklch(0.26 0.026 205);
 	--input: oklch(0.26 0.026 205);
@@ -223,7 +223,7 @@
 
 @layer base {
 	* {
-		@apply border-border outline-ring/50;
+		@apply border-border outline-ring;
 	}
 	html {
 		scroll-behavior: smooth;

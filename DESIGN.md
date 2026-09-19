@@ -13,7 +13,8 @@ colors:
   sage-mist: 'oklch(0.935 0.011 85)'
   sage-stone: 'oklch(0.46 0.022 60)'
   sage-border: 'oklch(0.895 0.012 85)'
-  alert-red: 'oklch(0.57 0.235 27)'
+  alert-red: 'oklch(0.53 0.235 27)'
+  alert-red-dark: 'oklch(0.66 0.22 27)'
   light-ink: 'oklch(0.21 0.022 55)'
   dark-mode-text: 'oklch(0.935 0.008 210)'
 semantic:
@@ -381,7 +382,9 @@ Every data surface implements the same three states — loading, empty, and erro
 
 ## Accessibility (a11y)
 
-- Every interactive element is keyboard reachable: visible `focus-visible` ring (green, ring-3/50) on all controls; nothing `outline-none` without a replacement ring.
+- Every interactive element is keyboard reachable: visible `focus-visible` ring (green, ring-3/50) on all controls; nothing `outline-none` without a replacement ring. Global default `outline-color` is solid `outline-ring` (no alpha), never `outline-ring/50`.
+- A "Skip to content" link is the first focusable element on every front page (hidden until focused), targeting `<main id="main-content">`.
+- The hero carousel honours `prefers-reduced-motion` (no autoplay) and always exposes a visible pause/resume control; non-active slides are `inert` so they leave the tab order.
 - Icon-only buttons carry `aria-label` (the admin delete/enable buttons already do). Links with icons have visually-hidden or plain text.
 - Touch targets ≥44px effective on mobile — compact 32px controls must gain padding/margin slack on `sm` and below via size bump (or keep 32px only where a larger fallback exists nearby).
 - Color is never the sole signal: status badges pair color with icon/text (Certified ✓, Pending clock, Expired ✕) — the badge vocabulary already enforces this.

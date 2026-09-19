@@ -114,6 +114,10 @@
 		}
 	}
 
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') closeAll();
+	}
+
 	// Resolve which tab the pill should sit under for the current state.
 	// Extracted so route-change effects, resize and font-ready handlers
 	// all share one source of truth (stale pills were reported on mobile).
@@ -175,7 +179,7 @@
 	});
 </script>
 
-<svelte:document onclickcapture={handleClickOutside} />
+<svelte:document onclickcapture={handleClickOutside} onkeydown={handleKeydown} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -281,6 +285,7 @@
 			href={localizeHref('/')}
 			onclick={closeAll}
 			bind:this={tabRefs['/']}
+			aria-current={isActive('/') ? 'page' : undefined}
 			class={cn(
 				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				isActive('/') ? 'text-primary' : 'text-muted-foreground'
@@ -296,6 +301,7 @@
 			href={localizeHref('/categories')}
 			onclick={closeAll}
 			bind:this={tabRefs['/categories']}
+			aria-current={isActive('/categories') ? 'page' : undefined}
 			class={cn(
 				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				isActive('/categories') ? 'text-primary' : 'text-muted-foreground'
@@ -311,6 +317,7 @@
 			href={localizeHref('/products')}
 			onclick={closeAll}
 			bind:this={tabRefs['/products']}
+			aria-current={isActive('/products') ? 'page' : undefined}
 			class={cn(
 				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				isActive('/products') ? 'text-primary' : 'text-muted-foreground'
@@ -329,6 +336,8 @@
 				e.stopPropagation();
 				toggleExplore();
 			}}
+			aria-expanded={showExplore}
+			aria-haspopup="true"
 			class={cn(
 				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				showExplore ? 'text-primary' : 'text-muted-foreground'
@@ -348,6 +357,8 @@
 				e.stopPropagation();
 				toggleMenu();
 			}}
+			aria-expanded={showMenu}
+			aria-haspopup="true"
 			class={cn(
 				'relative z-10 h-auto flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
 				showMenu ? 'text-primary' : 'text-muted-foreground'

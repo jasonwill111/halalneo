@@ -16,7 +16,8 @@
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import Briefcase from '@lucide/svelte/icons/briefcase';
 	import Newspaper from '@lucide/svelte/icons/newspaper';
-	import HelpCircle from '@lucide/svelte/icons/help-circle';
+	import Play from '@lucide/svelte/icons/play';
+	import Pause from '@lucide/svelte/icons/pause';
 	import SectionHead from '#lib/components/site/section-head.svelte';
 	import { onMount } from 'svelte';
 	import SeoMeta from '#lib/components/seo-meta.svelte';
@@ -46,23 +47,41 @@
 	];
 
 	let currentSlide = $state(0);
+	let paused = $state(false);
 	let intervalId: ReturnType<typeof setInterval> | undefined;
 
 	function nextSlide() {
 		currentSlide = (currentSlide + 1) % slides.length;
 	}
 
-	function goToSlide(i: number) {
-		currentSlide = i;
+	function stopAutoplay() {
 		if (intervalId) clearInterval(intervalId);
+		intervalId = undefined;
+	}
+
+	function startAutoplay() {
+		stopAutoplay();
+		// §7.3 / prefers-reduced-motion: never autoplay for users who opt out,
+		// and the pause control below is the required stop for everyone else.
+		if (paused) return;
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 		intervalId = setInterval(nextSlide, 5000);
 	}
 
+	function goToSlide(i: number) {
+		currentSlide = i;
+		startAutoplay();
+	}
+
+	function togglePause() {
+		paused = !paused;
+		if (paused) stopAutoplay();
+		else startAutoplay();
+	}
+
 	onMount(() => {
-		intervalId = setInterval(nextSlide, 5000);
-		return () => {
-			if (intervalId) clearInterval(intervalId);
-		};
+		startAutoplay();
+		return stopAutoplay;
 	});
 </script>
 
@@ -130,6 +149,8 @@
 					class="absolute inset-0 transition-opacity duration-deliberate {i === currentSlide
 						? 'z-10 opacity-100'
 						: 'z-0 opacity-0'}"
+					inert={i !== currentSlide}
+					aria-hidden={i !== currentSlide}
 				>
 					<img
 						src={slide.image}
@@ -188,15 +209,29 @@
 						onclick={() => goToSlide(i)}
 						class="flex size-11 items-center justify-center bg-transparent! hover:bg-transparent!"
 						aria-label="Go to slide {i + 1}"
+						aria-current={i === currentSlide ? 'true' : undefined}
 					>
 						<span
 							class="size-1.5 rounded-full transition-colors sm:size-2 {i === currentSlide
 								? 'bg-primary'
-								: 'bg-muted-foreground/30'}"
+								: 'bg-muted-foreground/70'}"
 						></span>
 					</Button>
 				{/each}
 			</div>
+			<!-- Autoplay pause control (WCAG 2.2.2: moving content > 5s needs a pause) -->
+			<button
+				type="button"
+				onclick={togglePause}
+				aria-label={paused ? 'Resume carousel' : 'Pause carousel'}
+				class="glass-sm absolute right-2 bottom-2 z-20 flex size-11 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground sm:bottom-3"
+			>
+				{#if paused}
+					<Play class="size-4" />
+				{:else}
+					<Pause class="size-4" />
+				{/if}
+			</button>
 		</div>
 	</div>
 	<p
@@ -229,7 +264,7 @@
 	<div
 		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
 	>
-		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-accent-purple', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
+		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-accent-purple', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/export-docs', icon: FileText, tone: 'text-info', name: 'Export Docs', desc: 'Templates for suppliers & importers.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
 				class="group press-scale flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
@@ -312,40 +347,10 @@
 	</div>
 </section>
 
-<!-- HALAL TOOLS -->
-<section {@attach reveal}>
-	<SectionHead number="03" title="Halal trade tools" href="/tools" linkLabel="See all tools" />
-	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-		{#each [{ href: '/tools/ingredient-checker', name: 'Ingredient Checker', desc: 'AI verdict on halal, haram, mashbooh', icon: FlaskConical, tone: 'info' }, { href: '/tools/certification-cost', name: 'Cost Estimator', desc: 'Estimate registration fees by certifier', icon: Calculator, tone: 'warn' }, { href: '/tools/landed-cost', name: 'Landed Cost', desc: 'True per-unit cost with duties & fees', icon: Banknote, tone: 'success' }, { href: '/tools/rfq-builder', name: 'RFQ Builder', desc: 'Draft sourcing documents', icon: FileText, tone: 'accent-purple' }, { href: '/export-docs', name: 'Export Docs', desc: 'Templates for suppliers & importers', icon: FileText, tone: 'info' }] as tool (tool.href)}
-			<a
-				href={localizeHref(tool.href)}
-				class="group press-scale flex flex-col gap-1.5 rounded-xl bg-card p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
-			>
-				<div class="flex items-center justify-between">
-					<div
-						class={`flex size-8 items-center justify-center rounded-lg ${tool.tone === 'info' ? 'bg-info/15 text-info' : tool.tone === 'warn' ? 'bg-warn/15 text-warn' : tool.tone === 'success' ? 'bg-success/15 text-success' : 'bg-accent-purple/15 text-accent-purple'}`}
-					>
-						<tool.icon class="size-4" />
-					</div>
-					<Badge variant={tool.tone === 'info' ? 'secondary' : 'outline'} class="text-2xs"
-						>{tool.tone}</Badge
-					>
-				</div>
-				<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
-					{tool.name}
-				</h3>
-				<p class="line-clamp-2 text-2xs text-muted-foreground sm:text-xs">
-					{tool.desc}
-				</p>
-			</a>
-		{/each}
-	</div>
-</section>
-
 <!-- KB PREVIEW -->
 <section {@attach reveal}>
 	<SectionHead
-		number="04"
+		number="03"
 		title="Latest from the knowledge base"
 		href="/knowledge-base"
 		linkLabel="View all"
@@ -377,7 +382,7 @@
 <!-- EXPLORE ECOSYSTEM -->
 <section {@attach reveal}>
 	<SectionHead
-		number="05"
+		number="04"
 		title="Explore the halal trade ecosystem"
 		description="Market guides, trade shows, consultants and insights."
 	/>
@@ -404,177 +409,6 @@
 				</div>
 			</a>
 		{/each}
-	</div>
-</section>
-
-<!-- LETTER -->
-<section class="space-y-4 py-8 sm:space-y-6 sm:py-12">
-	<div class="animate-enter space-y-3 text-center sm:space-y-4">
-		<h2 class="animate-enter text-xl font-semibold tracking-tight sm:text-2xl">
-			Halal trade intelligence.
-		</h2>
-		<p class="animate-enter mx-auto max-w-3xl text-sm text-muted-foreground">
-			Research certification bodies, verify suppliers, and navigate global halal markets — all in
-			one place.
-		</p>
-	</div>
-	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-4">
-		<StatTile
-			value="JAKIM, MUI, ESMA"
-			label="15+ certification bodies"
-			hint="Cross-referenced database of certifying bodies worldwide"
-			tone="success"
-		/>
-		<StatTile
-			value="Verified"
-			label="Public registers"
-			hint="Public certificate registers cross-checked"
-			tone="info"
-		/>
-		<StatTile
-			value="Valid"
-			label="Scope tracking"
-			hint="Certificate validity shown on every profile"
-			tone="warn"
-		/>
-		<StatTile
-			value="Public"
-			label="Methodology"
-			hint="How we source and verify data"
-			tone="primary"
-		/>
-	</div>
-</section>
-
-<!-- RESOURCES -->
-<section class="space-y-4 py-8 sm:space-y-6 sm:py-12">
-	<div class="animate-enter space-y-3 text-center sm:space-y-4">
-		<h2 class="animate-enter text-xl font-semibold tracking-tight sm:text-2xl">
-			Resources for your halal business
-		</h2>
-		<p class="animate-enter mx-auto max-w-3xl text-sm text-muted-foreground">
-			Everything you need to succeed in global halal markets — guides, tools, and intelligence.
-		</p>
-	</div>
-	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
-		<a
-			href="/verify"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<ShieldCheck class="size-5 text-success sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">Verify Certificate</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					Check certificate authenticity against issuing bodies
-				</p>
-			</div>
-		</a>
-		<a
-			href="/tools/ingredient-checker"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<FlaskConical class="size-5 text-warn sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">Ingredient Checker</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					AI verdict on halal, haram, mashbooh
-				</p>
-			</div>
-		</a>
-		<a
-			href="/tools/certification-cost"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<Calculator class="size-5 text-accent-purple sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">Certification Cost</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					Estimate registration fees by certifier
-				</p>
-			</div>
-		</a>
-		<a
-			href="/tools/landed-cost"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<Banknote class="size-5 text-accent-rose sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">Landed Cost</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					True per-unit cost with duties & fees
-				</p>
-			</div>
-		</a>
-		<a
-			href="/tools/rfq-builder"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<FileText class="size-5 text-info sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">RFQ Builder</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">Draft sourcing documents</p>
-			</div>
-		</a>
-		<a
-			href="/export-docs"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<Newspaper class="size-5 text-primary sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">Export Docs</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					Templates for suppliers & importers
-				</p>
-			</div>
-		</a>
-	</div>
-</section>
-
-<!-- MARKET GUIDES -->
-<section class="space-y-4 py-8 sm:space-y-6 sm:py-12">
-	<div class="animate-enter space-y-3 text-center sm:space-y-4">
-		<h2 class="animate-enter text-xl font-semibold tracking-tight sm:text-2xl">
-			Market entry intelligence
-		</h2>
-		<p class="animate-enter mx-auto max-w-3xl text-sm text-muted-foreground">
-			Regional analysis of halal regulations, import requirements, and sourcing opportunities.
-		</p>
-	</div>
-	<div class="animate-enter grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 lg:grid-cols-3">
-		<a
-			href="/market-guides"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<Globe class="size-5 sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">All Market Guides</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					Country-by-country entry requirements
-				</p>
-			</div>
-		</a>
-		<a
-			href="/trade-shows"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<Calendar class="size-5 sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">Trade Shows</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">
-					Global halal exhibitions & events
-				</p>
-			</div>
-		</a>
-		<a
-			href="/faq"
-			class="animate-enter group press-scale relative block overflow-hidden rounded-xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md sm:p-4"
-		>
-			<div class="space-y-2">
-				<HelpCircle class="size-5 sm:size-6" />
-				<h3 class="truncate text-sm font-semibold">FAQ</h3>
-				<p class="hidden text-xs text-muted-foreground sm:block">Common questions & answers</p>
-			</div>
-		</a>
 	</div>
 </section>
 

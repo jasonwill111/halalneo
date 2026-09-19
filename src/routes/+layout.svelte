@@ -72,42 +72,6 @@
 		}
 	});
 
-	// 增强运动效果的初始化
-	function enhanceMotion() {
-		if (typeof document === 'undefined') return;
-
-		const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-		if (prefersReduced) return;
-
-		// 为按钮添加按压效果
-		document.querySelectorAll('button, [role="button"], a').forEach((el) => {
-			el.addEventListener('pointerdown', (e) => {
-				const target = e.currentTarget as HTMLElement;
-				// 简单的按压缩放
-				target.style.transform = 'scale(0.97)';
-				target.style.transition = 'transform 100ms ease-out';
-
-				// 自动恢复
-				setTimeout(() => {
-					target.style.transform = '';
-					target.style.transition = '';
-				}, 100);
-			});
-		});
-
-		// 为卡片添加悬浮效果
-		document.querySelectorAll('.card').forEach((card) => {
-			card.addEventListener('mouseenter', () => {
-				(card as HTMLElement).style.transform = 'translateY(-2px)';
-			});
-
-			card.addEventListener('mouseleave', () => {
-				(card as HTMLElement).style.transform = '';
-			});
-		});
-	}
-
 	// Chromeless portals: these routes render their own fixed-height shell
 	// (sidebar + internal scroll), so the site header / footer / mobile bottom
 	// tab must not stack on top of them. Public supplier pages
@@ -128,14 +92,14 @@
 
 	const siteName = 'HalalNeo';
 	const defaultDescription =
-		'Halal trade intelligence for buyers and suppliers —certification, sourcing and market guides in one place.';
+		'Halal trade intelligence for buyers and suppliers — certification, sourcing and market guides in one place.';
 	const baseUrl = 'https://halalneo.com';
 
 	const seo = $derived.by(() => {
 		const path = deLocalizeUrl(page.url.href).pathname;
 		const title =
 			page.data?.seo?.title ??
-			`${path === '/' ? 'Home' : path.split('/').pop()?.replace(/-/g, ' ')} �?${siteName}`;
+			`${path === '/' ? 'Home' : path.split('/').pop()?.replace(/-/g, ' ')} — ${siteName}`;
 		const description = page.data?.seo?.description ?? defaultDescription;
 		const canonical = localizeUrl(`${baseUrl}${path}`).toString();
 		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/api/media/og-default.png`;
@@ -197,11 +161,6 @@
 	let headerHidden = $state(false);
 	let headerHasContent = $state(false);
 
-	// 增强运动效果的初始化
-	$effect(() => {
-		enhanceMotion();
-	});
-
 	// Real-user Core Web Vitals -> /api/vitals -> Analytics Engine (once per load).
 	// $effect only runs in the browser, so no browser guard is needed.
 	$effect(() => {
@@ -256,7 +215,7 @@
 	<link
 		rel="alternate"
 		type="application/rss+xml"
-		title="HalalNeo �?Halal Trade Blog"
+		title="HalalNeo — Halal Trade Blog"
 		href={`${baseUrl}/rss.xml`}
 	/>
 	<meta name="robots" content={seo.robots} />
@@ -275,6 +234,13 @@
 <svelte:window onscroll={onScroll} />
 
 <div class="flex min-h-dvh flex-col bg-background text-foreground">
+	{#if !isPortalRoute}
+		<a
+			href="#main-content"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-60 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+			>Skip to content</a
+		>
+	{/if}
 	{#if isPortalRoute}
 		{@render children()}
 	{:else}
@@ -284,7 +250,7 @@
 				: 'max-md:translate-y-0'} {headerHasContent ? 'has-content' : ''}"
 		>
 			<div
-				class="mx-auto flex h-12 w-full max-w-7xl items-center justify-between gap-2 px-4 sm:h-14 sm:gap-4 sm:px-6"
+				class="mx-auto flex min-h-12 w-full max-w-7xl flex-wrap items-center justify-between gap-x-2 gap-y-1 px-4 sm:min-h-14 sm:gap-x-4 sm:px-6"
 			>
 				<a
 					href={localizeHref('/')}
@@ -302,8 +268,11 @@
 					<span class="text-lg font-bold tracking-tight text-primary">HalalNeo</span>
 				</a>
 
-				<NavigationMenuRoot viewport={false} class="hidden md:flex md:justify-start">
-					<NavigationMenuList>
+				<NavigationMenuRoot
+					viewport={false}
+					class="hidden md:flex md:min-w-0 md:max-w-none md:justify-start"
+				>
+					<NavigationMenuList class="flex-wrap">
 						{#each primaryNav as item (item.href)}
 							<NavigationMenuItem>
 								<NavigationMenuLink
@@ -393,7 +362,8 @@
 		</header>
 
 		<main
-			class="mx-auto w-full max-w-7xl flex-1 space-y-4 px-4 pt-3 pb-12 sm:space-y-6 sm:px-6 sm:pt-4 sm:pb-8"
+			id="main-content"
+			class="mx-auto w-full max-w-7xl flex-1 scroll-mt-16 space-y-4 px-4 pt-3 pb-12 sm:space-y-6 sm:px-6 sm:pt-4 sm:pb-8"
 		>
 			{@render children()}
 		</main>

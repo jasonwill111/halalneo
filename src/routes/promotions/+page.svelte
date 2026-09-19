@@ -88,8 +88,15 @@
 	</div>
 
 	<div class="relative max-w-xs">
+		<label for="deal-search" class="sr-only">Search deals</label>
 		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input type="search" placeholder="Search deals..." class="pl-9 text-xs" bind:value={query} />
+		<Input
+			id="deal-search"
+			type="search"
+			placeholder="Search deals..."
+			class="pl-9"
+			bind:value={query}
+		/>
 	</div>
 
 	{#if data.loadError}

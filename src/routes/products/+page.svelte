@@ -244,7 +244,7 @@
 						? 'All products'
 						: (productCategories.find((c) => c.slug === activeCategory)?.name ?? 'Products')}
 				</h2>
-				<p class="text-xs text-muted-foreground">
+				<p class="text-xs text-muted-foreground" role="status" aria-live="polite">
 					{filtered.length} listing{filtered.length === 1 ? '' : 's'}
 				</p>
 			</div>
@@ -258,17 +258,19 @@
 						query = '';
 					}}
 				>
-					Clear filter
+					Clear filters
 				</Button>
 			{/if}
 		</div>
 		<div class="relative w-full sm:max-w-xs">
+			<label for="product-search" class="sr-only">Search products by name</label>
 			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
+				id="product-search"
 				bind:value={query}
 				type="search"
 				placeholder="Search products by name..."
-				class="pl-9 text-xs"
+				class="pl-9"
 			/>
 		</div>
 
@@ -279,9 +281,11 @@
 				<EmptyHeader>
 					<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
 					<EmptyTitle
-						>{query.trim() || activeCategory !== 'all'
-							? 'No products match these filters'
-							: 'No products in this category yet'}</EmptyTitle
+						>{query.trim()
+							? `No products match "${query.trim()}"`
+							: activeCategory !== 'all'
+								? 'No products match these filters'
+								: 'No products in this category yet'}</EmptyTitle
 					>
 					<EmptyDescription
 						>New listings are added as suppliers onboard during test mode.</EmptyDescription
@@ -336,7 +340,7 @@
 							{/if}
 							{#if cert}
 								<span
-									class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-3xs font-semibold {cert.cls}"
+									class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-2xs font-semibold {cert.cls}"
 								>
 									<cert.icon class="size-2.5"></cert.icon>
 									{cert.text}

@@ -68,8 +68,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				return {
 					slug: params.slug,
 					seo: {
-						title: `${params.slug} 鈥?HalalNeo`,
-						description: `${params.slug} 鈥?halal-certified supplier on HalalNeo.`,
+						title: `${params.slug} — HalalNeo`,
+						description: `${params.slug} — halal-certified supplier on HalalNeo.`,
 						robots: 'noindex, nofollow'
 					},
 					item: null
@@ -123,8 +123,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	return {
 		slug: params.slug,
 		seo: {
-			title: `${params.slug} 鈥?HalalNeo`,
-			description: `${params.slug} 鈥?halal-certified supplier on HalalNeo.`,
+			title: `${params.slug} — HalalNeo`,
+			description: `${params.slug} — halal-certified supplier on HalalNeo.`,
 			robots: 'noindex, nofollow'
 		},
 		item: null
