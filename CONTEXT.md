@@ -462,21 +462,41 @@ transactions or certifiers expose anchorable APIs.
 
 ## Caching Strategy (Cloudflare Workers)
 
-Three layers, all inside the Worker (edge Cache Rules are a separate
-dashboard config — until they exist, `s-maxage` headers are advisory and the
-Cache API below is the only shared cache):
+Four layers. **Edge (verified prod 2026-09-19):** Cloudflare caches Worker
+responses that carry `public` `s-maxage`/`max-age` headers — `CF-Cache-Status:
+HIT` observed on both `halalneo.com` and the workers.dev host without any
+dashboard Cache Rule. Edge hits never invoke the Worker (zero CPU + zero D1).
+Below the edge, three layers live inside the Worker:
 
 1. **L1 in-memory LRU** (`cache.ts` Map, 500 entries) — survives within one
    isolate; evicted by `invalidateCache` including `path?query=…` variants.
 2. **L2 Cache API `halalneo:d1-cache`** — D1 query results (`cachedQuery`,
    path-or-`queryCacheKey` keys) and full response objects for
    `/api/media/*` plain GETs (content-addressed keys; DELETE evicts).
+   Synthetic-host keys (`https://cache.halalneo.internal/…`) work fine
+   against named caches (prod probe).
 3. **HTML cache `halalneo:html-cache`** (`handleHtmlCache` in
    `hooks.server.ts`) — SSR'd public pages stored as full responses; a hit
    skips the entire handle chain (auth + page load + all /api subrequests).
    Only anonymous GETs without query strings are stored (any Cookie header
    renders live), whitelisted paths only, TTL mirrors the s-maxage tiers
-   capped at 3600s.
+   capped at 3600s. Keys are the real request URL (workers.dev and halalneo.com
+   get separate entries).
+
+**Cache-API gotchas (both cost a prod debugging round, do not regress):**
+- `cache.put()` must be **awaited inline** — a `waitUntil(cache.put(streamedResponse))`
+  never persists in workerd (the tee'd body dies with the response; the put
+  callback provably never fires). MISS pays one extra round-trip.
+- Responses from `cache.match()` have **immutable headers**. Returning one
+  directly is fine only if nothing downstream touches it (the HTML hit
+  short-circuits the handle chain); the media route rebuilds
+  `new Response(hit.body, { status, headers: new Headers(hit.headers) })`
+  because `handleSecurityHeaders` would otherwise throw "Can't modify
+  immutable headers" (500). HIT/MISS markers are baked into the stored copy.
+
+Verified 2026-09-19: `/`, `/blog`, `/products` go MISS→HIT on both hosts
+(`X-Html-Cache`), `/api/media/*` HIT + correct 206 ranges, `/products` TTFB
+1.17s → 0.43s once warm.
 
 | Content Type | Cache Header |
 |-------------|-------------|

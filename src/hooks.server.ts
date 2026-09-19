@@ -440,10 +440,8 @@ const handleHtmlCache: Handle = async ({ event, resolve }) => {
 		// Cache API unavailable (non-Workers runtime) — render live every time
 	}
 
-	// Real incoming URL as key: workerd rejects cache.put() for synthetic
-	// (non-zone) hosts — the `cache.halalneo.internal` trick that the memory
-	// layer uses silently fails against the Cache API. workers.dev and
-	// halalneo.com therefore get separate entries, which is fine.
+	// Real incoming URL as key (workers.dev and halalneo.com get separate
+	// entries, which is fine — each colo only serves its own traffic).
 	const cacheRequest = new Request(event.url, { method: 'GET' });
 	if (cache) {
 		let hit: Response | undefined;
@@ -453,7 +451,8 @@ const handleHtmlCache: Handle = async ({ event, resolve }) => {
 			hit = undefined;
 		}
 		if (hit) {
-			hit.headers.set('X-Html-Cache', 'HIT');
+			// cache.match() responses have immutable headers — return as-is;
+			// the stored copy already carries X-Html-Cache: HIT.
 			return hit;
 		}
 	}
@@ -463,9 +462,21 @@ const handleHtmlCache: Handle = async ({ event, resolve }) => {
 		const ttl = htmlCacheTtl(stripped);
 		response.headers.set('Cache-Control', `public, max-age=600, s-maxage=${ttl}, stale-while-revalidate=60`);
 		const clone = response.clone();
-		// Re-serialize with the aligned Cache-Control so a HIT serves the same headers.
-		const stored = new Response(clone.body, { status: clone.status, headers: clone.headers });
-		event.platform?.ctx.waitUntil(cache.put(cacheRequest, stored));
+		// Re-serialize with the aligned Cache-Control so a HIT serves the same
+		// headers, plus the HIT marker baked in (matched responses are immutable).
+		const storedHeaders = new Headers(clone.headers);
+		storedHeaders.set('X-Html-Cache', 'HIT');
+		const stored = new Response(clone.body, { status: clone.status, headers: storedHeaders });
+		// Awaited inline, NOT waitUntil: with waitUntil the put never persisted
+		// in workerd (the streamed body dies with the response — verified in
+		// prod tail: the put callback never fired). MISS requests pay one
+		// extra Cache-API round-trip; every later request in the colo is served
+		// from cache.
+		try {
+			await cache.put(cacheRequest, stored);
+		} catch {
+			// put can reject on runtime quirks — serve live anyway
+		}
 		response.headers.set('X-Html-Cache', 'MISS');
 	}
 	return response;

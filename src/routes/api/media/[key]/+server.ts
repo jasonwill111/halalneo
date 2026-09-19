@@ -92,9 +92,12 @@ function parseRange(header: string, size: number): ByteRange | null {
 /**
  * Resolve the byte window actually delivered. `R2Range` is a union whose third
  * member carries only `suffix`, so it must be narrowed before it can be echoed
- * back in `Content-Range` (RFC 9110 §14.21). We never send a suffix request —
- * `parseRange` turns those into offset/length — but the arm is still handled
- * explicitly, so every other fallback is simply the window that was asked for.
+ * back in `Content-Range` (RFC 9110 §14.21). Narrow on the VALUE, not `in`:
+ * workerd hands back `{ offset, length, suffix: undefined }`, so an
+ * `in`-narrowed suffix arm reads NaN and poisons the whole window.
+ * We never send a suffix request — `parseRange` turns those into
+ * offset/length — but the arm is still handled explicitly, so every other
+ * fallback is simply the window that was asked for.
  */
 function computeDeliveredRange(
 	returned: NonNullable<R2ObjectBody['range']> | undefined,
@@ -105,17 +108,17 @@ function computeDeliveredRange(
 	let length = asked.length;
 
 	if (returned) {
-		if ('suffix' in returned) {
+		const suffix = 'suffix' in returned ? returned.suffix : undefined;
+		const returnedOffset = 'offset' in returned ? returned.offset : undefined;
+		const returnedLength = 'length' in returned ? returned.length : undefined;
+		if (typeof suffix === 'number') {
 			// bytes=-N → the final N bytes of the object.
-			length = Math.min(returned.suffix, size);
+			length = Math.min(suffix, size);
 			offset = size - length;
 		} else {
-			// Both remaining arms declare `offset` and `length`, one of them as the
-			// optional half; the `suffix` arm above has been narrowed away, so these
-			// reads are legal without a cast.
-			offset = returned.offset ?? asked.offset;
+			offset = typeof returnedOffset === 'number' ? returnedOffset : asked.offset;
 			const remaining = Math.max(size - offset, 0);
-			length = Math.min(returned.length ?? remaining, remaining);
+			length = Math.min(typeof returnedLength === 'number' ? returnedLength : remaining, remaining);
 		}
 	}
 
@@ -133,7 +136,7 @@ function baseHeaders(etag: string, contentType: string): Headers {
 }
 
 // ==================== GET: Serve media by key ====================
-export const GET: RequestHandler = async ({ params, request, platform }) => {
+export const GET: RequestHandler = async ({ params, request }) => {
 	const key = params.key;
 	if (!key || key.includes('..')) {
 		return json({ error: 'Invalid key' }, { status: 400 });
@@ -149,7 +152,6 @@ export const GET: RequestHandler = async ({ params, request, platform }) => {
 	// range requests skip it — they need header-level negotiation below.
 	const isPlainGet =
 		!request.headers.get('range') && !request.headers.get('if-none-match');
-	// Real-host key: workerd rejects cache.put() with synthetic (non-zone) URLs.
 	const cacheUrl = (k: string) => new URL(`/api/media/${k}`, request.url).toString();
 	let cache: Cache | null = null;
 	try {
@@ -160,9 +162,12 @@ export const GET: RequestHandler = async ({ params, request, platform }) => {
 	if (isPlainGet && cache) {
 		try {
 			const hit = await cache.match(new Request(cacheUrl(key)));
-			if (hit) return hit;
+			// Matched responses have immutable headers — rebuild before handing
+			// them back to the hooks chain (handleSecurityHeaders would throw
+			// "Can't modify immutable headers" on the frozen Response).
+			if (hit) return new Response(hit.body, { status: hit.status, headers: new Headers(hit.headers) });
 		} catch {
-			// synthetic keys can be rejected in workerd — fall through to R2
+			// match can reject on runtime quirks — fall through to R2
 		}
 	}
 
@@ -209,10 +214,16 @@ export const GET: RequestHandler = async ({ params, request, platform }) => {
 		headers.set('Content-Length', String(head.size));
 		const full = new Response(object.body, { headers });
 		if (isPlainGet && cache) {
+			// Awaited inline, NOT waitUntil — a waitUntil put never persists a
+			// streamed body in workerd (verified in prod: the callback never fired).
+			// Keys are content-addressed, so this stores each asset once per colo.
 			try {
-				platform?.ctx.waitUntil(cache.put(new Request(cacheUrl(key)), full.clone()));
+				const toStore = full.clone();
+				toStore.headers.set('X-Media-Cache', 'HIT');
+				await cache.put(new Request(cacheUrl(key)), toStore);
+				full.headers.set('X-Media-Cache', 'MISS');
 			} catch {
-				// Cache API unavailable in some dev runtimes — serve live anyway
+				// put can reject on runtime quirks — serve live anyway
 			}
 		}
 		return full;

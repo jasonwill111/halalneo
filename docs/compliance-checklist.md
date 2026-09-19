@@ -97,8 +97,8 @@
 |---|---|---|---|
 | 7.1 SEO 清单（title/description/canonical/h1/alt/JSON-LD/hreflang/noindex/DB sitemap） | ✅ | 审计 PASS；market-guides JSON-LD 404 路径已修 | #2✅ |
 | 7.2 GEO（答案前置/Markdown 内容） | ✅ | blog-generator 提示词/字段强制 Markdown（"never emit HTML tags"，09-19 复核）；渲染器统一转 HTML+TOC | #4 |
-| 7.3 LCP≤2.5/INP≤200/CLS≤0.1 + 手段 | 🔧 | 09-19 部署后本地 Lighthouse mobile lab 实测：CLS 0 ✅、610KiB 总量 ✅，但 LCP 4.7-4.9s ❌、TBT ~1s ❌；归因 = HTML 未被 CF 边缘缓存（TTFB 1.07s，需 dashboard Cache Rule）+ GA4 174kB。修复代码已落地待复测：GA4 gtag 改 requestIdleCallback 延迟注入 + Worker 层 HTML 缓存（见 7.4）直接压 TTFB；详见 `docs/perf/2026-09-19-lighthouse-mobile.md`；PSI 官方 lab 待配额重置复核 | #11 |
-| 7.4 缓存策略 | ✅ | hooks 分层 s-maxage/SWR + R2 ETag；09-19 P1：新增 `handleHtmlCache`（匿名 GET 公开页 whole-response 缓存 `halalneo:html-cache`，命中跳过 SSR/鉴权/8 个子请求）、`/api/media` 普通 GET 响应级缓存（DELETE 驱逐）、3 明细端点补 cachedQuery、参考列表 TTL 300→3600 + 内存层查询变体驱逐、llms.txt 转 DB 驱动小时缓存 | — |
+| 7.3 LCP≤2.5/INP≤200/CLS≤0.1 + 手段 | 🔧 | 09-19 部署后本地 Lighthouse mobile lab 实测：CLS 0 ✅、610KiB 总量 ✅，但 LCP 4.7-4.9s ❌、TBT ~1s ❌；归因 = HTML 未被 CF 边缘缓存（TTFB 1.07s）+ GA4 174kB。修复已全部部署（版本 943a4b4a）：GA4 requestIdleCallback 延迟注入 + Worker 层 HTML 缓存 + 边缘 header 缓存（实测 `CF-Cache-Status: HIT`，无需 dashboard Cache Rule）；/products 热后 TTFB 1.17s→0.43s；详见 `docs/perf/2026-09-19-lighthouse-mobile.md`；PSI 官方 lab 待配额重置复核后关闭 | #11 |
+| 7.4 缓存策略 | ✅ | hooks 分层 s-maxage/SWR + R2 ETag；09-19 P1：新增 `handleHtmlCache`（匿名 GET 公开页 whole-response 缓存 `halalneo:html-cache`，命中跳过 SSR/鉴权/8 个子请求）、`/api/media` 普通 GET 响应级缓存（DELETE 驱逐）、3 明细端点补 cachedQuery、参考列表 TTL 300→3600 + 内存层查询变体驱逐、llms.txt 转 DB 驱动小时缓存。生产验证（09-19，版本 943a4b4a）：`/`、`/blog`、`/products` 双域名 MISS→HIT（`X-Html-Cache`）、media HIT + 206 Range 正确、边缘 `CF-Cache-Status: HIT`、synthetic-key L2 探针通过；/products 热 TTFB 0.43s。两个 workerd 陷阱已修并记入 CONTEXT.md：waitUntil put 不持久化（改 inline await）、match 响应 headers 不可变（media 重建 Response） | — |
 
 ## §8 无障碍 / §9 未来扩展 / §10 执行原则
 

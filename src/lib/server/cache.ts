@@ -88,8 +88,9 @@ export async function cachedQuery<T>(
 	// L2: Cache API
 	if (cache) {
 		const cacheRequest = new Request(key);
-		// NOTE: Cache API can reject synthetic (non-zone) keys in workerd.
-		// A failed match must fall through to the live query, never throw.
+		// Synthetic-host keys were verified working against named caches in
+		// prod (cache.put + cache.match round-trip OK). The try/catch is just
+		// so a failed match falls through to the live query, never throws.
 		let cached: Response | undefined;
 		try {
 			cached = await cache.match(cacheRequest);
