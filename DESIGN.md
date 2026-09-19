@@ -316,7 +316,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 
 - `site/stat-tile` (value + label + tone + hint) for stat tiles; `site/filter-pills` (ToggleGroup, `options` + `bind:value`) for all single-select filters — never hand-roll filter buttons.
 - `site/paginator` (`bind:page` + `totalPages`, PAGE_SIZE 8/9/12 for 2/3/4-col grids, reset to page 1 on filter change), `site/section-head` (number/title/description/link) for section headers.
-- `site/collapsible-section`, `site/share-buttons`, `site/related-links`, `site/guide-hero` (guide fallback), `site/confirm-dialog` (replaces `window.confirm`), `site/breadcrumb`.
+- `site/collapsible-section`, `site/share-buttons`, `site/related-links`, `site/guide-hero` (guide fallback), `site/confirm-dialog` (replaces `window.confirm`), `site/breadcrumb`, `site/image-upload` (client WebP compression → `POST /api/media/upload`, fills a URL field via `onuploaded` — use for every R2-backed image field instead of pasting URLs only).
 - Portals: `site/account-nav`, `site/admin-sidebar`, `site/supplier-sidebar` (fixed bottom cluster: user + email + theme + home + sign-out).
 - Listing grids start at `grid-cols-2` on mobile with compact cards (`p-2.5` vs `sm:p-4`, truncated titles, secondary descriptions `hidden sm:block`); empty states inside grids must span full width (`col-span-full`).
 

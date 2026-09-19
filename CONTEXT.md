@@ -93,15 +93,15 @@ _Avoid_: content generator, AI assistant
 | Buying Requests | `/rfqs`, `/rfqs/[id]`, `/rfqs/new` | ✅ Public RFQ board (login to post, 1/week free quota, supplier quote dialog) |
 | Quick Deals | `/promotions`, `/promotions/[id]` | ✅ Supplier clearance board (member publish, 1/week free quota) |
 | Success Stories | `/success-stories`, `/success-stories/[slug]` | ✅ Editorial case studies (admin publish at `/admin/stories`) |
-| Search | `/search` | ✅ Full-text search across articles, glossary, suppliers, products |
+| Search | `/search` | ✅ Full-text search across articles, glossary, suppliers, products; reads initial query from `?q=` so deep links (and shared search URLs) run automatically |
 | Pricing | `/pricing` | ✅ 4-tier pricing + Brand URL add-on |
 | About | `/about` | ✅ Mission, milestones, team |
-| FAQ | `/faq` | ✅ Accordion FAQ with search |
+| FAQ | `/faq` | ✅ Accordion FAQ with search; content is the static `Faq[]` array in `+page.svelte` (load only sets SEO — no DB fetch) |
 | Contact | `/contact` | ✅ Contact form |
-| Auth | `/login`, `/register`, `/supplier/login`, `/admin/login` | ✅ Buyer sign-up/login and `/account` use real Better Auth sessions (`authClient` + `getSession`); the localStorage demo store is removed. `?next=` redirect with `safeNextPath()` guard |
+| Auth | `/login`, `/register`, `/supplier/login`, `/admin/login` | ✅ Buyer sign-up/login and `/account` use real Better Auth sessions (`authClient` + `getSession`); the localStorage demo store is removed. `?next=` redirect with `safeNextPath()` guard; `/register` collects name/email/password only (Company field dropped — no `user` column backs it) |
 | Admin Auth | `/admin/login`, `/api/auth/*` | ✅ Real better-auth (email/password, D1) gated by `ADMIN_EMAILS` allowlist |
 | Buyer Account | `/account`, `/account/profile`, `/account/saved`, `/account/inquiries` | ✅ Server-guarded (`+layout.server.ts`, 307 → `/login?next=`); saved = `/api/favorites` (D1), inquiries = `/api/inquiries/mine` (D1); profile persists `name` only — company/phone 等字段无 user 表列支撑 |
-| Supplier Portal | `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage`, `/supplier/profile`, `/supplier/onboarding`, `/supplier/login` | ✅ Real Better Auth login; `+layout.server.ts` derives portal user from session via `supplier_members`+`suppliers` |
+| Supplier Portal | `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage`, `/supplier/profile`, `/supplier/onboarding`, `/supplier/login` | ✅ Real Better Auth login; `+layout.server.ts` derives portal user from session via `supplier_members`+`suppliers`; `/supplier/orders` lists that supplier's buyer inquiries via `GET /api/inquiries?supplierSlug=` |
 | Admin | `/admin/*` | ✅ 22 pages (dashboard, users, products, suppliers, categories, blog, knowledge, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings, promotions, quality, rfqs, stories, trade-shows, market-guides, login); all reads/writes hit D1 (adminData localStorage store removed) |
 
 ### API Endpoints (47 +server.ts files)
@@ -134,7 +134,7 @@ _Avoid_: content generator, AI assistant
 | `/api/pages` | GET, POST | List/create CMS pages (`?status=all` admin-only) |
 | `/api/pages/[slug]` | GET, PUT, DELETE | CRUD CMS page |
 | `/api/settings` | GET, PUT | Site settings; PUT = requireAdmin batched upsert (single multi-row INSERT … ON CONFLICT) |
-| `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public; stamps `user_id` when signed in); GET requires session (`?status=all` admin-only) |
+| `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public; stamps `user_id` when signed in); GET requires admin OR a `?supplierSlug=` the session user is a member of (`requireAdminOrSupplier`) — powers the supplier portal's own inquiry list |
 | `/api/inquiries/[id]` | PATCH | Update inquiry status (requireAdmin) |
 | `/api/inquiries/mine` | GET | My sent inquiries (login; newest 100) |
 | `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache; suppliers+products filtered `status=active`) |
@@ -153,7 +153,7 @@ _Avoid_: content generator, AI assistant
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |
 | `/api/auth/*` | GET, POST | better-auth handlers (sign-up/sign-in/sign-out/session); never cached |
-| `/api/media/upload` | POST | Admin image upload — accepts only `image/webp`/`image/avif`, SHA-256 content-addressed key, `head()` dedupe before `put()`, `cacheControl` always set (§5.12) |
+| `/api/media/upload` | POST | Admin image upload — accepts only `image/webp`/`image/avif`, SHA-256 content-addressed flat key `media/<hash>.<ext>`, `head()` dedupe before `put()`, `cacheControl` always set (§5.12); returned URL omits the `media/` prefix because the read route `/api/media/[key]` is single-segment and re-prefixes it |
 | `/api/media/[key]` | GET | Media retrieval — `head()` first, ETag/If-None-Match→304 before any `get()`, Range/206 slices (§5.12) |
 
 All admin write endpoints share the shape: `requireAdmin(event)` (session + `ADMIN_EMAILS` allowlist) → Zod `safeParse` → 400 `{ error, details: {field: [messages]} }` → typed Drizzle values with column projection.
