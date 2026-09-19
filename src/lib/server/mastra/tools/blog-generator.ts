@@ -1,5 +1,7 @@
 import { createTool } from '@mastra/core/tools';
+import { generateText } from 'ai';
 import { z } from 'zod';
+import { createAgnes, AGNES_MODEL_ID } from '../agnes.js';
 
 export function createBlogGeneratorTool(apiKey: string) {
 	return createTool({
@@ -13,7 +15,10 @@ export function createBlogGeneratorTool(apiKey: string) {
 				.optional()
 				.describe('Content style'),
 			wordCount: z.number().optional().describe('Approximate word count target'),
-			includeSchema: z.boolean().optional().describe('Include structured data/schema markup guidance')
+			includeSchema: z
+				.boolean()
+				.optional()
+				.describe('Include structured data/schema markup guidance')
 		}),
 		outputSchema: z.object({
 			title: z.string(),
@@ -23,7 +28,11 @@ export function createBlogGeneratorTool(apiKey: string) {
 			tags: z.array(z.string()),
 			category: z.string()
 		}),
-		execute: async (inputData: { topic: string; style?: 'informative' | 'tutorial' | 'analysis' | 'news'; wordCount?: number }) => {
+		execute: async (inputData: {
+			topic: string;
+			style?: 'informative' | 'tutorial' | 'analysis' | 'news';
+			wordCount?: number;
+		}) => {
 			const { topic, style = 'informative', wordCount = 1000 } = inputData;
 
 			const systemPrompt = `You are a halal trade content writer for HalalNeo, a global halal marketplace platform.
@@ -76,37 +85,20 @@ Rules:
 				category: 'Halal Trade'
 			});
 
-			let response: Response;
+			let raw: string;
 			try {
-				response = await fetch('https://apihub.agnes-ai.com/v1/chat/completions', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${apiKey}`
-					},
-					body: JSON.stringify({
-						model: 'agnes-2.5-flash',
-						messages: [
-							{ role: 'system', content: systemPrompt },
-							{ role: 'user', content: `Write a blog article about: ${topic}` }
-						],
-						temperature: 0.7,
-						max_tokens: 2000
-					}),
-					signal: AbortSignal.timeout(30_000)
+				const generated = await generateText({
+					model: createAgnes(apiKey).chat(AGNES_MODEL_ID),
+					system: systemPrompt,
+					prompt: `Write a blog article about: ${topic}`,
+					temperature: 0.7,
+					maxOutputTokens: 2000,
+					abortSignal: AbortSignal.timeout(30_000)
 				});
+				raw = generated.text;
 			} catch {
 				return degrade(UNAVAILABLE);
 			}
-
-			if (!response.ok) return degrade(UNAVAILABLE);
-
-			const data = (await response.json().catch(() => null)) as {
-				choices?: Array<{ message?: { content?: string } }>;
-			} | null;
-			if (!data) return degrade(UNAVAILABLE);
-
-			const raw = data.choices?.[0]?.message?.content || '';
 
 			interface GeneratedSection {
 				heading?: string;

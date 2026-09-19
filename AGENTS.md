@@ -169,7 +169,7 @@
 
 ### 5.1 核心技术栈
 
-- SvelteKit（当前目标版本：3.x）、svelte-shadcn（最大化复用，禁止手写基础 UI 组件）、Tailwind CSS、Zod、Better Auth、Drizzle ORM、Cloudflare D1、Cloudflare R2（仅免费额度，见 5.12）、Mastra.ai、Lucide for Svelte、ParaglideJS。
+- SvelteKit（当前目标版本：3.x）、svelte-shadcn（最大化复用，禁止手写基础 UI 组件）、Tailwind CSS、Zod、Better Auth、Drizzle ORM、Cloudflare D1、Cloudflare R2（仅免费额度，见 5.12）、Mastra.ai + Vercel AI SDK（AI 功能纪律：所有 LLM 调用必须走 AI SDK，provider/模型统一 `#lib/server/mastra/agnes.ts` = `createAgnes()` + `agnes-3.0-flash`，禁止裸 fetch `chat/completions`；前端用 `@ai-sdk/svelte` `Chat`）、Lucide for Svelte、ParaglideJS。
 
 ### 5.2 项目结构与文件组织（强制）
 

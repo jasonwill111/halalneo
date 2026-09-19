@@ -1,11 +1,8 @@
 import { Agent } from '@mastra/core/agent';
-import { createOpenAI } from '@ai-sdk/openai';
+import { createAgnes, AGNES_MODEL_ID } from '../agnes.js';
 
 export function createHalalAgent(apiKey: string) {
-	const agnes = createOpenAI({
-		baseURL: 'https://apihub.agnes-ai.com/v1',
-		apiKey
-	});
+	const agnes = createAgnes(apiKey);
 
 	return new Agent({
 		id: 'halal-agent',
@@ -19,6 +16,6 @@ STRICT RULES:
 4. Never discuss other AI models, chatbots, or competitors.
 5. Always recommend verifying with official certification bodies for authoritative answers.
 6. Be concise, professional, and actionable.`,
-		model: agnes('agnes/agnes-2.5-flash')
+		model: agnes.chat(AGNES_MODEL_ID)
 	});
 }

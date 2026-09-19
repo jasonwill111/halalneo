@@ -70,119 +70,119 @@ _Avoid_: content generator, AI assistant
 
 ### Pages Implemented (72 routes)
 
-| Section | Pages | Status |
-|---------|-------|--------|
-| Homepage | `/` | ✅ Hero carousel, stats, categories, featured products/suppliers, KB preview |
-| Products | `/products` (listing), `/product/[slug]` (detail) | ✅ Full catalog with detail pages (image, price, specs, certifications, FAQs, resources); old `/products/[slug]` 301s to `/product/[slug]` |
-| Suppliers | `/suppliers` (listing), `/supplier/[slug]` (detail) | ✅ Directory with profiles (cover, certifications, products, trade terms); old `/suppliers/[slug]` 301s to `/supplier/[slug]`; detail page uses the root layout |
-| Categories | `/categories` (listing), `/category/[slug]` (detail) | ✅ Product taxonomy; old `/categories/[slug]` 301s to `/category/[slug]` |
-| Knowledge Base | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]` | ✅ 6 sections, 125 articles (Markdown bodies, rendered + TOC) |
-| Blog | `/blog`, `/blog/[slug]` | ✅ 8 posts (7 published + 1 evergreen) |
-| Market Guides | `/market-guides`, `/market-guides/[country]` | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt); detail pages ship an entry-steps timeline, SME/Growth/Enterprise cost estimator, two-way recognition matrix, regulatory signals, key links and win plays (all derived via `#lib/data/guide-playbook.ts`) |
-| Glossary | `/glossary` | ✅ 83 terms, A-Z letter-pill pagination + search |
-| Trade Shows | `/trade-shows`, `/trade-shows/[id]` | ✅ 20 events with region filter + pagination, detail pages with Event JSON-LD |
-| Certifying Bodies | `/certifying-bodies`, `/certifying-bodies/[slug]` | ✅ 15 bodies with recognition data |
-| Service Providers | `/service-providers`, `/service-providers/[slug]` | ✅ 14 providers |
-| Verify | `/verify` | ✅ Certificate verification tool |
-| Tools hub | `/tools` | ✅ 6 tools directory |
-| AI Chat | `/tools/ai-chat` | ⏸️ Coming soon teaser page |
-| Ingredient Checker | `/tools/ingredient-checker` | ✅ AI ingredient analysis |
-| Certification Cost | `/tools/certification-cost` | ✅ Cost estimator (7 certifiers × 6 categories × 4 sizes) |
-| Landed Cost | `/tools/landed-cost` | ✅ CIF+duty+VAT+clearance+cert amortisation calculator |
-| RFQ Builder | `/tools/rfq-builder` | ✅ RFQ text generator (copy/download/**publish to Buying Requests**) |
-| Buying Requests | `/rfqs`, `/rfqs/[id]`, `/rfqs/new` | ✅ Public RFQ board (login to post, 1/week free quota, supplier quote dialog) |
-| Quick Deals | `/promotions`, `/promotions/[id]` | ✅ Supplier clearance board (member publish, 1/week free quota) |
-| Success Stories | `/success-stories`, `/success-stories/[slug]` | ✅ Editorial case studies (admin publish at `/admin/stories`) |
-| Search | `/search` | ✅ Full-text search across articles, glossary, suppliers, products; reads initial query from `?q=` so deep links (and shared search URLs) run automatically |
-| Pricing | `/pricing` | ✅ 4-tier pricing + Brand URL add-on |
-| About | `/about` | ✅ Mission, milestones, team |
-| FAQ | `/faq` | ✅ Accordion FAQ with search; content is the static `Faq[]` array in `+page.svelte` (load only sets SEO — no DB fetch) |
-| Contact | `/contact` | ✅ Contact form |
-| Auth | `/login`, `/register`, `/supplier/login`, `/admin/login` | ✅ Buyer sign-up/login and `/account` use real Better Auth sessions (`authClient` + `getSession`); the localStorage demo store is removed. `?next=` redirect with `safeNextPath()` guard; `/register` collects name/email/password only (Company field dropped — no `user` column backs it) |
-| Admin Auth | `/admin/login`, `/api/auth/*` | ✅ Real better-auth (email/password, D1) gated by `ADMIN_EMAILS` allowlist |
-| Buyer Account | `/account`, `/account/profile`, `/account/saved`, `/account/inquiries` | ✅ Server-guarded (`+layout.server.ts`, 307 → `/login?next=`); saved = `/api/favorites` (D1), inquiries = `/api/inquiries/mine` (D1); profile persists `name` only — company/phone 等字段无 user 表列支撑 |
-| Supplier Portal | `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage`, `/supplier/profile`, `/supplier/onboarding`, `/supplier/login` | ✅ Real Better Auth login; `+layout.server.ts` derives portal user from session via `supplier_members`+`suppliers`; `/supplier/orders` lists that supplier's buyer inquiries via `GET /api/inquiries?supplierSlug=` |
-| Admin | `/admin/*` | ✅ 22 pages (dashboard, users, products, suppliers, categories, blog, knowledge, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings, promotions, quality, rfqs, stories, trade-shows, market-guides, login); all reads/writes hit D1 (adminData localStorage store removed) |
+| Section            | Pages                                                                                                                                               | Status                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homepage           | `/`                                                                                                                                                 | ✅ Hero carousel, stats, categories, featured products/suppliers, KB preview                                                                                                                                                                                                                                                       |
+| Products           | `/products` (listing), `/product/[slug]` (detail)                                                                                                   | ✅ Full catalog with detail pages (image, price, specs, certifications, FAQs, resources); old `/products/[slug]` 301s to `/product/[slug]`                                                                                                                                                                                         |
+| Suppliers          | `/suppliers` (listing), `/supplier/[slug]` (detail)                                                                                                 | ✅ Directory with profiles (cover, certifications, products, trade terms); old `/suppliers/[slug]` 301s to `/supplier/[slug]`; detail page uses the root layout                                                                                                                                                                    |
+| Categories         | `/categories` (listing), `/category/[slug]` (detail)                                                                                                | ✅ Product taxonomy; old `/categories/[slug]` 301s to `/category/[slug]`                                                                                                                                                                                                                                                           |
+| Knowledge Base     | `/knowledge-base`, `/knowledge-base/[section]`, `/knowledge-base/[section]/[article]`                                                               | ✅ 6 sections, 125 articles (Markdown bodies, rendered + TOC)                                                                                                                                                                                                                                                                      |
+| Blog               | `/blog`, `/blog/[slug]`                                                                                                                             | ✅ 8 posts (7 published + 1 evergreen)                                                                                                                                                                                                                                                                                             |
+| Market Guides      | `/market-guides`, `/market-guides/[country]`                                                                                                        | ✅ 11 countries (Indonesia, Malaysia, UAE, Saudi Arabia, Türkiye, Pakistan, USA, Thailand, Singapore, Bangladesh, Egypt); detail pages ship an entry-steps timeline, SME/Growth/Enterprise cost estimator, two-way recognition matrix, regulatory signals, key links and win plays (all derived via `#lib/data/guide-playbook.ts`) |
+| Glossary           | `/glossary`                                                                                                                                         | ✅ 83 terms, A-Z letter-pill pagination + search                                                                                                                                                                                                                                                                                   |
+| Trade Shows        | `/trade-shows`, `/trade-shows/[id]`                                                                                                                 | ✅ 20 events with region filter + pagination, detail pages with Event JSON-LD                                                                                                                                                                                                                                                      |
+| Certifying Bodies  | `/certifying-bodies`, `/certifying-bodies/[slug]`                                                                                                   | ✅ 15 bodies with recognition data                                                                                                                                                                                                                                                                                                 |
+| Service Providers  | `/service-providers`, `/service-providers/[slug]`                                                                                                   | ✅ 14 providers                                                                                                                                                                                                                                                                                                                    |
+| Verify             | `/verify`                                                                                                                                           | ✅ Certificate verification tool                                                                                                                                                                                                                                                                                                   |
+| Tools hub          | `/tools`                                                                                                                                            | ✅ 6 tools directory                                                                                                                                                                                                                                                                                                               |
+| AI Chat            | `/tools/ai-chat`                                                                                                                                    | ⏸️ Coming soon teaser page                                                                                                                                                                                                                                                                                                         |
+| Ingredient Checker | `/tools/ingredient-checker`                                                                                                                         | ✅ AI ingredient analysis (sign-in required; `@ai-sdk/svelte` Chat → `/api/chat`)                                                                                                                                                                                                                                                  |
+| Certification Cost | `/tools/certification-cost`                                                                                                                         | ✅ Cost estimator (7 certifiers × 6 categories × 4 sizes)                                                                                                                                                                                                                                                                          |
+| Landed Cost        | `/tools/landed-cost`                                                                                                                                | ✅ CIF+duty+VAT+clearance+cert amortisation calculator                                                                                                                                                                                                                                                                             |
+| RFQ Builder        | `/tools/rfq-builder`                                                                                                                                | ✅ RFQ text generator (copy/download/**publish to Buying Requests**)                                                                                                                                                                                                                                                               |
+| Buying Requests    | `/rfqs`, `/rfqs/[id]`, `/rfqs/new`                                                                                                                  | ✅ Public RFQ board (login to post, 1/week free quota, supplier quote dialog)                                                                                                                                                                                                                                                      |
+| Quick Deals        | `/promotions`, `/promotions/[id]`                                                                                                                   | ✅ Supplier clearance board (member publish, 1/week free quota)                                                                                                                                                                                                                                                                    |
+| Success Stories    | `/success-stories`, `/success-stories/[slug]`                                                                                                       | ✅ Editorial case studies (admin publish at `/admin/stories`)                                                                                                                                                                                                                                                                      |
+| Search             | `/search`                                                                                                                                           | ✅ Full-text search across articles, glossary, suppliers, products; reads initial query from `?q=` so deep links (and shared search URLs) run automatically                                                                                                                                                                        |
+| Pricing            | `/pricing`                                                                                                                                          | ✅ 4-tier pricing + Brand URL add-on                                                                                                                                                                                                                                                                                               |
+| About              | `/about`                                                                                                                                            | ✅ Mission, milestones, team                                                                                                                                                                                                                                                                                                       |
+| FAQ                | `/faq`                                                                                                                                              | ✅ Accordion FAQ with search; content is the static `Faq[]` array in `+page.svelte` (load only sets SEO — no DB fetch)                                                                                                                                                                                                             |
+| Contact            | `/contact`                                                                                                                                          | ✅ Contact form                                                                                                                                                                                                                                                                                                                    |
+| Auth               | `/login`, `/register`, `/supplier/login`, `/admin/login`                                                                                            | ✅ Buyer sign-up/login and `/account` use real Better Auth sessions (`authClient` + `getSession`); the localStorage demo store is removed. `?next=` redirect with `safeNextPath()` guard; `/register` collects name/email/password only (Company field dropped — no `user` column backs it)                                        |
+| Admin Auth         | `/admin/login`, `/api/auth/*`                                                                                                                       | ✅ Real better-auth (email/password, D1) gated by `ADMIN_EMAILS` allowlist                                                                                                                                                                                                                                                         |
+| Buyer Account      | `/account`, `/account/profile`, `/account/saved`, `/account/inquiries`                                                                              | ✅ Server-guarded (`+layout.server.ts`, 307 → `/login?next=`); saved = `/api/favorites` (D1), inquiries = `/api/inquiries/mine` (D1); profile persists `name` only — company/phone 等字段无 user 表列支撑                                                                                                                          |
+| Supplier Portal    | `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage`, `/supplier/profile`, `/supplier/onboarding`, `/supplier/login` | ✅ Real Better Auth login; `+layout.server.ts` derives portal user from session via `supplier_members`+`suppliers`; `/supplier/orders` lists that supplier's buyer inquiries via `GET /api/inquiries?supplierSlug=`                                                                                                                |
+| Admin              | `/admin/*`                                                                                                                                          | ✅ 22 pages (dashboard, users, products, suppliers, categories, blog, knowledge, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings, promotions, quality, rfqs, stories, trade-shows, market-guides, login); all reads/writes hit D1 (adminData localStorage store removed)      |
 
 ### API Endpoints (47 +server.ts files)
 
-| Endpoint | Methods | Purpose |
-|----------|---------|---------|
-| `/api/products` | GET, POST | List/create products (query-keyed cache; GET defaults `status=active`; `?status=all` admin-only uncached; POST requireAdmin) |
-| `/api/products/[slug]` | GET, PUT, PATCH, DELETE | CRUD product (writes requireAdmin + Zod 400 `{error,details}`; GET 404s non-active for anonymous) |
-| `/api/suppliers` | GET, POST | List/create suppliers (defaults `status=active`; `?status=all` admin-only) |
-| `/api/suppliers/[slug]` | GET, PUT, PATCH, DELETE | CRUD supplier (admin review flow uses PUT `{status, adminNotes}`) |
-| `/api/categories` | GET, POST | List/create categories (GET defaults `status=active`; `?status=all` admin-only) |
-| `/api/categories/[slug]` | GET, PUT, DELETE | CRUD category (404s inactive for anonymous) |
-| `/api/knowledge-base` | GET, POST | List/create KB articles (GET defaults `status=published`; `?status=all` admin-only) |
-| `/api/knowledge-base/[slug]` | GET, PUT, DELETE | CRUD KB article (404s unpublished for anonymous) |
-| `/api/knowledge-base/sections` | GET | KB sections |
-| `/api/blog` | GET, POST | List/create blog posts (defaults `status=published`; `?status=all` admin-only) |
-| `/api/blog/[slug]` | GET, PUT, DELETE | CRUD blog post (404s unpublished for anonymous) |
-| `/api/glossary` | GET, POST | List/create glossary terms (pages rows `type=landing` + glossary category; `?status=all` admin-only) |
-| `/api/glossary/[slug]` | PUT, DELETE | Update/delete glossary term (requireAdmin) |
-| `/api/certifying-bodies` | GET, POST | List certifiers (defaults `status=active`; `?status=all` admin-only) |
-| `/api/certifying-bodies/[id]` | GET, POST, PUT, DELETE | CRUD certifier (404s inactive for anonymous) |
-| `/api/service-providers` | GET, POST | List/create service providers (defaults `status=active`; `?status=all` admin-only) |
-| `/api/service-providers/[slug]` | GET, PUT, DELETE | CRUD provider (404s inactive for anonymous) |
-| `/api/market-guides` | GET, POST | List/create market guides (defaults `status=active`; `?status=all` admin-only) |
-| `/api/market-guides/[slug]` | GET, PUT, DELETE | CRUD guide (404s inactive for anonymous) |
-| `/api/trade-shows` | GET, POST | List/create trade shows (defaults `status=active`; `?scale=` filters scale) |
-| `/api/trade-shows/[id]` | GET, PUT, DELETE | CRUD show (404s inactive for anonymous) |
-| `/api/ai-tools` | GET, POST | List/create AI tools (`?status=all` admin-only) |
-| `/api/ai-tools/[slug]` | GET, PUT, DELETE | CRUD AI tool |
-| `/api/pages` | GET, POST | List/create CMS pages (`?status=all` admin-only) |
-| `/api/pages/[slug]` | GET, PUT, DELETE | CRUD CMS page |
-| `/api/settings` | GET, PUT | Site settings; PUT = requireAdmin batched upsert (single multi-row INSERT … ON CONFLICT) |
-| `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public; stamps `user_id` when signed in); GET requires admin OR a `?supplierSlug=` the session user is a member of (`requireAdminOrSupplier`) — powers the supplier portal's own inquiry list |
-| `/api/inquiries/[id]` | PATCH | Update inquiry status (requireAdmin) |
-| `/api/inquiries/mine` | GET | My sent inquiries (login; newest 100) |
-| `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache; suppliers+products filtered `status=active`) |
-| `/api/rfqs` | GET, POST | Buying-requests board (GET defaults `status=active`); POST requires login, 1/week free quota |
-| `/api/rfqs/[id]` | GET | RFQ detail (404s non-active for anonymous) |
-| `/api/promotions` | GET, POST | Deals board (GET defaults `status=active`); POST requires supplier membership, 1/week/supplier quota |
-| `/api/promotions/[id]` | GET | Deal detail (404s non-active for anonymous) |
-| `/api/follows` | GET, POST, DELETE | Follow/unfollow suppliers (login); GET `?countFor=` public count |
-| `/api/favorites` | GET, POST, DELETE | Save/unsave products (login); GET `?productSlug=` → `{favorite}`, GET list = saved products with display fields (newest 200) |
-| `/api/supplier-updates` | GET, POST | Supplier posts feed (GET defaults `status=active`); POST requires membership, 1/week/supplier quota |
-| `/api/supplier-memberships` | GET | My supplier memberships (login) |
-| `/api/views` | GET, POST | POST records detail views (public beacon, increments denormalized counters); GET supplier analytics (member-only) |
-| `/api/success-stories` | GET, POST | Stories (GET defaults `status=published`, `?status=all` admin-only uncached); POST admin-only |
-| `/api/supplier-applications` | GET, POST | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET requires session |
-| `/api/verify` | GET | Certificate verification search (suppliers+products filtered `status=active`) |
-| `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
-| `/api/chat` | POST | AI chat (Mastra agent, auth required) |
-| `/api/auth/*` | GET, POST | better-auth handlers (sign-up/sign-in/sign-out/session); never cached |
-| `/api/media/upload` | POST | Admin image upload — accepts only `image/webp`/`image/avif`, SHA-256 content-addressed flat key `media/<hash>.<ext>`, `head()` dedupe before `put()`, `cacheControl` always set (§5.12); returned URL omits the `media/` prefix because the read route `/api/media/[key]` is single-segment and re-prefixes it |
-| `/api/media/[key]` | GET | Media retrieval — `head()` first, ETag/If-None-Match→304 before any `get()`, Range/206 slices (§5.12) |
+| Endpoint                        | Methods                 | Purpose                                                                                                                                                                                                                                                                                                        |
+| ------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/products`                 | GET, POST               | List/create products (query-keyed cache; GET defaults `status=active`; `?status=all` admin-only uncached; POST requireAdmin)                                                                                                                                                                                   |
+| `/api/products/[slug]`          | GET, PUT, PATCH, DELETE | CRUD product (writes requireAdmin + Zod 400 `{error,details}`; GET 404s non-active for anonymous)                                                                                                                                                                                                              |
+| `/api/suppliers`                | GET, POST               | List/create suppliers (defaults `status=active`; `?status=all` admin-only)                                                                                                                                                                                                                                     |
+| `/api/suppliers/[slug]`         | GET, PUT, PATCH, DELETE | CRUD supplier (admin review flow uses PUT `{status, adminNotes}`)                                                                                                                                                                                                                                              |
+| `/api/categories`               | GET, POST               | List/create categories (GET defaults `status=active`; `?status=all` admin-only)                                                                                                                                                                                                                                |
+| `/api/categories/[slug]`        | GET, PUT, DELETE        | CRUD category (404s inactive for anonymous)                                                                                                                                                                                                                                                                    |
+| `/api/knowledge-base`           | GET, POST               | List/create KB articles (GET defaults `status=published`; `?status=all` admin-only)                                                                                                                                                                                                                            |
+| `/api/knowledge-base/[slug]`    | GET, PUT, DELETE        | CRUD KB article (404s unpublished for anonymous)                                                                                                                                                                                                                                                               |
+| `/api/knowledge-base/sections`  | GET                     | KB sections                                                                                                                                                                                                                                                                                                    |
+| `/api/blog`                     | GET, POST               | List/create blog posts (defaults `status=published`; `?status=all` admin-only)                                                                                                                                                                                                                                 |
+| `/api/blog/[slug]`              | GET, PUT, DELETE        | CRUD blog post (404s unpublished for anonymous)                                                                                                                                                                                                                                                                |
+| `/api/glossary`                 | GET, POST               | List/create glossary terms (pages rows `type=landing` + glossary category; `?status=all` admin-only)                                                                                                                                                                                                           |
+| `/api/glossary/[slug]`          | PUT, DELETE             | Update/delete glossary term (requireAdmin)                                                                                                                                                                                                                                                                     |
+| `/api/certifying-bodies`        | GET, POST               | List certifiers (defaults `status=active`; `?status=all` admin-only)                                                                                                                                                                                                                                           |
+| `/api/certifying-bodies/[id]`   | GET, POST, PUT, DELETE  | CRUD certifier (404s inactive for anonymous)                                                                                                                                                                                                                                                                   |
+| `/api/service-providers`        | GET, POST               | List/create service providers (defaults `status=active`; `?status=all` admin-only)                                                                                                                                                                                                                             |
+| `/api/service-providers/[slug]` | GET, PUT, DELETE        | CRUD provider (404s inactive for anonymous)                                                                                                                                                                                                                                                                    |
+| `/api/market-guides`            | GET, POST               | List/create market guides (defaults `status=active`; `?status=all` admin-only)                                                                                                                                                                                                                                 |
+| `/api/market-guides/[slug]`     | GET, PUT, DELETE        | CRUD guide (404s inactive for anonymous)                                                                                                                                                                                                                                                                       |
+| `/api/trade-shows`              | GET, POST               | List/create trade shows (defaults `status=active`; `?scale=` filters scale)                                                                                                                                                                                                                                    |
+| `/api/trade-shows/[id]`         | GET, PUT, DELETE        | CRUD show (404s inactive for anonymous)                                                                                                                                                                                                                                                                        |
+| `/api/ai-tools`                 | GET, POST               | List/create AI tools (`?status=all` admin-only)                                                                                                                                                                                                                                                                |
+| `/api/ai-tools/[slug]`          | GET, PUT, DELETE        | CRUD AI tool                                                                                                                                                                                                                                                                                                   |
+| `/api/pages`                    | GET, POST               | List/create CMS pages (`?status=all` admin-only)                                                                                                                                                                                                                                                               |
+| `/api/pages/[slug]`             | GET, PUT, DELETE        | CRUD CMS page                                                                                                                                                                                                                                                                                                  |
+| `/api/settings`                 | GET, PUT                | Site settings; PUT = requireAdmin batched upsert (single multi-row INSERT … ON CONFLICT)                                                                                                                                                                                                                       |
+| `/api/inquiries`                | GET, POST               | POST creates inquiry (rate-limited, public; stamps `user_id` when signed in); GET requires admin OR a `?supplierSlug=` the session user is a member of (`requireAdminOrSupplier`) — powers the supplier portal's own inquiry list                                                                              |
+| `/api/inquiries/[id]`           | PATCH                   | Update inquiry status (requireAdmin)                                                                                                                                                                                                                                                                           |
+| `/api/inquiries/mine`           | GET                     | My sent inquiries (login; newest 100)                                                                                                                                                                                                                                                                          |
+| `/api/search`                   | GET                     | Federated search (capped 55 rows, query-keyed cache; suppliers+products filtered `status=active`)                                                                                                                                                                                                              |
+| `/api/rfqs`                     | GET, POST               | Buying-requests board (GET defaults `status=active`); POST requires login, 1/week free quota                                                                                                                                                                                                                   |
+| `/api/rfqs/[id]`                | GET                     | RFQ detail (404s non-active for anonymous)                                                                                                                                                                                                                                                                     |
+| `/api/promotions`               | GET, POST               | Deals board (GET defaults `status=active`); POST requires supplier membership, 1/week/supplier quota                                                                                                                                                                                                           |
+| `/api/promotions/[id]`          | GET                     | Deal detail (404s non-active for anonymous)                                                                                                                                                                                                                                                                    |
+| `/api/follows`                  | GET, POST, DELETE       | Follow/unfollow suppliers (login); GET `?countFor=` public count                                                                                                                                                                                                                                               |
+| `/api/favorites`                | GET, POST, DELETE       | Save/unsave products (login); GET `?productSlug=` → `{favorite}`, GET list = saved products with display fields (newest 200)                                                                                                                                                                                   |
+| `/api/supplier-updates`         | GET, POST               | Supplier posts feed (GET defaults `status=active`); POST requires membership, 1/week/supplier quota                                                                                                                                                                                                            |
+| `/api/supplier-memberships`     | GET                     | My supplier memberships (login)                                                                                                                                                                                                                                                                                |
+| `/api/views`                    | GET, POST               | POST records detail views (public beacon, increments denormalized counters); GET supplier analytics (member-only)                                                                                                                                                                                              |
+| `/api/success-stories`          | GET, POST               | Stories (GET defaults `status=published`, `?status=all` admin-only uncached); POST admin-only                                                                                                                                                                                                                  |
+| `/api/supplier-applications`    | GET, POST               | Supplier onboarding: POST creates pending supplier + inquiry record (rate-limited, public); GET requires session                                                                                                                                                                                               |
+| `/api/verify`                   | GET                     | Certificate verification search (suppliers+products filtered `status=active`)                                                                                                                                                                                                                                  |
+| `/api/vitals`                   | POST                    | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled)                                                                                                                                                                                                                                         |
+| `/api/chat`                     | POST                    | AI chat (Mastra halal-agent via AI SDK UIMessage stream, model `agnes-3.0-flash`, auth required)                                                                                                                                                                                                               |
+| `/api/auth/*`                   | GET, POST               | better-auth handlers (sign-up/sign-in/sign-out/session); never cached                                                                                                                                                                                                                                          |
+| `/api/media/upload`             | POST                    | Admin image upload — accepts only `image/webp`/`image/avif`, SHA-256 content-addressed flat key `media/<hash>.<ext>`, `head()` dedupe before `put()`, `cacheControl` always set (§5.12); returned URL omits the `media/` prefix because the read route `/api/media/[key]` is single-segment and re-prefixes it |
+| `/api/media/[key]`              | GET                     | Media retrieval — `head()` first, ETag/If-None-Match→304 before any `get()`, Range/206 slices (§5.12)                                                                                                                                                                                                          |
 
 All admin write endpoints share the shape: `requireAdmin(event)` (session + `ADMIN_EMAILS` allowlist) → Zod `safeParse` → 400 `{ error, details: {field: [messages]} }` → typed Drizzle values with column projection.
 
 ### Database Schema (20 app tables + Better Auth tables; 45 schema-declared indexes, +0003 index coverage migration)
 
-| Table | Purpose | Key |
-|-------|---------|-----|
-| `suppliers` | Supplier profiles with certifications JSON | slug |
-| `products` | Product catalog | slug |
-| `categories` | Product taxonomy | slug |
-| `certifyingBodies` | Halal certification organizations (15 rows) | id |
-| `knowledgeBase` | KB articles (125 rows, Markdown bodies) | slug |
-| `pages` | Landing pages + blog posts + glossary | slug |
-| `marketGuides` | Country guides (11 rows, `status='active'`) | slug |
-| `tradeShows` | Exhibition calendar (20 rows) | id |
-| `serviceProviders` | Service provider profiles | slug |
-| `inquiries` | Buyer inquiries | id |
-| `buyingRequests` | Public RFQ board (quota: 1/week free) | id |
-| `promotions` | Quick-deal offers (quota: 1/week/supplier) | id |
-| `supplierMembers` | User↔supplier publish rights | (userId, supplierSlug) |
-| `follows` | Buyer follows on suppliers | (userId, supplierSlug) |
-| `favorites` | Buyer saved products (DDL `drizzle/2026-09-favorites.sql`) | (userId, productSlug) |
-| `supplierUpdates` | Supplier posts feed (quota: 1/week/supplier) | id |
-| `pageViews` | Analytics beacon rows (supplier|product) | id |
-| `successStories` | Editorial case studies (draft|published) | slug |
-| `products_fts` / `suppliers_fts` | FTS5 side tables + sync triggers (replaces LIKE scans on unbounded tables) | rowid |
-| `media` | R2 media files | id |
-| `siteSettings` | KV site settings | key |
+| Table                            | Purpose                                                                    | Key                    |
+| -------------------------------- | -------------------------------------------------------------------------- | ---------------------- |
+| `suppliers`                      | Supplier profiles with certifications JSON                                 | slug                   |
+| `products`                       | Product catalog                                                            | slug                   |
+| `categories`                     | Product taxonomy                                                           | slug                   |
+| `certifyingBodies`               | Halal certification organizations (15 rows)                                | id                     |
+| `knowledgeBase`                  | KB articles (125 rows, Markdown bodies)                                    | slug                   |
+| `pages`                          | Landing pages + blog posts + glossary                                      | slug                   |
+| `marketGuides`                   | Country guides (11 rows, `status='active'`)                                | slug                   |
+| `tradeShows`                     | Exhibition calendar (20 rows)                                              | id                     |
+| `serviceProviders`               | Service provider profiles                                                  | slug                   |
+| `inquiries`                      | Buyer inquiries                                                            | id                     |
+| `buyingRequests`                 | Public RFQ board (quota: 1/week free)                                      | id                     |
+| `promotions`                     | Quick-deal offers (quota: 1/week/supplier)                                 | id                     |
+| `supplierMembers`                | User↔supplier publish rights                                               | (userId, supplierSlug) |
+| `follows`                        | Buyer follows on suppliers                                                 | (userId, supplierSlug) |
+| `favorites`                      | Buyer saved products (DDL `drizzle/2026-09-favorites.sql`)                 | (userId, productSlug)  |
+| `supplierUpdates`                | Supplier posts feed (quota: 1/week/supplier)                               | id                     |
+| `pageViews`                      | Analytics beacon rows (supplier                                            | product)               | id   |
+| `successStories`                 | Editorial case studies (draft                                              | published)             | slug |
+| `products_fts` / `suppliers_fts` | FTS5 side tables + sync triggers (replaces LIKE scans on unbounded tables) | rowid                  |
+| `media`                          | R2 media files                                                             | id                     |
+| `siteSettings`                   | KV site settings                                                           | key                    |
 
 List-query discipline: `limit` ≤ 100 + column projection on every list
 endpoint; query-dependent results use explicit `queryCacheKey(url)`
@@ -193,20 +193,20 @@ by a D1 index; `LIKE '%x%'` scans only on tables < 500 rows.
 
 ## Roadmap (decided 2026-09-11, B2B competitive review)
 
-| # | Feature | Shape | Status |
-|---|---------|-------|--------|
-| 1 | Buying Requests (RFQ list) | Public list; posting requires login; quota 1 free/week (paid tiers raise cap, never unlimited) | ✅ shipped 2026-09-11 |
-| 2 | Quick Deals → seller `/promotions` | Inventory-clearance list; supplier-published, time-boxed, 1/week free | ✅ shipped 2026-09-11 |
-| 3 | Follow suppliers + supplier updates | Follow extends favorites; supplier posts on own detail page, 1/week free | ✅ shipped 2026-09-11 |
-| 4 | Supplier analytics dashboard | Profile/product view stats via `/api/views` beacon; reserved as paid feature | ✅ beacon + dashboard live 2026-09-11 |
-| 5 | Site-level success stories | `/success-stories` + supplier-detail sections; admin publish at `/admin/stories` | ✅ shipped 2026-09-11 |
-| 6 | Tenders board | Institutional procurement; admin-published only at launch | later |
-| 7 | Trade show × supplier linkage | Exhibitor cross-links, "meet at" CTAs | backlog |
-| 8 | In-site buyer↔supplier messaging | Deferred — reply-threading on inquiries first, only if leads prove demand | backlog |
-| 9 | i18n expansion (`ms/id/ar`) | Paraglide infra ready, `['en']` only for now | backlog |
-| 10 | Mobile app via Tauri 2.0 | Built on the website, future | backlog |
-| 11 | Escrow/transactions | Only if the site enters the transaction flow | backlog |
-| 12 | Blockchain certificates | Rejected for now — see note below | rejected |
+| #   | Feature                             | Shape                                                                                          | Status                                |
+| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------- |
+| 1   | Buying Requests (RFQ list)          | Public list; posting requires login; quota 1 free/week (paid tiers raise cap, never unlimited) | ✅ shipped 2026-09-11                 |
+| 2   | Quick Deals → seller `/promotions`  | Inventory-clearance list; supplier-published, time-boxed, 1/week free                          | ✅ shipped 2026-09-11                 |
+| 3   | Follow suppliers + supplier updates | Follow extends favorites; supplier posts on own detail page, 1/week free                       | ✅ shipped 2026-09-11                 |
+| 4   | Supplier analytics dashboard        | Profile/product view stats via `/api/views` beacon; reserved as paid feature                   | ✅ beacon + dashboard live 2026-09-11 |
+| 5   | Site-level success stories          | `/success-stories` + supplier-detail sections; admin publish at `/admin/stories`               | ✅ shipped 2026-09-11                 |
+| 6   | Tenders board                       | Institutional procurement; admin-published only at launch                                      | later                                 |
+| 7   | Trade show × supplier linkage       | Exhibitor cross-links, "meet at" CTAs                                                          | backlog                               |
+| 8   | In-site buyer↔supplier messaging    | Deferred — reply-threading on inquiries first, only if leads prove demand                      | backlog                               |
+| 9   | i18n expansion (`ms/id/ar`)         | Paraglide infra ready, `['en']` only for now                                                   | backlog                               |
+| 10  | Mobile app via Tauri 2.0            | Built on the website, future                                                                   | backlog                               |
+| 11  | Escrow/transactions                 | Only if the site enters the transaction flow                                                   | backlog                               |
+| 12  | Blockchain certificates             | Rejected for now — see note below                                                              | rejected                              |
 
 Blockchain note: our trust bottleneck is ISSUER audit integrity
 (JAKIM/MUI on-site audits), not document tampering — a chain faithfully
@@ -219,22 +219,22 @@ transactions or certifiers expose anchorable APIs.
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Framework | SvelteKit 3.0.0-next.27 RC |
-| UI | Svelte 5.57.0 + shadcn-svelte |
-| CSS | Tailwind CSS 4.3.3 |
-| Database | Cloudflare D1 (SQLite) |
-| Storage | Cloudflare R2 |
-| Auth | Better Auth 1.7.4 (schema regenerated — byte-identical to 1.7.3, no migration) |
-| ORM | Drizzle ORM 0.45.2 + FTS5 side tables (`products_fts`, `suppliers_fts` with triggers) |
-| Validation | Zod 4.x — `safeParse` in every mutating API (`+server.ts` returns `{ error, details }` on 400) + client field schemas per form (`#lib/utils/forms.ts` shared error mapping) |
-| Icons | Lucide for Svelte (per-icon imports, 16px `size-4` in buttons via `data-icon` slots) |
-| AI | Mastra 1.65.0 + Vercel AI SDK 7.0.97 |
-| Hosting | Cloudflare Workers (adapter-cloudflare 8.0.0-next.7) |
-| Runtime | `compatibility_date 2026-09-09` + `nodejs_compat` (explicit). `new_module_registry` REJECTED 2026-09-10: hangs every request ~61s → 500 on adapter-8 output (preview-verified); revisit when Cloudflare sets a default date |
-| Bindings | `cloudflare:workers` module via `#lib/server/bindings.ts` (adapter 8 removed `event.platform`) |
-| i18n | Paraglide.js 2.25.0 (URL strategy) |
+| Component  | Technology                                                                                                                                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework  | SvelteKit 3.0.0-next.27 RC                                                                                                                                                                                                  |
+| UI         | Svelte 5.57.0 + shadcn-svelte                                                                                                                                                                                               |
+| CSS        | Tailwind CSS 4.3.3                                                                                                                                                                                                          |
+| Database   | Cloudflare D1 (SQLite)                                                                                                                                                                                                      |
+| Storage    | Cloudflare R2                                                                                                                                                                                                               |
+| Auth       | Better Auth 1.7.4 (schema regenerated — byte-identical to 1.7.3, no migration)                                                                                                                                              |
+| ORM        | Drizzle ORM 0.45.2 + FTS5 side tables (`products_fts`, `suppliers_fts` with triggers)                                                                                                                                       |
+| Validation | Zod 4.x — `safeParse` in every mutating API (`+server.ts` returns `{ error, details }` on 400) + client field schemas per form (`#lib/utils/forms.ts` shared error mapping)                                                 |
+| Icons      | Lucide for Svelte (per-icon imports, 16px `size-4` in buttons via `data-icon` slots)                                                                                                                                        |
+| AI         | Mastra 1.65.0 + Vercel AI SDK 7.0.97 + Agnes `agnes-3.0-flash` (AIHub, via `createAgnes()` in `#lib/server/mastra/agnes.ts`; all LLM calls through AI SDK, no raw `chat/completions` fetch)                                 |
+| Hosting    | Cloudflare Workers (adapter-cloudflare 8.0.0-next.7)                                                                                                                                                                        |
+| Runtime    | `compatibility_date 2026-09-09` + `nodejs_compat` (explicit). `new_module_registry` REJECTED 2026-09-10: hangs every request ~61s → 500 on adapter-8 output (preview-verified); revisit when Cloudflare sets a default date |
+| Bindings   | `cloudflare:workers` module via `#lib/server/bindings.ts` (adapter 8 removed `event.platform`)                                                                                                                              |
+| i18n       | Paraglide.js 2.25.0 (URL strategy)                                                                                                                                                                                          |
 
 ### Svelte 5 Conventions (Strict)
 
@@ -249,17 +249,20 @@ transactions or certifiers expose anchorable APIs.
 ## Admin Workflow
 
 ### Creating a Supplier (3 steps, ~30 seconds)
+
 1. Click "New supplier"
 2. Fill Name + Country → auto-generates slug, logo initials, description
 3. Click "Create supplier" → done
 
 ### Creating a Product (4 steps, ~45 seconds)
+
 1. Click "New product"
 2. Fill Name + Supplier + Category → auto-generates slug
 3. Expand Pricing section → fill MOQ/price
 4. Click "Create product" → done
 
 ### Generating Content with AI
+
 - **Supplier description**: Click "✨ Generate" next to Description field
 - **Product description**: Click "✨ Generate" next to Description field
 - **KB article body**: Click "✨ Generate with AI" next to Body field
@@ -267,6 +270,7 @@ transactions or certifiers expose anchorable APIs.
 - **Landing page**: Select type "Marketing" → fill Target Audience/Region/Key Points/CTA → click "✨ Generate Landing Page"
 
 ### Form Organization
+
 - **Basic Info** section: Always expanded (required fields)
 - **Additional sections**: Collapsed by default, click to expand
 - AI generation buttons appear when the form type is relevant
@@ -276,6 +280,7 @@ transactions or certifiers expose anchorable APIs.
 ## SEO/GEO Implementation
 
 ### Meta Tags (all pages)
+
 - `<title>` unique per page
 - `<meta name="description">` unique per page
 - `<meta name="robots">` dynamic (noindex for auth/admin)
@@ -284,6 +289,7 @@ transactions or certifiers expose anchorable APIs.
 - `<link rel="canonical">` per page
 
 ### JSON-LD Structured Data
+
 - `Product` schema on product detail pages
 - `Organization` schema on supplier/certifying body/service provider detail pages
 - `BreadcrumbList` schema on all detail pages
@@ -294,20 +300,24 @@ transactions or certifiers expose anchorable APIs.
 - `WebSite` + `SearchAction` schema on homepage
 
 ### GEO Meta Tags
+
 - `geo.region`, `geo.placename`, `geo.position`, `ICBM`
 - `hreflang` alternates (English only, ready for i18n)
 
 ### Sitemap
+
 - Dynamic XML sitemap at `/sitemap.xml`
 - Static routes + database-driven dynamic routes
 - Proper priorities and changefreq
 
 ### Robots.txt
+
 - `Allow: /`
 - `Disallow: /admin/`, `/account/`, `/supplier/`, `/api/`
 - Sitemap reference
 
 ### llms.txt
+
 - `/llms.txt` is a DB-driven route (counts for certifiers/guides/KB/glossary/suppliers/products refresh hourly via `cachedQuery`), not a static file
 
 ---
@@ -325,56 +335,56 @@ transactions or certifiers expose anchorable APIs.
 
 ### Product Generation Constraints
 
-| Rule | Detail |
-|------|--------|
-| Content source | Must be 100% from user-provided data |
-| AI freedom | ❌ None — cannot add, infer, or creatively expand |
-| Output format | Identical to manually created product format |
-| Input fields | Product name, category, specs, price, MOQ, certification, images, videos |
-| SEO | Auto-generate meta title/description + keywords |
+| Rule           | Detail                                                                   |
+| -------------- | ------------------------------------------------------------------------ |
+| Content source | Must be 100% from user-provided data                                     |
+| AI freedom     | ❌ None — cannot add, infer, or creatively expand                        |
+| Output format  | Identical to manually created product format                             |
+| Input fields   | Product name, category, specs, price, MOQ, certification, images, videos |
+| SEO            | Auto-generate meta title/description + keywords                          |
 
 **AI's role: Format + layout + SEO optimization, not creation**
 
 ### KB Article Generation Constraints
 
-| Rule | Detail |
-|------|--------|
-| Content source | User provides topic, key points, style, audience |
-| AI freedom | ✅ Yes — can design, think, innovate |
-| Layout model | **Vertical + Horizontal** — grids, sidebars, tables, multi-column layouts allowed |
-| Output format | svelte-shadcn components (❌ NOT markdown) |
-| Input fields | Title, category, type, audience, key points, style, length, images/videos |
-| SEO | Auto-generate meta title/description + keywords |
-| Save to | Knowledge Base |
+| Rule           | Detail                                                                            |
+| -------------- | --------------------------------------------------------------------------------- |
+| Content source | User provides topic, key points, style, audience                                  |
+| AI freedom     | ✅ Yes — can design, think, innovate                                              |
+| Layout model   | **Vertical + Horizontal** — grids, sidebars, tables, multi-column layouts allowed |
+| Output format  | svelte-shadcn components (❌ NOT markdown)                                        |
+| Input fields   | Title, category, type, audience, key points, style, length, images/videos         |
+| SEO            | Auto-generate meta title/description + keywords                                   |
+| Save to        | Knowledge Base                                                                    |
 
 **AI's role: Creation + design + content generation**
 
 ### Landing Page Generation Constraints
 
-| Rule | Detail |
-|------|--------|
-| Content source | User provides page purpose, audience, selling points, CTA |
-| AI freedom | ✅ Yes — can freely design layout and content |
-| Layout model | **Vertical + Horizontal** — hero sections, multi-column grids, card rows, split layouts, CTAs |
-| Output format | svelte-shadcn components (❌ NOT markdown) |
-| Input fields | Title, purpose, audience, selling points, CTA, keywords, target region |
-| SEO | Auto-generate meta title/description + keywords |
-| GEO | Must generate localized content for target region |
-| Save to | Pages (Marketing) |
+| Rule           | Detail                                                                                        |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| Content source | User provides page purpose, audience, selling points, CTA                                     |
+| AI freedom     | ✅ Yes — can freely design layout and content                                                 |
+| Layout model   | **Vertical + Horizontal** — hero sections, multi-column grids, card rows, split layouts, CTAs |
+| Output format  | svelte-shadcn components (❌ NOT markdown)                                                    |
+| Input fields   | Title, purpose, audience, selling points, CTA, keywords, target region                        |
+| SEO            | Auto-generate meta title/description + keywords                                               |
+| GEO            | Must generate localized content for target region                                             |
+| Save to        | Pages (Marketing)                                                                             |
 
 **AI's role: Creation + design + content generation + localization**
 
 ### Blog Generation Constraints
 
-| Rule | Detail |
-|------|--------|
-| Content source | User provides topic, outline, references |
-| AI freedom | ✅ Yes |
-| Layout model | **Vertical only** — linear top-to-bottom flow |
+| Rule               | Detail                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| Content source     | User provides topic, outline, references                                                |
+| AI freedom         | ✅ Yes                                                                                  |
+| Layout model       | **Vertical only** — linear top-to-bottom flow                                           |
 | Allowed components | Images, quotes, callouts, data tables, lists, code blocks — but only stacked vertically |
-| Forbidden layouts | Multi-column grids, side-by-side sections, sidebar+content |
-| Output format | svelte-shadcn components |
-| SEO | Auto-generate meta title/description + keywords |
+| Forbidden layouts  | Multi-column grids, side-by-side sections, sidebar+content                              |
+| Output format      | svelte-shadcn components                                                                |
+| SEO                | Auto-generate meta title/description + keywords                                         |
 
 ### AI Tools Workflow
 
@@ -407,14 +417,15 @@ transactions or certifiers expose anchorable APIs.
 
 ### Generated Content Format Requirements
 
-| Content Type | Output Format | Layout Model | Component Library |
-|-------------|---------------|-------------|-------------------|
-| Product | Structured fields | N/A (form data) | shadcn-svelte |
-| KB Article | Multi-section layout | Vertical + Horizontal (grids, sidebars, tables, multi-column) | svelte-shadcn |
-| Landing Page | Multi-section layout | Vertical + Horizontal (hero, grids, cards, CTAs, multi-column) | svelte-shadcn |
-| Blog | Article layout | **Vertical only** (linear flow, top-to-bottom) | svelte-shadcn |
+| Content Type | Output Format        | Layout Model                                                   | Component Library |
+| ------------ | -------------------- | -------------------------------------------------------------- | ----------------- |
+| Product      | Structured fields    | N/A (form data)                                                | shadcn-svelte     |
+| KB Article   | Multi-section layout | Vertical + Horizontal (grids, sidebars, tables, multi-column)  | svelte-shadcn     |
+| Landing Page | Multi-section layout | Vertical + Horizontal (hero, grids, cards, CTAs, multi-column) | svelte-shadcn     |
+| Blog         | Article layout       | **Vertical only** (linear flow, top-to-bottom)                 | svelte-shadcn     |
 
 **Layout Constraints:**
+
 - **Blog**: Content flows strictly top-to-bottom. Can use rich components (images, quotes, callouts, data tables, lists, code blocks) but only in vertical stack. No side-by-side or multi-column layouts.
 - **Landing Page / KB**: Free multi-directional layout. Can use grids, sidebars, card rows, split sections, hero with columns, etc.
 
@@ -426,10 +437,10 @@ transactions or certifiers expose anchorable APIs.
 
 ### Typography
 
-| Element | Font |
-|---------|------|
-| Body | Almarai (Arabic-supporting sans-serif) |
-| Headings | Space Grotesk (geometric sans-serif) |
+| Element  | Font                                   |
+| -------- | -------------------------------------- |
+| Body     | Almarai (Arabic-supporting sans-serif) |
+| Headings | Space Grotesk (geometric sans-serif)   |
 
 ### Color Palette
 
@@ -484,6 +495,7 @@ Below the edge, three layers live inside the Worker:
    get separate entries).
 
 **Cache-API gotchas (both cost a prod debugging round, do not regress):**
+
 - `cache.put()` must be **awaited inline** — a `waitUntil(cache.put(streamedResponse))`
   never persists in workerd (the tee'd body dies with the response; the put
   callback provably never fires). MISS pays one extra round-trip.
@@ -498,17 +510,17 @@ Verified 2026-09-19: `/`, `/blog`, `/products` go MISS→HIT on both hosts
 (`X-Html-Cache`), `/api/media/*` HIT + correct 206 ranges, `/products` TTFB
 1.17s → 0.43s once warm.
 
-| Content Type | Cache Header |
-|-------------|-------------|
-| Static assets (fonts, icons) | `immutable` (1 year) |
-| Reference content (KB, market guides) | `s-maxage=86400` (HTML worker cache caps at 3600s) |
-| Listings (products, suppliers, blog, rfqs, promotions, stories) | `s-maxage=300` (matches worker TTL — longer edge TTL would serve data the worker already considers stale) |
-| Homepage | `s-maxage=1800` |
-| Auth pages + session-scoped GETs (inquiries, supplier-applications, follows, favorites, memberships, views, stories?status=all) | `no-store` (edge cache is anonymous-shared — public directive would leak private data) |
-| API verify/search/rfq/promotions/stories | `s-maxage=120–300` |
-| API chat | `no-store` |
-| Reference list APIs (categories, certifying-bodies, pages) | worker Cache-API TTL 3600 (`cacheLong`); admin writes evict memory fully, Cache-API query variants expire with TTL |
-| `/llms.txt` | `max-age=3600, s-maxage=86400` (handler-owned; stats cached 1h) |
+| Content Type                                                                                                                    | Cache Header                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Static assets (fonts, icons)                                                                                                    | `immutable` (1 year)                                                                                               |
+| Reference content (KB, market guides)                                                                                           | `s-maxage=86400` (HTML worker cache caps at 3600s)                                                                 |
+| Listings (products, suppliers, blog, rfqs, promotions, stories)                                                                 | `s-maxage=300` (matches worker TTL — longer edge TTL would serve data the worker already considers stale)          |
+| Homepage                                                                                                                        | `s-maxage=1800`                                                                                                    |
+| Auth pages + session-scoped GETs (inquiries, supplier-applications, follows, favorites, memberships, views, stories?status=all) | `no-store` (edge cache is anonymous-shared — public directive would leak private data)                             |
+| API verify/search/rfq/promotions/stories                                                                                        | `s-maxage=120–300`                                                                                                 |
+| API chat                                                                                                                        | `no-store`                                                                                                         |
+| Reference list APIs (categories, certifying-bodies, pages)                                                                      | worker Cache-API TTL 3600 (`cacheLong`); admin writes evict memory fully, Cache-API query variants expire with TTL |
+| `/llms.txt`                                                                                                                     | `max-age=3600, s-maxage=86400` (handler-owned; stats cached 1h)                                                    |
 
 ---
 
