@@ -98,42 +98,52 @@ _Avoid_: content generator, AI assistant
 | About | `/about` | ✅ Mission, milestones, team |
 | FAQ | `/faq` | ✅ Accordion FAQ with search |
 | Contact | `/contact` | ✅ Contact form |
-| Auth | `/login`, `/register`, `/supplier/login` | ✅ Buyer + supplier auth (demo/localStorage) |
+| Auth | `/login`, `/register`, `/supplier/login`, `/admin/login` | ✅ Buyer sign-up/login and `/account` use real Better Auth sessions (`authClient` + `getSession`); the localStorage demo store is removed. `?next=` redirect with `safeNextPath()` guard |
 | Admin Auth | `/admin/login`, `/api/auth/*` | ✅ Real better-auth (email/password, D1) gated by `ADMIN_EMAILS` allowlist |
-| Buyer Account | `/account`, `/account/profile`, `/account/saved`, `/account/inquiries` | ✅ Dashboard + 3 sub-pages |
-| Supplier Portal | `/supplier/onboarding`, `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage` | ✅ 6 pages |
-| Admin | `/admin/*` | ✅ 14 pages (dashboard, users, products, suppliers, categories, blog, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings) |
+| Buyer Account | `/account`, `/account/profile`, `/account/saved`, `/account/inquiries` | ✅ Server-guarded (`+layout.server.ts`, 307 → `/login?next=`); saved = `/api/favorites` (D1), inquiries = `/api/inquiries/mine` (D1); profile persists `name` only — company/phone 等字段无 user 表列支撑 |
+| Supplier Portal | `/supplier/dashboard`, `/supplier/products`, `/supplier/orders`, `/supplier/manage`, `/supplier/profile`, `/supplier/onboarding`, `/supplier/login` | ✅ Real Better Auth login; `+layout.server.ts` derives portal user from session via `supplier_members`+`suppliers` |
+| Admin | `/admin/*` | ✅ 22 pages (dashboard, users, products, suppliers, categories, blog, knowledge, knowledge-base, glossary, certifying-bodies, service-providers, inquiries, pages, ai-tools, settings, promotions, quality, rfqs, stories, trade-shows, market-guides, login); all reads/writes hit D1 (adminData localStorage store removed) |
 
-### API Endpoints (40 files)
+### API Endpoints (47 +server.ts files)
 
 | Endpoint | Methods | Purpose |
 |----------|---------|---------|
-| `/api/products` | GET, POST | List/create products (query-keyed cache; GET defaults `status=active`) |
-| `/api/products/[slug]` | GET, PUT, DELETE | CRUD product (GET 404s non-active for anonymous) |
-| `/api/suppliers` | GET | List suppliers (query-keyed cache; GET defaults `status=active`) |
-| `/api/suppliers/[slug]` | GET | Supplier detail (404s non-active for anonymous) |
-| `/api/categories` | GET, POST | List/create categories (GET defaults `status=active`) |
-| `/api/categories/[slug]` | GET | Category detail (404s inactive for anonymous) |
-| `/api/knowledge-base` | GET, POST | List/create KB articles (GET defaults `status=published`) |
-| `/api/knowledge-base/[slug]` | GET | KB article detail (404s unpublished for anonymous) |
+| `/api/products` | GET, POST | List/create products (query-keyed cache; GET defaults `status=active`; `?status=all` admin-only uncached; POST requireAdmin) |
+| `/api/products/[slug]` | GET, PUT, PATCH, DELETE | CRUD product (writes requireAdmin + Zod 400 `{error,details}`; GET 404s non-active for anonymous) |
+| `/api/suppliers` | GET, POST | List/create suppliers (defaults `status=active`; `?status=all` admin-only) |
+| `/api/suppliers/[slug]` | GET, PUT, PATCH, DELETE | CRUD supplier (admin review flow uses PUT `{status, adminNotes}`) |
+| `/api/categories` | GET, POST | List/create categories (GET defaults `status=active`; `?status=all` admin-only) |
+| `/api/categories/[slug]` | GET, PUT, DELETE | CRUD category (404s inactive for anonymous) |
+| `/api/knowledge-base` | GET, POST | List/create KB articles (GET defaults `status=published`; `?status=all` admin-only) |
+| `/api/knowledge-base/[slug]` | GET, PUT, DELETE | CRUD KB article (404s unpublished for anonymous) |
 | `/api/knowledge-base/sections` | GET | KB sections |
-| `/api/blog` | GET | List blog posts (defaults `status=published`) |
-| `/api/blog/[slug]` | GET | Blog post detail (404s unpublished for anonymous) |
-| `/api/certifying-bodies` | GET | List certifiers (defaults `status=active`) |
-| `/api/certifying-bodies/[id]` | GET | Certifier detail (404s inactive for anonymous) |
-| `/api/service-providers` | GET | List service providers (defaults `status=active`) |
-| `/api/service-providers/[slug]` | GET | Provider detail (404s inactive for anonymous) |
-| `/api/market-guides` | GET | List market guides (defaults `status=active`) |
-| `/api/market-guides/[slug]` | GET | Guide detail (404s inactive for anonymous) |
-| `/api/trade-shows` | GET | List trade shows (defaults `status=active`; `?scale=` filters scale) |
-| `/api/trade-shows/[id]` | GET | Show detail (404s inactive for anonymous) |
+| `/api/blog` | GET, POST | List/create blog posts (defaults `status=published`; `?status=all` admin-only) |
+| `/api/blog/[slug]` | GET, PUT, DELETE | CRUD blog post (404s unpublished for anonymous) |
+| `/api/glossary` | GET, POST | List/create glossary terms (pages rows `type=landing` + glossary category; `?status=all` admin-only) |
+| `/api/glossary/[slug]` | PUT, DELETE | Update/delete glossary term (requireAdmin) |
+| `/api/certifying-bodies` | GET, POST | List certifiers (defaults `status=active`; `?status=all` admin-only) |
+| `/api/certifying-bodies/[id]` | GET, POST, PUT, DELETE | CRUD certifier (404s inactive for anonymous) |
+| `/api/service-providers` | GET, POST | List/create service providers (defaults `status=active`; `?status=all` admin-only) |
+| `/api/service-providers/[slug]` | GET, PUT, DELETE | CRUD provider (404s inactive for anonymous) |
+| `/api/market-guides` | GET, POST | List/create market guides (defaults `status=active`; `?status=all` admin-only) |
+| `/api/market-guides/[slug]` | GET, PUT, DELETE | CRUD guide (404s inactive for anonymous) |
+| `/api/trade-shows` | GET, POST | List/create trade shows (defaults `status=active`; `?scale=` filters scale) |
+| `/api/trade-shows/[id]` | GET, PUT, DELETE | CRUD show (404s inactive for anonymous) |
+| `/api/ai-tools` | GET, POST | List/create AI tools (`?status=all` admin-only) |
+| `/api/ai-tools/[slug]` | GET, PUT, DELETE | CRUD AI tool |
+| `/api/pages` | GET, POST | List/create CMS pages (`?status=all` admin-only) |
+| `/api/pages/[slug]` | GET, PUT, DELETE | CRUD CMS page |
+| `/api/settings` | GET, PUT | Site settings; PUT = requireAdmin batched upsert (single multi-row INSERT … ON CONFLICT) |
+| `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public; stamps `user_id` when signed in); GET requires session (`?status=all` admin-only) |
+| `/api/inquiries/[id]` | PATCH | Update inquiry status (requireAdmin) |
+| `/api/inquiries/mine` | GET | My sent inquiries (login; newest 100) |
 | `/api/search` | GET | Federated search (capped 55 rows, query-keyed cache; suppliers+products filtered `status=active`) |
-| `/api/inquiries` | GET, POST | POST creates inquiry (rate-limited, public); GET requires session |
 | `/api/rfqs` | GET, POST | Buying-requests board (GET defaults `status=active`); POST requires login, 1/week free quota |
 | `/api/rfqs/[id]` | GET | RFQ detail (404s non-active for anonymous) |
 | `/api/promotions` | GET, POST | Deals board (GET defaults `status=active`); POST requires supplier membership, 1/week/supplier quota |
 | `/api/promotions/[id]` | GET | Deal detail (404s non-active for anonymous) |
 | `/api/follows` | GET, POST, DELETE | Follow/unfollow suppliers (login); GET `?countFor=` public count |
+| `/api/favorites` | GET, POST, DELETE | Save/unsave products (login); GET `?productSlug=` → `{favorite}`, GET list = saved products with display fields (newest 200) |
 | `/api/supplier-updates` | GET, POST | Supplier posts feed (GET defaults `status=active`); POST requires membership, 1/week/supplier quota |
 | `/api/supplier-memberships` | GET | My supplier memberships (login) |
 | `/api/views` | GET, POST | POST records detail views (public beacon, increments denormalized counters); GET supplier analytics (member-only) |
@@ -143,13 +153,12 @@ _Avoid_: content generator, AI assistant
 | `/api/vitals` | POST | RUM web-vitals ingestion (Analytics Engine; 503 until binding enabled) |
 | `/api/chat` | POST | AI chat (Mastra agent, auth required) |
 | `/api/auth/*` | GET, POST | better-auth handlers (sign-up/sign-in/sign-out/session); never cached |
-| `/api/pages` | GET | CMS pages |
-| `/api/pages/[slug]` | GET | CMS page detail |
-| `/api/settings` | GET | Site settings |
-| `/api/media/[key]` | GET | Media retrieval (R2 + 304 support) |
-| `/api/media/upload` | POST | Media upload |
+| `/api/media/upload` | POST | Admin image upload — accepts only `image/webp`/`image/avif`, SHA-256 content-addressed key, `head()` dedupe before `put()`, `cacheControl` always set (§5.12) |
+| `/api/media/[key]` | GET | Media retrieval — `head()` first, ETag/If-None-Match→304 before any `get()`, Range/206 slices (§5.12) |
 
-### Database Schema (19 tables, 50 indexes in production)
+All admin write endpoints share the shape: `requireAdmin(event)` (session + `ADMIN_EMAILS` allowlist) → Zod `safeParse` → 400 `{ error, details: {field: [messages]} }` → typed Drizzle values with column projection.
+
+### Database Schema (20 app tables + Better Auth tables; 45 schema-declared indexes, +0003 index coverage migration)
 
 | Table | Purpose | Key |
 |-------|---------|-----|
@@ -167,6 +176,7 @@ _Avoid_: content generator, AI assistant
 | `promotions` | Quick-deal offers (quota: 1/week/supplier) | id |
 | `supplierMembers` | User↔supplier publish rights | (userId, supplierSlug) |
 | `follows` | Buyer follows on suppliers | (userId, supplierSlug) |
+| `favorites` | Buyer saved products (DDL `drizzle/2026-09-favorites.sql`) | (userId, productSlug) |
 | `supplierUpdates` | Supplier posts feed (quota: 1/week/supplier) | id |
 | `pageViews` | Analytics beacon rows (supplier|product) | id |
 | `successStories` | Editorial case studies (draft|published) | slug |
@@ -455,7 +465,7 @@ transactions or certifiers expose anchorable APIs.
 | Reference content (KB, market guides) | `s-maxage=86400` |
 | Listings (products, suppliers, blog, rfqs, promotions, stories) | `s-maxage=300` (matches worker TTL — longer edge TTL would serve data the worker already considers stale) |
 | Homepage | `s-maxage=1800` |
-| Auth pages + session-scoped GETs (inquiries, supplier-applications, follows, memberships, views, stories?status=all) | `no-store` (edge cache is anonymous-shared — public directive would leak private data) |
+| Auth pages + session-scoped GETs (inquiries, supplier-applications, follows, favorites, memberships, views, stories?status=all) | `no-store` (edge cache is anonymous-shared — public directive would leak private data) |
 | API verify/search/rfq/promotions/stories | `s-maxage=120–300` |
 | API chat | `no-store` |
 

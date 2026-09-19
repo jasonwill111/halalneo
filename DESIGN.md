@@ -5,13 +5,16 @@ colors:
   certified-green: 'oklch(0.44 0.15 158)'
   certified-green-dark: 'oklch(0.77 0.185 154)'
   warm-cream: 'oklch(0.978 0.01 88)'
-  pure-white: 'oklch(1 0 0)'
+  off-white-card: 'oklch(0.991 0.006 88)'
+  off-white: 'oklch(0.985 0.004 88)'
+  scrim: 'oklch(0.17 0.012 265)'
   deep-navy: 'oklch(0.15 0.028 205)'
   washed-navy: 'oklch(0.185 0.032 205)'
   sage-mist: 'oklch(0.935 0.011 85)'
   sage-stone: 'oklch(0.46 0.022 60)'
   sage-border: 'oklch(0.895 0.012 85)'
   alert-red: 'oklch(0.57 0.235 27)'
+  light-ink: 'oklch(0.21 0.022 55)'
   dark-mode-text: 'oklch(0.935 0.008 210)'
 semantic:
   info: 'light oklch(0.52 0.15 255) / dark oklch(0.72 0.14 255)'
@@ -46,6 +49,11 @@ typography:
     fontSize: '0.75rem'
     fontWeight: 500
     lineHeight: 1.3
+textScale:
+  4xs: '0.4375rem (7px) / line-height 1.2 — dense meta chips only'
+  3xs: '0.5625rem (9px) / line-height 1.3'
+  2xs: '0.625rem (10px) / line-height 1.35 — labels'
+  2xs-plus: '0.6875rem (11px) / line-height 1.4'
 rounded:
   sm: '6px'
   md: '8px'
@@ -62,10 +70,12 @@ opacity:
   subtle: 0.1
   noticeable: 0.2
 animation:
-  duration-fast: '120ms'
-  duration-base: '200ms'
-  duration-slow: '320ms'
-  duration-deliberate: '550ms'
+  transition-duration-fast: '120ms (utility: duration-fast)'
+  transition-duration-base: '200ms (utility: duration-base)'
+  transition-duration-slow: '320ms (utility: duration-slow)'
+  transition-duration-deliberate: '550ms (utility: duration-deliberate)'
+  default-transition-duration: '120ms (= --transition-duration-fast)'
+  default-transition-timing-function: 'cubic-bezier(0.4, 0, 0.2, 1) (= --ease-in-out)'
   ease-in: 'cubic-bezier(0.4, 0, 1, 1)'
   ease-out: 'cubic-bezier(0, 0, 0.2, 1)'
   ease-in-out: 'cubic-bezier(0.4, 0, 0.2, 1)'
@@ -82,7 +92,7 @@ spacing:
 components:
   button-primary:
     backgroundColor: '{colors.certified-green}'
-    textColor: '{colors.pure-white}'
+    textColor: '{colors.off-white}'
     rounded: '{rounded.md}'
     padding: '0 16px'
     size: '32px'
@@ -97,8 +107,8 @@ components:
     rounded: '{rounded.md}'
     size: '32px'
   card-default:
-    backgroundColor: '{colors.pure-white}'
-    textColor: '{colors.sage-stone}'
+    backgroundColor: '{colors.off-white-card}'
+    textColor: '{colors.light-ink}'
     rounded: '{rounded.xl}'
 ---
 
@@ -135,14 +145,21 @@ Sage-tinted green family — neutrals carry a warm cast (hue ~85–88 light) or 
 ### Neutral
 
 - **Warm Cream** (`oklch(0.978 0.01 88)`, light `--background`): page surface in light mode — a warm off-white, not pure white.
-- **Pure White** (`oklch(1 0 0)`, light `--card`): card surface in light mode.
-- **Light Mode Text** (`oklch(0.21 0.022 55)`, light `--foreground`): primary text and icons. (16.69:1 on cream.)
+- **Off-White Card** (`oklch(0.991 0.006 88)`, light `--card`): card surface in light mode — lifted above Warm Cream but never pure white (§1.3 非纯白).
+- **Light Mode Text** (`oklch(0.21 0.022 55)`, light `--foreground` / `--card-foreground`): primary text and icons. (16.69:1 on cream.)
 - **Deep Teal Ink** (`oklch(0.15 0.028 205)`, dark `--background`): page surface in dark mode — a deep-teal ink scale (MongoDB-ink inspired, hue 205), lightness values tuned so every contrast ratio is preserved.
-- **Washed Navy** (`oklch(0.185 0.032 205)`, dark `--card`): card surface in dark mode.
+- **Washed Navy** (`oklch(0.185 0.032 205)`, dark `--card`): card surface in dark mode — lifted off the page, never pure black.
 - **Dark Mode Text** (`oklch(0.935 0.008 210)`, dark `--foreground`): primary text in dark mode. (16.25:1.)
 - **Sage Mist** (`oklch(0.935 0.011 85)`, `--muted` / `--secondary`): muted fill, secondary buttons, table striping.
 - **Sage Stone** (`oklch(0.46 0.022 60)`, `--muted-foreground`): secondary text, placeholders, captions — darkened until 10px labels pass AA (6.73:1 light / 6.58:1 dark).
 - **Sage Border** (`oklch(0.895 0.012 85)`, `--border` / `--input`): hairline borders and input strokes — visible, not whisper-thin.
+
+### On-image surfaces
+
+Photographic surfaces are theme-independent, so their two tokens deliberately ignore the light/dark switch:
+
+- **Off-White** (`oklch(0.985 0.004 88)` light / `oklch(0.935 0.008 210)` dark, `--on-dark` → `text-on-dark`): caption/heading text sitting on a dark image or gradient. Reserved for that; never used as a page foreground.
+- **Scrim** (`oklch(0.17 0.012 265)`, `--scrim` → `from-scrim/80 via-scrim/40`): the fixed dark ink that grades a photo under overlaid text. Defined in `:root` only and intentionally *not* redefined in `.dark` — an inverted scrim would make captions unreadable. Native `black`/`white` utilities are banned (§色板禁令); these two tokens are the only sanctioned way to put light text on imagery.
 
 ### Semantic accents
 
@@ -156,7 +173,7 @@ Five muted-role colors for wayfinding, never for large surfaces. Each has a ligh
 
 All five pass WCAG AA (≥4.5:1) as text on their own `/10` badge tints in both modes — verified by measurement, not by eye. (Light warn/info were darkened 0.55→0.52 for exactly this reason.)
 
-**Badge vocabulary (listing + detail pages).** Status and classification badges use a fixed color-to-meaning map, shared via `#lib/utils/region.ts` + `tile-colors.ts`: certified = Success + ShieldCheck; cert-pending = Warn; not-certified = Destructive; country = region map (`regionBadgeClass`); business type = Manufacturer Info / Wholesaler Purple / Trader Rose; brand owner = Rose. Certification chips on card images sit on `bg-background/80 backdrop-blur-sm` so they read over photos.
+**Badge vocabulary (listing + detail pages).** Status and classification badges use a fixed color-to-meaning map, shared via `#lib/utils/region.ts` + `tile-colors.ts`: certified = Success + ShieldCheck; cert-pending = Warn; not-certified = Destructive; country = region map (`regionBadgeClass`); business type = Manufacturer Info / Wholesaler Purple / Trader Rose; brand owner = Rose. Chips sitting on card imagery use **opaque** fills (`bg-background/80`, semantic `/10` tints) — never `backdrop-blur` on a list card (§1.4). Text drawn directly onto a photo instead rides a `from-scrim/80 via-scrim/40` gradient with `text-on-dark`.
 
 ### Named Rules
 
@@ -175,8 +192,17 @@ All five pass WCAG AA (≥4.5:1) as text on their own `/10` badge tints in both 
 - **Headline** (600, 1.875rem, 1.2, -0.01em): page-level `h1` on interior pages and section `h2`s.
 - **Title** (600, 1.125rem, 1.3): card titles, sidebar headings.
 - **Body** (400, 1rem, 1.6): paragraph text and list content. Measure stays 65–75ch (`max-w-2xl` on reading blocks).
-- **Label** (500, 0.75rem, 1.3): badge text, metadata, uppercase optional for eyebrows only where a section needs a field label.
-- **Micro** (500, 0.625rem, 1.3): stat card labels, compact metadata, timestamp text — dense surfaces where every pixel counts.
+- **Label** (500, `text-xs` = 0.75rem): badge text, metadata, uppercase optional for eyebrows only where a section needs a field label.
+- **Micro** (500, `text-2xs` = 0.625rem, 1.35): stat card labels, compact metadata, timestamp text — dense surfaces where every pixel counts.
+
+**Sub-label scale (tokens, `@theme inline`).** The dense end of the scale is tokenised so no page ever writes an arbitrary size; each token carries its own line-height, and Tailwind v4 exposes them as classes:
+
+- `text-2xs` — `0.625rem` (10px) / 1.35: the default label size on mobile dense surfaces.
+- `text-2xs-plus` — `0.6875rem` (11px) / 1.4: labels that need a touch more breath on `sm+`.
+- `text-3xs` — `0.5625rem` (9px) / 1.3: table microcopy, only where 10px genuinely overflows.
+- `text-4xs` — `0.4375rem` (7px) / 1.2: dense meta chips only (numeric deltas inside small badges) — never for running text.
+
+Arbitrary values (`text-[10px]`, `text-[0.8rem]`, …) are banned everywhere outside the vendored `src/lib/components/ui/` primitives; the leading combo form (`text-2xs/relaxed`) is preferred over hand-setting `leading-[…]`, since each token already ships a tuned line-height.
 
 ### Named Rules
 
@@ -201,14 +227,17 @@ Hybrid model: **tonal layering + a defined shadow scale**. Depth is mostly tonal
 
 Animation is GPU-cheap only (`opacity` / `transform`), and every animation dies under `prefers-reduced-motion`:
 
+- **Durations are tokens, never numbers.** `--transition-duration-{fast,base,slow,deliberate}` (120/200/320/550ms) is the namespace Tailwind v4 resolves `duration-*` against, so markup writes `duration-base`, not `duration-200`. The bare `--duration-*` aliases exist only for raw CSS inside `layout.css`.
+- **Bare `transition` is token-backed too.** `--default-transition-duration` points at `fast` (120ms) and `--default-transition-timing-function` at `--ease-in-out`, so no control silently inherits Tailwind's 150ms default.
 - **Scroll reveal:** `reveal` attach action adds `.in` via IntersectionObserver; `.reveal/.in` transition in `layout.css` with `--reveal-delay` stagger support.
 - **Entrance:** `.animate-enter` (slide-up 0.55s) with `--enter-delay` stagger for hero sequences.
 - **Ambient:** `.animate-float` / `.animate-glow` reserved for hero decor blobs.
-- Interactive cards lift on hover (200ms); buttons inherit primitive transitions. No page-transition choreography — navigations stay instant.
+- **Easing:** `ease-spring` (`cubic-bezier(0.22, 1, 0.36, 1)`) is the signature curve — write the class, not `ease-[cubic-bezier(…)]`.
+- Interactive cards lift on hover (`duration-base`); buttons inherit primitive transitions. No page-transition choreography — navigations stay instant.
 
 - Resting cards: flat `bg-card` with `ring-1 ring-foreground/10`. No shadow at rest — the ring is the outline, not a shadow.
-- Interactive cards (`hoverable`): lift with `shadow-md` on hover (200ms ease) while keeping the ring. Shadow marks "you can act here."
-- Floating chrome: sticky header `bg-background/90 backdrop-blur`, translucent stat cards `bg-card/70 backdrop-blur-sm`.
+- Interactive cards (`hoverable`): lift with `shadow-md` on hover (`duration-base` + `ease-out`) while keeping the ring. Shadow marks "you can act here."
+- Floating chrome (the only blur allowlist): sticky header `bg-background/80 backdrop-blur-xl`, mobile glass tab bar + its scrim, admin/supplier sidebar `bg-card/60 backdrop-blur-xl`, and popover/sheet/dialog overlays. Cards and stat tiles stay flat `bg-card` + ring — no blur, ever.
 - Overlays (menus, popovers, sheets, selects): `shadow-md`/`shadow-lg` from the scale below, with `ring-1 ring-foreground/10`.
 
 ### Shadow Vocabulary
@@ -238,7 +267,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 ### Buttons
 
 - **Shape:** `rounded-md` (8px), compact heights (default 32px, sm 28px, lg 36px).
-- **Primary:** Certified Green fill, white text, `hover:bg-primary/80`, active press `translate-y-px`. The only saturated button on a screen.
+- **Primary:** Certified Green fill, Off-White text (`--primary-foreground`), `hover:bg-primary/80`, active press `translate-y-px`. The only saturated button on a screen.
 - **Outline:** `border-border bg-background hover:bg-muted hover:text-foreground`; transparent fill, hairline border — the workhorse secondary.
 - **Ghost:** transparent, `hover:bg-muted`; used in nav and icon actions.
 - **Secondary:** Sage Mist fill with dark sage text.
@@ -249,15 +278,15 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 ### Chips / Badges
 
 - **Style:** pill `rounded-4xl`, 20px tall, 12px medium text.
-- **Default (verified):** Certified Green fill, white text.
+- **Default (verified):** Certified Green fill, Off-White text (`--primary-foreground`).
 - **Secondary / outline:** Sage Mist fill or hairline border — used for neutral status (pending), categories, and metadata.
 - **Destructive:** translucent red text — used for failed/expired certification.
 
 ### Cards / Containers
 
 - **Corner Style:** `rounded-xl` (14px), `overflow-hidden`.
-- **Background:** `bg-card` (Pure White light / Washed Teal dark).
-- **Shadow Strategy:** ring-only at rest; `hoverable` cards lift with `shadow-md` on hover (200ms).
+- **Background:** `bg-card` (Off-White Card `oklch(0.991 0.006 88)` light / Washed Navy `oklch(0.185 0.032 205)` dark) — neither end is pure white or pure black.
+- **Shadow Strategy:** ring-only at rest; `hoverable` cards lift with `shadow-md` on hover (`duration-base`).
 - **Border:** `ring-1 ring-foreground/10` instead of a border — the ring is the outline.
 - **Internal Padding:** `16px` (`--card-spacing`), `12px` for `size="sm"`.
 
@@ -313,6 +342,9 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - **Don't** use gradient text, system display faces. Space Grotesk (headings) and Almarai (body) self-hosted are the type voices.
 - **Don't** use glassmorphism outside floating surfaces (header, tab bar, popovers, sheets, hero accents) — list grids stay flat for GPU performance.
 - **Don't** invent testimonials, market statistics, or real-data claims beyond the labelled demo dataset — present demo data as demo.
+- **Don't** write arbitrary values the scale already covers: `text-[10px]`, `duration-300`, `ease-[cubic-bezier(…)]`, `leading-[…]`. Use `text-2xs`, `duration-slow`, `ease-spring`, and the tokens' built-in line-heights. (Vendored `src/lib/components/ui/` primitives are the only exemption.)
+- **Don't** put a native Tailwind palette class (`green-500`, `slate-200`, `bg-white`, `from-black/…`) or an `rgb()`/`rgba()`/hex literal anywhere in markup or CSS — semantic tokens only, and `--on-dark` / `--scrim` are the sanctioned on-image pair.
+- **Don't** re-implement Card/Button/Badge/Tabs as page-level `:global()` CSS with hardcoded fills. Pages compose `bg-card` + `ring-1 ring-foreground/10` + `rounded-xl` and semantic chips (`bg-success/10 text-success`), or use the shared components; the Data Quality Dashboard is the cautionary tale.
 
 ## States & Feedback (统一状态反馈)
 
