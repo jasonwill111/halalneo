@@ -54,7 +54,9 @@
 		(data.terms ?? []).toSorted((a: GlossaryTerm, b: GlossaryTerm) => a.term.localeCompare(b.term))
 	);
 
-	const allGrouped = $derived(Object.groupBy(allSorted, (t: GlossaryTerm) => t.term[0].toUpperCase()));
+	const allGrouped = $derived(
+		Object.groupBy(allSorted, (t: GlossaryTerm) => t.term[0].toUpperCase())
+	);
 	const allLetters = $derived(Object.keys(allGrouped).toSorted());
 
 	const pillOptions = $derived([
@@ -72,9 +74,7 @@
 		allSorted.filter((t: GlossaryTerm) => {
 			if (search.trim()) {
 				const q = search.toLowerCase();
-				return (
-					t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q)
-				);
+				return t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q);
 			}
 			if (activeLetter !== 'all') {
 				return t.term[0].toUpperCase() === activeLetter;
@@ -86,9 +86,7 @@
 	const grouped = $derived(Object.groupBy(sorted, (t: GlossaryTerm) => t.term[0].toUpperCase()));
 	const letters = $derived(Object.keys(grouped).toSorted());
 	const totalPages = $derived(Math.max(1, Math.ceil(letters.length / PAGE_SIZE)));
-	const paginatedLetters = $derived(
-		letters.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-	);
+	const paginatedLetters = $derived(letters.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 
 	const isSearching = $derived(search.trim().length > 0);
 </script>
@@ -106,19 +104,14 @@
 			Glossary
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal trade glossary</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			{sorted.length} terms covering certification, sourcing, logistics and market entry.
 		</p>
 	</div>
 
 	<div class="relative">
-		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input
-			type="search"
-			placeholder="Search glossary terms..."
-			class="pl-9"
-			bind:value={search}
-		/>
+		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input type="search" placeholder="Search glossary terms..." class="pl-9" bind:value={search} />
 	</div>
 
 	{#if !isSearching}
@@ -136,12 +129,12 @@
 	<div class="space-y-4 sm:space-y-6">
 		{#each paginatedLetters as letter (letter)}
 			<div class="space-y-3">
-				<h2 id="term-{letter}" class="scroll-mt-24 text-lg font-semibold">{letter}</h2>
+				<h2 id="term-{letter}" class="scroll-mt-24 text-base font-semibold">{letter}</h2>
 				<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 					{#each grouped[letter] as term (term.term)}
 						<Card class="p-3 sm:p-4">
 							<CardContent class="space-y-1 pt-4">
-								<CardTitle class="text-base">{term.term}</CardTitle>
+								<CardTitle class="text-sm sm:text-base">{term.term}</CardTitle>
 								<p class="text-sm text-muted-foreground">{term.definition}</p>
 							</CardContent>
 						</Card>
@@ -158,11 +151,12 @@
 					</EmptyHeader>
 					<EmptyContent>
 						{#if search.trim()}
-							<Button variant="outline" size="sm" onclick={() => (search = '')}
-								>Clear search</Button
+							<Button variant="outline" size="sm" onclick={() => (search = '')}>Clear search</Button
 							>
 						{:else}
-							<Button size="sm" href={localizeHref('/knowledge-base')}>Browse the knowledge base</Button>
+							<Button size="sm" href={localizeHref('/knowledge-base')}
+								>Browse the knowledge base</Button
+							>
 						{/if}
 					</EmptyContent>
 				</Empty>

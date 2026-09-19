@@ -90,7 +90,7 @@
 				Buying Requests
 			</div>
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Live sourcing needs</h1>
-			<p class="text-muted-foreground">
+			<p class="text-xs text-muted-foreground sm:text-sm">
 				{filtered.length} open buying requests from halal buyers — quote directly, no middlemen. Posting
 				is free (1 request/week).
 			</p>

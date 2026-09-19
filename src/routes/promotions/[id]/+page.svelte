@@ -153,7 +153,7 @@
 				</div>
 
 				<div class="space-y-3 rounded-xl bg-card p-3 sm:p-4">
-					<div class="text-2xl font-bold text-primary">{priceText(promo)}</div>
+					<div class="text-lg font-bold text-primary sm:text-2xl">{priceText(promo)}</div>
 					{#if promo.moq}
 						<div class="text-xs text-muted-foreground">MOQ: {promo.moq}</div>
 					{/if}
@@ -201,7 +201,7 @@
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">
 		<div class="space-y-4 text-center">
-			<p class="text-lg text-muted-foreground">Deal not found.</p>
+			<p class="text-sm text-muted-foreground">Deal not found.</p>
 			<Button href={localizeHref('/promotions')} variant="outline">Browse Deals</Button>
 		</div>
 	</div>

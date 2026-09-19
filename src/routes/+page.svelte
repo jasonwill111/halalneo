@@ -327,15 +327,21 @@
 	</div>
 	<div class="mt-4 grid grid-cols-3 gap-3 sm:mx-auto sm:mt-6 sm:max-w-lg">
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
-			<p class="text-lg font-bold text-info tabular-nums">{data.stats.verifiedSuppliers}</p>
+			<p class="text-base font-bold text-info tabular-nums sm:text-lg">
+				{data.stats.verifiedSuppliers}
+			</p>
 			<p class="text-2xs text-muted-foreground sm:text-xs">Verified suppliers</p>
 		</div>
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
-			<p class="text-lg font-bold text-warn tabular-nums">{data.stats.certifierCount}</p>
+			<p class="text-base font-bold text-warn tabular-nums sm:text-lg">
+				{data.stats.certifierCount}
+			</p>
 			<p class="text-2xs text-muted-foreground sm:text-xs">Certifying bodies</p>
 		</div>
 		<div class="rounded-xl bg-muted/50 p-3 text-center">
-			<p class="text-lg font-bold text-success tabular-nums">{data.stats.guideCount}</p>
+			<p class="text-base font-bold text-success tabular-nums sm:text-lg">
+				{data.stats.guideCount}
+			</p>
 			<p class="text-2xs text-muted-foreground sm:text-xs">Market guides</p>
 		</div>
 	</div>
@@ -456,9 +462,7 @@
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Public certificate registers</p>
-			<p class="mt-0.5 text-2xs text-muted-foreground">
-				Cross-referenced against issuing bodies
-			</p>
+			<p class="mt-0.5 text-2xs text-muted-foreground">Cross-referenced against issuing bodies</p>
 		</div>
 		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 			<p class="text-xs font-medium">Scope & expiry tracking</p>

@@ -182,7 +182,7 @@
 <section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product catalogue</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			{allProducts.length} halal-certified products from verified suppliers — filter by category, check
 			certification scope and pricing at a glance.
 		</p>
@@ -191,7 +191,7 @@
 	<!-- Product Categories -->
 	<div class="space-y-4">
 		<div>
-			<h2 class="text-lg font-semibold">Product categories</h2>
+			<h2 class="text-base font-semibold sm:text-lg">Product categories</h2>
 			<p class="text-xs text-muted-foreground">Halal-certified products across these categories.</p>
 		</div>
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
@@ -239,7 +239,7 @@
 	<div class="space-y-4">
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<div>
-				<h2 class="text-lg font-semibold">
+				<h2 class="text-base font-semibold sm:text-lg">
 					{activeCategory === 'all'
 						? 'All products'
 						: (productCategories.find((c) => c.slug === activeCategory)?.name ?? 'Products')}
@@ -299,8 +299,7 @@
 							onclick={() => {
 								activeCategory = 'all';
 								query = '';
-							}}
-							>Clear filters</Button
+							}}>Clear filters</Button
 						>
 					{:else}
 						<Button size="sm" href={localizeHref('/rfqs/new')}>Post a buying request</Button>
@@ -357,7 +356,9 @@
 								<p class="hidden text-2xs text-muted-foreground sm:block">MOQ: {p.moq}</p>
 							{/if}
 							<div class="mt-auto flex items-center justify-between gap-1.5 pt-1">
-								<span class="truncate text-2xs-plus font-semibold text-primary">{priceLabel(p)}</span>
+								<span class="truncate text-2xs-plus font-semibold text-primary"
+									>{priceLabel(p)}</span
+								>
 								<span class="max-w-[45%] truncate text-2xs text-muted-foreground">
 									{supplierNames.get(p.supplierSlug ?? '') ?? p.supplierSlug}
 								</span>
@@ -373,7 +374,7 @@
 	<!-- Target Markets -->
 	<div class="space-y-4">
 		<div>
-			<h2 class="text-lg font-semibold">Target markets</h2>
+			<h2 class="text-base font-semibold sm:text-lg">Target markets</h2>
 			<p class="text-xs text-muted-foreground">
 				Products available for import across these regions.
 			</p>

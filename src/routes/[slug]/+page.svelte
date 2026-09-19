@@ -15,7 +15,7 @@
 </script>
 
 <svelte:head>
-	{@html `\u003cscript type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@type":"WebPage","name":pageTitle,"description":pageDescription,"url":pageUrl})}\u003c/script>`}
+	{@html `\u003cscript type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage', name: pageTitle, description: pageDescription, url: pageUrl })}\u003c/script>`}
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">
@@ -29,7 +29,7 @@
 	{:else}
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
-				<p class="text-lg text-muted-foreground">Page not found.</p>
+				<p class="text-sm text-muted-foreground">Page not found.</p>
 				<Button href={localizeHref('/')} variant="outline">Go Home</Button>
 			</div>
 		</div>

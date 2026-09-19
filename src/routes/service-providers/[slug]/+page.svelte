@@ -20,12 +20,7 @@
 	const baseUrl = 'https://halalneo.com';
 
 	type ProviderType =
-		| 'certification'
-		| 'logistics'
-		| 'finance'
-		| 'payment'
-		| 'insurance'
-		| 'consulting';
+		'certification' | 'logistics' | 'finance' | 'payment' | 'insurance' | 'consulting';
 
 	function typeLabel(type: ProviderType): string {
 		const labels: Record<ProviderType, string> = {
@@ -47,10 +42,18 @@
 			.join('');
 	}
 
-	const yearEst = $derived(provider?.createdAt ? String(new Date(provider.createdAt).getFullYear()) : '—');
+	const yearEst = $derived(
+		provider?.createdAt ? String(new Date(provider.createdAt).getFullYear()) : '—'
+	);
 
 	const hasContact = $derived(
-		!!(provider?.website || provider?.email || provider?.phone || provider?.whatsapp || provider?.line)
+		!!(
+			provider?.website ||
+			provider?.email ||
+			provider?.phone ||
+			provider?.whatsapp ||
+			provider?.line
+		)
 	);
 
 	const metaKeywords = $derived.by(() => {
@@ -82,25 +85,48 @@
 			description: provider.description,
 			url: provider.website ?? `${baseUrl}/service-providers/${data.slug}`,
 			image: `${baseUrl}/api/media/og-services.png`,
-			address: provider.country ? { '@type': 'PostalAddress', addressCountry: provider.country } : undefined,
+			address: provider.country
+				? { '@type': 'PostalAddress', addressCountry: provider.country }
+				: undefined,
 			contactPoint: [
-				...(provider.email ? [{ '@type': 'ContactPoint', contactType: 'email', email: provider.email }] : []),
-				...(provider.phone ? [{ '@type': 'ContactPoint', contactType: 'telephone', telephone: provider.phone }] : [])
+				...(provider.email
+					? [{ '@type': 'ContactPoint', contactType: 'email', email: provider.email }]
+					: []),
+				...(provider.phone
+					? [{ '@type': 'ContactPoint', contactType: 'telephone', telephone: provider.phone }]
+					: [])
 			],
 			parentOrganization: { '@type': 'Organization', name: 'HalalNeo' },
 			sameAs: [provider.website],
-			...(provider.rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: provider.rating, ratingCount: 1 } } : {})
+			...(provider.rating
+				? {
+						aggregateRating: {
+							'@type': 'AggregateRating',
+							ratingValue: provider.rating,
+							ratingCount: 1
+						}
+					}
+				: {})
 		})}\u003c/script>`}
 	{/if}
 </svelte:head>
 
 <div class="mx-auto w-full max-w-6xl space-y-4 sm:space-y-6">
 	{#if provider}
-		<Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }, { label: provider.name ?? 'Provider' }]} />
+		<Breadcrumb
+			items={[
+				{ label: 'Service Providers', href: '/service-providers' },
+				{ label: provider.name ?? 'Provider' }
+			]}
+		/>
 
 		<!-- Gradient hero with initials tile (schema has no cover image column) -->
-		<div class="flex h-24 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-muted sm:h-32">
-			<div class="flex size-12 items-center justify-center rounded-2xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm sm:size-14">
+		<div
+			class="flex h-24 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-muted sm:h-32"
+		>
+			<div
+				class="flex size-12 items-center justify-center rounded-2xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm sm:size-14"
+			>
 				{initials(provider.name) || '?'}
 			</div>
 		</div>
@@ -108,7 +134,9 @@
 		<!-- Header -->
 		<div>
 			<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{provider.name}</h1>
-			<p class="mt-0.5 text-2xs text-muted-foreground">{provider.country} · {typeLabel(provider.type as ProviderType)} · Est. {yearEst}</p>
+			<p class="mt-0.5 text-2xs text-muted-foreground">
+				{provider.country} · {typeLabel(provider.type as ProviderType)} · Est. {yearEst}
+			</p>
 			<div class="mt-1 flex flex-wrap gap-1">
 				{#if provider.status === 'active'}
 					<Badge variant="secondary" class="gap-0.5 text-2xs">
@@ -116,12 +144,14 @@
 						Verified
 					</Badge>
 				{/if}
-				<Badge variant="secondary" class="text-2xs">{typeLabel(provider.type as ProviderType)}</Badge>
+				<Badge variant="secondary" class="text-2xs"
+					>{typeLabel(provider.type as ProviderType)}</Badge
+				>
 			</div>
 			{#if provider.rating}
 				<div class="mt-1 flex items-center gap-1">
 					<Star class="size-2.5 fill-warn text-warn" />
-					<span class="text-2xs text-primary font-medium">{provider.rating}</span>
+					<span class="text-2xs font-medium text-primary">{provider.rating}</span>
 				</div>
 			{/if}
 		</div>
@@ -129,30 +159,61 @@
 		<!-- Action buttons -->
 		<div class="flex gap-1">
 			{#if provider.whatsapp}
-				<Button href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs" target="_blank" rel="noopener">
+				<Button
+					href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}"
+					variant="outline"
+					size="sm"
+					class="h-7 flex-1 gap-1 text-2xs"
+					target="_blank"
+					rel="noopener"
+				>
 					<MessageCircle class="size-2.5" />
 					WhatsApp
 				</Button>
 			{/if}
 			{#if provider.line}
-				<Button href="https://line.me/ti/p/{provider.line}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs" target="_blank" rel="noopener">
+				<Button
+					href="https://line.me/ti/p/{provider.line}"
+					variant="outline"
+					size="sm"
+					class="h-7 flex-1 gap-1 text-2xs"
+					target="_blank"
+					rel="noopener"
+				>
 					Line
 				</Button>
 			{/if}
 			{#if provider.email}
-				<Button href="mailto:{provider.email}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs">
+				<Button
+					href="mailto:{provider.email}"
+					variant="outline"
+					size="sm"
+					class="h-7 flex-1 gap-1 text-2xs"
+				>
 					<Mail class="size-2.5" />
 					Email
 				</Button>
 			{/if}
 			{#if provider.phone}
-				<Button href="tel:{provider.phone}" variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs">
+				<Button
+					href="tel:{provider.phone}"
+					variant="outline"
+					size="sm"
+					class="h-7 flex-1 gap-1 text-2xs"
+				>
 					<Phone class="size-2.5" />
 					Phone
 				</Button>
 			{/if}
 			{#if provider.website}
-				<Button href={provider.website} variant="outline" size="sm" class="h-7 flex-1 gap-1 text-2xs" target="_blank" rel="noopener">
+				<Button
+					href={provider.website}
+					variant="outline"
+					size="sm"
+					class="h-7 flex-1 gap-1 text-2xs"
+					target="_blank"
+					rel="noopener"
+				>
 					<Globe class="size-2.5" />
 					Website
 				</Button>
@@ -182,15 +243,27 @@
 						<h2 class="mb-1.5 text-sm font-semibold">Related Service Providers</h2>
 						<div class="grid grid-cols-2 gap-1.5">
 							{#each related as rel (rel.slug)}
-								<a href={localizeHref(`/service-providers/${rel.slug}`)} class="rounded-xl bg-card ring-1 ring-foreground/10 p-1.5 transition-all hover:shadow-md">
+								<a
+									href={localizeHref(`/service-providers/${rel.slug}`)}
+									class="rounded-xl bg-card p-1.5 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+								>
 									<div class="flex items-center gap-1.5">
-										<div class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-semibold">{initials(rel.name)}</div>
+										<div
+											class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-semibold text-primary"
+										>
+											{initials(rel.name)}
+										</div>
 										<div class="min-w-0 flex-1">
-											<h3 class="text-2xs font-medium truncate">{rel.name}</h3>
-											<p class="text-2xs text-muted-foreground truncate">{rel.country} · {rel.rating ?? '–'}★</p>
+											<h3 class="truncate text-2xs font-medium">{rel.name}</h3>
+											<p class="truncate text-2xs text-muted-foreground">
+												{rel.country} · {rel.rating ?? '–'}★
+											</p>
 										</div>
 										{#if rel.status === 'active'}
-											<Badge variant="secondary" class="hidden shrink-0 gap-0.5 text-2xs sm:inline-flex">
+											<Badge
+												variant="secondary"
+												class="hidden shrink-0 gap-0.5 text-2xs sm:inline-flex"
+											>
 												<Shield class="size-2 text-success" />
 												Verified
 											</Badge>
@@ -220,13 +293,19 @@
 							</a>
 						{/if}
 						{#if provider.email}
-							<a href="mailto:{provider.email}" class="flex items-center gap-2 text-xs font-medium hover:text-primary">
+							<a
+								href="mailto:{provider.email}"
+								class="flex items-center gap-2 text-xs font-medium hover:text-primary"
+							>
 								<Mail class="size-3.5 shrink-0 text-muted-foreground" />
 								<span class="truncate">{provider.email}</span>
 							</a>
 						{/if}
 						{#if provider.phone}
-							<a href="tel:{provider.phone}" class="flex items-center gap-2 text-xs font-medium hover:text-primary">
+							<a
+								href="tel:{provider.phone}"
+								class="flex items-center gap-2 text-xs font-medium hover:text-primary"
+							>
 								<Phone class="size-3.5 shrink-0 text-muted-foreground" />
 								{provider.phone}
 							</a>
@@ -244,13 +323,20 @@
 						{/if}
 						{#if provider.line}
 							<a
-								href={provider.line.startsWith('http') ? provider.line : `https://line.me/R/ti/p/@${provider.line}`}
+								href={provider.line.startsWith('http')
+									? provider.line
+									: `https://line.me/R/ti/p/@${provider.line}`}
 								target="_blank"
 								rel="noopener"
 								class="flex items-center gap-2 text-xs font-medium hover:text-primary"
 							>
-								<span class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-4xs font-black text-success">L</span>
-								LINE<span class="truncate text-2xs font-normal text-muted-foreground">{provider.line}</span>
+								<span
+									class="flex size-3.5 shrink-0 items-center justify-center rounded-sm bg-success/15 text-4xs font-black text-success"
+									>L</span
+								>
+								LINE<span class="truncate text-2xs font-normal text-muted-foreground"
+									>{provider.line}</span
+								>
 							</a>
 						{/if}
 						{#if !hasContact}
@@ -265,8 +351,9 @@
 	{:else}
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
-				<p class="text-lg text-muted-foreground">Provider profile coming soon.</p>
-				<Button href={localizeHref('/service-providers')} variant="outline">Browse Providers</Button>
+				<p class="text-sm text-muted-foreground">Provider profile coming soon.</p>
+				<Button href={localizeHref('/service-providers')} variant="outline">Browse Providers</Button
+				>
 			</div>
 		</div>
 	{/if}

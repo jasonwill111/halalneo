@@ -90,7 +90,7 @@ Ingredient list:
 			Ingredient Checker
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal ingredient analysis</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Paste any ingredient list and get an instant AI-powered halal, haram, or mashbooh verdict for
 			each ingredient.
 		</p>

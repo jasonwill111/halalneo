@@ -41,24 +41,33 @@
 	</div>
 
 	<div class="relative overflow-hidden rounded-xl">
-		<img src="/api/media/about-hero.webp" alt="Global halal trade" class="aspect-[3/1] w-full object-cover" loading="eager" fetchpriority="high" decoding="async" width="1200" height="400" />
+		<img
+			src="/api/media/about-hero.webp"
+			alt="Global halal trade"
+			class="aspect-[3/1] w-full object-cover"
+			loading="eager"
+			fetchpriority="high"
+			decoding="async"
+			width="1200"
+			height="400"
+		/>
 		<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 	</div>
 
 	<Card class="p-3 sm:p-6">
-		<h2 class="mb-2 text-lg font-bold text-foreground">Our Mission</h2>
-		<p class="text-sm text-muted-foreground leading-relaxed">
+		<h2 class="mb-2 text-base font-bold text-foreground">Our Mission</h2>
+		<p class="text-sm leading-relaxed text-muted-foreground">
 			HalalNeo simplifies halal trade by providing verified supplier profiles, certified product
 			catalogs, and comprehensive trade intelligence — all in one platform. We help buyers find
 			genuinely certified suppliers and verify certifications before committing to a shipment.
 		</p>
 	</Card>
 
-	<div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
+	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
 		<Card class="p-3 sm:p-4">
 			<CardHeader class="gap-2">
 				<ShieldCheck class="size-8 text-primary" data-icon="header" />
-				<CardTitle class="text-base">Verification first</CardTitle>
+				<CardTitle class="text-sm sm:text-base">Verification first</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="text-sm text-muted-foreground">
@@ -70,7 +79,7 @@
 		<Card class="p-3 sm:p-4">
 			<CardHeader class="gap-2">
 				<BookOpen class="size-8 text-primary" data-icon="header" />
-				<CardTitle class="text-base">Knowledge, not noise</CardTitle>
+				<CardTitle class="text-sm sm:text-base">Knowledge, not noise</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="text-sm text-muted-foreground">
@@ -82,7 +91,7 @@
 		<Card class="p-3 sm:p-4">
 			<CardHeader class="gap-2">
 				<Globe class="size-8 text-primary" data-icon="header" />
-				<CardTitle class="text-base">Built for cross-border</CardTitle>
+				<CardTitle class="text-sm sm:text-base">Built for cross-border</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<p class="text-sm text-muted-foreground">
@@ -95,18 +104,18 @@
 
 	<div class="space-y-4 sm:space-y-6">
 		<div class="max-w-2xl space-y-2">
-			<h2 class="text-2xl font-semibold tracking-tight">Why HalalNeo exists</h2>
-			<p class="text-muted-foreground">
+			<h2 class="text-base font-semibold tracking-tight sm:text-2xl">Why HalalNeo exists</h2>
+			<p class="text-xs text-muted-foreground sm:text-sm">
 				The halal economy is valued in the trillions, yet B2B sourcing still runs on spreadsheets,
 				unverifiable PDF certificates and word of mouth. Buyers can't easily tell which suppliers
 				are genuinely certified, and vetted suppliers struggle to stand out.
 			</p>
 		</div>
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
 			<Card class="p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<Search class="size-6 text-primary" data-icon="header" />
-					<CardTitle class="text-base">01 · Source</CardTitle>
+					<CardTitle class="text-sm sm:text-base">01 · Source</CardTitle>
 					<CardDescription
 						>Browse certified suppliers and halal products by category, market and certifying body.</CardDescription
 					>
@@ -115,7 +124,7 @@
 			<Card class="p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<Target class="size-6 text-primary" data-icon="header" />
-					<CardTitle class="text-base">02 · Verify</CardTitle>
+					<CardTitle class="text-sm sm:text-base">02 · Verify</CardTitle>
 					<CardDescription
 						>Check certification scope, standard and expiry before you commit —no chasing down
 						documents.</CardDescription
@@ -125,7 +134,7 @@
 			<Card class="p-3 sm:p-4">
 				<CardHeader class="gap-3">
 					<Package class="size-6 text-primary" data-icon="header" />
-					<CardTitle class="text-base">03 · Ship</CardTitle>
+					<CardTitle class="text-sm sm:text-base">03 · Ship</CardTitle>
 					<CardDescription
 						>Move forward with logistics and compliance guides written for halal trade specifically.</CardDescription
 					>
@@ -137,51 +146,54 @@
 	<div class="rounded-xl bg-muted/40 p-3 sm:p-10">
 		<div class="grid gap-8 sm:grid-cols-2 sm:items-center">
 			<div class="space-y-3">
-				<h2 class="text-2xl font-semibold tracking-tight">What's on the platform</h2>
-				<p class="text-muted-foreground">
-					Researched knowledge base, trade tools, and market intelligence — built for halal B2B buyers and suppliers.
+				<h2 class="text-base font-semibold tracking-tight sm:text-2xl">What's on the platform</h2>
+				<p class="text-xs text-muted-foreground sm:text-sm">
+					Researched knowledge base, trade tools, and market intelligence — built for halal B2B
+					buyers and suppliers.
 				</p>
 			</div>
-			<div class="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
-			<StatTile value={data.stats.kbSectionCount} label="knowledge sections" tone="info" />
-			<StatTile value={data.stats.certifierCount} label="certifying bodies" tone="warn" />
-			<StatTile value={3} label="trade tools" tone="success" />
-			<StatTile value={data.stats.guideCount} label="market guides" tone="accent-purple" />
-			<StatTile value="80+" label="glossary terms" tone="accent-rose" />
-			<StatTile value={data.stats.showCount} label="trade shows" tone="info" />
-		</div>
+			<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+				<StatTile value={data.stats.kbSectionCount} label="knowledge sections" tone="info" />
+				<StatTile value={data.stats.certifierCount} label="certifying bodies" tone="warn" />
+				<StatTile value={3} label="trade tools" tone="success" />
+				<StatTile value={data.stats.guideCount} label="market guides" tone="accent-purple" />
+				<StatTile value="80+" label="glossary terms" tone="accent-rose" />
+				<StatTile value={data.stats.showCount} label="trade shows" tone="info" />
+			</div>
 		</div>
 	</div>
 
 	<Card class="p-3 sm:p-6">
-		<h2 class="mb-2 text-lg font-bold text-foreground">How we source data</h2>
-		<p class="text-sm text-muted-foreground leading-relaxed">
-			All certification data on HalalNeo is sourced from publicly available registers of accredited halal
-			certifying bodies — JAKIM, MUI/LPPOM, ESMA, SFDA, IFANCA, and others. We cross-reference
-			certificate numbers, issuing organisations and scope details against each body's published records.
-			Supplier and product listings are illustrative examples to demonstrate the platform; always verify
-			directly with the certifying body before entering into any commercial agreement.
+		<h2 class="mb-2 text-base font-bold text-foreground">How we source data</h2>
+		<p class="text-sm leading-relaxed text-muted-foreground">
+			All certification data on HalalNeo is sourced from publicly available registers of accredited
+			halal certifying bodies — JAKIM, MUI/LPPOM, ESMA, SFDA, IFANCA, and others. We cross-reference
+			certificate numbers, issuing organisations and scope details against each body's published
+			records. Supplier and product listings are illustrative examples to demonstrate the platform;
+			always verify directly with the certifying body before entering into any commercial agreement.
 		</p>
 	</Card>
 
 	<div class="space-y-4 sm:space-y-6">
 		<div class="max-w-2xl space-y-2">
-			<h2 class="text-2xl font-semibold tracking-tight">Certification, spelled out</h2>
-			<p class="text-muted-foreground">
+			<h2 class="text-base font-semibold tracking-tight sm:text-2xl">Certification, spelled out</h2>
+			<p class="text-xs text-muted-foreground sm:text-sm">
 				We recognise certificates issued under the world's major halal assurance systems, so you can
 				compare scope across markets without decoding a dozen different standards.
 			</p>
 		</div>
 		<div class="flex flex-wrap gap-2">
-			{#each (data.certifiers ?? []) as body (body.id)}
+			{#each data.certifiers ?? [] as body (body.id)}
 				<Badge variant="outline">{body.name} · {body.standard}</Badge>
 			{/each}
 		</div>
 	</div>
 
-	<div class="rounded-xl p-3 sm:p-10 text-center">
+	<div class="rounded-xl p-3 text-center sm:p-10">
 		<Users class="mx-auto size-8 text-primary" data-icon="header" />
-		<h2 class="mt-4 text-2xl font-semibold tracking-tight">Ready to source with confidence?</h2>
+		<h2 class="mt-4 text-base font-semibold tracking-tight sm:text-2xl">
+			Ready to source with confidence?
+		</h2>
 		<p class="mx-auto mt-2 max-w-xl text-muted-foreground">
 			Create a buyer account to shortlist suppliers, or explore the knowledge base to prepare for
 			your next import.

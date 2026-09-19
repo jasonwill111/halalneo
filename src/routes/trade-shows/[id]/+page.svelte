@@ -83,12 +83,10 @@
 	{@html `\u003cscript type="application/ld+json">${jsonLd}\u003c/script>`}
 </svelte:head>
 
-<Breadcrumb
-	items={[{ label: 'Trade Shows', href: '/trade-shows' }, { label: show.name }]}
-/>
+<Breadcrumb items={[{ label: 'Trade Shows', href: '/trade-shows' }, { label: show.name }]} />
 
 <div class="mx-auto w-full max-w-6xl space-y-4 sm:space-y-6">
-		<div class="max-w-2xl space-y-2">
+	<div class="max-w-2xl space-y-2">
 		<h1 class="text-2xl font-semibold tracking-tight sm:text-4xl">{show.name}</h1>
 		<div class="flex items-center gap-1.5 text-sm text-muted-foreground">
 			<MapPinIcon class="size-4 shrink-0" />
@@ -103,7 +101,9 @@
 				<Badge variant="secondary">Past</Badge>
 			{/if}
 			{#if show.scale}
-				<span class={cn('rounded-full px-2 py-0.5 text-xs font-medium', scaleColors[show.scale ?? ''])}>
+				<span
+					class={cn('rounded-full px-2 py-0.5 text-xs font-medium', scaleColors[show.scale ?? ''])}
+				>
 					{show.scale}
 				</span>
 			{/if}
@@ -123,11 +123,11 @@
 		<div class="min-w-0 space-y-4 sm:space-y-6">
 			<Card class="bg-card">
 				<CardContent class="space-y-3 p-4 sm:p-5">
-					<CardTitle class="text-base">About this event</CardTitle>
+					<CardTitle class="text-sm sm:text-base">About this event</CardTitle>
 					<p class="text-sm leading-relaxed text-foreground/80">{show.description}</p>
 					{#if (show.focus ?? []).length > 0}
 						<div class="flex flex-wrap gap-1.5">
-							{#each (show.focus ?? []) as tag (tag)}
+							{#each show.focus ?? [] as tag (tag)}
 								<Badge variant="secondary" class="text-2xs">{tag}</Badge>
 							{/each}
 						</div>
@@ -137,7 +137,7 @@
 
 			<Card class="bg-card">
 				<CardContent class="space-y-3 p-4 sm:p-5">
-					<CardTitle class="text-base">Event details</CardTitle>
+					<CardTitle class="text-sm sm:text-base">Event details</CardTitle>
 					<dl class="space-y-2.5 text-sm">
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Dates</dt>
@@ -164,7 +164,7 @@
 
 			{#if related.length > 0}
 				<div class="space-y-3">
-					<h2 class="text-lg font-semibold tracking-tight">Related shows</h2>
+					<h2 class="text-sm font-semibold tracking-tight sm:text-base">Related shows</h2>
 					<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 						{#each related as rel (rel.id)}
 							<Card class="bg-card transition-shadow hover:shadow-md">
@@ -196,7 +196,7 @@
 		<aside class="lg:sticky lg:top-24 lg:self-start">
 			<Card class="bg-card">
 				<CardContent class="space-y-3 p-4 sm:p-5">
-					<CardTitle class="text-base">Attend</CardTitle>
+					<CardTitle class="text-sm sm:text-base">Attend</CardTitle>
 					<div class="space-y-2 text-sm">
 						<p class="flex items-center gap-1.5 text-muted-foreground">
 							<CalendarDaysIcon class="size-4 shrink-0" />
@@ -214,13 +214,7 @@
 						{/if}
 					</div>
 					{#if show.website}
-						<Button
-							href={show.website}
-							target="_blank"
-							rel="noopener"
-							class="w-full"
-							size="sm"
-						>
+						<Button href={show.website} target="_blank" rel="noopener" class="w-full" size="sm">
 							Official website
 							<ExternalLinkIcon class="size-3" />
 						</Button>

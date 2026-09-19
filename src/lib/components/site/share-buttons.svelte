@@ -66,16 +66,19 @@
 	}
 
 	const networks = [
-		{ id: 'x', label: 'Share on X' },
-		{ id: 'linkedin', label: 'Share on LinkedIn' },
-		{ id: 'whatsapp', label: 'Share on WhatsApp' },
-		{ id: 'facebook', label: 'Share on Facebook' }
+		{ id: 'x', label: 'Share on X', mark: 'X' },
+		{ id: 'linkedin', label: 'Share on LinkedIn', mark: 'in' },
+		{ id: 'whatsapp', label: 'Share on WhatsApp', mark: 'WA' },
+		{ id: 'facebook', label: 'Share on Facebook', mark: 'f' }
 	] as const;
 </script>
 
-<div class={`flex flex-wrap items-center gap-2 ${className}`}>
+<div class={`flex flex-wrap items-center gap-1.5 sm:gap-2 ${className}`}>
 	{#if canNativeShare}
-		<Button variant="outline" size="sm" onclick={nativeShare}>
+		<Button variant="outline" size="sm" class="sm:hidden" onclick={nativeShare} aria-label="Share">
+			<Share2 class="size-3.5" />
+		</Button>
+		<Button variant="outline" size="sm" class="hidden sm:inline-flex" onclick={nativeShare}>
 			<Share2 class="size-3.5" />
 			Share
 		</Button>
@@ -84,21 +87,25 @@
 		<Button
 			variant="outline"
 			size="sm"
+			class="w-7 justify-center px-0 sm:w-auto sm:px-2.5"
 			href={shareUrl(n.id)}
 			target="_blank"
 			rel="noopener"
 			aria-label={n.label}
 		>
-			{n.id === 'x' ? 'X' : n.id.charAt(0).toUpperCase() + n.id.slice(1)}
+			<span class="sm:hidden">{n.mark}</span>
+			<span class="hidden sm:inline"
+				>{n.id === 'x' ? 'X' : n.id.charAt(0).toUpperCase() + n.id.slice(1)}</span
+			>
 		</Button>
 	{/each}
 	<Button variant="outline" size="sm" onclick={copyLink} aria-label="Copy link">
 		{#if copied}
 			<Check class="size-3.5 text-success" />
-			Copied
+			<span class="hidden sm:inline">Copied</span>
 		{:else}
 			<Link2 class="size-3.5" />
-			Copy link
+			<span class="hidden sm:inline">Copy link</span>
 		{/if}
 	</Button>
 </div>

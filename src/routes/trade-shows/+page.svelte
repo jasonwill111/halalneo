@@ -43,7 +43,9 @@
 	// Regions derived from data — sorted unique region values with counts, 'all' first
 	const regionOptions = $derived.by<{ value: string; label: string; count: number }[]>(() => {
 		const shows = (data.shows ?? []) as Array<{ region?: string | null }>;
-		const regions = Array.from(new Set(shows.map((s) => String(s.region ?? '')).filter((r) => r.length > 0)))
+		const regions = Array.from(
+			new Set(shows.map((s) => String(s.region ?? '')).filter((r) => r.length > 0))
+		)
 			.sort()
 			.map((r) => ({
 				value: r,
@@ -53,35 +55,37 @@
 		return [{ value: 'all', label: 'All Regions', count: shows.length }, ...regions];
 	});
 
-	const jsonLd = $derived(JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'ItemList',
-		name: 'Global Halal Trade Shows & Exhibitions',
-		description:
-			'Calendar of halal trade shows, exhibitions, and industry events worldwide — MIHAS, Gulfood, Halal Expo Istanbul and more.',
-		itemListElement: rows.map((s: TradeShowRow, i: number) => ({
-			'@type': 'ListItem',
-			position: i + 1,
-			item: {
-				'@type': 'Event',
-				name: s.name,
-				startDate: s.startDate,
-				endDate: s.endDate,
-				eventStatus: 'https://schema.org/EventScheduled',
-				eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-				location: {
-					'@type': 'Place',
-					name: s.venue,
-					address: {
-						'@type': 'PostalAddress',
-						addressLocality: s.city,
-						addressCountry: s.country
-					}
-				},
-				url: s.website
-			}
-		}))
-	}));
+	const jsonLd = $derived(
+		JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'ItemList',
+			name: 'Global Halal Trade Shows & Exhibitions',
+			description:
+				'Calendar of halal trade shows, exhibitions, and industry events worldwide — MIHAS, Gulfood, Halal Expo Istanbul and more.',
+			itemListElement: rows.map((s: TradeShowRow, i: number) => ({
+				'@type': 'ListItem',
+				position: i + 1,
+				item: {
+					'@type': 'Event',
+					name: s.name,
+					startDate: s.startDate,
+					endDate: s.endDate,
+					eventStatus: 'https://schema.org/EventScheduled',
+					eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+					location: {
+						'@type': 'Place',
+						name: s.venue,
+						address: {
+							'@type': 'PostalAddress',
+							addressLocality: s.city,
+							addressCountry: s.country
+						}
+					},
+					url: s.website
+				}
+			}))
+		})
+	);
 	let search = $state('');
 
 	const PAGE_SIZE = 9;
@@ -89,7 +93,7 @@
 
 	const filtered = $derived(
 		rows
-			.filter((s: TradeShowRow) => (selectedRegion === 'all' || s.region === selectedRegion))
+			.filter((s: TradeShowRow) => selectedRegion === 'all' || s.region === selectedRegion)
 			.filter((s: TradeShowRow) =>
 				search.trim()
 					? s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -97,7 +101,10 @@
 						s.country?.toLowerCase().includes(search.toLowerCase())
 					: true
 			)
-			.sort((a: TradeShowRow, b: TradeShowRow) => new Date(a.startDate ?? 0).getTime() - new Date(b.startDate ?? 0).getTime())
+			.sort(
+				(a: TradeShowRow, b: TradeShowRow) =>
+					new Date(a.startDate ?? 0).getTime() - new Date(b.startDate ?? 0).getTime()
+			)
 	);
 
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
@@ -160,7 +167,7 @@
 		const y = ((90 - lat) / 180) * mapHeight;
 		return { x, y };
 	}
-	
+
 	// Shows with coordinates for map view
 	const mappedShows = $derived(
 		(filtered ?? []).filter(
@@ -183,15 +190,15 @@
 			Trade Shows
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Global halal events</h1>
-		<p class="text-muted-foreground">
-			Upcoming halal trade shows, exhibitions, and industry events worldwide. Plan your
-			attendance and connect with buyers and suppliers.
+		<p class="text-xs text-muted-foreground sm:text-sm">
+			Upcoming halal trade shows, exhibitions, and industry events worldwide. Plan your attendance
+			and connect with buyers and suppliers.
 		</p>
 	</div>
 
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div class="relative flex-1 sm:max-w-xs">
-			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search events, cities..."
@@ -219,7 +226,9 @@
 	{:else if filtered.length === 0}
 		<Empty>
 			<EmptyHeader>
-				<EmptyMedia><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></EmptyMedia>
+				<EmptyMedia
+					><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></EmptyMedia
+				>
 				<EmptyTitle>No events found</EmptyTitle>
 				<EmptyDescription>
 					{#if search.trim() || selectedRegion !== 'all'}
@@ -241,12 +250,9 @@
 						}}>Clear filters</Button
 					>
 				{:else}
-					<Button size="sm" href={localizeHref('/suppliers')}>Browse suppliers</Button
-					>
+					<Button size="sm" href={localizeHref('/suppliers')}>Browse suppliers</Button>
 				{/if}
-				<Button variant="link" size="sm" href={localizeHref('/contact')}
-					>Suggest an event</Button
-				>
+				<Button variant="link" size="sm" href={localizeHref('/contact')}>Suggest an event</Button>
 			</EmptyContent>
 		</Empty>
 	{:else if viewMode === 'list'}
@@ -256,22 +262,33 @@
 				{@const upcoming = isUpcoming(show.startDate)}
 				{@const past = isPast(show.endDate)}
 				{@const tags = show.focus ?? []}
-				<Card class="flex flex-col bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md {past ? 'opacity-50' : ''}">
+				<Card
+					class="flex flex-col bg-card ring-1 ring-foreground/10 transition-shadow hover:shadow-md {past
+						? 'opacity-50'
+						: ''}"
+				>
 					<CardContent class="flex flex-1 flex-col gap-2.5 p-3 sm:p-4">
 						<div class="flex items-start justify-between gap-2">
 							<div class="min-w-0 flex-1 space-y-1">
 								<a href={localizeHref(`/trade-shows/${show.id}`)} class="hover:text-primary">
-									<CardTitle class="truncate text-sm leading-snug sm:text-base">{show.name}</CardTitle>
+									<CardTitle class="truncate text-sm leading-snug sm:text-base"
+										>{show.name}</CardTitle
+									>
 								</a>
 								<div class="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
 									<MapPinIcon class="size-3.5 shrink-0" />
-									<span class="truncate">{show.city}, {show.country}{#if show.venue} · {show.venue}{/if}</span>
+									<span class="truncate"
+										>{show.city}, {show.country}{#if show.venue}
+											· {show.venue}{/if}</span
+									>
 								</div>
 							</div>
-							<span class="shrink-0 text-lg" title={show.region}>{regionIcons[show.region ?? ''] ?? '🌐'}</span>
+							<span class="shrink-0 text-lg" title={show.region}
+								>{regionIcons[show.region ?? ''] ?? '🌐'}</span
+							>
 						</div>
 
-						<p class="hidden text-xs leading-relaxed text-muted-foreground line-clamp-2 sm:block">
+						<p class="line-clamp-2 hidden text-xs leading-relaxed text-muted-foreground sm:block">
 							{show.description}
 						</p>
 
@@ -289,7 +306,12 @@
 								<CalendarDaysIcon class="size-3.5 shrink-0" />
 								{formatDateRange(show.startDate, show.endDate)}
 							</span>
-							<span class={cn('rounded-full px-1.5 py-0.5 text-2xs font-medium', scaleColors[show.scale ?? ''])}>
+							<span
+								class={cn(
+									'rounded-full px-1.5 py-0.5 text-2xs font-medium',
+									scaleColors[show.scale ?? '']
+								)}
+							>
 								{show.scale}
 							</span>
 							{#if show.exhibitors}
@@ -308,7 +330,14 @@
 							{:else if past}
 								<Badge variant="secondary">Past</Badge>
 							{/if}
-							<Button href={show.website} target="_blank" rel="noopener" variant="outline" size="sm" class="ml-auto h-7 text-xs">
+							<Button
+								href={show.website}
+								target="_blank"
+								rel="noopener"
+								variant="outline"
+								size="sm"
+								class="ml-auto h-7 text-xs"
+							>
 								Website
 								<ExternalLinkIcon class="size-3" />
 							</Button>
@@ -321,16 +350,24 @@
 	{:else}
 		<!-- MAP VIEW -->
 		<div class="relative mb-4 overflow-x-auto pb-4">
-			<div class="flex flex-wrap gap-2 mb-3">
+			<div class="mb-3 flex flex-wrap gap-2">
 				{#each mappedShows as show (show.id)}
 					{@const ongoing = isOngoing(show.startDate, show.endDate)}
 					{@const upcoming = isUpcoming(show.startDate)}
-					<Card class="w-64 max-w-xs cursor-pointer p-3 text-xs hover:shadow-md" onclick={() => (viewMode = 'list')}>
-						<div class="flex items-center gap-1.5 mb-1">
-							<span class={cn('h-2.5 w-2.5 flex-shrink-0 rounded-full', ongoing ? 'bg-success' : upcoming ? 'bg-info' : 'bg-muted-foreground/40')}></span>
+					<Card
+						class="w-64 max-w-xs cursor-pointer p-3 text-xs hover:shadow-md"
+						onclick={() => (viewMode = 'list')}
+					>
+						<div class="mb-1 flex items-center gap-1.5">
+							<span
+								class={cn(
+									'h-2.5 w-2.5 flex-shrink-0 rounded-full',
+									ongoing ? 'bg-success' : upcoming ? 'bg-info' : 'bg-muted-foreground/40'
+								)}
+							></span>
 							<CardTitle class="text-xs font-medium">{show.name}</CardTitle>
 						</div>
-						<p class="text-xs text-muted-foreground truncate">{show.city}, {show.country}</p>
+						<p class="truncate text-xs text-muted-foreground">{show.city}, {show.country}</p>
 						<div class="mt-1 flex items-center gap-1.5">
 							<CalendarDaysIcon class="size-3" />
 							<span class="text-xs">{formatDateRange(show.startDate, show.endDate)}</span>
@@ -343,7 +380,9 @@
 					<EmptyHeader>
 						<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
 						<EmptyTitle>No mapped events</EmptyTitle>
-						<EmptyDescription>The map only shows events with coordinates. Switch to list view for full details.</EmptyDescription>
+						<EmptyDescription
+							>The map only shows events with coordinates. Switch to list view for full details.</EmptyDescription
+						>
 					</EmptyHeader>
 					<EmptyContent>
 						<Button variant="outline" size="sm" onclick={() => (viewMode = 'list')}
@@ -376,7 +415,7 @@
 									cy={pos.y}
 									r={ongoing ? 6 : 4}
 									class={cn(
-										"stroke-background stroke-[0.5]",
+										'stroke-background stroke-[0.5]',
 										ongoing ? 'fill-success' : upcoming ? 'fill-info' : 'fill-muted-foreground/50'
 									)}
 								>
@@ -389,9 +428,11 @@
 						{/each}
 					</svg>
 					<div class="p-3 text-center text-xs text-muted-foreground">
-						<span class="inline-block h-2.5 w-2.5 rounded-full bg-success mr-1"></span> Happening now ·
-						<span class="inline-block h-2.5 w-2.5 rounded-full bg-info ml-1 mr-1"></span> Upcoming ·
-						<span class="inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50 ml-1 mr-1"></span> Past
+						<span class="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-success"></span> Happening
+						now ·
+						<span class="mr-1 ml-1 inline-block h-2.5 w-2.5 rounded-full bg-info"></span> Upcoming ·
+						<span class="mr-1 ml-1 inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50"
+						></span> Past
 					</div>
 				</div>
 			{/if}

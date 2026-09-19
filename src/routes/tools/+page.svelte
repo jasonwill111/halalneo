@@ -78,7 +78,7 @@
 			Halal Trade Tools
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Free tools for halal buyers</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Estimate costs, check compliance and draft sourcing documents — no account needed.
 		</p>
 	</div>

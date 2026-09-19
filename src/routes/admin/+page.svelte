@@ -134,19 +134,25 @@
 				<div class="flex items-center justify-between gap-3">
 					<div class="flex items-center gap-2">
 						<Inbox class="size-5 text-info"></Inbox>
-						<CardTitle class="text-lg">Recent supplier applications</CardTitle>
+						<CardTitle class="text-sm sm:text-base">Recent supplier applications</CardTitle>
 					</div>
 					<Badge variant="secondary">{livePendingCount} pending</Badge>
 				</div>
 				<CardDescription>
-					New applications submitted through <a href="/supplier/onboarding" class="underline underline-offset-2 hover:text-foreground">/supplier/onboarding</a>. Approve to make the supplier public, or reject with feedback. Both actions update the live D1 record.
+					New applications submitted through <a
+						href="/supplier/onboarding"
+						class="underline underline-offset-2 hover:text-foreground">/supplier/onboarding</a
+					>. Approve to make the supplier public, or reject with feedback. Both actions update the
+					live D1 record.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<ul class="divide-y divide-border">
 					{#each liveApplications as app (app.slug)}
 						<li class="flex items-center gap-3 py-2.5">
-							<div class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-xs font-semibold text-primary">
+							<div
+								class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-xs font-semibold text-primary"
+							>
 								{app.name
 									.split(/\s+/)
 									.map((p) => p[0])
@@ -163,7 +169,10 @@
 									<span class="capitalize">{app.businessType}</span>
 									{#if app.email}
 										<span aria-hidden="true">·</span>
-										<a href="mailto:{app.email}" class="inline-flex items-center gap-1 hover:text-foreground">
+										<a
+											href="mailto:{app.email}"
+											class="inline-flex items-center gap-1 hover:text-foreground"
+										>
 											<Mail class="size-3"></Mail>
 											{app.email}
 										</a>
@@ -174,7 +183,12 @@
 								<Clock class="size-3"></Clock>
 								{formatTime(app.createdAt)}
 							</div>
-							<Button variant="outline" size="sm" class="shrink-0 text-2xs" onclick={() => openReview(app)}>
+							<Button
+								variant="outline"
+								size="sm"
+								class="shrink-0 text-2xs"
+								onclick={() => openReview(app)}
+							>
 								Review
 							</Button>
 						</li>
@@ -249,10 +263,8 @@
 	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-lg">Knowledge base</CardTitle>
-				<CardDescription
-					>{stats.kbSections} sections · {stats.kbArticles} articles</CardDescription
-				>
+				<CardTitle class="text-sm sm:text-base">Knowledge base</CardTitle>
+				<CardDescription>{stats.kbSections} sections · {stats.kbArticles} articles</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Button href={localizeHref('/admin/knowledge')} variant="outline" size="sm"
@@ -262,7 +274,7 @@
 		</Card>
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-lg">Content</CardTitle>
+				<CardTitle class="text-sm sm:text-base">Content</CardTitle>
 				<CardDescription
 					>{stats.glossary} glossary terms · {stats.blogPosts} blog posts</CardDescription
 				>
@@ -273,10 +285,8 @@
 		</Card>
 		<Card>
 			<CardHeader>
-				<CardTitle class="text-lg">AI tools</CardTitle>
-				<CardDescription
-					>{stats.aiTools.active} of {stats.aiTools.total} enabled</CardDescription
-				>
+				<CardTitle class="text-sm sm:text-base">AI tools</CardTitle>
+				<CardDescription>{stats.aiTools.active} of {stats.aiTools.total} enabled</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Button href={localizeHref('/admin/ai-tools')} variant="outline" size="sm"
@@ -301,13 +311,21 @@
 				<div class="flex flex-wrap items-center gap-2 text-xs">
 					<Badge variant="secondary" class="capitalize">{reviewTarget.businessType}</Badge>
 					{#if reviewTarget.email}
-						<a href="mailto:{reviewTarget.email}" class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
+						<a
+							href="mailto:{reviewTarget.email}"
+							class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+						>
 							<Mail class="size-3"></Mail>
 							{reviewTarget.email}
 						</a>
 					{/if}
 					{#if reviewTarget.website}
-						<a href={reviewTarget.website} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
+						<a
+							href={reviewTarget.website}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+						>
 							<Globe class="size-3"></Globe>
 							Website
 						</a>
@@ -319,9 +337,12 @@
 				</div>
 
 				<div class="max-h-48 overflow-y-auto rounded-lg bg-muted/50 p-3">
-					<p class="mb-1 text-2xs font-medium uppercase tracking-wide text-muted-foreground">Application details</p>
+					<p class="mb-1 text-2xs font-medium tracking-wide text-muted-foreground uppercase">
+						Application details
+					</p>
 					{#if reviewTarget.applicationText}
-						<pre class="whitespace-pre-wrap font-sans text-2xs-plus leading-relaxed">{reviewTarget.applicationText}</pre>
+						<pre
+							class="font-sans text-2xs-plus leading-relaxed whitespace-pre-wrap">{reviewTarget.applicationText}</pre>
 					{:else}
 						<p class="text-2xs-plus text-muted-foreground">No application text available.</p>
 					{/if}
@@ -346,7 +367,12 @@
 		{/if}
 
 		<DialogFooter class="gap-2 sm:gap-0">
-			<Button variant="outline" size="sm" disabled={reviewBusy} onclick={() => (reviewOpen = false)}>
+			<Button
+				variant="outline"
+				size="sm"
+				disabled={reviewBusy}
+				onclick={() => (reviewOpen = false)}
+			>
 				Cancel
 			</Button>
 			<Button
@@ -358,11 +384,7 @@
 				<X class="size-3.5"></X>
 				Reject
 			</Button>
-			<Button
-				size="sm"
-				disabled={reviewBusy}
-				onclick={() => review('active')}
-			>
+			<Button size="sm" disabled={reviewBusy} onclick={() => review('active')}>
 				<Check class="size-3.5"></Check>
 				Approve
 			</Button>

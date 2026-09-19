@@ -29,7 +29,7 @@
 	<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
 		{#if number}
 			<span
-				class="text-xl font-extrabold tracking-tight text-primary/70 tabular-nums sm:text-2xl"
+				class="text-base font-extrabold tracking-tight text-primary/70 tabular-nums sm:text-2xl"
 				aria-hidden="true"
 			>
 				{number}
@@ -42,7 +42,9 @@
 				class="ml-auto text-2xs-plus text-primary hover:underline sm:text-xs">{linkLabel}</a
 			>
 		{:else if description}
-			<p class="w-full text-2xs-plus text-muted-foreground sm:text-xs sm:w-auto sm:ml-auto sm:text-right">
+			<p
+				class="w-full text-2xs-plus text-muted-foreground sm:ml-auto sm:w-auto sm:text-right sm:text-xs"
+			>
 				{description}
 			</p>
 		{/if}

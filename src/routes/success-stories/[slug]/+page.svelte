@@ -203,7 +203,7 @@
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">
 		<div class="space-y-4 text-center">
-			<p class="text-lg text-muted-foreground">Story not found.</p>
+			<p class="text-sm text-muted-foreground">Story not found.</p>
 			<Button href={localizeHref('/success-stories')} variant="outline">Browse Stories</Button>
 		</div>
 	</div>

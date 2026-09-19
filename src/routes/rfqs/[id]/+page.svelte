@@ -222,7 +222,7 @@
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">
 		<div class="space-y-4 text-center">
-			<p class="text-lg text-muted-foreground">Buying request not found.</p>
+			<p class="text-sm text-muted-foreground">Buying request not found.</p>
 			<Button href={localizeHref('/rfqs')} variant="outline">Browse Requests</Button>
 		</div>
 	</div>

@@ -32,7 +32,10 @@
 		if (data.readTime) return data.readTime;
 		const raw = (item?.body ?? item?.content ?? '') as string;
 		if (!raw) return '1 min read';
-		const words = raw.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+		const words = raw
+			.replace(/<[^>]*>/g, ' ')
+			.split(/\s+/)
+			.filter(Boolean).length;
 		return `${Math.max(1, Math.round(words / 200))} min read`;
 	});
 
@@ -119,7 +122,12 @@
 						'@type': 'Organization',
 						name: 'HalalNeo',
 						url: baseUrl,
-						logo: { '@type': 'ImageObject', url: `${baseUrl}/api/media/og-default.png`, width: 600, height: 600 }
+						logo: {
+							'@type': 'ImageObject',
+							url: `${baseUrl}/api/media/og-default.png`,
+							width: 600,
+							height: 600
+						}
 					},
 					...(item.tags?.length ? { articleSection: item.tags.join(', ') } : {}),
 					language: 'en'
@@ -137,158 +145,173 @@
 </svelte:head>
 
 <div class="mx-auto max-w-6xl py-8">
-  {#if data.item}
-    <Breadcrumb
-      items={[
-        { label: 'Knowledge Base', href: '/knowledge-base' },
-        {
-          label: sectionName,
-          href: `/knowledge-base/${sectionSlug}`
-        },
-        { label: data.item.title ?? 'Article' }
-      ]}
-    />
+	{#if data.item}
+		<Breadcrumb
+			items={[
+				{ label: 'Knowledge Base', href: '/knowledge-base' },
+				{
+					label: sectionName,
+					href: `/knowledge-base/${sectionSlug}`
+				},
+				{ label: data.item.title ?? 'Article' }
+			]}
+		/>
 
-    <div class="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <main class="space-y-4 sm:space-y-6" bind:this={articleEl}>
-        <header class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">{sectionName}</Badge>
-            <Badge variant="outline">{readTime}</Badge>
-          </div>
-          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            <span class="inline-flex items-center gap-1">
-              <User class="size-3.5" />
-              {meta.author ?? 'HalalNeo Research'}
-            </span>
-            <span class="inline-flex items-center gap-1">
-              <Eye class="size-3.5" />
-              {meta.views ?? 0} reads
-            </span>
-          </div>
-          <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
-          <p class="text-lg text-muted-foreground">{data.item.summary}</p>
-        </header>
+		<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
+			<main class="space-y-4 sm:space-y-6" bind:this={articleEl}>
+				<header class="space-y-4">
+					<div class="flex flex-wrap items-center gap-2">
+						<Badge variant="secondary">{sectionName}</Badge>
+						<Badge variant="outline">{readTime}</Badge>
+					</div>
+					<div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+						<span class="inline-flex items-center gap-1">
+							<User class="size-3.5" />
+							{meta.author ?? 'HalalNeo Research'}
+						</span>
+						<span class="inline-flex items-center gap-1">
+							<Eye class="size-3.5" />
+							{meta.views ?? 0} reads
+						</span>
+					</div>
+					<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
+					<p class="text-sm text-muted-foreground">{data.item.summary}</p>
+				</header>
 
-        <div class="content-body overflow-hidden">
-          {@html renderedBody}
-        </div>
+				<div class="content-body overflow-hidden">
+					{@html renderedBody}
+				</div>
 
-        <div class="flex flex-wrap gap-2 border-t border-border pt-6">
-          {#each data.item.tags ?? [] as tag (tag)}
-            <a href={localizeHref(`/search?q=${encodeURIComponent(tag)}`)}>
-              <Badge
-                variant="secondary"
-                class="transition-colors hover:text-primary hover:shadow-md">{tag}</Badge
-              >
-            </a>
-          {/each}
-        </div>
+				<div class="flex flex-wrap gap-2 border-t border-border pt-6">
+					{#each data.item.tags ?? [] as tag (tag)}
+						<a href={localizeHref(`/search?q=${encodeURIComponent(tag)}`)}>
+							<Badge
+								variant="secondary"
+								class="transition-colors hover:text-primary hover:shadow-md">{tag}</Badge
+							>
+						</a>
+					{/each}
+				</div>
 
-        <div class="space-y-3 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
-          <span class="text-sm text-muted-foreground">Found this helpful? Share it with your network.</span>
-          <ShareButtons title={data.item.title ?? ''} text={data.item.summary ?? ''} />
-        </div>
+				<div class="space-y-3 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
+					<span class="text-sm text-muted-foreground"
+						>Found this helpful? Share it with your network.</span
+					>
+					<ShareButtons title={data.item.title ?? ''} text={data.item.summary ?? ''} />
+				</div>
 
-        {#if related.length > 0}
-          <section class="space-y-4 border-t border-border pt-8">
-            <h2 class="text-xl font-semibold tracking-tight">Related Articles</h2>
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {#each related as rel (rel.slug)}
-                <a
-                  href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}
-                  class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
-                >
-                  <h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
-                    {rel.title}
-                  </h3>
-                  <p class="mt-1 line-clamp-2 text-xs text-muted-foreground">{rel.summary}</p>
-                </a>
-              {/each}
-            </div>
-          </section>
-        {/if}
+				{#if related.length > 0}
+					<section class="space-y-4 border-t border-border pt-8">
+						<h2 class="text-base font-semibold tracking-tight sm:text-lg">Related Articles</h2>
+						<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+							{#each related as rel (rel.slug)}
+								<a
+									href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}
+									class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+								>
+									<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
+										{rel.title}
+									</h3>
+									<p class="mt-1 line-clamp-2 text-xs text-muted-foreground">{rel.summary}</p>
+								</a>
+							{/each}
+						</div>
+					</section>
+				{/if}
 
-        <footer class="border-t border-border pt-6">
-          <Button href={localizeHref(`/knowledge-base/${sectionSlug}`)} variant="outline">
-            ← Back to {sectionName}
-          </Button>
-        </footer>
+				<footer class="border-t border-border pt-6">
+					<Button href={localizeHref(`/knowledge-base/${sectionSlug}`)} variant="outline">
+						← Back to {sectionName}
+					</Button>
+				</footer>
 
-        <div class="mt-8 border-t border-border pt-6">
-          <RelatedLinks
-            title="Explore More"
-            items={[
-              { label: 'Halal Certifying Bodies', description: 'Browse accredited halal certification organizations worldwide.', href: '/certifying-bodies' },
-              { label: 'Market Guides', description: 'Regional halal market insights and compliance guides.', href: '/market-guides' },
-              { label: 'AI Ingredient Checker', description: 'Verify if ingredients are halal with our AI-powered tool.', href: '/tools/ingredient-checker' }
-            ]}
-          />
-        </div>
-      </main>
+				<div class="mt-8 border-t border-border pt-6">
+					<RelatedLinks
+						title="Explore More"
+						items={[
+							{
+								label: 'Halal Certifying Bodies',
+								description: 'Browse accredited halal certification organizations worldwide.',
+								href: '/certifying-bodies'
+							},
+							{
+								label: 'Market Guides',
+								description: 'Regional halal market insights and compliance guides.',
+								href: '/market-guides'
+							},
+							{
+								label: 'AI Ingredient Checker',
+								description: 'Verify if ingredients are halal with our AI-powered tool.',
+								href: '/tools/ingredient-checker'
+							}
+						]}
+					/>
+				</div>
+			</main>
 
-      <aside class="hidden lg:block shrink-0">
-        <div class="space-y-4 sticky top-24 z-10">
-          <Card>
-            <CardContent class="p-4">
-              <h3 class="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                On this page
-              </h3>
-              <nav class="space-y-1">
-                {#each tocItems as tocItem (tocItem.id)}
-                  <a
-                    href="#{tocItem.id}"
-                    class="block rounded-md px-2 py-1 text-xs transition-colors hover:bg-accent hover:text-accent-foreground {activeId ===
-                    tocItem.id
-                      ? 'bg-accent font-medium text-accent-foreground'
-                      : 'text-muted-foreground'}"
-                  >
-                    {tocItem.text}
-                  </a>
-                {/each}
-              </nav>
-            </CardContent>
-          </Card>
+			<aside class="hidden shrink-0 lg:block">
+				<div class="sticky top-24 z-10 space-y-4">
+					<Card>
+						<CardContent class="p-4">
+							<h3 class="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+								On this page
+							</h3>
+							<nav class="space-y-1">
+								{#each tocItems as tocItem (tocItem.id)}
+									<a
+										href="#{tocItem.id}"
+										class="block rounded-md px-2 py-1 text-xs transition-colors hover:bg-accent hover:text-accent-foreground {activeId ===
+										tocItem.id
+											? 'bg-accent font-medium text-accent-foreground'
+											: 'text-muted-foreground'}"
+									>
+										{tocItem.text}
+									</a>
+								{/each}
+							</nav>
+						</CardContent>
+					</Card>
 
-          <Card class="bg-card">
-            <CardContent class="space-y-3 p-4">
-              <h4 class="text-sm font-semibold">Quick Tools</h4>
-              <Button href={localizeHref('/tools/ingredient-checker')} size="sm" class="w-full">
-                Ingredient Checker
-              </Button>
-            </CardContent>
-          </Card>
+					<Card class="bg-card">
+						<CardContent class="space-y-3 p-4">
+							<h4 class="text-sm font-semibold">Quick Tools</h4>
+							<Button href={localizeHref('/tools/ingredient-checker')} size="sm" class="w-full">
+								Ingredient Checker
+							</Button>
+						</CardContent>
+					</Card>
 
-          {#if related.length > 0}
-            <Card class="bg-card">
-              <CardContent class="space-y-3 p-4">
-                <h4 class="text-sm font-semibold">Related Articles</h4>
-                <div class="space-y-2">
-                  {#each related.slice(0, 3) as rel (rel.slug)}
-                    <a
-                      href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}
-                      class="group block"
-                    >
-                      <h5 class="text-xs font-medium group-hover:text-primary">{rel.title}</h5>
-                      <p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">{rel.summary}</p>
-                    </a>
-                  {/each}
-                </div>
-              </CardContent>
-            </Card>
-          {/if}
-        </div>
-      </aside>
-    </div>
-  {:else}
-    <div class="flex min-h-[50vh] items-center justify-center">
-      <div class="space-y-4 text-center">
-        <p class="text-lg text-muted-foreground">Article coming soon.</p>
-        <Button href={localizeHref('/knowledge-base')} variant="outline"
-          >Browse Knowledge Base</Button
-        >
-      </div>
-    </div>
-  {/if}
+					{#if related.length > 0}
+						<Card class="bg-card">
+							<CardContent class="space-y-3 p-4">
+								<h4 class="text-sm font-semibold">Related Articles</h4>
+								<div class="space-y-2">
+									{#each related.slice(0, 3) as rel (rel.slug)}
+										<a
+											href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}
+											class="group block"
+										>
+											<h5 class="text-xs font-medium group-hover:text-primary">{rel.title}</h5>
+											<p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">
+												{rel.summary}
+											</p>
+										</a>
+									{/each}
+								</div>
+							</CardContent>
+						</Card>
+					{/if}
+				</div>
+			</aside>
+		</div>
+	{:else}
+		<div class="flex min-h-[50vh] items-center justify-center">
+			<div class="space-y-4 text-center">
+				<p class="text-sm text-muted-foreground">Article coming soon.</p>
+				<Button href={localizeHref('/knowledge-base')} variant="outline"
+					>Browse Knowledge Base</Button
+				>
+			</div>
+		</div>
+	{/if}
 </div>
-

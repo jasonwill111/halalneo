@@ -159,7 +159,7 @@
 <section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Contact HalalNeo</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Questions about certification, sourcing, or listing your products —send us a message and we'll
 			point you in the right direction.
 		</p>
@@ -231,7 +231,7 @@
 			{#if sent}
 				<div class="flex h-full min-h-72 flex-col items-center justify-center gap-3 text-center">
 					<CheckCircle class="size-10 text-primary" data-icon="header" />
-					<h2 class="text-lg font-semibold">Message received</h2>
+					<h2 class="text-base font-semibold sm:text-lg">Message received</h2>
 					<p class="max-w-sm text-sm text-muted-foreground">
 						Thanks, {name.split(' ')[0] || 'there'}. A member of our team will get back to you at
 						<span class="font-medium text-foreground">{email}</span> within one business day.

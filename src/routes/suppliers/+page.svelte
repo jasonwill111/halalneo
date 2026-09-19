@@ -152,7 +152,7 @@
 <section class="space-y-4 sm:space-y-6">
 	<div class="max-w-2xl space-y-2">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal supplier directory</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			{allSuppliers.length} verified halal suppliers — filter by business type, region, and certification.
 		</p>
 	</div>
@@ -160,7 +160,7 @@
 	<!-- Business Categories -->
 	<div class="space-y-4">
 		<div>
-			<h2 class="text-lg font-semibold">Business types</h2>
+			<h2 class="text-base font-semibold sm:text-lg">Business types</h2>
 			<p class="text-xs text-muted-foreground">
 				Filter suppliers by their primary halal business activity.
 			</p>
@@ -176,7 +176,7 @@
 	<div class="space-y-4">
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<div>
-				<h2 class="text-lg font-semibold">
+				<h2 class="text-base font-semibold sm:text-lg">
 					{activeType === 'all' ? 'All suppliers' : `Suppliers (${activeType})`}
 				</h2>
 				<p class="text-xs text-muted-foreground">
@@ -230,8 +230,7 @@
 							onclick={() => {
 								activeType = 'all';
 								query = '';
-							}}
-							>Clear filters</Button
+							}}>Clear filters</Button
 						>
 					{:else}
 						<Button size="sm" href={localizeHref('/register')}>Join as a supplier</Button>
@@ -289,7 +288,7 @@
 	<!-- Target Markets -->
 	<div class="space-y-4">
 		<div>
-			<h2 class="text-lg font-semibold">Markets served</h2>
+			<h2 class="text-base font-semibold sm:text-lg">Markets served</h2>
 			<p class="text-xs text-muted-foreground">
 				Suppliers shipping halal products across these regions.
 			</p>

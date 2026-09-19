@@ -82,7 +82,7 @@
 			Quick Deals
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Clearance offers</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Time-boxed deals from halal suppliers — discounted stock while it lasts.
 		</p>
 	</div>
@@ -118,12 +118,9 @@
 			</EmptyHeader>
 			<EmptyContent>
 				{#if query.trim()}
-					<Button variant="outline" size="sm" onclick={() => (query = '')}
-						>Clear search</Button
-					>
+					<Button variant="outline" size="sm" onclick={() => (query = '')}>Clear search</Button>
 				{:else}
-					<Button size="sm" href={localizeHref('/products')}>Browse products</Button
-					>
+					<Button size="sm" href={localizeHref('/products')}>Browse products</Button>
 				{/if}
 				<Button variant="link" size="sm" href={localizeHref('/rfqs/new')}
 					>Post a buying request</Button

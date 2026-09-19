@@ -21,19 +21,28 @@
 		date?: string | null;
 	}
 
-	const blogImages = ['/api/media/blog-featured-1.webp', '/api/media/blog-featured-2.webp', '/api/media/blog-1.webp', '/api/media/blog-2.webp', '/api/media/blog-3.webp'];
+	const blogImages = [
+		'/api/media/blog-featured-1.webp',
+		'/api/media/blog-featured-2.webp',
+		'/api/media/blog-1.webp',
+		'/api/media/blog-2.webp',
+		'/api/media/blog-3.webp'
+	];
 
 	const categoryOptions = $derived([
 		{ value: 'all', label: 'All' },
 		...Array.from(
-			new Set((data.posts ?? []).map((p: BlogPostRow) => p.category).filter((c): c is string => !!c))
+			new Set(
+				(data.posts ?? []).map((p: BlogPostRow) => p.category).filter((c): c is string => !!c)
+			)
 		)
 			.sort()
 			.map((c) => ({
 				value: c,
 				label: c,
-				count: (data.posts ?? []).filter((p: BlogPostRow) => p.category === c && p.status === 'published')
-					.length
+				count: (data.posts ?? []).filter(
+					(p: BlogPostRow) => p.category === c && p.status === 'published'
+				).length
 			}))
 	]);
 
@@ -42,9 +51,7 @@
 			.filter((p: BlogPostRow) => p.status === 'published')
 			.toSorted((a: BlogPostRow, b: BlogPostRow) => (b.date ?? '').localeCompare(a.date ?? ''))
 			.filter((p: BlogPostRow) =>
-				search.trim()
-					? p.title.toLowerCase().includes(search.toLowerCase())
-					: true
+				search.trim() ? p.title.toLowerCase().includes(search.toLowerCase()) : true
 			)
 			.filter((p: BlogPostRow) => (activeCategory === 'all' ? true : p.category === activeCategory))
 	);
@@ -74,19 +81,14 @@
 			Blog
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">News & insights</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Updates on halal certification, sourcing and market intelligence.
 		</p>
 	</div>
 
 	<div class="relative">
-		<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input
-			type="search"
-			placeholder="Search articles..."
-			class="pl-9"
-			bind:value={search}
-		/>
+		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input type="search" placeholder="Search articles..." class="pl-9" bind:value={search} />
 	</div>
 
 	{#if categoryOptions.length > 1}
@@ -136,12 +138,14 @@
 										>
 									{/if}
 								</div>
-								<CardTitle class="line-clamp-2 text-sm leading-snug group-hover:text-primary sm:text-lg">
+								<CardTitle
+									class="line-clamp-2 text-sm leading-snug group-hover:text-primary sm:text-lg"
+								>
 									{post.title}
 								</CardTitle>
 								{#if post.excerpt && post.excerpt.trim()}
-									<p 
-										class="hidden text-sm text-muted-foreground line-clamp-2 sm:block"
+									<p
+										class="line-clamp-2 hidden text-sm text-muted-foreground sm:block"
 										title={post.excerpt}
 									>
 										{post.excerpt}
@@ -149,7 +153,7 @@
 								{/if}
 								<div class="flex flex-wrap gap-1.5 pt-1">
 									{#each post.tags as tag (tag)}
-										<Badge variant="secondary" class="text-2xs max-w-[60px] truncate">
+										<Badge variant="secondary" class="max-w-[60px] truncate text-2xs">
 											{tag}
 										</Badge>
 									{/each}

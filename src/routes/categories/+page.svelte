@@ -71,7 +71,7 @@
 <section class="space-y-4 py-8 sm:space-y-6">
 	<div class="max-w-3xl space-y-2 text-center sm:text-left">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product categories</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			{data.categories.length} categorized product groups with detailed certification, sourcing, and market
 			information.
 		</p>
@@ -99,8 +99,7 @@
 					</EmptyHeader>
 					<EmptyContent>
 						{#if search.trim()}
-							<Button variant="outline" size="sm" onclick={() => (search = '')}
-								>Clear search</Button
+							<Button variant="outline" size="sm" onclick={() => (search = '')}>Clear search</Button
 							>
 						{:else}
 							<Button size="sm" href={localizeHref('/products')}>Browse products</Button>

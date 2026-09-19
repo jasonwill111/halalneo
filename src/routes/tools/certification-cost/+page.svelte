@@ -17,8 +17,13 @@
 			baseFeeUsd: 2000,
 			timelineWeeks: '12–24',
 			validityYears: 2,
-			requirements: ['Facility audit', 'Ingredient review', 'Slaughterhouse inspection (if applicable)'],
-			notes: 'Gold standard. Recognized by Middle East, ASEAN, OIC countries. 5-year extension for clean record holders.'
+			requirements: [
+				'Facility audit',
+				'Ingredient review',
+				'Slaughterhouse inspection (if applicable)'
+			],
+			notes:
+				'Gold standard. Recognized by Middle East, ASEAN, OIC countries. 5-year extension for clean record holders.'
 		},
 		{
 			id: 'bpjph',
@@ -28,7 +33,8 @@
 			timelineWeeks: '8–16',
 			validityYears: 4,
 			requirements: ['Document submission', 'On-site audit', 'Laboratory testing'],
-			notes: 'Mandatory for F&B since Oct 2024. Free for SMEs (subsidized). World\'s largest halal market.'
+			notes:
+				"Mandatory for F&B since Oct 2024. Free for SMEs (subsidized). World's largest halal market."
 		},
 		{
 			id: 'moiat',
@@ -38,7 +44,8 @@
 			timelineWeeks: '3–8',
 			validityYears: 1,
 			requirements: ['Application review', 'Facility inspection', 'Product testing'],
-			notes: 'Mandatory for imported poultry, meat, supplements, cosmetics with animal-origin ingredients. UAE Halal National Mark available.'
+			notes:
+				'Mandatory for imported poultry, meat, supplements, cosmetics with animal-origin ingredients. UAE Halal National Mark available.'
 		},
 		{
 			id: 'saber',
@@ -58,7 +65,8 @@
 			timelineWeeks: '8–16',
 			validityYears: 1,
 			requirements: ['Application', 'Facility audit', 'Annual renewal'],
-			notes: 'Islamic Food and Nutrition Council of America. Primary US halal certifier. Required for US halal market access.'
+			notes:
+				'Islamic Food and Nutrition Council of America. Primary US halal certifier. Required for US halal market access.'
 		},
 		{
 			id: 'sfda',
@@ -130,7 +138,7 @@
 			Certification Cost Estimator
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Estimate certification costs</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Select your certifier, product category, and company size to get an estimated cost range and
 			timeline for halal certification.
 		</p>
@@ -149,7 +157,10 @@
 					aria-labelledby="certifier-label"
 				>
 					{#each certifiers as c (c.id)}
-						<ToggleGroup.Item value={c.id} class="h-auto flex-col items-start gap-0.5 p-3 text-left">
+						<ToggleGroup.Item
+							value={c.id}
+							class="h-auto flex-col items-start gap-0.5 p-3 text-left"
+						>
 							<span class="font-medium">{c.name}</span>
 							<span class="text-xs text-muted-foreground">{c.country}</span>
 						</ToggleGroup.Item>
@@ -213,7 +224,9 @@
 						</div>
 						<div class="rounded-xl bg-muted/50 p-3">
 							<DollarSignIcon class="mx-auto mb-1 size-4 text-muted-foreground" />
-							<p class="text-sm font-semibold">{certifier.validityYears} year{certifier.validityYears > 1 ? 's' : ''}</p>
+							<p class="text-sm font-semibold">
+								{certifier.validityYears} year{certifier.validityYears > 1 ? 's' : ''}
+							</p>
 							<p class="text-2xs text-muted-foreground">Certificate validity</p>
 						</div>
 					</div>
@@ -233,14 +246,21 @@
 					<p class="text-xs leading-relaxed text-muted-foreground">{certifier.notes}</p>
 
 					<div class="rounded-xl bg-muted/50 p-3 text-center text-xs text-muted-foreground">
-						<Button href={localizeHref(`/certifying-bodies/${certifier.id}`)} variant="outline" size="sm" class="w-full">
+						<Button
+							href={localizeHref(`/certifying-bodies/${certifier.id}`)}
+							variant="outline"
+							size="sm"
+							class="w-full"
+						>
 							View {certifier.name} Details
 						</Button>
 					</div>
 				</CardContent>
 			</Card>
 
-			<div class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground">
+			<div
+				class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground"
+			>
 				<AlertTriangleIcon class="mx-auto mb-2 size-6 opacity-40" />
 				<p class="text-2xs-plus leading-relaxed">
 					Estimates are based on publicly available fee structures and may vary. Contact the

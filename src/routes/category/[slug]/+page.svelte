@@ -21,9 +21,9 @@
 	let countryFilter = $state('all');
 	let sortBy = $state('default');
 
-	const countries = $derived(
-		[...new Set(products.map((p) => p.originCountry).filter((c): c is string => Boolean(c)))]
-	);
+	const countries = $derived([
+		...new Set(products.map((p) => p.originCountry).filter((c): c is string => Boolean(c)))
+	]);
 
 	const filtered = $derived.by(() => {
 		let list = [...products];
@@ -59,7 +59,7 @@
 	<header class="mb-6 space-y-2">
 		<h1 class="text-3xl font-bold tracking-tight">{category?.name ?? data.slug}</h1>
 		{#if category?.description}
-			<p class="text-muted-foreground">{category.description}</p>
+			<p class="text-xs text-muted-foreground sm:text-sm">{category.description}</p>
 		{/if}
 		<Badge variant="secondary">{filtered.length} products</Badge>
 	</header>
@@ -67,7 +67,13 @@
 	{#if products.length > 0}
 		<!-- Filter bar -->
 		<div class="mb-6 flex flex-wrap items-center gap-2">
-			<ToggleGroup.Root type="single" bind:value={certFilter} size="sm" variant="outline" aria-label="Filter by certification status">
+			<ToggleGroup.Root
+				type="single"
+				bind:value={certFilter}
+				size="sm"
+				variant="outline"
+				aria-label="Filter by certification status"
+			>
 				<ToggleGroup.Item value="all">All</ToggleGroup.Item>
 				<ToggleGroup.Item value="certified">Certified</ToggleGroup.Item>
 				<ToggleGroup.Item value="pending">Pending</ToggleGroup.Item>
@@ -127,15 +133,17 @@
 						{:else}
 							<Package class="size-8 text-muted-foreground/30" />
 						{/if}
-					{#if product.certStatus === 'certified'}
-						<Badge class="absolute top-1.5 left-1.5 bg-success/10 text-success hover:bg-success/20">
-							Halal
-						</Badge>
-					{:else if product.certStatus === 'pending'}
-						<Badge class="absolute top-1.5 left-1.5 bg-warn/10 text-warn hover:bg-warn/20">
-							Pending
-						</Badge>
-					{/if}
+						{#if product.certStatus === 'certified'}
+							<Badge
+								class="absolute top-1.5 left-1.5 bg-success/10 text-success hover:bg-success/20"
+							>
+								Halal
+							</Badge>
+						{:else if product.certStatus === 'pending'}
+							<Badge class="absolute top-1.5 left-1.5 bg-warn/10 text-warn hover:bg-warn/20">
+								Pending
+							</Badge>
+						{/if}
 					</div>
 					{#if product.moq}
 						<p class="mb-1 text-2xs text-muted-foreground">MOQ: {product.moq}</p>

@@ -23,7 +23,7 @@
 	{#if data.item}
 		<header class="mb-8 space-y-2">
 			<h1 class="text-3xl font-bold tracking-tight">{data.item.name}</h1>
-			<p class="text-muted-foreground">{data.item.description}</p>
+			<p class="text-xs text-muted-foreground sm:text-sm">{data.item.description}</p>
 			<div class="flex flex-wrap gap-2">
 				<Badge>{data.item.articleCount} articles</Badge>
 			</div>
@@ -36,7 +36,7 @@
 				{#each paged as article (article.slug)}
 					<Card class="p-3 sm:p-4">
 						<CardHeader>
-							<CardTitle class="text-sm sm:text-lg">{article.title}</CardTitle>
+							<CardTitle class="text-sm sm:text-base">{article.title}</CardTitle>
 						</CardHeader>
 						<CardContent class="space-y-3">
 							<p class="hidden text-xs text-muted-foreground sm:line-clamp-3 sm:text-sm">
@@ -58,7 +58,7 @@
 	{:else}
 		<div class="flex min-h-[50vh] items-center justify-center">
 			<div class="space-y-4 text-center">
-				<p class="text-lg text-muted-foreground">Knowledge base section coming soon.</p>
+				<p class="text-sm text-muted-foreground">Knowledge base section coming soon.</p>
 				<Button href={localizeHref('/knowledge-base')} variant="outline"
 					>Browse Knowledge Base</Button
 				>

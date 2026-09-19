@@ -372,7 +372,7 @@
 			<!-- Image gallery -->
 			<div class="lg:col-span-2">
 				<div
-					class="flex aspect-square w-full items-center justify-center rounded-xl border border-border bg-muted"
+					class="flex aspect-[4/3] w-full items-center justify-center rounded-xl border border-border bg-muted sm:aspect-square"
 				>
 					{#if galleryImages.length > 0}
 						<img
@@ -476,7 +476,7 @@
 				<!-- Price card -->
 				<div class="space-y-3 rounded-xl bg-card p-3 sm:p-4">
 					<div>
-						<div class="text-2xl font-bold text-primary">{priceDisplay}</div>
+						<div class="text-lg font-bold text-primary sm:text-2xl">{priceDisplay}</div>
 						{#if item.moq}
 							<div class="text-xs text-muted-foreground">MOQ: {item.moq}</div>
 						{/if}
@@ -809,7 +809,7 @@
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">
 		<div class="space-y-4 text-center">
-			<p class="text-lg text-muted-foreground">Product not found.</p>
+			<p class="text-sm text-muted-foreground">Product not found.</p>
 			<Button href={localizeHref('/products')} variant="outline">Browse Products</Button>
 		</div>
 	</div>

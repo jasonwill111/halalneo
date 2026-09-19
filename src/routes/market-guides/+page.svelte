@@ -35,7 +35,9 @@
 	// Regions derived from data — sorted unique region values with counts, 'all' first
 	const regionOptions = $derived.by(() => [
 		{ value: 'all', label: 'All Regions', count: data.guides.length },
-		...Array.from(new Set(data.guides.map((g: MarketGuideRow) => g.region).filter((r): r is string => !!r)))
+		...Array.from(
+			new Set(data.guides.map((g: MarketGuideRow) => g.region).filter((r): r is string => !!r))
+		)
 			.sort()
 			.map((region) => ({
 				value: region,
@@ -140,7 +142,7 @@
 <section class="space-y-4 py-8 sm:space-y-6">
 	<div class="max-w-3xl space-y-2 text-center sm:text-left">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Market entry intelligence</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			{guideStats.countries} country-level guides for navigating halal regulatory frameworks, import requirements,
 			and market opportunities.
 		</p>
@@ -149,13 +151,15 @@
 	<!-- Stats Cards -->
 	<div class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
 		{#each stats as stat (stat.title)}
-			<Card class="p-3 sm:p-4">
-				<div class="space-y-1">
-					<div class="text-2xl font-bold">{stat.value}</div>
-					<div class="text-2xs-plus font-medium tracking-wider text-muted-foreground uppercase">
+			<Card class="p-2.5 sm:p-4">
+				<div class="space-y-0.5 sm:space-y-1">
+					<div class="text-base font-bold tabular-nums sm:text-2xl">{stat.value}</div>
+					<div
+						class="text-2xs font-medium tracking-wider text-muted-foreground uppercase sm:text-2xs-plus"
+					>
 						{stat.title}
 					</div>
-					<p class="line-clamp-2 text-xs text-muted-foreground">
+					<p class="hidden text-xs text-muted-foreground sm:line-clamp-2 sm:block">
 						{stat.description}
 					</p>
 				</div>
@@ -242,16 +246,22 @@
 						</div>
 						<div class="flex flex-1 flex-col gap-1.5 p-2.5 sm:gap-2 sm:p-4">
 							<div class="space-y-1 sm:space-y-1.5">
-								<div class="flex items-center gap-1.5 truncate text-3xs sm:text-2xs-plus text-muted-foreground">
-									<UsersIcon class="size-3 sm:size-3.5 shrink-0" />
+								<div
+									class="flex items-center gap-1.5 truncate text-3xs text-muted-foreground sm:text-2xs-plus"
+								>
+									<UsersIcon class="size-3 shrink-0 sm:size-3.5" />
 									<span class="truncate tabular-nums">{guide.muslimPopulation}m</span>
 								</div>
-								<div class="flex items-center gap-1.5 truncate text-3xs sm:text-2xs-plus text-muted-foreground">
-									<BanknoteIcon class="size-3 sm:size-3.5 shrink-0" />
+								<div
+									class="flex items-center gap-1.5 truncate text-3xs text-muted-foreground sm:text-2xs-plus"
+								>
+									<BanknoteIcon class="size-3 shrink-0 sm:size-3.5" />
 									<span class="truncate">{guide.marketSizeUsd}</span>
 								</div>
-								<div class="flex items-center gap-1.5 truncate text-3xs sm:text-2xs-plus text-muted-foreground">
-									<ScaleIcon class="size-3 sm:size-3.5 shrink-0" />
+								<div
+									class="flex items-center gap-1.5 truncate text-3xs text-muted-foreground sm:text-2xs-plus"
+								>
+									<ScaleIcon class="size-3 shrink-0 sm:size-3.5" />
 									<span class="truncate">{guide.mandateStatus}</span>
 								</div>
 							</div>

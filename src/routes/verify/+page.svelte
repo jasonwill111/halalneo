@@ -221,7 +221,7 @@
 			Certificate Verification
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Verify halal certification</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Search by certificate number, brand name, product name, or certifying body. Results
 			cross-reference suppliers and products on HalalNeo.
 		</p>

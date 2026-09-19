@@ -31,7 +31,14 @@
 			id: 'certificate-checklist',
 			title: 'Certificate Verification Checklist',
 			description: 'Due diligence checklist for halal certificates',
-			fields: ['certificateNumber', 'certifier', 'issueDate', 'expiryDate', 'scope', 'verificationSteps'],
+			fields: [
+				'certificateNumber',
+				'certifier',
+				'issueDate',
+				'expiryDate',
+				'scope',
+				'verificationSteps'
+			],
 			format: 'pdf'
 		},
 		{
@@ -44,7 +51,7 @@
 	];
 
 	function downloadTemplate(templateId: string) {
-		const template = templates.find(t => t.id === templateId);
+		const template = templates.find((t) => t.id === templateId);
 		if (!template) return;
 
 		const content = JSON.stringify({ id: templateId, fields: template.fields }, null, 2);
@@ -66,18 +73,20 @@
 			<FileTextIcon class="size-4" />
 			Export Docs
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal trade documentation templates</h1>
-		<p class="text-muted-foreground">
+		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+			Halal trade documentation templates
+		</h1>
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Download ready-to-use templates for suppliers, importers, and certifying bodies.
 		</p>
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each templates as template (template.id)}
-			<Card class="group hover:shadow-md transition-shadow p-3 sm:p-4">
+			<Card class="group p-3 transition-shadow hover:shadow-md sm:p-4">
 				<CardHeader class="p-4 sm:p-3 sm:pt-4">
 					<CardTitle class="truncate text-sm font-medium">{template.title}</CardTitle>
-					<p class="mt-1 text-xs text-muted-foreground line-clamp-2">
+					<p class="mt-1 line-clamp-2 text-xs text-muted-foreground">
 						{template.description}
 					</p>
 				</CardHeader>
@@ -87,7 +96,7 @@
 						class="w-full justify-start text-xs"
 						onclick={() => downloadTemplate(template.id)}
 					>
-						<DownloadIcon class="size-3 mr-1.5" />
+						<DownloadIcon class="mr-1.5 size-3" />
 						Download
 						<span class="ml-auto text-muted-foreground">.{template.format}</span>
 					</Button>

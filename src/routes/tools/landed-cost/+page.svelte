@@ -25,7 +25,9 @@
 	const cif = $derived(num(goodsValue) + num(freight) + num(insurance));
 	const duty = $derived((cif * num(dutyRate)) / 100);
 	const vat = $derived(((cif + duty) * num(vatRate)) / 100);
-	const certPerShipment = $derived(num(shipmentsPerYear) > 0 ? num(annualCertCost) / num(shipmentsPerYear) : 0);
+	const certPerShipment = $derived(
+		num(shipmentsPerYear) > 0 ? num(annualCertCost) / num(shipmentsPerYear) : 0
+	);
 	const total = $derived(cif + duty + vat + num(clearance) + certPerShipment);
 	const perUnit = $derived(num(quantity) > 0 ? total / num(quantity) : 0);
 
@@ -48,7 +50,10 @@
 </svelte:head>
 
 <Breadcrumb
-	items={[{ label: 'Tools', href: '/tools' }, { label: 'Landed Cost', href: '/tools/landed-cost' }]}
+	items={[
+		{ label: 'Tools', href: '/tools' },
+		{ label: 'Landed Cost', href: '/tools/landed-cost' }
+	]}
 />
 
 <section class="space-y-4 sm:space-y-6">
@@ -58,16 +63,16 @@
 			Landed Cost Calculator
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">True cost per unit, landed</h1>
-		<p class="text-muted-foreground">
-			Supplier quotes are FOB. Add freight, duty, VAT, clearance — and the halal
-			certification share most buyers forget — to see what a unit really costs at your warehouse.
+		<p class="text-xs text-muted-foreground sm:text-sm">
+			Supplier quotes are FOB. Add freight, duty, VAT, clearance — and the halal certification share
+			most buyers forget — to see what a unit really costs at your warehouse.
 		</p>
 	</div>
 
 	<div class="grid gap-4 lg:grid-cols-2">
 		<Card class="p-4 sm:p-5">
 			<CardContent class="space-y-3 p-0">
-				<CardTitle class="text-base">Shipment inputs</CardTitle>
+				<CardTitle class="text-sm sm:text-base">Shipment inputs</CardTitle>
 				<div class="grid grid-cols-2 gap-3">
 					<Field>
 						<FieldLabel>Goods value (USD)</FieldLabel>
@@ -107,8 +112,8 @@
 					<Input type="number" min="1" bind:value={shipmentsPerYear} />
 				</Field>
 				<p class="text-2xs-plus leading-relaxed text-muted-foreground">
-					Duty and VAT rates vary by HS code and destination — confirm with your
-					broker. VAT here applies to CIF + duty, the common GCC treatment.
+					Duty and VAT rates vary by HS code and destination — confirm with your broker. VAT here
+					applies to CIF + duty, the common GCC treatment.
 				</p>
 			</CardContent>
 		</Card>
@@ -120,7 +125,7 @@
 			</div>
 			<Card class="p-4 sm:p-5">
 				<CardContent class="space-y-2.5 p-0">
-					<CardTitle class="text-base">Cost breakdown</CardTitle>
+					<CardTitle class="text-sm sm:text-base">Cost breakdown</CardTitle>
 					{#each breakdown as b (b.label)}
 						<div>
 							<div class="mb-1 flex items-center justify-between text-xs">
@@ -128,13 +133,15 @@
 								<span class="font-semibold">{fmt(b.value)}</span>
 							</div>
 							<div class="h-1.5 overflow-hidden rounded-full bg-muted">
-								<div class={`${b.tone} h-full rounded-full transition-all`} style={`width: ${(b.value / maxBreak) * 100}%`}></div>
+								<div
+									class={`${b.tone} h-full rounded-full transition-all`}
+									style={`width: ${(b.value / maxBreak) * 100}%`}
+								></div>
 							</div>
 						</div>
 					{/each}
 					<p class="pt-1 text-2xs-plus text-muted-foreground">
-						Certification share: {fmt(certPerShipment)} per shipment — invisible in
-						quotes, real in margins.
+						Certification share: {fmt(certPerShipment)} per shipment — invisible in quotes, real in margins.
 					</p>
 				</CardContent>
 			</Card>
@@ -144,7 +151,9 @@
 						Next: make sure the label survives the port.
 					</div>
 					<Button
-						href={localizeHref('/knowledge-base/packaging-labeling/gso-193-labelling-claims-checklist')}
+						href={localizeHref(
+							'/knowledge-base/packaging-labeling/gso-193-labelling-claims-checklist'
+						)}
 						variant="outline"
 						size="sm"
 					>
@@ -159,8 +168,8 @@
 	<div class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground">
 		<AlertTriangle class="mx-auto mb-2 size-6 opacity-40" />
 		<p class="text-2xs-plus leading-relaxed">
-			Estimates only — duty depends on HS classification and trade agreements, VAT rules
-			differ by market. Confirm with your customs broker before contracting.
+			Estimates only — duty depends on HS classification and trade agreements, VAT rules differ by
+			market. Confirm with your customs broker before contracting.
 		</p>
 	</div>
 </section>

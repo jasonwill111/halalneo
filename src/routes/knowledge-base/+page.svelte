@@ -158,27 +158,21 @@
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
 				Halal trade intelligence, explained
 			</h1>
-			<p class="text-muted-foreground">
+			<p class="text-xs text-muted-foreground sm:text-sm">
 				{(data.articles ?? []).length} articles across {(data.sections ?? []).length} areas of halal trade
 				—from certification and sourcing to logistics, labeling and market entry.
 			</p>
 		</div>
-		<div class="flex flex-col gap-3 sm:flex-row">
-			<Button href={localizeHref('/search')} variant="outline" size="lg">
-				<SearchIcon class="size-4"></SearchIcon>
-				Search all articles
-			</Button>
-		</div>
 	</div>
 
 	<form bind:this={formEl} onsubmit={handleSearch} class="space-y-1.5">
-		<div class="flex flex-col gap-2 sm:flex-row">
+		<div class="flex gap-2">
 			<div class="relative flex-1">
 				<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="Search sections..."
-					class="pl-9"
+					class="pl-9 text-xs sm:text-sm"
 					bind:value={query}
 					maxlength={MAX_SEARCH}
 					aria-label="Search knowledge base sections"
@@ -190,12 +184,7 @@
 					}}
 				/>
 			</div>
-			<Button
-				type="submit"
-				variant="outline"
-				disabled={!canSearch}
-				class="w-full shrink-0 sm:w-auto"
-			>
+			<Button type="submit" variant="outline" size="sm" disabled={!canSearch} class="shrink-0">
 				Search
 			</Button>
 		</div>
@@ -210,26 +199,26 @@
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each subForms as form, i (form.href)}
 				<a href={localizeHref(form.href)} class="group h-full">
-					<Card hoverable class="h-full p-3 transition-shadow group-hover:shadow-md sm:p-4">
-						<CardHeader class="gap-3">
+					<Card hoverable class="h-full p-2.5 transition-shadow group-hover:shadow-md sm:p-4">
+						<CardHeader class="gap-2 sm:gap-3">
 							<div
-								class="flex size-10 items-center justify-center rounded-lg {tileColors[
+								class="flex size-8 items-center justify-center rounded-lg sm:size-10 {tileColors[
 									i % tileColors.length
 								]}"
 							>
-								<form.icon class="size-5" />
+								<form.icon class="size-4 sm:size-5" />
 							</div>
 							<div class="space-y-1">
-								<CardTitle class="text-lg">{form.title}</CardTitle>
-								<CardDescription>{form.description}</CardDescription>
+								<CardTitle class="text-sm sm:text-base">{form.title}</CardTitle>
+								<CardDescription class="hidden sm:block">{form.description}</CardDescription>
 							</div>
 						</CardHeader>
-						<CardContent class="space-y-3">
-							<p class="text-sm text-muted-foreground">
+						<CardContent class="space-y-2 sm:space-y-3">
+							<p class="text-xs text-muted-foreground sm:text-sm">
 								{form.count}
 								{form.countLabel}
 							</p>
-							<Button variant="outline" size="sm" class="w-full">
+							<Button variant="outline" size="sm" class="w-full sm:w-auto">
 								Explore
 								<ArrowUpRight class="size-4" data-icon="inline-end" />
 							</Button>
@@ -241,38 +230,52 @@
 	</div>
 
 	<!-- KB Sections -->
-	<div class="space-y-3">
+	<div class="flex items-center justify-between gap-2">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
+		<Button
+			href={localizeHref('/search')}
+			variant="link"
+			size="sm"
+			class="text-2xs-plus sm:text-xs"
+		>
+			<SearchIcon class="size-3.5" />
+			Search all articles
+		</Button>
+	</div>
+	<div class="space-y-3">
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each pagedSections as section, i (section.slug)}
 				<article>
-					<Card hoverable class="h-full overflow-hidden p-3 sm:p-4">
-						<CardHeader class="gap-3">
+					<Card hoverable class="h-full overflow-hidden p-2.5 sm:p-4">
+						<CardHeader class="gap-2 sm:gap-3">
 							<div
-								class="flex size-10 items-center justify-center rounded-lg {tileColors[
+								class="flex size-8 items-center justify-center rounded-lg sm:size-10 {tileColors[
 									i % tileColors.length
 								]}"
 							>
-								<Icon name={section.icon} class="size-5"></Icon>
+								<Icon name={section.icon} class="size-4 sm:size-5"></Icon>
 							</div>
 							<div class="space-y-1">
-								<CardTitle class="text-lg">{section.title}</CardTitle>
-								<CardDescription>{section.description}</CardDescription>
+								<CardTitle class="text-sm sm:text-base">{section.title}</CardTitle>
+								<CardDescription class="hidden sm:block">
+									{section.description}
+								</CardDescription>
 							</div>
 						</CardHeader>
-						<CardContent class="space-y-3">
+						<CardContent class="space-y-2 sm:space-y-3">
 							{@const count = (data.articles ?? []).filter(
 								(a) => a.section === section.slug
 							).length}
-							<p class="text-sm text-muted-foreground">
+							<p class="text-xs text-muted-foreground sm:text-sm">
 								{count} article{count === 1 ? '' : 's'}
 							</p>
 							<Button
 								href={localizeHref(`/knowledge-base/${section.slug}`)}
 								variant="outline"
 								size="sm"
+								class="w-full sm:w-auto"
 							>
-								Browse the section
+								Browse
 								<ArrowUpRight class="size-4" data-icon="inline-end"></ArrowUpRight>
 							</Button>
 						</CardContent>
@@ -358,14 +361,14 @@
 		</div>
 	{/if}
 
-	<div class="rounded-xl bg-primary/5 p-6 text-center ring-1 ring-primary/20">
+	<div class="rounded-xl bg-primary/5 p-4 text-center ring-1 ring-primary/20 sm:p-6">
 		<div
-			class="mx-auto mb-3 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+			class="mx-auto mb-3 flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:size-12"
 		>
-			<MessageCircle class="size-6" />
+			<MessageCircle class="size-4 sm:size-6" />
 		</div>
 		<h3 class="mb-1 text-sm font-bold text-foreground">Need Help?</h3>
-		<p class="mb-4 text-sm text-muted-foreground">
+		<p class="mb-3 text-xs text-muted-foreground sm:mb-4 sm:text-sm">
 			Analyze ingredients for halal compliance instantly.
 		</p>
 		<Button href={localizeHref('/tools/ingredient-checker')}>

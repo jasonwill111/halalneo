@@ -39,7 +39,7 @@
 			Success Stories
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Deals closed on HalalNeo</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Real buyers who sourced certified suppliers, real suppliers who won export orders.
 		</p>
 	</div>
@@ -57,9 +57,7 @@
 			</EmptyHeader>
 			<EmptyContent>
 				<Button size="sm" href={localizeHref('/contact')}>Share your story</Button>
-				<Button variant="link" size="sm" href={localizeHref('/products')}
-					>Browse products</Button
-				>
+				<Button variant="link" size="sm" href={localizeHref('/products')}>Browse products</Button>
 			</EmptyContent>
 		</Empty>
 	{:else}

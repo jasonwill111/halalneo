@@ -81,7 +81,7 @@
 	<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 		<div class="max-w-2xl space-y-2">
 			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Certifying bodies</h1>
-			<p class="text-muted-foreground">
+			<p class="text-xs text-muted-foreground sm:text-sm">
 				{(data.certifiers ?? []).length} recognized halal certification authorities across
 				{new Set((data.certifiers ?? []).map((b) => b.country)).size} countries.
 			</p>
@@ -152,8 +152,7 @@
 							<EmptyTitle>No certifying bodies found</EmptyTitle>
 							<EmptyDescription>
 								{#if query.trim() || selectedRegion}
-									No bodies match “{query || selectedRegion}”. Try a shorter name or another
-									region.
+									No bodies match “{query || selectedRegion}”. Try a shorter name or another region.
 								{:else}
 									The certifying-body directory is empty right now.
 								{/if}
@@ -170,8 +169,7 @@
 									}}>Clear filters</Button
 								>
 							{:else}
-								<Button size="sm" href={localizeHref('/products')}>Browse products</Button
-							>{/if}
+								<Button size="sm" href={localizeHref('/products')}>Browse products</Button>{/if}
 							<Button variant="link" size="sm" href={localizeHref('/contact')}
 								>Suggest a certifying body</Button
 							>

@@ -233,7 +233,7 @@
 			RFQ Builder
 		</div>
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">RFQs suppliers answer</h1>
-		<p class="text-muted-foreground">
+		<p class="text-xs text-muted-foreground sm:text-sm">
 			Vague RFQs get vague quotes. Specify certification, documents and delivery terms up front —
 			then copy or download the finished text.
 		</p>
@@ -242,7 +242,7 @@
 	<div class="grid gap-4 lg:grid-cols-2">
 		<Card class="p-4 sm:p-5">
 			<CardContent class="space-y-3 p-0">
-				<CardTitle class="text-base">Your requirements</CardTitle>
+				<CardTitle class="text-sm sm:text-base">Your requirements</CardTitle>
 				<div class="grid gap-3 sm:grid-cols-2" bind:this={fieldsEl}>
 					<Field class="sm:col-span-2">
 						<FieldLabel>Product</FieldLabel>
@@ -373,7 +373,7 @@
 			<Card class="p-4 sm:p-5">
 				<CardContent class="space-y-3 p-0">
 					<div class="flex items-center justify-between">
-						<CardTitle class="text-base">Preview</CardTitle>
+						<CardTitle class="text-sm sm:text-base">Preview</CardTitle>
 						<div class="flex gap-1.5">
 							<Button variant="outline" size="sm" class="h-7 text-xs" onclick={copyRfq}>
 								{#if copied}
