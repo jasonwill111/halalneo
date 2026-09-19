@@ -17,7 +17,7 @@
 | 1.3 theme-color meta 同步 | ✅ | +layout.svelte `$effect` 按 `userPrefersMode` 同步 theme-color meta：手动切换即时改值，system 恢复 media 分值；常量与 light/dark `--background` 一致（09-19） | #11 |
 | 1.4 毛玻璃/半透明/克制动画统一 | ✅ | glass 原语 + reveal/enter 体系 | — |
 | 1.4 性能红线：blur 仅限 header/modal/tab | ✅ | 09-19 终扫：`backdrop-blur` 全 routes 仅剩 +layout（header）/ admin·supplier sidebar / layout.css 原语；market-guides Badge blur 已删；前台列表页=0 | #7 |
-| 1.4 prefers-reduced-motion | ✅ | layout.css:444-485（含 reduced-transparency/contrast） | — |
+| 1.4 prefers-reduced-motion | ✅ | layout.css:444-485（含 reduced-transparency/contrast）；hero 轮播 JS autoplay 亦在启动时检查 matchMedia 直接不启动（#19） | #19 |
 
 ## §2 布局与响应式
 
@@ -50,7 +50,8 @@
 | 3.4 提交防重 + loading 按钮 | ✅ | 全部写表单 `disabled={busy}` 防重（#6/#9 复核，含 #13 收藏按钮） | #3 #6 #9 |
 | 3.4 失败不清空输入 | ✅ | #lib/utils/forms.ts 统一配方，提交失败保留输入（抽查验证） | #3 #6 |
 | 3.5 语义化/图标按钮可访问名 | ✅ | 图标按钮均 aria-label/sr-only，收尾 grep 复验通过（含 supplier 2 处补标） | #9 #11 |
-| 3.5 焦点可见（无裸 outline-none） | ✅ | 仅 ui/ vendored 含 focus-visible ring | — |
+| 3.5 焦点可见（无裸 outline-none） | ✅ | 仅 ui/ vendored 含 focus-visible ring；全局 `outline-ring` 改为无 alpha 实色，focus 环在相邻色上稳定 ≥3:1 | #19 |
+| 3.5 键盘通道补强（interface 评审） | ✅ | skip-to-content 为首个焦点、hero 非当前页 `inert` + 可见暂停控件（WCAG 2.2.2）、底部 Tab aria-expanded/Escape、搜索框 sr-only label + 16px 移动端字号；prod Tab 走查 + 200% 缩放无溢出 | #19 |
 | 3.6 防误触/阻塞反馈 | ✅ | confirm-dialog + 全局 pending | — |
 
 ## §4 前后台差异
@@ -104,7 +105,7 @@
 
 | 条款 | 状态 | 备注 |
 |---|---|---|
-| §8 | ✅ | 随 3.5/3.6 全达标（语义化、aria-label、焦点可见、对比度走 token、44px 热区） |
+| §8 | ✅ | 随 3.5/3.6 全达标（语义化、aria-label、焦点可见、对比度走 token、44px 热区）；#19 复测：`--destructive` 加深后 badge 对 4.56/4.99、实底按钮 5.38/5.67（light/dark 精确计算），200% 文本缩放 header 无横向溢出（prod scrollW==cw 实测） |
 | §9 | ➖ | 底部 Tab 与 Tauri 一致性设计已保持 |
 | §10.1-7 | ✅ | 见 §1-§9 各行，全部 ✅/➖ |
 | §10.8 成本红线 | ✅ | 见 5.12；remote 核查项在文末用户待办 |
