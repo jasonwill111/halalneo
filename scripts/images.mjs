@@ -1,11 +1,20 @@
 /**
  * Image pipeline: Download from picsum/loremflickr → Upload to R2
  * Uses free, no-API-key sources. All downloaded as WebP-ready JPEGs.
- * 
+ *
+ * §5.12.4 — batch scripts are DRY-RUN by default: nothing reaches R2 (Class A
+ * ops + storage) unless you pass `--apply` explicitly.
+ *
  * Usage:
- *   node scripts/images.mjs download   # Download all images
- *   node scripts/images.mjs upload     # Upload to R2
- *   node scripts/images.mjs all        # Download + Upload
+ *   node scripts/images.mjs download             # network reads only, no R2 writes
+ *   node scripts/images.mjs upload               # DRY RUN: print planned R2 puts
+ *   node scripts/images.mjs upload --apply       # really write to R2
+ *   node scripts/images.mjs all                  # download + dry-run upload
+ *   node scripts/images.mjs all --apply          # download + real upload
+ *   node scripts/images.mjs urls                 # print the recorded URL map
+ *
+ * §5.11 warning: this pipeline stages JPEGs. Originals must not be uploaded to
+ * R2 — convert to WebP (e.g. `sharp`) before running with --apply.
  */
 
 import { execSync } from 'node:child_process';
@@ -17,6 +26,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const TMP = join(ROOT, 'tmp', 'images');
 const URLS_FILE = join(ROOT, 'tmp', 'image-urls.json');
+
+/** Red line §5.12.4: writes only happen when `--apply` is passed. */
+const APPLY = process.argv.includes('--apply');
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function getDateKey() { return new Date().toISOString().slice(0, 10).replace(/-/g, ''); }
@@ -128,7 +140,11 @@ async function downloadAll() {
   let ok = 0, fail = 0;
   for (const img of all) {
     const result = await downloadImage(img.id, img.src);
-    result ? ok++ : fail++;
+    if (result) {
+      ok++;
+    } else {
+      fail++;
+    }
     await sleep(800);
   }
 
@@ -137,7 +153,10 @@ async function downloadAll() {
 
 // ─── Upload to R2 ──────────────────────────────────────────────────
 function uploadToR2() {
-  console.log('\n📤 Uploading to R2...');
+  console.log(`\n📤 ${APPLY ? 'Uploading' : 'Planning upload (DRY RUN)'} to R2...`);
+  if (!APPLY) {
+    console.log('   pass --apply to actually write (every put is a Class A op + storage, §5.12)');
+  }
   const urlMap = existsSync(URLS_FILE) ? JSON.parse(readFileSync(URLS_FILE, 'utf-8')) : {};
 
   const all = Object.entries(IMAGES).flatMap(([group, items]) =>
@@ -154,11 +173,17 @@ function uploadToR2() {
     }
 
     const r2Key = generateR2Key(img.id);
+    const command = `wrangler r2 object put halalneo-media/${r2Key} --file="${filepath}" --content-type="image/jpeg" --cc="public, max-age=31536000, immutable" --local`;
+
+    if (!APPLY) {
+      const kb = (readFileSync(filepath).length / 1024).toFixed(1);
+      console.log(`  [dry-run] would put ${r2Key} <- ${img.id}.jpg (${kb} KB, image/jpeg)`);
+      ok++;
+      continue;
+    }
+
     try {
-      execSync(
-        `wrangler r2 object put halalneo-media/${r2Key} --file="${filepath}" --content-type="image/jpeg" --cc="public, max-age=31536000, immutable" --local`,
-        { cwd: ROOT, stdio: 'pipe', timeout: 30000 }
-      );
+      execSync(command, { cwd: ROOT, stdio: 'pipe', timeout: 30000 });
       const url = `/api/media/${r2Key.replace('media/', '')}`;
       urlMap[img.id] = { url, group: img.group, w: img.w, h: img.h, r2Key };
       console.log(`  ✓ ${img.id} → ${r2Key}`);
@@ -170,9 +195,13 @@ function uploadToR2() {
     }
   }
 
-  writeFileSync(URLS_FILE, JSON.stringify(urlMap, null, 2));
-  console.log(`\n📊 Uploaded: ${ok} OK, ${fail} failed`);
-  console.log(`📄 URL map saved to tmp/image-urls.json`);
+  if (APPLY) {
+    writeFileSync(URLS_FILE, JSON.stringify(urlMap, null, 2));
+    console.log(`📄 URL map saved to tmp/image-urls.json`);
+  } else {
+    console.log(`📄 URL map not written (dry run)`);
+  }
+  console.log(`\n📊 ${APPLY ? 'Uploaded' : 'Planned'}: ${ok} OK, ${fail} failed`);
 }
 
 // ─── Print URLs ────────────────────────────────────────────────────
@@ -195,5 +224,5 @@ switch (cmd) {
   case 'upload': uploadToR2(); break;
   case 'urls': printUrls(); break;
   case 'all': await downloadAll(); uploadToR2(); break;
-  default: console.log('Usage: node scripts/images.mjs [download|upload|all|urls]');
+  default: console.log('Usage: node scripts/images.mjs [download|upload|all|urls] [--apply]');
 }

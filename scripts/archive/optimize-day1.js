@@ -124,15 +124,7 @@ async function optimizeD1Queries() {
 async function optimizeR2Storage() {
   console.log('🔄 开始 R2 存储优化...');
   
-  // 1. 创建生命周期规则
-  const lifecycleRules = {
-    "Date": "2026-09-16",
-    "Transitions": [
-      { "Days": 30, "StorageClass": "STANDARD" },
-      { "Days": 90, "StorageClass": "GLACIER" }
-    ],
-    "Expiration": { "Days": 365 }
-  };
+  // R2 lifecycle/storage-class transition rules deliberately removed (AGENTS.md §5.12 red line)
   
   // 2. 压缩策略
   const compressionConfig = {
@@ -143,7 +135,6 @@ async function optimizeR2Storage() {
   };
   
   console.log('✅ R2 存储优化配置已生成');
-  console.log('生命周期规则:', JSON.stringify(lifecycleRules, null, 2));
   console.log('压缩配置:', JSON.stringify(compressionConfig, null, 2));
 }
 

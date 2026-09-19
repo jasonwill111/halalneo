@@ -11,7 +11,6 @@
  */
 
 const CACHE_NAME = 'halalneo-v2';
-const CACHE_VERSION = 2;
 
 // Precache immutable static assets (content-hashed by SvelteKit build)
 const STATIC_ASSETS = [
@@ -33,7 +32,7 @@ self.addEventListener('install', (event) => {
 		caches.open(CACHE_NAME).then(async (cache) => {
 			await cache.addAll(STATIC_ASSETS);
 			// Best-effort offline page — don't fail install if unavailable
-			try { await cache.add(OFFLINE_FALLBACK); } catch {}
+			try { await cache.add(OFFLINE_FALLBACK); } catch { /* install proceeds without it */ }
 		})
 	);
 	self.skipWaiting();

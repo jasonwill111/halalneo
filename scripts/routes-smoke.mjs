@@ -12,7 +12,6 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage();
 
 // 1. singular detail URLs resolve
-const r1 = await page.request.get(`${BASE}/product/halal-chicken-spread-500g`).catch(() => null);
 // slug may not exist; instead discover one from the listing API
 const list = await page.request.get(`${BASE}/api/products?limit=1`);
 const prodSlug = ((await list.json()).items?.[0]?.slug) ?? 'halal-chicken-spread-500g';

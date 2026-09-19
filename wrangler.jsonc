@@ -26,10 +26,10 @@
 			"bucket_name": "halalneo-media"
 		}
 	],
-	// Image Resizing disabled 2026-09-15: paid feature, not required by current code.
-	// To re-enable: remove this comment block and add:
-	//   "images": { "binding": "IMAGES" },
-	// Confirm with owner first - it bills per transform.
+	// Cloudflare Image Resizing is FORBIDDEN here (docs/development-rules.md
+	// §5.12 cost red line: billed per transform, no free tier). Images are
+	// compressed on the client before upload (§5.11) and served from R2 as
+	// stored. Do not add an `images` binding back.
 	// TODO(re-enable after owner enables Analytics Engine in dashboard):
 	// https://dash.cloudflare.com/0b8c74af4a5531bd63c074724898a4c9/workers/analytics-engine
 	// "analytics_engine_datasets": [
