@@ -5,7 +5,6 @@ import { getDb } from '#lib/server/db/index.js';
 import { requireAdmin } from '#lib/server/auth-guard.js';
 import { media } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { invalidateCache } from '#lib/server/cache.js';
 
 declare const caches: CacheStorage;
 
@@ -150,7 +149,8 @@ export const GET: RequestHandler = async ({ params, request, platform }) => {
 	// range requests skip it — they need header-level negotiation below.
 	const isPlainGet =
 		!request.headers.get('range') && !request.headers.get('if-none-match');
-	const cacheKey = `https://cache.halalneo.internal/api/media/${key}`;
+	// Real-host key: workerd rejects cache.put() with synthetic (non-zone) URLs.
+	const cacheUrl = (k: string) => new URL(`/api/media/${k}`, request.url).toString();
 	let cache: Cache | null = null;
 	try {
 		cache = await caches.open('halalneo:d1-cache');
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ params, request, platform }) => {
 	}
 	if (isPlainGet && cache) {
 		try {
-			const hit = await cache.match(new Request(cacheKey));
+			const hit = await cache.match(new Request(cacheUrl(key)));
 			if (hit) return hit;
 		} catch {
 			// synthetic keys can be rejected in workerd — fall through to R2
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ params, request, platform }) => {
 		const full = new Response(object.body, { headers });
 		if (isPlainGet && cache) {
 			try {
-				platform?.ctx.waitUntil(cache.put(new Request(cacheKey), full.clone()));
+				platform?.ctx.waitUntil(cache.put(new Request(cacheUrl(key)), full.clone()));
 			} catch {
 				// Cache API unavailable in some dev runtimes — serve live anyway
 			}
@@ -269,8 +269,21 @@ export const DELETE: RequestHandler = async (event) => {
 		// Delete from D1
 		await db.delete(media).where(eq(media.id, record.id));
 
-		// Evict the GET-layer response cache (both short and media/-prefixed keys).
-		await invalidateCache(`/api/media/${key}`, `/api/media/${fullKey}`);
+		// Evict the GET-layer response cache: real-host keys (both possible
+		// serving zones) × short and media/-prefixed key forms.
+		try {
+			const mediaCache = await caches.open('halalneo:d1-cache');
+			const hosts = new Set([new URL(event.url).host, 'halalneo.com']);
+			await Promise.all(
+				[...hosts].flatMap((host) =>
+					[key, fullKey].map((k) =>
+						mediaCache.delete(new Request(`https://${host}/api/media/${k}`))
+					)
+				)
+			);
+		} catch {
+			// cache unavailable — entry expires with its TTL anyway
+		}
 
 		return json({ success: true, deleted: record.key });
 	} catch (err) {

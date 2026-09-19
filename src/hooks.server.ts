@@ -440,7 +440,11 @@ const handleHtmlCache: Handle = async ({ event, resolve }) => {
 		// Cache API unavailable (non-Workers runtime) — render live every time
 	}
 
-	const cacheRequest = new Request(`https://cache.halalneo.internal${event.url.pathname}`);
+	// Real incoming URL as key: workerd rejects cache.put() for synthetic
+	// (non-zone) hosts — the `cache.halalneo.internal` trick that the memory
+	// layer uses silently fails against the Cache API. workers.dev and
+	// halalneo.com therefore get separate entries, which is fine.
+	const cacheRequest = new Request(event.url, { method: 'GET' });
 	if (cache) {
 		let hit: Response | undefined;
 		try {
