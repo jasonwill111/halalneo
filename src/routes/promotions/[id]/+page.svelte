@@ -16,6 +16,7 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
+	import RelatedLinks from '#lib/components/site/related-links.svelte';
 	import { z } from 'zod';
 	import { toast } from 'svelte-sonner';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
@@ -117,6 +118,14 @@
 		const range = p.priceMax ? `$${p.priceMin}–$${p.priceMax}` : `$${p.priceMin}`;
 		return p.priceUnit ? `${range}/${p.priceUnit}` : range;
 	}
+
+	const moreDeals = $derived(
+		(data.otherPromos ?? []).map((p) => ({
+			label: p.title,
+			description: priceText(p),
+			href: `/promotions/${p.id}`
+		}))
+	);
 </script>
 
 <svelte:head>
@@ -197,6 +206,8 @@
 				</Card>
 			</aside>
 		</div>
+
+		<RelatedLinks title="More quick deals" items={moreDeals} />
 	</div>
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">

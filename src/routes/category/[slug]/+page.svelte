@@ -113,7 +113,7 @@
 		</div>
 
 		<!-- Product grid -->
-		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
 			{#each paged as product (product.slug)}
 				<a
 					href={localizeHref(`/product/${product.slug}`)}

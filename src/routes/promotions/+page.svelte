@@ -128,7 +128,7 @@
 			</EmptyContent>
 		</Empty>
 	{:else}
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] sm:gap-3">
 			{#each paged as p (p.id)}
 				<a
 					href={localizeHref(`/promotions/${p.id}`)}

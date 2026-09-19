@@ -32,7 +32,9 @@
 		{#if paged.length === 0}
 			<p class="text-sm text-muted-foreground">No articles in this section yet.</p>
 		{:else}
-			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+			<div
+				class="grid grid-cols-2 gap-2 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] sm:gap-3"
+			>
 				{#each paged as article (article.slug)}
 					<Card class="p-3 sm:p-4">
 						<CardHeader>

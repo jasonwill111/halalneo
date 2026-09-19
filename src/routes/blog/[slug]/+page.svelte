@@ -147,7 +147,7 @@
 		<Breadcrumb
 			items={[{ label: 'Blog', href: '/blog' }, { label: data.item.title ?? 'Blog Post' }]}
 		/>
-		<div class="grid gap-6 lg:grid-cols-[1fr_240px_320px]">
+		<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
 			<main class="space-y-4 sm:space-y-6">
 				<header class="space-y-4">
 					<div class="flex flex-wrap gap-2">

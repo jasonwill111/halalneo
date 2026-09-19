@@ -212,7 +212,7 @@
 			<div class="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
 				{#each paged as guide (guide.country)}
 					<a
-						href={localizeHref(`/market-guides/${guide.country}`)}
+						href={localizeHref(`/market-guides/${guide.slug}`)}
 						class="group press-scale flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<div class="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -305,7 +305,7 @@
 			hasPart: data.guides.slice(0, 10).map((guide) => ({
 				'@type': 'DigitalResource',
 				name: guide.country,
-				url: `https://halalneo.com/market-guides/${guide.country}`
+				url: `https://halalneo.com/market-guides/${guide.slug}`
 			}))
 		})}\u003c/script>`}
 	{/if}

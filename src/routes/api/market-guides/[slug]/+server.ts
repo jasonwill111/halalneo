@@ -13,10 +13,12 @@ import { getMarketGuide } from '#lib/data/market-guides.js';
 
 export const GET: RequestHandler = async (event) => {
 	const { params, url } = event;
+	// legacy/shared links may carry the display name ("Bangladesh"); slugs are lowercase
+	const slug = params.slug.toLowerCase();
 	const db = getDb(getBindings().DB);
 
 	if (!db) {
-		const row = getMarketGuide(params.slug);
+		const row = getMarketGuide(slug);
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 		return json(row);
 	}
@@ -28,11 +30,11 @@ export const GET: RequestHandler = async (event) => {
 		const [row] = await db
 			.select(marketGuideColumns)
 			.from(marketGuides)
-			.where(eq(marketGuides.slug, params.slug))
+			.where(eq(marketGuides.slug, slug))
 			.limit(1);
 
 		if (!row) {
-			const fallback = getMarketGuide(params.slug);
+			const fallback = getMarketGuide(slug);
 			if (!fallback) return json({ error: 'Not found' }, { status: 404 });
 			return json(fallback);
 		}
@@ -43,16 +45,12 @@ export const GET: RequestHandler = async (event) => {
 			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
 		}
 
-		const cached = await cachedQuery(
-			url.toString(),
-			async () => row ?? null,
-			{ ...cacheLong() }
-		);
+		const cached = await cachedQuery(url.toString(), async () => row ?? null, { ...cacheLong() });
 
 		if (!cached) return json({ error: 'Not found' }, { status: 404 });
 		return json(cached);
 	} catch {
-		const row = getMarketGuide(params.slug);
+		const row = getMarketGuide(slug);
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 		return json(row);
 	}
@@ -91,7 +89,8 @@ export const PUT: RequestHandler = async (event) => {
 	if (data.certifyingBodies !== undefined) set.certifyingBodies = data.certifyingBodies ?? [];
 	if (data.importRequirements !== undefined) set.importRequirements = data.importRequirements ?? [];
 	if (data.standardBasis !== undefined) set.standardBasis = data.standardBasis ?? '';
-	if (data.certificateValidity !== undefined) set.certificateValidity = data.certificateValidity ?? '';
+	if (data.certificateValidity !== undefined)
+		set.certificateValidity = data.certificateValidity ?? '';
 	if (data.estimatedCostUsd !== undefined) set.estimatedCostUsd = data.estimatedCostUsd ?? '';
 	if (data.processingTime !== undefined) set.processingTime = data.processingTime ?? '';
 	if (data.keyInsights !== undefined) set.keyInsights = data.keyInsights ?? [];

@@ -30,6 +30,7 @@
 | 2.4 mobile footer 不被 tab 遮挡 | ✅ | mobile 隐藏 footer 链接区 + 版权行避开 tab bar，toaster 偏移（commit 70c5c9f） | #8 |
 | 2.5 底部 Sticky Tab 规格（80-90% 宽/居中/圆角/透明/动画） | ✅ | mobile-tab.svelte:263-270 | — |
 | 2.6 各断点差异化空间策略 | ✅ | 详情双栏 sticky 侧栏 ×11、横滑→网格降级 | — |
+| 2.6 全站空间利用率实测（横向 fill + 纵向 gap/bottom） | ✅ | 09-19 Playwright 双宽度（1351/390）全页面量测：修复 market-guides 大写 slug 404（列表 href + API GET `.toLowerCase()`）、blog 死列 `1fr_240px_320px`→`1fr_320px`、category/promotions/KB-section 稀疏网格改 `auto-fit` 撑满行、rfqs/new 加右栏（fill 0.5→0.9）、promotions/[id] 加 RelatedLinks、account overview 加活动区；admin/supplier fill≥0.97，前台修复页 fill≥0.84 | #32 |
 | 2.6 mobile 列表 ≥2 列 | ✅ | 内容列表页全部 ≥grid-cols-2；market-guides 已改 grid-cols-2 小图卡；残余 `grid-cols-1` 仅 6 处字段/统计子网格（sm 即升列，非列表卡） | #8 |
 | 2.6 所有列表分页（共享 paginator） | ✅ | 共享 Paginator 覆盖 29 页；account/saved、account/inquiries 重写并接分页，supplier/products·orders 已分页；API 侧 clampLimit ≤100（14 文件） | #8 #11 |
 | 2.6 横滑组件视觉提示+降级 | ✅ | -mx-4 bleed + sm:grid 降级 | — |
