@@ -542,7 +542,6 @@ const PUBLIC_ROUTES = [
 	'/verify',
 	'/trade-shows',
 	'/market-guides',
-	'/tools',
 	'/login',
 	'/register'
 ];
