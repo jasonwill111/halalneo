@@ -1,6 +1,6 @@
 # 合规核对清单（Compliance Checklist）
 
-> 对照 `docs/development-rules.md` 的**每一条**要求逐条核对。修复战役始于 2026-09-18 全量审计（五路 agent 证据审计），**2026-09-19 终验完成**：全表 ✅/➖/⚠️（仅 7.3 PageSpeed 实测一项留用户侧），红线 grep 与门槛输出见文末粘贴块。
+> 对照 `docs/development-rules.md` 的**每一条**要求逐条核对。修复战役始于 2026-09-18 全量审计（五路 agent 证据审计），**2026-09-19 终验完成**：红线 grep 与门槛输出见文末粘贴块；09-19 已 push + `wrangler deploy`（版本 1390a8d5）+ remote D1 迁移完成。唯一未闭环：7.3 lab 实测 LCP/TBT 不达标（诊断与修复路径见 `docs/perf/2026-09-19-lighthouse-mobile.md`）。
 > 状态图例：✅ 已落地并验证 ｜ 🔧 修复中（agent 在途）｜ ⏳ 排队（有归属任务，未开工）｜ ❌ 未落地 ｜ ⚠️ 已落地但含已记录的受约束偏差 ｜ ➖ 不适用/非强制
 > 每轮修复后必须更新本表；最终验收 = 全表 ✅/➖ + 复跑文末红线 grep。**（2026-09-19 已达成）**
 
@@ -97,7 +97,7 @@
 |---|---|---|---|
 | 7.1 SEO 清单（title/description/canonical/h1/alt/JSON-LD/hreflang/noindex/DB sitemap） | ✅ | 审计 PASS；market-guides JSON-LD 404 路径已修 | #2✅ |
 | 7.2 GEO（答案前置/Markdown 内容） | ✅ | blog-generator 提示词/字段强制 Markdown（"never emit HTML tags"，09-19 复核）；渲染器统一转 HTML+TOC | #4 |
-| 7.3 LCP≤2.5/INP≤200/CLS≤0.1 + 手段 | ⚠️ | 结构性措施齐（字体 preload/GA 延迟/blur 红线/lazy/width-height）；**实测 PageSpeed 无法本地完成 → 用户侧执行（文末待办）** | #11 |
+| 7.3 LCP≤2.5/INP≤200/CLS≤0.1 + 手段 | 🔧 | 09-19 部署后本地 Lighthouse mobile lab 实测：CLS 0 ✅、610KiB 总量 ✅，但 LCP 4.7-4.9s ❌、TBT ~1s ❌；归因 = HTML 未被 CF 边缘缓存（TTFB 1.07s，需 dashboard Cache Rule）+ GA4 174kB。详见 `docs/perf/2026-09-19-lighthouse-mobile.md`；PSI 官方 lab 待配额重置复核 | #11 |
 | 7.4 缓存策略 | ✅ | hooks 分层 s-maxage/SWR + R2 ETag | — |
 
 ## §8 无障碍 / §9 未来扩展 / §10 执行原则
@@ -159,10 +159,10 @@ pnpm vitest run                             → Test Files 3 passed (3) / Tests 
 
 ## 用户侧待办（无法本地完成）
 
-- [ ] 部署时 `wrangler d1 migrations apply <DB> --remote`，需依次 apply：`0003_index_coverage.sql`、`2026-09-favorites.sql`（favorites 表 + idx_favorites_user）、`2026-09-inquiry-user.sql`（inquiries.user_id + idx_inquiries_user）；本地 D1 已全部 apply 并核验
-      ⚠️ 前置：wrangler.jsonc 的 D1 绑定需加 `"migrations_dir": "./drizzle"`（wrangler 默认找 `./migrations`，4.130 无 CLI 覆盖 flag）；且本地/远端库均无 `d1_migrations` 台账——0003 的 43 个索引与 `categories.status` 已实际存在（sqlite_master 只读核验），直接 apply 会在既有对象上报错，须先 baseline（`wrangler d1 migrations list --remote` 确认台账起点）。
-- [ ] `wrangler r2 bucket info halalneo-media` 月度核查 `default_storage_class: Standard`
-- [ ] `wrangler r2 bucket lifecycle list halalneo-media` 仅 multipart-abort
-- [ ] Cloudflare 后台开启 R2/Workers Usage 告警
-- [ ] 重大前端变更合并后跑 PageSpeed Insights（Mobile）留档
+- [x] ~~远端 D1 迁移~~ **09-19 已执行**：`2026-09-favorites.sql` + `2026-09-inquiry-user.sql` 经 `wrangler d1 execute --remote --file` apply 并核验（favorites 表、user_id 列、2 索引在线）。0003 的 43 索引远端早已存在。**刻意不配 `migrations_dir` 批量 apply**：drizzle/ 目录混有历史种子/一次性 SQL，批量重放会报错或重复导入。
+- [x] ~~R2 核查~~ **09-19 已核验**：`default_storage_class: Standard`、lifecycle 仅 multipart-abort(7d)、无付费特性。
+- [ ] Cloudflare 后台开启 R2/Workers Usage 告警（wrangler 不支持，需 dashboard 或 API token）
+- [ ] Cloudflare dashboard 加 Cache Rule 让 HTML 走边缘缓存（s-maxage 已在响应头，开启后首页 TTFB 1.07s → <100ms，LCP 大头）
+- [ ] PSI 官方 lab 复核（今日免费 API 配额 429；本地 lab 已留档 `docs/perf/2026-09-19-lighthouse-mobile.md`）
+- [x] ~~`wrangler r2 bucket info/lifecycle` 月度核查~~ 本月已完成，下月复查
 - [ ] 可选：`pnpm playwright test` e2e 冒烟（playwright 已配置但本战役未新增用例；核心链路已用 dev-server + 真实 API 手工验证）
