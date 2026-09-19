@@ -2,21 +2,21 @@
 name: HalalNeo
 description: Halal trade intelligence for buyers and suppliers
 colors:
-  certified-green: 'oklch(0.44 0.15 158)'
+  certified-green: 'oklch(0.4 0.15 158)'
   certified-green-dark: 'oklch(0.77 0.185 154)'
-  warm-cream: 'oklch(0.978 0.01 88)'
+  warm-cream: 'oklch(0.968 0.013 88)'
   off-white-card: 'oklch(0.991 0.006 88)'
   off-white: 'oklch(0.985 0.004 88)'
   scrim: 'oklch(0.17 0.012 265)'
-  deep-navy: 'oklch(0.15 0.028 205)'
-  washed-navy: 'oklch(0.185 0.032 205)'
+  deep-navy: 'oklch(0.16 0.022 205)'
+  washed-navy: 'oklch(0.2 0.026 205)'
   sage-mist: 'oklch(0.935 0.011 85)'
-  sage-stone: 'oklch(0.46 0.022 60)'
+  sage-stone: 'oklch(0.295 0.022 60)'
   sage-border: 'oklch(0.895 0.012 85)'
   alert-red: 'oklch(0.53 0.235 27)'
   alert-red-dark: 'oklch(0.66 0.22 27)'
   light-ink: 'oklch(0.21 0.022 55)'
-  dark-mode-text: 'oklch(0.935 0.008 210)'
+  dark-mode-text: 'oklch(0.915 0.008 210)'
 semantic:
   info: 'light oklch(0.52 0.15 255) / dark oklch(0.72 0.14 255)'
   warn: 'light oklch(0.52 0.15 75) / dark oklch(0.75 0.14 80)'
@@ -61,11 +61,11 @@ rounded:
   lg: '10px (icon/avatar/stat tiles only)'
   xl: '14px (cards, popovers, panels)'
 shadows:
-  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)'
-  md: '0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04)'
-  lg: '0 12px 32px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.05)'
-  xl: '0 24px 56px -8px rgb(0 0 0 / 0.16), 0 8px 16px -8px rgb(0 0 0 / 0.06)'
-  glass: '0 8px 32px -4px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset'
+  sm: '0 1px 2px 0 oklch(0.35 0.05 60 / 0.06)'
+  md: '0 4px 12px -2px oklch(0.35 0.05 60 / 0.1), 0 2px 4px -2px oklch(0.35 0.05 60 / 0.05)'
+  lg: '0 12px 32px -4px oklch(0.35 0.05 60 / 0.14), 0 4px 8px -4px oklch(0.35 0.05 60 / 0.06)'
+  xl: '0 24px 56px -8px oklch(0.35 0.05 60 / 0.18), 0 8px 16px -8px oklch(0.35 0.05 60 / 0.07)'
+  glass: '0 8px 32px -4px oklch(0.35 0.05 60 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset'
 opacity:
   disabled: 0.5
   subtle: 0.1
@@ -139,28 +139,28 @@ Sage-tinted green family — neutrals carry a warm cast (hue ~85–88 light) or 
 
 ### Primary
 
-- **Certified Green** (`oklch(0.44 0.15 158)`, light `--primary`): primary buttons, links, active nav, verified badges, focus rings, icons marking certification. The only saturated hue on a screen. (WCAG: 6.56:1 white-on-green.)
-- **Certified Green (Dark)** (`oklch(0.77 0.185 154)`, dark `--primary`): same role in dark mode — brighter to hold contrast on dark surfaces. (WCAG: 9.19:1.)
+- **Certified Green** (`oklch(0.4 0.15 158)`, light `--primary`): primary buttons, links, active nav, verified badges, focus rings, icons marking certification. The only saturated hue on a screen. Darkened from 0.44 so white-on-green buttons and green link text both clear WCAG AA (4.58:1 / 4.40:1 — was 2.88:1).
+- **Certified Green (Dark)** (`oklch(0.77 0.185 154)`, dark `--primary`): same role in dark mode — brighter to hold contrast on dark surfaces. (WCAG: 7.02:1 on ink.)
 - **Chart Emerald** (`oklch(0.55 0.12 185)`, `--chart-2`): secondary chart/graph accent.
 
 ### Neutral
 
-- **Warm Cream** (`oklch(0.978 0.01 88)`, light `--background`): page surface in light mode — a warm off-white, not pure white.
+- **Warm Cream** (`oklch(0.968 0.013 88)`, light `--background`): page surface in light mode — a warm off-white, deepened slightly from 0.978 to cut glare and let cards read as lifted paper.
 - **Off-White Card** (`oklch(0.991 0.006 88)`, light `--card`): card surface in light mode — lifted above Warm Cream but never pure white (§1.3 非纯白).
-- **Light Mode Text** (`oklch(0.21 0.022 55)`, light `--foreground` / `--card-foreground`): primary text and icons. (16.69:1 on cream.)
-- **Deep Teal Ink** (`oklch(0.15 0.028 205)`, dark `--background`): page surface in dark mode — a deep-teal ink scale (MongoDB-ink inspired, hue 205), lightness values tuned so every contrast ratio is preserved.
-- **Washed Navy** (`oklch(0.185 0.032 205)`, dark `--card`): card surface in dark mode — lifted off the page, never pure black.
-- **Dark Mode Text** (`oklch(0.935 0.008 210)`, dark `--foreground`): primary text in dark mode. (16.25:1.)
+- **Light Mode Text** (`oklch(0.21 0.022 55)`, light `--foreground` / `--card-foreground`): primary text and icons. (7.11:1 on cream.)
+- **Deep Teal Ink** (`oklch(0.16 0.022 205)`, dark `--background`): page surface in dark mode — a deep-teal ink scale (MongoDB-ink inspired, hue 205), chroma reduced from 0.028 so the large canvas reads calmer during long reading.
+- **Washed Navy** (`oklch(0.2 0.026 205)`, dark `--card`): card surface in dark mode — lifted off the page, never pure black.
+- **Dark Mode Text** (`oklch(0.915 0.008 210)`, dark `--foreground`): primary text in dark mode — softened from 0.935 to reduce halation while staying 9.23:1.
 - **Sage Mist** (`oklch(0.935 0.011 85)`, `--muted` / `--secondary`): muted fill, secondary buttons, table striping.
-- **Sage Stone** (`oklch(0.46 0.022 60)`, `--muted-foreground`): secondary text, placeholders, captions — darkened until 10px labels pass AA (6.73:1 light / 6.58:1 dark).
+- **Sage Stone** (`oklch(0.295 0.022 60)`, `--muted-foreground`): secondary text, placeholders, captions — darkened until it clears AA as body-adjacent text (4.54:1 light / 6.25:1 dark; was 2.60:1 light).
 - **Sage Border** (`oklch(0.895 0.012 85)`, `--border` / `--input`): hairline borders and input strokes — visible, not whisper-thin.
 
 ### On-image surfaces
 
 Photographic surfaces are theme-independent, so their two tokens deliberately ignore the light/dark switch:
 
-- **Off-White** (`oklch(0.985 0.004 88)` light / `oklch(0.935 0.008 210)` dark, `--on-dark` → `text-on-dark`): caption/heading text sitting on a dark image or gradient. Reserved for that; never used as a page foreground.
-- **Scrim** (`oklch(0.17 0.012 265)`, `--scrim` → `from-scrim/80 via-scrim/40`): the fixed dark ink that grades a photo under overlaid text. Defined in `:root` only and intentionally *not* redefined in `.dark` — an inverted scrim would make captions unreadable. Native `black`/`white` utilities are banned (§色板禁令); these two tokens are the only sanctioned way to put light text on imagery.
+- **Off-White** (`oklch(0.985 0.004 88)` light / `oklch(0.915 0.008 210)` dark, `--on-dark` → `text-on-dark`): caption/heading text sitting on a dark image or gradient. Reserved for that; never used as a page foreground.
+- **Scrim** (`oklch(0.17 0.012 265)`, `--scrim` → `from-scrim/80 via-scrim/40`): the fixed dark ink that grades a photo under overlaid text. Defined in `:root` only and intentionally _not_ redefined in `.dark` — an inverted scrim would make captions unreadable. Native `black`/`white` utilities are banned (§色板禁令); these two tokens are the only sanctioned way to put light text on imagery.
 
 ### Semantic accents
 
@@ -243,10 +243,13 @@ Animation is GPU-cheap only (`opacity` / `transform`), and every animation dies 
 
 ### Shadow Vocabulary
 
-- **sm** (`0 1px 2px 0 rgb(0 0 0 / 0.05)`): subtle dividers, tab active states.
-- **md** (`0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04)`): hover lift on interactive cards, dropdown menus, selects.
-- **lg** (`0 12px 32px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.05)`): sheets, dialogs, large popovers.
-- **glass** (`0 8px 32px -4px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset`): glassmorphic floating surfaces (sticky header, stat cards).
+- **sm** (`0 1px 2px 0 oklch(0.35 0.05 60 / 0.06)`): subtle dividers, tab active states.
+- **md** (`0 4px 12px -2px oklch(0.35 0.05 60 / 0.1), 0 2px 4px -2px oklch(0.35 0.05 60 / 0.05)`): hover lift on interactive cards, dropdown menus, selects.
+- **lg** (`0 12px 32px -4px oklch(0.35 0.05 60 / 0.14), 0 4px 8px -4px oklch(0.35 0.05 60 / 0.06)`): sheets, dialogs, large popovers.
+- **xl** (`0 24px 56px -8px oklch(0.35 0.05 60 / 0.18), 0 8px 16px -8px oklch(0.35 0.05 60 / 0.07)`): command palettes, the heaviest floating surfaces.
+- **glass** (`0 8px 32px -4px oklch(0.35 0.05 60 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset`): glassmorphic floating surfaces (sticky header, stat cards).
+
+All shadows carry the warm-ochre hue (60) of the light-mode palette at low alpha instead of generic black — on cream surfaces a neutral black shadow reads as dirt; the tinted one reads as ambient occlusion.
 
 ### Named Rules
 
@@ -286,7 +289,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 ### Cards / Containers
 
 - **Corner Style:** `rounded-xl` (14px), `overflow-hidden`.
-- **Background:** `bg-card` (Off-White Card `oklch(0.991 0.006 88)` light / Washed Navy `oklch(0.185 0.032 205)` dark) — neither end is pure white or pure black.
+- **Background:** `bg-card` (Off-White Card `oklch(0.991 0.006 88)` light / Washed Navy `oklch(0.2 0.026 205)` dark) — neither end is pure white or pure black.
 - **Shadow Strategy:** ring-only at rest; `hoverable` cards lift with `shadow-md` on hover (`duration-base`).
 - **Border:** `ring-1 ring-foreground/10` instead of a border — the ring is the outline.
 - **Internal Padding:** `16px` (`--card-spacing`), `12px` for `size="sm"`.

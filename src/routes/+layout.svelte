@@ -42,8 +42,8 @@
 	// §1.3 theme-color follows the *effective* mode: the static media-query
 	// metas in app.html cover pre-JS; once hydrated, a manual light/dark pick
 	// rewrites them (system mode restores the originals).
-	const THEME_COLOR_LIGHT = 'oklch(0.978 0.01 88)'; // == light --background
-	const THEME_COLOR_DARK = 'oklch(0.15 0.028 205)'; // == dark --background
+	const THEME_COLOR_LIGHT = 'oklch(0.968 0.013 88)'; // == light --background
+	const THEME_COLOR_DARK = 'oklch(0.16 0.022 205)'; // == dark --background
 	let themeMetaDefaults: {
 		el: HTMLMetaElement;
 		media: string | null;

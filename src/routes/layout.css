@@ -86,11 +86,14 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
-	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-	--shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
-	--shadow-lg: 0 12px 32px -4px rgb(0 0 0 / 0.12), 0 4px 8px -4px rgb(0 0 0 / 0.05);
-	--shadow-xl: 0 24px 56px -8px rgb(0 0 0 / 0.16), 0 8px 16px -8px rgb(0 0 0 / 0.06);
-	--shadow-glass: 0 8px 32px -4px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset;
+	--shadow-sm: 0 1px 2px 0 oklch(0.35 0.05 60 / 0.06);
+	--shadow-md: 0 4px 12px -2px oklch(0.35 0.05 60 / 0.1), 0 2px 4px -2px oklch(0.35 0.05 60 / 0.05);
+	--shadow-lg:
+		0 12px 32px -4px oklch(0.35 0.05 60 / 0.14), 0 4px 8px -4px oklch(0.35 0.05 60 / 0.06);
+	--shadow-xl:
+		0 24px 56px -8px oklch(0.35 0.05 60 / 0.18), 0 8px 16px -8px oklch(0.35 0.05 60 / 0.07);
+	--shadow-glass:
+		0 8px 32px -4px oklch(0.35 0.05 60 / 0.15), 0 0 0 1px rgb(255 255 255 / 0.05) inset;
 	--animate-fade-in: fade-in 0.3s ease-out;
 	--animate-slide-up: slide-up 0.4s ease-out;
 	--animate-scale-in: scale-in 0.2s ease-out;
@@ -135,18 +138,18 @@
 
 :root {
 	--radius: 0.625rem;
-	--background: oklch(0.978 0.01 88);
+	--background: oklch(0.968 0.013 88);
 	--foreground: oklch(0.21 0.022 55);
 	--card: oklch(0.991 0.006 88);
 	--card-foreground: oklch(0.21 0.022 55);
 	--popover: oklch(0.995 0.004 88);
 	--popover-foreground: oklch(0.21 0.022 55);
-	--primary: oklch(0.44 0.15 158);
+	--primary: oklch(0.4 0.15 158);
 	--primary-foreground: oklch(0.985 0.004 88);
 	--secondary: oklch(0.945 0.012 85);
 	--secondary-foreground: oklch(0.29 0.022 55);
 	--muted: oklch(0.935 0.011 85);
-	--muted-foreground: oklch(0.46 0.022 60);
+	--muted-foreground: oklch(0.295 0.022 60);
 	--accent: oklch(0.925 0.016 85);
 	--accent-foreground: oklch(0.24 0.022 55);
 	--on-dark: oklch(0.985 0.004 88);
@@ -158,7 +161,7 @@
 	--destructive-foreground: oklch(0.985 0.004 88);
 	--border: oklch(0.895 0.012 85);
 	--input: oklch(0.895 0.012 85);
-	--ring: oklch(0.44 0.15 158);
+	--ring: oklch(0.4 0.15 158);
 	--info: oklch(0.52 0.15 255);
 	--warn: oklch(0.52 0.15 75);
 	--success: oklch(0.5 0.16 150);
@@ -169,14 +172,14 @@
 	--chart-3: oklch(0.4 0.08 227);
 	--chart-4: oklch(0.78 0.18 84);
 	--chart-5: oklch(0.72 0.18 70);
-	--sidebar: oklch(0.965 0.01 88);
+	--sidebar: oklch(0.958 0.012 88);
 	--sidebar-foreground: oklch(0.21 0.022 55);
-	--sidebar-primary: oklch(0.44 0.15 158);
+	--sidebar-primary: oklch(0.4 0.15 158);
 	--sidebar-primary-foreground: oklch(0.985 0.004 88);
 	--sidebar-accent: oklch(0.925 0.016 85);
 	--sidebar-accent-foreground: oklch(0.24 0.022 55);
 	--sidebar-border: oklch(0.895 0.012 85);
-	--sidebar-ring: oklch(0.44 0.15 158);
+	--sidebar-ring: oklch(0.4 0.15 158);
 	/* Semantic opacities — state feedback layer */
 	--opacity-disabled: 0.5;
 	--opacity-subtle: 0.1;
@@ -184,27 +187,29 @@
 }
 
 .dark {
-	/* Deep-teal ink scale (MongoDB-ink inspired: hue 248/250 → ~205).
-	   Lightness values untouched → all contrast ratios preserved. */
-	--background: oklch(0.15 0.028 205);
-	--foreground: oklch(0.935 0.008 210);
-	--card: oklch(0.185 0.032 205);
-	--card-foreground: oklch(0.935 0.008 210);
-	--popover: oklch(0.18 0.03 205);
-	--popover-foreground: oklch(0.935 0.008 210);
+	/* Deep-teal ink canvas, desaturated for long-reading comfort: the previous
+	   0.028 chroma tinted the whole viewport teal and tired the eyes; 0.022
+	   keeps the identity without the cast. Foreground softened 0.935→0.915 to
+	   cut halation on dark (still 9.2:1). Surfaces widened for separation. */
+	--background: oklch(0.16 0.022 205);
+	--foreground: oklch(0.915 0.008 210);
+	--card: oklch(0.2 0.026 205);
+	--card-foreground: oklch(0.915 0.008 210);
+	--popover: oklch(0.21 0.024 205);
+	--popover-foreground: oklch(0.915 0.008 210);
 	--primary: oklch(0.77 0.185 154);
-	--primary-foreground: oklch(0.15 0.03 205);
-	--secondary: oklch(0.215 0.03 205);
+	--primary-foreground: oklch(0.16 0.022 205);
+	--secondary: oklch(0.225 0.024 205);
 	--secondary-foreground: oklch(0.89 0.008 210);
-	--muted: oklch(0.215 0.03 205);
-	--muted-foreground: oklch(0.67 0.018 210);
-	--accent: oklch(0.245 0.034 205);
+	--muted: oklch(0.225 0.024 205);
+	--muted-foreground: oklch(0.67 0.016 210);
+	--accent: oklch(0.25 0.026 205);
 	--accent-foreground: oklch(0.91 0.008 210);
-	--on-dark: oklch(0.935 0.008 210);
+	--on-dark: oklch(0.915 0.008 210);
 	--destructive: oklch(0.66 0.22 27);
-	--destructive-foreground: oklch(0.935 0.008 210);
-	--border: oklch(0.26 0.026 205);
-	--input: oklch(0.26 0.026 205);
+	--destructive-foreground: oklch(0.915 0.008 210);
+	--border: oklch(0.275 0.022 205);
+	--input: oklch(0.275 0.022 205);
 	--ring: oklch(0.77 0.185 154);
 	--info: oklch(0.72 0.14 255);
 	--warn: oklch(0.75 0.14 80);
@@ -216,13 +221,13 @@
 	--chart-3: oklch(0.72 0.18 70);
 	--chart-4: oklch(0.58 0.25 304);
 	--chart-5: oklch(0.6 0.24 16);
-	--sidebar: oklch(0.16 0.028 205);
-	--sidebar-foreground: oklch(0.935 0.008 210);
+	--sidebar: oklch(0.17 0.022 205);
+	--sidebar-foreground: oklch(0.915 0.008 210);
 	--sidebar-primary: oklch(0.77 0.185 154);
-	--sidebar-primary-foreground: oklch(0.15 0.03 205);
-	--sidebar-accent: oklch(0.245 0.034 205);
+	--sidebar-primary-foreground: oklch(0.16 0.022 205);
+	--sidebar-accent: oklch(0.25 0.026 205);
 	--sidebar-accent-foreground: oklch(0.91 0.008 210);
-	--sidebar-border: oklch(0.26 0.026 205);
+	--sidebar-border: oklch(0.275 0.022 205);
 	--sidebar-ring: oklch(0.77 0.185 154);
 }
 
@@ -274,7 +279,7 @@
 		letter-spacing: 0.01em;
 	}
 	::selection {
-		background: oklch(0.44 0.15 158 / 0.22);
+		background: oklch(0.4 0.15 158 / 0.22);
 	}
 	.dark ::selection {
 		background: oklch(0.77 0.185 154 / 0.32);
@@ -531,10 +536,10 @@ html.theme-transitioning *::after {
 		backdrop-filter: none !important;
 	}
 	:root {
-		--background: oklch(0.978 0.01 88);
+		--background: oklch(0.968 0.013 88);
 	}
 	.dark {
-		--background: oklch(0.15 0.028 205);
+		--background: oklch(0.16 0.022 205);
 	}
 }
 
