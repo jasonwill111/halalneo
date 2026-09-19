@@ -7,7 +7,7 @@ import { inquiries } from '#lib/server/db/schema.js';
 import { inquiryColumns } from '#lib/server/db/projections.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { invalidateCache } from '#lib/server/cache.js';
-import { requireAdmin } from '#lib/server/auth-guard.js';
+import { requireAdminOrSupplier } from '#lib/server/auth-guard.js';
 import { getSession } from '#lib/server/auth.js';
 import { INQUIRY_STATUSES, inquiryCreateSchema } from '#lib/schemas/inquiries.js';
 
@@ -28,21 +28,21 @@ function checkRateLimit(ip: string): boolean {
 }
 
 /**
- * Admin triage list. Every inquiry belongs to a buyer/supplier pair, so this
- * response is session-scoped: it is never cached (hooks also force `no-store`
- * for /api/inquiries) and requires an allowlisted admin.
+ * Shared triage list: admins see everything; a signed-in supplier only sees
+ * inquiries addressed to a supplierSlug they are a member of. Session-scoped:
+ * never cached (hooks also force `no-store` for /api/inquiries).
  */
 export const GET: RequestHandler = async (event) => {
-	const denied = await requireAdmin(event);
+	const { url } = event;
+	const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
+	const denied = await requireAdminOrSupplier(event, supplierSlug);
 	if (denied) return denied;
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-	const { url } = event;
 	const { limit, offset, search } = parseQuery(url);
 	const rawStatus = url.searchParams.get('status');
-	const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
 
 	const conditions = [];
 	if (search) conditions.push(like(inquiries.subject, `%${search}%`));
@@ -81,7 +81,8 @@ export const GET: RequestHandler = async (event) => {
 
 export const POST: RequestHandler = async (event) => {
 	const { request } = event;
-	const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+	const ip =
+		request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
 	if (!checkRateLimit(ip)) {
 		return json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
 	}

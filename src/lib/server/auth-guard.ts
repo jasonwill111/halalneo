@@ -1,6 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
+import { and, eq } from 'drizzle-orm';
 import { getBindings } from '#lib/server/bindings.js';
+import { getDb } from '#lib/server/db/index.js';
+import { supplierMembers } from '#lib/server/db/schema.js';
 import { getSession } from '#lib/server/auth.js';
 
 /**
@@ -28,6 +31,43 @@ export async function requireAdmin(event: RequestEvent): Promise<Response | null
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 	if (!isAdminEmail(session.user?.email)) {
+		return json({ error: 'Forbidden' }, { status: 403 });
+	}
+	return null;
+}
+
+export type DbClient = NonNullable<ReturnType<typeof getDb>>;
+
+/** True when userId owns (membership row) the given supplier profile. */
+export async function isSupplierMember(
+	db: DbClient,
+	userId: string,
+	supplierSlug: string
+): Promise<boolean> {
+	const [row] = await db
+		.select({ userId: supplierMembers.userId })
+		.from(supplierMembers)
+		.where(and(eq(supplierMembers.userId, userId), eq(supplierMembers.supplierSlug, supplierSlug)))
+		.limit(1);
+	return Boolean(row);
+}
+
+/**
+ * Guard for admin+supplier shared reads: admins pass without a supplierSlug,
+ * any other caller must be a member of the requested supplierSlug. Returns a
+ * 401/403/503 Response when denied, otherwise null.
+ */
+export async function requireAdminOrSupplier(
+	event: RequestEvent,
+	supplierSlug: string | undefined
+): Promise<Response | null> {
+	const session = await getSession(event);
+	if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
+	if (isAdminEmail(session.user?.email)) return null;
+	if (!supplierSlug) return json({ error: 'Forbidden' }, { status: 403 });
+	const db = getDb(getBindings().DB);
+	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
+	if (!(await isSupplierMember(db, session.user.id, supplierSlug))) {
 		return json({ error: 'Forbidden' }, { status: 403 });
 	}
 	return null;
