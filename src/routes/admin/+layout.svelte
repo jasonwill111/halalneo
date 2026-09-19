@@ -19,7 +19,7 @@
 <div class="flex h-dvh overflow-hidden bg-background text-foreground">
 	<!-- Desktop sidebar -->
 	<aside
-		class="hidden lg:flex h-dvh w-60 shrink-0 flex-col border-r border-border/50 bg-card/60 backdrop-blur-xl"
+		class="hidden h-dvh w-60 shrink-0 flex-col border-r border-border/50 bg-card/60 backdrop-blur-xl lg:flex"
 		aria-label="Admin navigation"
 	>
 		<AdminSidebar variant="desktop" user={data.adminUser} />
@@ -30,9 +30,11 @@
 		<header class="flex h-14 items-center gap-3 border-b border-border/50 px-4 lg:hidden">
 			<Sheet bind:open={sheetOpen}>
 				<SheetTrigger>
-					<Button variant="ghost" size="icon" aria-label="Open menu" class="size-9">
-						<Menu class="size-5" />
-					</Button>
+					{#snippet child({ props })}
+						<Button {...props} variant="ghost" size="icon" aria-label="Open menu" class="size-9">
+							<Menu class="size-5" />
+						</Button>
+					{/snippet}
 				</SheetTrigger>
 				<SheetContent side="left" class="w-60 p-0">
 					<AdminSidebar variant="mobile" user={data.adminUser} onNavigate={closeSheet} />

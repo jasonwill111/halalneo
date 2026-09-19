@@ -23,14 +23,10 @@
 <div class="flex h-dvh overflow-hidden bg-background text-foreground">
 	<!-- Desktop sidebar (fixed height, own scroll, §4.2) -->
 	<aside
-		class="hidden lg:flex h-dvh w-60 shrink-0 flex-col border-r border-border/50 bg-card/60 backdrop-blur-xl"
+		class="hidden h-dvh w-60 shrink-0 flex-col border-r border-border/50 bg-card/60 backdrop-blur-xl lg:flex"
 		aria-label="Supplier navigation"
 	>
-		<SupplierSidebar
-			variant="desktop"
-			user={data.supplierUser}
-			profile={data.supplierProfile}
-		/>
+		<SupplierSidebar variant="desktop" user={data.supplierUser} profile={data.supplierProfile} />
 	</aside>
 
 	<!-- Mobile header with hamburger -->
@@ -38,9 +34,11 @@
 		<header class="flex h-14 shrink-0 items-center gap-3 border-b border-border/50 px-4 lg:hidden">
 			<Sheet bind:open={sheetOpen}>
 				<SheetTrigger>
-					<Button variant="ghost" size="icon" aria-label="Open menu" class="size-9">
-						<Menu class="size-5" />
-					</Button>
+					{#snippet child({ props })}
+						<Button {...props} variant="ghost" size="icon" aria-label="Open menu" class="size-9">
+							<Menu class="size-5" />
+						</Button>
+					{/snippet}
 				</SheetTrigger>
 				<SheetContent side="left" class="w-60 p-0">
 					<SupplierSidebar
@@ -58,7 +56,9 @@
 			{#if !data.supplierUser}
 				<!-- Session gate: the portal shell is meaningless without a signed-in
 				     user, and /supplier/* is not guarded in hooks.server.ts. -->
-				<div class="mx-auto flex min-h-[60dvh] w-full max-w-md flex-col items-center justify-center gap-3 px-4 py-10 text-center">
+				<div
+					class="mx-auto flex min-h-[60dvh] w-full max-w-md flex-col items-center justify-center gap-3 px-4 py-10 text-center"
+				>
 					<div
 						class="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary"
 					>
@@ -66,8 +66,8 @@
 					</div>
 					<h1 class="text-lg font-semibold tracking-tight">Supplier sign-in required</h1>
 					<p class="text-sm text-muted-foreground">
-						Sign in with the account your supplier profile is linked to to manage your
-						listings and inquiries.
+						Sign in with the account your supplier profile is linked to to manage your listings and
+						inquiries.
 					</p>
 					<div class="mt-1 flex flex-wrap items-center justify-center gap-2">
 						<Button href={localizeHref('/supplier/login')} size="sm">Sign in</Button>
