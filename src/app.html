@@ -54,10 +54,20 @@
 				if (conn && conn.saveData) return;
 				window.gtag('js', new Date());
 				window.gtag('config', 'G-7XP063VED4', { send_page_view: false });
-				var s = document.createElement('script');
-				s.async = true;
-				s.src = 'https://www.googletagmanager.com/gtag/js?id=G-7XP063VED4';
-				document.head.appendChild(s);
+				// Keep the ~170kB library off the critical path: dataLayer (plus the
+				// stub above) buffers every command — including manual page_view
+				// pushes — until the real gtag arrives, so delaying loses nothing.
+				var load = function () {
+					var s = document.createElement('script');
+					s.async = true;
+					s.src = 'https://www.googletagmanager.com/gtag/js?id=G-7XP063VED4';
+					document.head.appendChild(s);
+				};
+				if ('requestIdleCallback' in window) {
+					requestIdleCallback(load, { timeout: 4000 });
+				} else {
+					setTimeout(load, 2000);
+				}
 			})();
 		</script>
 		%sveltekit.head%

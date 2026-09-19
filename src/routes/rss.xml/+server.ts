@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { getDbFromPlatform } from '#lib/server/db/api-helpers.js';
 import { pages } from '#lib/server/db/schema.js';
 import { and, desc, eq } from 'drizzle-orm';
+import { cachedQuery } from '#lib/server/cache.js';
 
 const BASE_URL = 'https://halalneo.com';
 
@@ -40,21 +41,26 @@ export const GET: RequestHandler = async ({ platform }) => {
 	const db = getDbFromPlatform(platform);
 	if (db) {
 		try {
-			const rows = await db
-				.select({
-					slug: pages.slug,
-					title: pages.title,
-					excerpt: pages.excerpt,
-					body: pages.body,
-					author: pages.author,
-					publishedAt: pages.publishedAt,
-					updatedAt: pages.updatedAt
-				})
-				.from(pages)
-				.where(and(eq(pages.type, 'blog' as const), eq(pages.status, 'published' as const)))
-				.orderBy(desc(pages.publishedAt))
-				.limit(30);
-			items = rows;
+			const rows = await cachedQuery(
+				'rss:blog',
+				() =>
+					db
+						.select({
+							slug: pages.slug,
+							title: pages.title,
+							excerpt: pages.excerpt,
+							body: pages.body,
+							author: pages.author,
+							publishedAt: pages.publishedAt,
+							updatedAt: pages.updatedAt
+						})
+						.from(pages)
+						.where(and(eq(pages.type, 'blog' as const), eq(pages.status, 'published' as const)))
+						.orderBy(desc(pages.publishedAt))
+						.limit(30),
+				{ ttl: 3600, staleWhileRevalidate: 3600 }
+			);
+			items = rows ?? [];
 		} catch {
 			items = [];
 		}

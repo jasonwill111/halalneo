@@ -5,6 +5,9 @@ import { getDb } from '#lib/server/db/index.js';
 import { requireAdmin } from '#lib/server/auth-guard.js';
 import { media } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
+import { invalidateCache } from '#lib/server/cache.js';
+
+declare const caches: CacheStorage;
 
 /**
  * Media read — cost red line (§5.12.3).
@@ -16,6 +19,9 @@ import { eq } from 'drizzle-orm';
  * attributes + CSS on the client.
  *
  * Order of operations is what saves Class B bytes:
+ *   0. full-object requests consult the Worker Cache API first — a hit costs
+ *      zero R2 calls (DELETE invalidates the entry; objects are never
+ *      replaced under one key, so a hit can't serve stale bytes);
  *   1. `head()` (tiny) — never `get()` first;
  *   2. answer If-None-Match with 304 from the head ETag, before fetching body;
  *   3. only then `get()`, with a `range` when the client asked for one (206).
@@ -128,7 +134,7 @@ function baseHeaders(etag: string, contentType: string): Headers {
 }
 
 // ==================== GET: Serve media by key ====================
-export const GET: RequestHandler = async ({ params, request }) => {
+export const GET: RequestHandler = async ({ params, request, platform }) => {
 	const key = params.key;
 	if (!key || key.includes('..')) {
 		return json({ error: 'Invalid key' }, { status: 400 });
@@ -139,6 +145,26 @@ export const GET: RequestHandler = async ({ params, request }) => {
 
 	// Reconstruct full key with media/ prefix if not present
 	const fullKey = key.startsWith('media/') ? key : `media/${key}`;
+
+	// 0. Response-level cache for plain full-object GETs. Conditional and
+	// range requests skip it — they need header-level negotiation below.
+	const isPlainGet =
+		!request.headers.get('range') && !request.headers.get('if-none-match');
+	const cacheKey = `https://cache.halalneo.internal/api/media/${key}`;
+	let cache: Cache | null = null;
+	try {
+		cache = await caches.open('halalneo:d1-cache');
+	} catch {
+		// Cache API unavailable (non-Workers runtime) — read R2 directly
+	}
+	if (isPlainGet && cache) {
+		try {
+			const hit = await cache.match(new Request(cacheKey));
+			if (hit) return hit;
+		} catch {
+			// synthetic keys can be rejected in workerd — fall through to R2
+		}
+	}
 
 	try {
 		// 1. head(): cheapest Class B op, and the only one a cache-hit client pays.
@@ -181,7 +207,15 @@ export const GET: RequestHandler = async ({ params, request }) => {
 		}
 
 		headers.set('Content-Length', String(head.size));
-		return new Response(object.body, { headers });
+		const full = new Response(object.body, { headers });
+		if (isPlainGet && cache) {
+			try {
+				platform?.ctx.waitUntil(cache.put(new Request(cacheKey), full.clone()));
+			} catch {
+				// Cache API unavailable in some dev runtimes — serve live anyway
+			}
+		}
+		return full;
 	} catch (err) {
 		const message = err instanceof Error ? err.message : 'Failed to serve media';
 		return json({ error: message }, { status: 500 });
@@ -234,6 +268,9 @@ export const DELETE: RequestHandler = async (event) => {
 
 		// Delete from D1
 		await db.delete(media).where(eq(media.id, record.id));
+
+		// Evict the GET-layer response cache (both short and media/-prefixed keys).
+		await invalidateCache(`/api/media/${key}`, `/api/media/${fullKey}`);
 
 		return json({ success: true, deleted: record.key });
 	} catch (err) {

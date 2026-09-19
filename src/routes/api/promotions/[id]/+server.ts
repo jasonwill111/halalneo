@@ -4,16 +4,27 @@ import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { promotions } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { invalidateCache } from '#lib/server/cache.js';
+import { invalidateCache, cachedQuery, cacheMedium } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 
 export const GET: RequestHandler = async (event) => {
-	const { params } = event;
+	const { params, url } = event;
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
-		const [r] = await db.select().from(promotions).where(eq(promotions.id, params.id)).limit(1);
+		const r = await cachedQuery(
+			url.pathname,
+			async () => {
+				const [row] = await db
+					.select()
+					.from(promotions)
+					.where(eq(promotions.id, params.id))
+					.limit(1);
+				return row ?? null;
+			},
+			{ ...cacheMedium() }
+		);
 		if (!r) return json({ error: 'Not found' }, { status: 404 });
 		return json(r);
 	} catch (e: unknown) {
@@ -56,7 +67,7 @@ export const PUT: RequestHandler = async (event) => {
 		updates.updatedAt = new Date();
 		await db.update(promotions).set(updates).where(eq(promotions.id, params.id));
 
-		await invalidateCache('/api/promotions');
+		await invalidateCache('/api/promotions', `/api/promotions/${params.id}`);
 		return json({ ok: true });
 	} catch (e: unknown) {
 		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
@@ -76,7 +87,7 @@ export const DELETE: RequestHandler = async (event) => {
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
 
 		await db.delete(promotions).where(eq(promotions.id, params.id));
-		await invalidateCache('/api/promotions');
+		await invalidateCache('/api/promotions', `/api/promotions/${params.id}`);
 		return json({ ok: true });
 	} catch (e: unknown) {
 		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });

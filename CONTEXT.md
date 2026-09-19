@@ -307,6 +307,9 @@ transactions or certifiers expose anchorable APIs.
 - `Disallow: /admin/`, `/account/`, `/supplier/`, `/api/`
 - Sitemap reference
 
+### llms.txt
+- `/llms.txt` is a DB-driven route (counts for certifiers/guides/KB/glossary/suppliers/products refresh hourly via `cachedQuery`), not a static file
+
 ---
 
 ## AI Content Generation Rules (Mandatory)
@@ -459,15 +462,33 @@ transactions or certifiers expose anchorable APIs.
 
 ## Caching Strategy (Cloudflare Workers)
 
+Three layers, all inside the Worker (edge Cache Rules are a separate
+dashboard config — until they exist, `s-maxage` headers are advisory and the
+Cache API below is the only shared cache):
+
+1. **L1 in-memory LRU** (`cache.ts` Map, 500 entries) — survives within one
+   isolate; evicted by `invalidateCache` including `path?query=…` variants.
+2. **L2 Cache API `halalneo:d1-cache`** — D1 query results (`cachedQuery`,
+   path-or-`queryCacheKey` keys) and full response objects for
+   `/api/media/*` plain GETs (content-addressed keys; DELETE evicts).
+3. **HTML cache `halalneo:html-cache`** (`handleHtmlCache` in
+   `hooks.server.ts`) — SSR'd public pages stored as full responses; a hit
+   skips the entire handle chain (auth + page load + all /api subrequests).
+   Only anonymous GETs without query strings are stored (any Cookie header
+   renders live), whitelisted paths only, TTL mirrors the s-maxage tiers
+   capped at 3600s.
+
 | Content Type | Cache Header |
 |-------------|-------------|
 | Static assets (fonts, icons) | `immutable` (1 year) |
-| Reference content (KB, market guides) | `s-maxage=86400` |
+| Reference content (KB, market guides) | `s-maxage=86400` (HTML worker cache caps at 3600s) |
 | Listings (products, suppliers, blog, rfqs, promotions, stories) | `s-maxage=300` (matches worker TTL — longer edge TTL would serve data the worker already considers stale) |
 | Homepage | `s-maxage=1800` |
 | Auth pages + session-scoped GETs (inquiries, supplier-applications, follows, favorites, memberships, views, stories?status=all) | `no-store` (edge cache is anonymous-shared — public directive would leak private data) |
 | API verify/search/rfq/promotions/stories | `s-maxage=120–300` |
 | API chat | `no-store` |
+| Reference list APIs (categories, certifying-bodies, pages) | worker Cache-API TTL 3600 (`cacheLong`); admin writes evict memory fully, Cache-API query variants expire with TTL |
+| `/llms.txt` | `max-age=3600, s-maxage=86400` (handler-owned; stats cached 1h) |
 
 ---
 

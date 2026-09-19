@@ -5,7 +5,7 @@ import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { certifyingBodies } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
-import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
+import { cachedQuery, cacheLong, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { requireAdmin } from '#lib/server/auth-guard.js';
 import { certifyingBodyCreateSchema, certifyingBodyStatusSchema } from '#lib/schemas/certifying-bodies.js';
 
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},
-			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
+			{ ...cacheLong(), cacheKey: queryCacheKey(url) }
 		);
 
 		if (!data) return json({ items: [], total: 0, limit: 0, offset: 0 }, { status: 503 });

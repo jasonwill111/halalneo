@@ -152,8 +152,11 @@ export const cacheImmutable = (
  * the result depends on the query string. Detail routes ([slug]/[id])
  * are path-unique and don't need it.
  * Trade-off: POST invalidation deletes path-only keys, so filtered
- * entries can stay stale up to TTL (300s medium / 60s short) after
- * admin writes. Correctness first — stale window is bounded and short.
+ * Cache-API entries can stay stale up to TTL after admin writes
+ * (3600s on reference lists like categories/certifying-bodies/pages,
+ * 300s medium / 60s short elsewhere); the in-memory layer sweeps
+ * `key?…` variants on every invalidate. Correctness first — stale
+ * window is bounded.
  */
 export function queryCacheKey(url: URL): string {
 	const params = new URLSearchParams(url.search);
@@ -184,6 +187,15 @@ export async function invalidateCache(...urls: string[]): Promise<void> {
 			// Also evict the in-memory entry so a stale value doesn't survive
 			// the Cache API delete on the next request.
 			memoryCache.delete(key);
+			// Memory-only sweep of `key?query=…` variants: the Cache API can't
+			// list keys, so filtered entries there go stale up to their TTL.
+			// Evicting here keeps at least the hot (in-instance) path honest.
+			if (!key.includes('?')) {
+				const prefix = `${key}?`;
+				for (const memKey of memoryCache.keys()) {
+					if (memKey.startsWith(prefix)) memoryCache.delete(memKey);
+				}
+			}
 			if (cache) return cache.delete(new Request(key));
 			return Promise.resolve();
 		})

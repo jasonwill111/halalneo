@@ -5,20 +5,27 @@ import { getBindings } from '#lib/server/bindings.js';
 import { aiTools } from '#lib/server/db/schema.js';
 import { aiToolColumns } from '#lib/server/db/projections.js';
 import { eq } from 'drizzle-orm';
-import { invalidateCache } from '#lib/server/cache.js';
+import { invalidateCache, cachedQuery, cacheLong } from '#lib/server/cache.js';
 import { requireAdmin } from '#lib/server/auth-guard.js';
 import { aiToolUpdateSchema } from '#lib/schemas/ai-tools.js';
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ url, params }) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
-		const [row] = await db
-			.select(aiToolColumns)
-			.from(aiTools)
-			.where(eq(aiTools.slug, params.slug))
-			.limit(1);
+		const row = await cachedQuery(
+			url.pathname,
+			async () => {
+				const [r] = await db
+					.select(aiToolColumns)
+					.from(aiTools)
+					.where(eq(aiTools.slug, params.slug))
+					.limit(1);
+				return r ?? null;
+			},
+			{ ...cacheLong() }
+		);
 		if (!row) return json({ error: 'Tool not found' }, { status: 404 });
 		return json(row);
 	} catch (error: unknown) {

@@ -6,7 +6,7 @@ import { getBindings } from '#lib/server/bindings.js';
 import { pages } from '#lib/server/db/schema.js';
 import { pageListColumns } from '#lib/server/db/projections.js';
 import { and, eq, like, sql } from 'drizzle-orm';
-import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
+import { cachedQuery, cacheLong, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { requireAdmin } from '#lib/server/auth-guard.js';
 import {
 	PAGE_STATUSES,
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async (event) => {
 		}
 
 		const data = await cachedQuery(url.toString(), () => queryList(db, filters, limit, offset), {
-			...cacheMedium(),
+			...cacheLong(),
 			cacheKey: queryCacheKey(url)
 		});
 

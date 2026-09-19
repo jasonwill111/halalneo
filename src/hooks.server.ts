@@ -1,10 +1,13 @@
 import { sequence, type Handle } from '@sveltejs/kit/hooks';
-import { building } from '$app/env';
+import { building, dev } from '$app/env';
 import { createAuth } from '#lib/server/auth.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { getTextDirection } from '#lib/paraglide/runtime.js';
 import { paraglideMiddleware } from '#lib/paraglide/server.js';
+
+// Cloudflare Workers exposes the Cache API globally; no workers-types in tsconfig.
+declare const caches: CacheStorage;
 
 // Cache auth instance to avoid recreating on every request (~5-20ms saved per request)
 let cachedAuth: ReturnType<typeof createAuth> | null = null;
@@ -224,6 +227,12 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 		return response;
 	}
 
+	// llms.txt — the route handler publishes its own long-lived directive;
+	// don't let the fallback tiers below override it.
+	if (pathname === '/llms.txt') {
+		return resolve(event);
+	}
+
 	// Search page — short cache, user-facing filters
 	if (pathname === '/search') {
 		const response = await resolve(event);
@@ -334,6 +343,130 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
+/**
+ * Worker-level shared cache for public HTML (Cache API, `caches.open`).
+ * Without a Cloudflare Cache Rule the edge never caches Worker responses, so
+ * this is the only layer that lets a repeat pageview skip SSR entirely
+ * (auth + page load + /api subrequests). Policy mirrors handleCacheHeaders:
+ * anonymous GET requests only (a Cookie header always re-renders), no query
+ * string, whitelisted public paths, 200 + text/html responses. Entries keep
+ * the headers the full handle chain produced (security + Cache-Control), so
+ * staleness after admin writes is bounded by the same TTLs we already
+ * publish via s-maxage (cap 3600s here, down from the declared 86400).
+ */
+const HTML_CACHE_ROOTS = new Set([
+	'/',
+	'/products',
+	'/suppliers',
+	'/categories',
+	'/blog',
+	'/knowledge-base',
+	'/market-guides',
+	'/certifying-bodies',
+	'/service-providers',
+	'/glossary',
+	'/faq',
+	'/about',
+	'/contact',
+	'/pricing',
+	'/search',
+	'/trade-shows',
+	'/rfqs',
+	'/promotions',
+	'/success-stories',
+	'/verify',
+	'/tools'
+]);
+
+const HTML_CACHE_PREFIXES = [
+	'/categories/',
+	'/blog/',
+	'/knowledge-base/',
+	'/market-guides/',
+	'/certifying-bodies/',
+	'/service-providers/',
+	'/products/',
+	'/suppliers/',
+	'/rfqs/',
+	'/promotions/',
+	'/success-stories/',
+	'/tools/'
+];
+
+function isHtmlCacheable(pathname: string): boolean {
+	if (pathname.endsWith('__data.json') || pathname.includes('/_/')) return false;
+	if (HTML_CACHE_ROOTS.has(pathname)) return true;
+	return HTML_CACHE_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
+function htmlCacheTtl(pathname: string): number {
+	if (pathname === '/') return 1800;
+	const reference =
+		pathname.startsWith('/knowledge-base') ||
+		pathname.startsWith('/market-guides') ||
+		pathname.startsWith('/certifying-bodies') ||
+		pathname.startsWith('/service-providers') ||
+		pathname === '/glossary' ||
+		pathname === '/faq' ||
+		pathname === '/about' ||
+		pathname === '/contact' ||
+		pathname === '/pricing' ||
+		pathname.startsWith('/tools') ||
+		pathname.startsWith('/products/') ||
+		pathname.startsWith('/suppliers/') ||
+		pathname.startsWith('/rfqs/') ||
+		pathname.startsWith('/promotions/') ||
+		pathname.startsWith('/success-stories/');
+	if (reference) return 3600;
+	return 300;
+}
+
+const handleHtmlCache: Handle = async ({ event, resolve }) => {
+	if (building || dev) return resolve(event);
+	if (event.request.method !== 'GET') return resolve(event);
+	// Any request that carries cookies (session, theme, analytics) renders live,
+	// so the shared cache only ever stores the anonymous view.
+	if (event.request.headers.has('cookie')) return resolve(event);
+	// Query-string views (filters, ?page=, search) render live too.
+	if (event.url.search) return resolve(event);
+
+	const stripped = event.url.pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || event.url.pathname;
+	if (!isHtmlCacheable(stripped)) return resolve(event);
+
+	let cache: Cache | null = null;
+	try {
+		cache = await caches.open('halalneo:html-cache');
+	} catch {
+		// Cache API unavailable (non-Workers runtime) — render live every time
+	}
+
+	const cacheRequest = new Request(`https://cache.halalneo.internal${event.url.pathname}`);
+	if (cache) {
+		let hit: Response | undefined;
+		try {
+			hit = await cache.match(cacheRequest);
+		} catch {
+			hit = undefined;
+		}
+		if (hit) {
+			hit.headers.set('X-Html-Cache', 'HIT');
+			return hit;
+		}
+	}
+
+	const response = await resolve(event);
+	if (cache && response.status === 200 && response.headers.get('Content-Type')?.includes('text/html')) {
+		const ttl = htmlCacheTtl(stripped);
+		response.headers.set('Cache-Control', `public, max-age=600, s-maxage=${ttl}, stale-while-revalidate=60`);
+		const clone = response.clone();
+		// Re-serialize with the aligned Cache-Control so a HIT serves the same headers.
+		const stored = new Response(clone.body, { status: clone.status, headers: clone.headers });
+		event.platform?.ctx.waitUntil(cache.put(cacheRequest, stored));
+		response.headers.set('X-Html-Cache', 'MISS');
+	}
+	return response;
+};
+
 const PUBLIC_PATHS = [
 	'/_app/',
 	'/fonts/',
@@ -435,6 +568,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 };
 
 export const handle: Handle = sequence(
+	handleHtmlCache,
 	handleParaglide,
 	handleNetworkHint,
 	handleCacheHeaders,

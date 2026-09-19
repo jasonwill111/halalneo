@@ -78,7 +78,7 @@
 | 5.7 依赖较新 | ✅ | kit 3-next/TS6/vite8/tailwind4 | — |
 | 5.8 本地模拟 Cloudflare | ✅ | adapter-cloudflare8 platform proxy + .wrangler/state + preview=wrangler dev | — |
 | 5.9 D1 九条 | ✅ | ①②索引：0003 + `idx_favorites_user` + `idx_inquiries_user` 本地全部 apply（**remote 部署时 apply → 用户待办**），categories.status 索引经 sqlite_master 核验已存在；③列投影 projections.ts ✅；④clampLimit ≤100 ✅（14 文件）；⑤N+1 ✅；⑥参数化 ✅；⑦批量 ✅；⑧缓存 ✅；⑨queryCacheKey 16 API 文件 ✅（09-19 复扫） | #4 #11 |
-| 5.10 Workers 八条 | ✅ | 缓存分层/早期返回 ✅；hooks.server.ts 死规则（/api/inquiries 重复放行）已清（09-19）；全服务端裸 `fetch(` 仅 1 处真实外部调用（blog-generator LLM）且已带 AbortSignal.timeout，routes 内 fetch 全部为 same-origin `/api/*`，其余外部依赖为平台绑定（D1/R2） | #4 #11 |
+| 5.10 Workers 八条 | ✅ | 缓存分层/早期返回 ✅（09-19 P1 再加 HTML/媒体响应级缓存层，见 7.4）；hooks.server.ts 死规则（/api/inquiries 重复放行）已清（09-19）；全服务端裸 `fetch(` 仅 1 处真实外部调用（blog-generator LLM）且已带 AbortSignal.timeout，routes 内 fetch 全部为 same-origin `/api/*`，其余外部依赖为平台绑定（D1/R2） | #4 #11 |
 | 5.11 图片优化 | ✅ | 上传强制 WebP/AVIF-only + 拒原图 ✅；`?w=` 付费 srcset 依赖已移除；srcset 因 R2 Image Resizing 红线（§5.12）不可用，改以 width/height 防 CLS + 容器响应式缩放 + 非首屏 lazy，已记录为受成本红线约束的偏差；LCP preload/fetchpriority ✅ | #4 |
 | 5.12 R2 红线 | ✅ | grep 无 InfrequentAccess/ia-transition/`"images":{` ✅（wrangler 注释为禁复活声明）；head 判重（内容寻址键）✅；Cache-Control ✅；读路由 head→304→Range ✅（svelte-check 0 错收口）；images.mjs dry-run ✅；一次性脚本归档 ✅。用户侧月度核查项见文末待办 | #4 #11 |
 
@@ -97,8 +97,8 @@
 |---|---|---|---|
 | 7.1 SEO 清单（title/description/canonical/h1/alt/JSON-LD/hreflang/noindex/DB sitemap） | ✅ | 审计 PASS；market-guides JSON-LD 404 路径已修 | #2✅ |
 | 7.2 GEO（答案前置/Markdown 内容） | ✅ | blog-generator 提示词/字段强制 Markdown（"never emit HTML tags"，09-19 复核）；渲染器统一转 HTML+TOC | #4 |
-| 7.3 LCP≤2.5/INP≤200/CLS≤0.1 + 手段 | 🔧 | 09-19 部署后本地 Lighthouse mobile lab 实测：CLS 0 ✅、610KiB 总量 ✅，但 LCP 4.7-4.9s ❌、TBT ~1s ❌；归因 = HTML 未被 CF 边缘缓存（TTFB 1.07s，需 dashboard Cache Rule）+ GA4 174kB。详见 `docs/perf/2026-09-19-lighthouse-mobile.md`；PSI 官方 lab 待配额重置复核 | #11 |
-| 7.4 缓存策略 | ✅ | hooks 分层 s-maxage/SWR + R2 ETag | — |
+| 7.3 LCP≤2.5/INP≤200/CLS≤0.1 + 手段 | 🔧 | 09-19 部署后本地 Lighthouse mobile lab 实测：CLS 0 ✅、610KiB 总量 ✅，但 LCP 4.7-4.9s ❌、TBT ~1s ❌；归因 = HTML 未被 CF 边缘缓存（TTFB 1.07s，需 dashboard Cache Rule）+ GA4 174kB。修复代码已落地待复测：GA4 gtag 改 requestIdleCallback 延迟注入 + Worker 层 HTML 缓存（见 7.4）直接压 TTFB；详见 `docs/perf/2026-09-19-lighthouse-mobile.md`；PSI 官方 lab 待配额重置复核 | #11 |
+| 7.4 缓存策略 | ✅ | hooks 分层 s-maxage/SWR + R2 ETag；09-19 P1：新增 `handleHtmlCache`（匿名 GET 公开页 whole-response 缓存 `halalneo:html-cache`，命中跳过 SSR/鉴权/8 个子请求）、`/api/media` 普通 GET 响应级缓存（DELETE 驱逐）、3 明细端点补 cachedQuery、参考列表 TTL 300→3600 + 内存层查询变体驱逐、llms.txt 转 DB 驱动小时缓存 | — |
 
 ## §8 无障碍 / §9 未来扩展 / §10 执行原则
 
