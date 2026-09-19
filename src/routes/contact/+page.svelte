@@ -97,7 +97,6 @@
 						.trim()
 						.toLowerCase()
 						.replace(/[^a-z0-9]+/g, '-'),
-					supplierSlug: 'contact-form',
 					subject: `[Contact] ${topic}`,
 					message: `Name: ${name.trim()}\nEmail: ${email.trim()}\nCompany: ${company.trim()}\n\n${message.trim()}`
 				})
