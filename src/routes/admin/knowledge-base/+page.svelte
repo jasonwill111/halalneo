@@ -89,9 +89,9 @@
 	const sectionColors: Record<string, string> = {
 		'halal-certification': 'bg-success/10 text-success',
 		'trade-sourcing': 'bg-info/10 text-info',
-		logistics: 'bg-accent-purple/10 text-accent-purple',
+		logistics: 'bg-teal/10 text-teal',
 		'packaging-labeling': 'bg-warn/10 text-warn',
-		'country-market-guides': 'bg-accent-rose/10 text-accent-rose',
+		'country-market-guides': 'bg-gold/10 text-gold',
 		'due-diligence': 'bg-info/10 text-info'
 	};
 

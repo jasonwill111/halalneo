@@ -156,8 +156,8 @@
 				<StatTile value={data.stats.kbSectionCount} label="knowledge sections" tone="info" />
 				<StatTile value={data.stats.certifierCount} label="certifying bodies" tone="warn" />
 				<StatTile value={3} label="trade tools" tone="success" />
-				<StatTile value={data.stats.guideCount} label="market guides" tone="accent-purple" />
-				<StatTile value="80+" label="glossary terms" tone="accent-rose" />
+				<StatTile value={data.stats.guideCount} label="market guides" tone="teal" />
+				<StatTile value="80+" label="glossary terms" tone="gold" />
 				<StatTile value={data.stats.showCount} label="trade shows" tone="info" />
 			</div>
 		</div>
