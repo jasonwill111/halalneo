@@ -36,6 +36,7 @@
 | 2.6 横滑组件视觉提示+降级 | ✅ | -mx-4 bleed + sm:grid 降级 | — |
 | 3.6/2.6 44px 热区 | ✅ | layout.css `@media (pointer: coarse)` 对 button/input/select 强制 `min-height: 2.75rem`（09-19） | #8 |
 | 2.6 内容不被 sticky 元素遮挡 | ✅ | 门户 pb-24；main 底部留白 + back-to-top/toaster 均避开 tab bar 偏移（09-19） | #8 |
+| 2.7 逻辑属性与 RTL 就绪 | ✅ | B6 存量迁移完成（09-20）：203 处 class 替换 ×60 文件（ps/pe/ms/me/start/end/text-start/border-s）+ layout.css `inset-inline`/`padding-inline-start` + 16 镜像图标 `rtl:rotate-180`；物理白名单仅 5 处有理由保留（`left-1/2+translate-x` 居中配对 ×4、mobile-tab JS 测量滑块）；`components/ui` 0 diff；Playwright RTL 冒烟 20/20 PASS（8 路由 LTR/RTL 无横向溢出、图标内衬随 dir 翻转）；prod 渲染 HTML 物理类仅出自 vendored ui/（已部署 56319329） | design-plan B6 |
 
 ## §3 UI/UX
 
