@@ -68,8 +68,8 @@
 
 | 条款 | 状态 | 备注 | 任务 |
 |---|---|---|---|
-| 5.1 栈与版本（SvelteKit 3.x/TS6/shadcn/Zod/BetterAuth/Drizzle/D1/R2/Mastra/Lucide/Paraglide） | ✅ | admin/supplier/买家登录注册全部真实 Better Auth（authClient + getSession + /account 服务端守卫 307→/login?next=）；demo store 已删除；遗留：/admin/users 只读（admin plugin 未启用） | #12 |
-| 5.1 AI 链路（LLM 全走 AI SDK + agnes-3.0-flash） | ⚠️ | 代码侧 ✅：所有调用统一 `createAgnes()`（`#lib/server/mastra/agnes.ts`），无裸 fetch chat/completions；/api/chat 流式本地实测 200 + token 流，ingredient-checker UI 实测出完整 MASHBOOH 判定表。prod 阻塞在供应商：Agnes 对 Cloudflare Worker 共享出口 IP 返 429 Too Many Requests（同 key 本机同时刻正常 → 非 key 限额；秘密已 `wrangler secret put`）。需用户在 Agnes 侧处理，见文末待办 | #29 |
+| 5.1 栈与版本（SvelteKit 3.x/TS6/shadcn/Zod/BetterAuth/Drizzle/D1/R2/Vercel AI SDK/Lucide/Paraglide） | ✅ | 09-20 复核：Mastra 已整体移除（见下行 AI 链路）；admin/supplier/买家登录注册全部真实 Better Auth（authClient + getSession + /account 服务端守卫 307→/login?next=）；demo store 已删除；遗留：/admin/users 只读（admin plugin 未启用） | #12 |
+| 5.1 AI 链路（LLM 全走 AI SDK + agnes-3.0-flash，纯 AI SDK 无 Mastra） | ✅ | 2026-09-20 迁移：移除 @mastra/core + @mastra/ai-sdk + src/lib/server/mastra/（含未挂接的 blog-generator 死代码），`/api/chat` 改纯 AI SDK `streamText` + `toUIMessageStream()`（provider 仍为 `createAgnes()` `#lib/server/ai/agnes.ts`，无裸 fetch chat/completions，60s abortSignal）。prod 阻塞仍在供应商：Agnes 对 Cloudflare Worker 共享出口 IP 返 429（同 key 本机同时刻正常）；需用户在 Agnes 侧处理，见文末待办 | #29 |
 | 5.2 目录结构（lib/{components,server,schemas,utils,types}） | ✅ | schemas/ 15 文件；types 迁移完成（data/types.ts→lib/types/ + api.ts DTO，0 处旧引用）；无 services/validation 残留 | #10 |
 | 5.2 路由组 (frontend)/(admin) | ➖ | 规则文本标注"可选"；平铺 admin/supplier/account 结构保留（迁移成本>收益，09-19 决策记录） | #10 |
 | 5.2 无 svelte.config.js、#lib+完整扩展名 | ✅ | 1112 处 #lib、0 处 $lib | — |
@@ -80,8 +80,8 @@
 | 5.6 AI 协作规则 | ➖ | 流程性条款，本战役遵循（先读后改、最小改动、自检） | — |
 | 5.7 依赖较新 | ✅ | kit 3-next/TS6/vite8/tailwind4 | — |
 | 5.8 本地模拟 Cloudflare | ✅ | adapter-cloudflare8 platform proxy + .wrangler/state + preview=wrangler dev | — |
-| 5.9 D1 九条 | ✅ | ①②索引：0003 + `idx_favorites_user` + `idx_inquiries_user` 本地全部 apply（**remote 部署时 apply → 用户待办**），categories.status 索引经 sqlite_master 核验已存在；③列投影 projections.ts ✅；④clampLimit ≤100 ✅（14 文件）；⑤N+1 ✅；⑥参数化 ✅；⑦批量 ✅；⑧缓存 ✅；⑨queryCacheKey 16 API 文件 ✅（09-19 复扫） | #4 #11 |
-| 5.10 Workers 八条 | ✅ | 缓存分层/早期返回 ✅（09-19 P1 再加 HTML/媒体响应级缓存层，见 7.4）；hooks.server.ts 死规则（/api/inquiries 重复放行）已清（09-19）；全服务端裸 `fetch(` 仅 1 处真实外部调用（blog-generator LLM）且已带 AbortSignal.timeout，routes 内 fetch 全部为 same-origin `/api/*`，其余外部依赖为平台绑定（D1/R2） | #4 #11 |
+| 5.9 D1 九条 | ✅ | ①②索引：0003 + `idx_favorites_user` + `idx_inquiries_user` 本地全部 apply（**remote 部署时 apply → 用户待办**），categories.status 索引经 sqlite_master 核验已存在；③列投影 projections.ts ✅；④clampLimit ≤100 ✅（14 文件）；⑤N+1 ✅；⑥参数化 ✅；⑦批量 ✅；⑧读写分离/缓存 ✅（cachedQuery + queryCacheKey 16 API 文件，09-19 复扫）；⑨查询成本自检：09-20 起新增/修改查询须在代码注释或 PR 说明预估扫描行数与索引使用（规则文本已同步 development-rules.md 5.9.9） | #4 #11 |
+| 5.10 Workers 八条 | ✅ | 缓存分层/早期返回 ✅（09-19 P1 再加 HTML/媒体响应级缓存层，见 7.4）；hooks.server.ts 死规则（/api/inquiries 重复放行）已清（09-19）；外部 LLM 调用全部经 AI SDK（/api/chat `streamText` 60s abortSignal；09-20 移除 Mastra 与 blog-generator 死代码后无其他外部 fetch），routes 内 fetch 全部为 same-origin `/api/*`，其余外部依赖为平台绑定（D1/R2） | #4 #11 |
 | 5.11 图片优化 | ✅ | 上传强制 WebP/AVIF-only + 拒原图 ✅；`?w=` 付费 srcset 依赖已移除；srcset 因 R2 Image Resizing 红线（§5.12）不可用，改以 width/height 防 CLS + 容器响应式缩放 + 非首屏 lazy，已记录为受成本红线约束的偏差；LCP preload/fetchpriority ✅ | #4 |
 | 5.12 R2 红线 | ✅ | grep 无 InfrequentAccess/ia-transition/`"images":{` ✅（wrangler 注释为禁复活声明）；head 判重（内容寻址键）✅；Cache-Control ✅；读路由 head→304→Range ✅（svelte-check 0 错收口）；images.mjs dry-run ✅；一次性脚本归档 ✅。用户侧月度核查项见文末待办 | #4 #11 |
 
@@ -159,6 +159,23 @@ pnpm exec svelte-check --threshold error    → "svelte-check found 0 errors and
 pnpm vitest run                             → Test Files 3 passed (3) / Tests 5 passed (5)
 （vitest "something prevents the main process from exiting" 为已知无害现象，exit code 0）
 ```
+
+### 验收输出（2026-09-20 Mastra 移除后复跑粘贴）
+
+```text
+=== 1. R2 付费特性 ===   git grep(InfrequentAccess|ia-transition|storageClass) src/ scripts/ wrangler.jsonc → 0 命中
+=== 2. 原生弹窗 ===       git grep(window.(alert|confirm|prompt) + 裸 alert(/confirm() src/**/*.{ts,svelte} → 0 命中
+=== 3. TW 原生色板 ===    git grep((green|emerald|slate|gray|zinc|neutral|red|blue)-[0-9] 含 class) routes/site/admin 组件 → 0 命中
+                          （4 个 raw 命中为 featu"red"-1.webp 文件名子串，非类名）
+=== 3b. 十六进制 ===      git grep(#[0-9a-fA-F]{6}) src/**/*.svelte → 0 命中
+=== 4. any 计数 ===       git grep(: any|as any|<any>) src 排除 paraglide → 0
+=== 5. text-[Npx] ===     仅 vendored ui/button、ui/toggle 的 text-[0.8rem]（shadcn 原装，主题定制只在 layout.css）+ layout.css 注释
+=== 6. Mastra 残留 ===    git grep(mastra) src package.json → 0 命中
+=== 门槛 ===
+pnpm run check（worker-types + svelte-kit sync + svelte-check）→ "svelte-check found 0 errors and 0 warnings"（09-20 实测，AI 迁移后）
+```
+
+> 09-20 AI 链路迁移记录：`/api/chat` 改纯 Vercel AI SDK（`streamText` + `await convertToModelMessages()` + `toUIMessageStream()`，provider `#lib/server/ai/agnes.ts`，60s abortSignal）；`@mastra/core`、`@mastra/ai-sdk` 从 package.json 移除；`agnes-3.0-flash` 标记为临时选型，后续新增大模型仍必须经 AI SDK provider 收敛到 agnes.ts。
 
 ## 用户侧待办（无法本地完成）
 

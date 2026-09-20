@@ -368,7 +368,7 @@
 	function generateDescription() {
 		aiLoading = true;
 		// Mock AI generation — simulates a network delay (real generator lives in
-		// #lib/server/mastra and is wired through the AI tools endpoint, not here).
+		// #lib/server/ai and is wired through the AI tools endpoint, not here).
 		setTimeout(() => {
 			const name = form.name || 'This company';
 			const type = businessTypeLabels[form.businessType]?.toLowerCase() ?? 'supplier';

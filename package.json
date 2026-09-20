@@ -70,8 +70,6 @@
 	"dependencies": {
 		"@ai-sdk/openai": "^4.0.65",
 		"@ai-sdk/svelte": "^5.0.97",
-		"@mastra/ai-sdk": "^1.10.2",
-		"@mastra/core": "^1.65.0",
 		"ai": "^7.0.97",
 		"aws4fetch": "^1.0.20",
 		"clsx": "^2.1.1",

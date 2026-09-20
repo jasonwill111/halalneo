@@ -16,7 +16,7 @@
 
 	let ingredientInput = $state('');
 
-	// AI SDK consumer for /api/chat (Mastra halal-agent streaming UIMessage protocol).
+	// AI SDK consumer for /api/chat (streamText streaming UIMessage protocol).
 	const chat = new Chat<UIMessage>({
 		transport: new DefaultChatTransport({ api: '/api/chat' })
 	});

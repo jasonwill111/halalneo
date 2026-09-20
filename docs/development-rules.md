@@ -235,7 +235,7 @@
 - Drizzle ORM
 - Cloudflare D1（数据库）
 - Cloudflare R2（存储，仅免费额度，见 5.12）
-- Mastra.ai + Vercel AI SDK（AI 功能：所有 LLM 调用必须走 AI SDK，provider 与模型统一在 `src/lib/server/mastra/agnes.ts`（`createAgnes()` + `AGNES_MODEL_ID = 'agnes-3.0-flash'`，Agnes AIHub OpenAI 兼容端点），禁止裸 fetch `chat/completions`；前端聊天消费统一用 `@ai-sdk/svelte` 的 `Chat` + `DefaultChatTransport`）
+- Vercel AI SDK（AI 功能唯一实现：所有 LLM 调用必须走 AI SDK，provider 与模型统一在 `src/lib/server/ai/agnes.ts`（`AGNES_MODEL_ID` 当前为 `agnes-3.0-flash` —— **临时选型**，后续可能增加其他大模型，新增模型/供应商仍必须经 AI SDK provider 接入并收敛到该文件，禁止散落），禁止裸 fetch `chat/completions`；后端流式统一 `streamText` + `toUIMessageStream()` + `createUIMessageStreamResponse`（2026-09-20 起 Mastra 已移除，禁止再引入 agent 框架）；前端聊天消费统一用 `@ai-sdk/svelte` 的 `Chat` + `DefaultChatTransport`）
 - Lucide for Svelte（图标）
 - ParaglideJS（多语言）
 
