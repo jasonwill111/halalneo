@@ -69,6 +69,7 @@
 | 条款 | 状态 | 备注 | 任务 |
 |---|---|---|---|
 | 5.1 栈与版本（SvelteKit 3.x/TS6/shadcn/Zod/BetterAuth/Drizzle/D1/R2/Mastra/Lucide/Paraglide） | ✅ | admin/supplier/买家登录注册全部真实 Better Auth（authClient + getSession + /account 服务端守卫 307→/login?next=）；demo store 已删除；遗留：/admin/users 只读（admin plugin 未启用） | #12 |
+| 5.1 AI 链路（LLM 全走 AI SDK + agnes-3.0-flash） | ⚠️ | 代码侧 ✅：所有调用统一 `createAgnes()`（`#lib/server/mastra/agnes.ts`），无裸 fetch chat/completions；/api/chat 流式本地实测 200 + token 流，ingredient-checker UI 实测出完整 MASHBOOH 判定表。prod 阻塞在供应商：Agnes 对 Cloudflare Worker 共享出口 IP 返 429 Too Many Requests（同 key 本机同时刻正常 → 非 key 限额；秘密已 `wrangler secret put`）。需用户在 Agnes 侧处理，见文末待办 | #29 |
 | 5.2 目录结构（lib/{components,server,schemas,utils,types}） | ✅ | schemas/ 15 文件；types 迁移完成（data/types.ts→lib/types/ + api.ts DTO，0 处旧引用）；无 services/validation 残留 | #10 |
 | 5.2 路由组 (frontend)/(admin) | ➖ | 规则文本标注"可选"；平铺 admin/supplier/account 结构保留（迁移成本>收益，09-19 决策记录） | #10 |
 | 5.2 无 svelte.config.js、#lib+完整扩展名 | ✅ | 1112 处 #lib、0 处 $lib | — |
@@ -166,5 +167,6 @@ pnpm vitest run                             → Test Files 3 passed (3) / Tests 
 - [ ] Cloudflare 后台开启 R2/Workers Usage 告警（wrangler 不支持，需 dashboard 或 API token）
 - [ ] Cloudflare dashboard 加 Cache Rule 让 HTML 走边缘缓存（s-maxage 已在响应头，开启后首页 TTFB 1.07s → <100ms，LCP 大头）
 - [ ] PSI 官方 lab 复核（今日免费 API 配额 429；本地 lab 已留档 `docs/perf/2026-09-19-lighthouse-mobile.md`）
+- [ ] **Agnes 429（prod AI 唯一阻塞，09-20 实测）**：`AGNES_API_KEY` secret 已设置且 /api/chat 代码链路全通（本地同 key 流式正常），但 Agnes 对 Cloudflare Worker 共享出口 IP 返回 429 Too Many Requests（prod 隔离复测仍 429，同时刻本机 200 → IP 级限流非 key 限额）。需用户到 Agnes dashboard 查看/提升速率、申请解除 CF 出口限流或换供应商；解决后重跑 `POST /api/chat`（登录态）验证 200 流即可关闭 5.1 AI 行
 - [x] ~~`wrangler r2 bucket info/lifecycle` 月度核查~~ 本月已完成，下月复查
 - [ ] 可选：`pnpm playwright test` e2e 冒烟（playwright 已配置但本战役未新增用例；核心链路已用 dev-server + 真实 API 手工验证）
