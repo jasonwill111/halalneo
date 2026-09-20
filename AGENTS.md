@@ -199,7 +199,7 @@ src/
 - 服务端专属代码必须放在 `src/lib/server` 或带 `server` 段的文件中，防止客户端误导入。
 - 组件优先放在 `src/lib/components`，仅在单路由使用的组件可临时放在对应 `routes` 目录下。
 - 配置必须写在 `vite.config.ts` 中（SvelteKit 3 已废弃独立的 `svelte.config.js`）。
-- 导入共享代码统一使用 `#lib` 别名（Node 原生 subpath imports），并写完整扩展名（如 `#lib/utils/format.ts`）。
+- 导入共享代码统一使用 `#lib` 别名（Node 原生 subpath imports），并写完整扩展名（如 `#lib/utils/forms.ts`）。
 - 禁止在 `src/routes` 下创建与路由无关的深层业务目录。
 
 ### 5.3 命名约定（强制）
