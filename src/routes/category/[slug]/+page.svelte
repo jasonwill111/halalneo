@@ -117,7 +117,7 @@
 			{#each paged as product (product.slug)}
 				<a
 					href={localizeHref(`/product/${product.slug}`)}
-					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<div
 						class="relative mb-2 flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted"

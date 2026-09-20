@@ -16,7 +16,7 @@
 		<Button
 			variant="outline"
 			size="icon"
-			class="press-scale size-8"
+			class="press-scale size-8 transition-transform duration-fast ease-spring"
 			disabled={page === 1}
 			onclick={() => (page = Math.max(1, page - 1))}
 			aria-label="Previous page"
@@ -29,7 +29,7 @@
 				<Button
 					variant={p === page ? 'default' : 'outline'}
 					size="icon"
-					class="press-scale size-8 text-xs"
+					class="press-scale size-8 text-xs transition-transform duration-fast ease-spring"
 					aria-label={`Page ${p}`}
 					aria-current={p === page ? 'page' : undefined}
 					onclick={() => (page = p)}>{p}</Button
@@ -41,7 +41,7 @@
 		<Button
 			variant="outline"
 			size="icon"
-			class="press-scale size-8"
+			class="press-scale size-8 transition-transform duration-fast ease-spring"
 			disabled={page === totalPages}
 			onclick={() => (page = Math.min(totalPages, page + 1))}
 			aria-label="Next page"

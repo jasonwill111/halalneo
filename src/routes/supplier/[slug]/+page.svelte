@@ -656,7 +656,7 @@
 											{#if cert.expiry}
 												<div class="flex justify-between gap-2">
 													<dt class="text-muted-foreground">Valid until</dt>
-													<dd class="font-medium {expired ? 'text-destructive' : ''}">
+													<dd class="font-medium tabular-nums {expired ? 'text-destructive' : ''}">
 														{cert.expiry}
 													</dd>
 												</div>
@@ -679,7 +679,7 @@
 							{#each products as product, i (product.slug)}
 								<a
 									href={localizeHref(`/product/${product.slug}`)}
-									class="group press-scale flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
+									class="group press-scale flex flex-col rounded-xl bg-card ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 								>
 									<div class="relative aspect-[16/10] overflow-hidden rounded-t-xl bg-muted">
 										{#if product.image}

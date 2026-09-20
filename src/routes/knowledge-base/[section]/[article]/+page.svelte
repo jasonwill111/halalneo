@@ -207,7 +207,7 @@
 							{#each related as rel (rel.slug)}
 								<a
 									href={localizeHref(`/knowledge-base/${rel.section}/${rel.slug}`)}
-									class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+									class="group block rounded-xl bg-card p-4 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 								>
 									<h3 class="text-sm font-semibold transition-colors group-hover:text-primary">
 										{rel.title}

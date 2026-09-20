@@ -44,7 +44,7 @@
 		<div class="flex shrink-0 flex-wrap gap-2">
 			<button
 				type="button"
-				class="press-scale inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-sm font-medium whitespace-nowrap text-foreground outline-none transition-colors duration-fast select-none hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:bg-input/30 dark:hover:bg-input/50"
+				class="press-scale inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-sm font-medium whitespace-nowrap text-foreground outline-none transition-[background-color,color,border-color,transform] duration-fast select-none hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:bg-input/30 dark:hover:bg-input/50"
 			>
 				<svg
 					aria-hidden="true"
@@ -64,7 +64,7 @@
 			<button
 				type="button"
 				onclick={() => window.location.reload()}
-				class="press-scale inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent bg-primary px-2.5 text-sm font-medium whitespace-nowrap text-primary-foreground outline-none transition-colors duration-fast select-none hover:bg-primary/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+				class="press-scale inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent bg-primary px-2.5 text-sm font-medium whitespace-nowrap text-primary-foreground outline-none transition-[background-color,color,border-color,transform] duration-fast select-none hover:bg-primary/90 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
 			>
 				<svg
 					aria-hidden="true"
@@ -155,7 +155,7 @@
 				type="button"
 				aria-pressed={selectedTab === tab}
 				onclick={() => (selectedTab = tab)}
-				class="press-scale inline-flex h-8 shrink-0 snap-start items-center justify-center rounded-4xl px-3 text-2xs-plus font-medium whitespace-nowrap outline-none transition-colors duration-fast {selectedTab === tab
+				class="press-scale inline-flex h-8 shrink-0 snap-start items-center justify-center rounded-4xl px-3 text-2xs-plus font-medium whitespace-nowrap outline-none transition-[background-color,color,border-color,transform] duration-fast {selectedTab === tab
 					? 'bg-primary text-primary-foreground'
 					: 'bg-background text-muted-foreground ring-1 ring-border hover:bg-muted hover:text-foreground dark:bg-input/30'}"
 			>

@@ -264,7 +264,7 @@
 							{#each data.related as related (related.slug)}
 								<a
 									href={localizeHref(`/blog/${related.slug}`)}
-									class="group block rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md sm:p-4"
+									class="group block rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 								>
 									<div class="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
 										<span class="font-medium text-foreground/80">{related.author.name}</span>
@@ -309,7 +309,7 @@
 						{#each [{ href: '/products', title: 'Browse Halal Products', desc: 'Explore our catalog of certified halal products.', cta: 'Browse Products', icon: ShoppingCart }, { href: '/suppliers', title: 'Find Certified Suppliers', desc: 'Connect with verified halal-certified suppliers.', cta: 'Find Suppliers', icon: Store }, { href: '/knowledge-base', title: 'Read Knowledge Base', desc: 'Guides, certifications, and halal compliance insights.', cta: 'Read Articles', icon: BookOpen }] as item (item.href)}
 							<a
 								href={localizeHref(item.href)}
-								class="group block rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md sm:p-4"
+								class="group block rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 							>
 								<div class="mb-2">
 									<item.icon

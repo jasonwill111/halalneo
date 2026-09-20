@@ -18,7 +18,7 @@
 		target="_blank"
 		rel="noopener noreferrer"
 		class={variant === 'button'
-			? 'inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-all hover:text-primary hover:shadow-md'
+			? 'inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-[box-shadow,color] duration-base ease-spring hover:text-primary hover:shadow-md'
 			: 'inline-flex items-center gap-1 text-xs font-medium text-primary underline-offset-4 hover:underline'}
 	>
 		{label}

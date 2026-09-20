@@ -20,7 +20,7 @@
 			{#each items as item (item.href)}
 				<a
 					href={localizeHref(item.href)}
-					class="group flex items-center gap-2 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+					class="group flex items-center gap-2 rounded-lg bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<div class="min-w-0 flex-1">
 						<h3 class="truncate text-xs font-medium transition-colors group-hover:text-primary">

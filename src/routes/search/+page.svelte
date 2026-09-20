@@ -532,7 +532,7 @@
 						{#if result.kind === 'sku'}
 							<a
 								href={localizeHref(`/product/${result.slug}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div class="relative mb-2 aspect-square rounded-md bg-muted">
 									<span
@@ -556,7 +556,7 @@
 						{:else if result.kind === 'supplier'}
 							<a
 								href={localizeHref(`/supplier/${result.slug}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div
 									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
@@ -573,7 +573,7 @@
 						{:else if result.kind === 'article'}
 							<a
 								href={localizeHref(`/knowledge-base/${result.section}/${result.slug}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div
 									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
@@ -592,7 +592,7 @@
 						{:else}
 							<a
 								href={localizeHref(`/glossary#term-${result.term[0].toUpperCase()}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-all hover:shadow-md"
+								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div
 									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"

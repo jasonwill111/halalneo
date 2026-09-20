@@ -210,6 +210,8 @@ Arbitrary values (`text-[10px]`, `text-[0.8rem]`, …) are banned everywhere out
 
 **The Ledger Row Rule.** Data reads in rows: label left, value right, both on the same line (`flex items-center justify-between`), 14px body for values against 12–13px muted labels. Tables and data rows never wrap to two-column card layouts without a reason.
 
+**Tabular figures on changing values.** Any date, price, quantity or expiry rendered as data carries `tabular-nums` (cert "Valid until", trade-show date ranges, RFQ quantity/price tiles), so digits stay column-aligned as values update.
+
 ## Layout
 
 - **Container:** `max-w-7xl` (1280px), centered, `px-4 sm:px-6`; interior pages often constrain intro blocks to `max-w-2xl`; detail bodies start at `max-w-6xl` (never `max-w-4xl` whitespace).
@@ -236,10 +238,10 @@ Animation is GPU-cheap only (`opacity` / `transform`), and every animation dies 
 - **Entrance:** `.animate-enter` (slide-up 0.55s) with `--enter-delay` stagger for hero sequences.
 - **Ambient:** `.animate-float` / `.animate-glow` reserved for hero decor blobs.
 - **Easing:** `ease-spring` (`cubic-bezier(0.22, 1, 0.36, 1)`) is the signature curve — write the class, not `ease-[cubic-bezier(…)]`.
-- Interactive cards lift on hover (`duration-base`); buttons inherit primitive transitions. No page-transition choreography — navigations stay instant.
+- Interactive cards lift on hover (`duration-base`); buttons inherit primitive transitions. No page-transition choreography — navigations stay instant. Card hover transitions name exact properties (`transition-[transform,box-shadow]`, never `transition-all`); a page-load entrance uses the 0/60/120ms `--enter-delay` rhythm.
 
 - Resting cards: flat `bg-card` with `ring-1 ring-foreground/10`. No shadow at rest — the ring is the outline, not a shadow.
-- Interactive cards (`hoverable`): lift with `shadow-md` on hover (`duration-base` + `ease-out`) while keeping the ring. Shadow marks "you can act here."
+- Interactive cards (`hoverable`): lift with `hover:-translate-y-0.5` + `shadow-md` on hover (`transition-[transform,box-shadow] duration-base ease-spring`) while keeping the ring. Shadow marks "you can act here." Vendored `ui/card`'s `hoverable` variant stays `shadow-md`/`ease-out` internally — custom cards match its `shadow-md` magnitude, not the plan's `shadow-lg`, so hover depth is one consistent step site-wide.
 - Floating chrome (the only blur allowlist): sticky header `bg-background/80 backdrop-blur-xl`, mobile glass tab bar + its scrim, admin/supplier sidebar `bg-card/60 backdrop-blur-xl`, and popover/sheet/dialog overlays. Cards and stat tiles stay flat `bg-card` + ring — no blur, ever.
 - Overlays (menus, popovers, sheets, selects): `shadow-md`/`shadow-lg` from the scale below, with `ring-1 ring-foreground/10`.
 

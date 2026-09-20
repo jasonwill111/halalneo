@@ -302,7 +302,7 @@
 						</div>
 
 						<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-							<span class="flex items-center gap-1.5">
+							<span class="flex items-center gap-1.5 tabular-nums">
 								<CalendarDaysIcon class="size-3.5 shrink-0" />
 								{formatDateRange(show.startDate, show.endDate)}
 							</span>
@@ -370,7 +370,7 @@
 						<p class="truncate text-xs text-muted-foreground">{show.city}, {show.country}</p>
 						<div class="mt-1 flex items-center gap-1.5">
 							<CalendarDaysIcon class="size-3" />
-							<span class="text-xs">{formatDateRange(show.startDate, show.endDate)}</span>
+							<span class="text-xs tabular-nums">{formatDateRange(show.startDate, show.endDate)}</span>
 						</div>
 					</Card>
 				{/each}

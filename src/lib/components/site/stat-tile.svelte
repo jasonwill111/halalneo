@@ -27,7 +27,7 @@
 </script>
 
 <div
-	class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 transition-all duration-base ease-out hover:shadow-sm sm:rounded-xl sm:px-3 sm:py-3"
+	class="min-w-0 flex-1 rounded-md bg-card px-1.5 py-1.5 text-center ring-1 ring-foreground/10 transition-shadow duration-base ease-out hover:shadow-sm sm:rounded-xl sm:px-3 sm:py-3"
 >
 	<div class="flex items-center justify-center gap-1.5">
 		{#if icon}

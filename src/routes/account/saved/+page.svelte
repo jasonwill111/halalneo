@@ -149,7 +149,7 @@
 			<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 				{#each pagedFollowing as f (f.supplierSlug)}
 					<article
-						class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+						class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<a href={`/supplier/${f.supplierSlug}`} class="block">
 							<div
@@ -199,7 +199,7 @@
 		<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 			{#each pagedProducts as item (item.productSlug)}
 				<article
-					class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+					class="group relative rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<a href={`/product/${item.productSlug}`} class="block">
 						{#if item.image}

@@ -571,7 +571,7 @@
 									<li>
 										<a
 											href={localizeHref(`/success-stories/${story.slug}`)}
-											class="group block rounded-lg bg-muted/50 px-2.5 py-2 ring-1 ring-transparent transition-all hover:ring-foreground/10"
+											class="group block rounded-lg bg-muted/50 px-2.5 py-2 ring-1 ring-transparent transition-shadow hover:ring-foreground/10"
 										>
 											<p
 												class="line-clamp-2 text-xs leading-snug font-medium transition-colors group-hover:text-primary"
@@ -625,7 +625,7 @@
 											href={link.href}
 											target="_blank"
 											rel="noopener"
-											class="group flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs ring-1 ring-transparent transition-all hover:bg-muted hover:ring-foreground/10"
+											class="group flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs ring-1 ring-transparent transition-[background-color,box-shadow] hover:bg-muted hover:ring-foreground/10"
 										>
 											<span>
 												<span class="block font-medium transition-colors group-hover:text-primary"
@@ -638,7 +638,7 @@
 									{:else}
 										<a
 											href={localizeHref(link.href)}
-											class="group flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs ring-1 ring-transparent transition-all hover:bg-muted hover:ring-foreground/10"
+											class="group flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-xs ring-1 ring-transparent transition-[background-color,box-shadow] hover:bg-muted hover:ring-foreground/10"
 										>
 											<span>
 												<span class="block font-medium transition-colors group-hover:text-primary"

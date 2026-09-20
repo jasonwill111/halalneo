@@ -336,7 +336,7 @@
 				{#each popularArticles as article, i (article.slug)}
 					<a
 						href={localizeHref(`/knowledge-base/${article.section ?? ''}/${article.slug}`)}
-						class="group flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+						class="group flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<div
 							class="flex size-8 shrink-0 items-center justify-center rounded-lg {TILE_COLORS[

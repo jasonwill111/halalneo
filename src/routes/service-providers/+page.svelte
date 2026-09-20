@@ -311,7 +311,7 @@
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-3">
 			{#each paged as provider (provider.slug)}
 				<article
-					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md sm:p-4"
+					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow,border-color] duration-base ease-spring hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md sm:p-4"
 				>
 					<div class="mb-3 flex items-start gap-3 sm:mb-4 sm:gap-3.5">
 						<div

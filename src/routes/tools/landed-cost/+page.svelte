@@ -134,7 +134,7 @@
 							</div>
 							<div class="h-1.5 overflow-hidden rounded-full bg-muted">
 								<div
-									class={`${b.tone} h-full rounded-full transition-all`}
+									class={`${b.tone} h-full rounded-full transition-[width]`}
 									style={`width: ${(b.value / maxBreak) * 100}%`}
 								></div>
 							</div>

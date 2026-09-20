@@ -141,7 +141,7 @@
 					<dl class="space-y-2.5 text-sm">
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Dates</dt>
-							<dd class="flex items-center gap-1.5 text-right font-medium">
+							<dd class="flex items-center gap-1.5 text-right font-medium tabular-nums">
 								<CalendarDaysIcon class="size-3.5 shrink-0 text-muted-foreground" />
 								{formatDateRange(show.startDate, show.endDate)}
 							</dd>
@@ -198,7 +198,7 @@
 				<CardContent class="space-y-3 p-4 sm:p-5">
 					<CardTitle class="text-sm sm:text-base">Attend</CardTitle>
 					<div class="space-y-2 text-sm">
-						<p class="flex items-center gap-1.5 text-muted-foreground">
+						<p class="flex items-center gap-1.5 text-muted-foreground tabular-nums">
 							<CalendarDaysIcon class="size-4 shrink-0" />
 							{formatDateRange(show.startDate, show.endDate)}
 						</p>

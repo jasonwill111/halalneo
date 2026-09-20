@@ -245,7 +245,7 @@
 							{#each related as rel (rel.slug)}
 								<a
 									href={localizeHref(`/service-providers/${rel.slug}`)}
-									class="rounded-xl bg-card p-1.5 ring-1 ring-foreground/10 transition-all hover:shadow-md"
+									class="rounded-xl bg-card p-1.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 								>
 									<div class="flex items-center gap-1.5">
 										<div

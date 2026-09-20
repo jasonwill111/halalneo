@@ -132,7 +132,7 @@
 			{#each paged as p (p.id)}
 				<a
 					href={localizeHref(`/promotions/${p.id}`)}
-					class="group press-scale relative flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale relative flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					{#if p.discountPct}
 						<span

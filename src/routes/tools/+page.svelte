@@ -87,7 +87,7 @@
 		{#each tools as tool (tool.href)}
 			<a href={localizeHref(tool.href)} class="group h-full">
 				<Card
-					class="press-scale h-full p-3 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="press-scale h-full p-3 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					<CardContent class="space-y-2 p-0 sm:space-y-2.5">
 						<div class="flex items-center justify-between">

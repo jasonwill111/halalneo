@@ -144,7 +144,7 @@
 			{#each paged as item (item.id)}
 				<div
 					class={cn(
-						'group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-all hover:border-primary/20 hover:shadow-md',
+						'group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-md',
 						statusBorder(item.status)
 					)}
 				>

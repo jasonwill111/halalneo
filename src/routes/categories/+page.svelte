@@ -114,7 +114,7 @@
 			{#each pagedCategories as category, i (category.slug)}
 				<a
 					href={localizeHref(`/category/${category.slug}`)}
-					class="group press-scale flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
+					class="group press-scale flex flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<div class="flex items-start gap-2.5 p-2.5 sm:gap-3 sm:p-4">
 						<div

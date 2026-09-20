@@ -166,7 +166,7 @@
 									{#each data.related.slice(0, 5) as s (s.slug)}
 										<a
 											href={localizeHref(`/success-stories/${s.slug}`)}
-											class="group block rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-all hover:ring-foreground/20"
+											class="group block rounded-lg bg-card p-3 ring-1 ring-foreground/10 transition-shadow hover:ring-foreground/20"
 										>
 											<h5 class="line-clamp-2 text-xs font-medium group-hover:text-primary">
 												{s.title}

@@ -213,7 +213,7 @@
 				{#each paged as guide (guide.country)}
 					<a
 						href={localizeHref(`/market-guides/${guide.slug}`)}
-						class="group press-scale flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md"
+						class="group press-scale flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 					>
 						<div class="relative aspect-[16/10] overflow-hidden bg-muted">
 							{#if COUNTRY_IMAGES[guide.country]}

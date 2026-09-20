@@ -399,7 +399,7 @@
 							<Button
 								variant="ghost"
 								onclick={() => (activeImage = i)}
-								class={`aspect-square h-auto overflow-hidden rounded-xl border bg-muted p-0 transition-all ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
+								class={`aspect-square h-auto overflow-hidden rounded-xl border bg-muted p-0 transition-colors ${i === activeImage ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50'}`}
 								aria-label={`View image ${i + 1}`}
 								aria-pressed={i === activeImage}
 							>

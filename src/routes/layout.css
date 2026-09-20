@@ -506,9 +506,12 @@ html.theme-transitioning *::after {
 		width var(--transition-duration-slow) var(--ease-spring);
 }
 
-/* ─── Apple Design: Interactive element press scale ─── */
+/* ─── Apple Design: Interactive element press scale ───
+ * Deliberately carries no `transition` shorthand: as an unlayered rule it
+ * would override Tailwind's transition utilities on the host. Hosts opt into
+ * animating their own transform via utilities (cards via the lift spec,
+ * buttons via transition-transform duration-fast ease-spring). */
 .press-scale {
-	transition: transform var(--transition-duration-fast) var(--ease-spring);
 	will-change: transform;
 }
 .press-scale:active {

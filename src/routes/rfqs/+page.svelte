@@ -154,7 +154,7 @@
 			{#each paged as r (r.id)}
 				<a
 					href={localizeHref(`/rfqs/${r.id}`)}
-					class="group press-scale flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					<div class="flex items-start justify-between gap-2">
 						<h3
@@ -163,7 +163,7 @@
 							{r.title}
 						</h3>
 						{#if r.quantity}
-							<Badge variant="secondary" class="shrink-0 text-2xs">{r.quantity}</Badge>
+							<Badge variant="secondary" class="shrink-0 text-2xs tabular-nums">{r.quantity}</Badge>
 						{/if}
 					</div>
 					<p

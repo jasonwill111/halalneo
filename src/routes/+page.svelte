@@ -141,7 +141,7 @@
 	<!-- Hero Carousel -->
 	<div
 		class="animate-enter pattern-girih relative mb-2 w-full overflow-hidden rounded-xl shadow-lg sm:mb-3"
-		style="--enter-delay: 90ms"
+		style="--enter-delay: 60ms"
 	>
 		<div class="relative aspect-[16/10] sm:aspect-[16/5]">
 			{#each slides as slide, i (i)}
@@ -236,7 +236,7 @@
 	</div>
 	<p
 		class="animate-enter relative mb-2 text-2xs text-muted-foreground sm:mb-3 sm:text-2xs-plus"
-		style="--enter-delay: 180ms"
+		style="--enter-delay: 120ms"
 	>
 		Researched data from <span class="font-medium text-foreground"
 			>{data.stats.kbSections} knowledge sections</span
@@ -267,7 +267,7 @@
 		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-teal', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/export-docs', icon: FileText, tone: 'text-info', name: 'Export Docs', desc: 'Templates for suppliers & importers.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
-				class="group press-scale flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
+				class="group press-scale flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
 			>
 				<tool.icon class="size-4 shrink-0 {tool.tone} sm:size-6" />
 				<div class="min-w-0">
@@ -290,7 +290,7 @@
 		{#each data.categories.slice(0, 6) as category, i (category.slug)}
 			<a
 				href={localizeHref(`/category/${category.slug}`)}
-				class="group press-scale flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+				class="group press-scale flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
 			>
 				<div
 					class="flex size-10 shrink-0 items-center justify-center rounded-lg {categoryColors[
@@ -367,7 +367,7 @@
 		{#each data.kbArticles.slice(0, 6) as article (article.slug)}
 			<a
 				href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)}
-				class="group press-scale w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
+				class="group press-scale w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
 			>
 				<Badge variant="secondary" class="mb-1 text-2xs">{article.section}</Badge>
 				<h3
@@ -396,7 +396,7 @@
 		{#each [{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' }, { href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' }, { href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'teal' }, { href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'gold' }] as item (item.href)}
 			<a
 				href={localizeHref(item.href)}
-				class="group press-scale flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+				class="group press-scale flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
 			>
 				<div
 					class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${item.tone === 'info' ? 'bg-info/10 text-info' : item.tone === 'warn' ? 'bg-warn/10 text-warn' : item.tone === 'teal' ? 'bg-teal/10 text-teal' : 'bg-gold/10 text-gold'}`}

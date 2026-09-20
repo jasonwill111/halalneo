@@ -168,11 +168,11 @@
 				<div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
 					<div class="rounded-xl bg-muted/50 px-3 py-2">
 						<div class="text-xs text-muted-foreground">Quantity</div>
-						<div class="text-sm font-medium">{rfq.quantity ?? '—'}</div>
+						<div class="text-sm font-medium tabular-nums">{rfq.quantity ?? '—'}</div>
 					</div>
 					<div class="rounded-xl bg-muted/50 px-3 py-2">
 						<div class="text-xs text-muted-foreground">Target price</div>
-						<div class="text-sm font-medium">{rfq.targetPrice ?? '—'}</div>
+						<div class="text-sm font-medium tabular-nums">{rfq.targetPrice ?? '—'}</div>
 					</div>
 					<div class="rounded-xl bg-muted/50 px-3 py-2">
 						<div class="text-xs text-muted-foreground">Destination</div>
