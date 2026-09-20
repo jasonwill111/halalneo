@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	type Tone = 'info' | 'warn' | 'success' | 'accent-purple' | 'accent-rose' | 'primary';
+	type Tone = 'info' | 'warn' | 'success' | 'teal' | 'gold' | 'primary';
 
 	interface Props {
 		value: string | number;
@@ -19,8 +19,8 @@
 			info: 'text-info',
 			warn: 'text-warn',
 			success: 'text-success',
-			'accent-purple': 'text-accent-purple',
-			'accent-rose': 'text-accent-rose',
+			'teal': 'text-teal',
+			'gold': 'text-gold',
 			primary: 'text-primary'
 		}[tone]
 	);

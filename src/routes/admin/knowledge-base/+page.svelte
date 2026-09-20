@@ -89,9 +89,9 @@
 	const sectionColors: Record<string, string> = {
 		'halal-certification': 'bg-success/10 text-success',
 		'trade-sourcing': 'bg-info/10 text-info',
-		logistics: 'bg-accent-purple/10 text-accent-purple',
+		logistics: 'bg-teal/10 text-teal',
 		'packaging-labeling': 'bg-warn/10 text-warn',
-		'country-market-guides': 'bg-accent-rose/10 text-accent-rose',
+		'country-market-guides': 'bg-gold/10 text-gold',
 		'due-diligence': 'bg-info/10 text-info'
 	};
 
@@ -103,7 +103,7 @@
 		loading = true;
 		loadError = null;
 		try {
-			// status=all ‚Üí admin overview (drafts included), never edge-cached.
+			// status=all ‚Ü?admin overview (drafts included), never edge-cached.
 			const res = await fetch('/api/knowledge-base?status=all&limit=100');
 			if (!res.ok) {
 				const data = (await res.json().catch(() => ({}))) as { error?: string };
@@ -148,7 +148,7 @@
 				toast.error(data.error ?? 'Failed to delete article.');
 			}
 		} catch {
-			toast.error('Network error ‚Äî the article was not deleted.');
+			toast.error('Network error ‚Ä?the article was not deleted.');
 		} finally {
 			deleting = false;
 			confirmSlug = null;
@@ -158,7 +158,7 @@
 </script>
 
 <svelte:head>
-	<title>Knowledge Base ‚Äî HalalNeo Admin</title>
+	<title>Knowledge Base ‚Ä?HalalNeo Admin</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
@@ -332,7 +332,7 @@
 										<div class="space-y-1">
 											<p class="font-medium">No matching articles</p>
 											<p class="text-sm text-muted-foreground">
-												Nothing matches ‚Äú{search}‚Äù. Try another word.
+												Nothing matches ‚Äú{search}‚Ä? Try another word.
 											</p>
 										</div>
 										<EmptyContent>

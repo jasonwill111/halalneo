@@ -221,7 +221,7 @@
 			<StatTile
 				value={guide.certificateValidity ?? ''}
 				label="Certificate validity"
-				tone="accent-purple"
+				tone="teal"
 			/>
 		</div>
 
@@ -348,7 +348,7 @@
 						<StatTile
 							value={guide.certificateValidity ?? ''}
 							label="Certificate validity"
-							tone="accent-purple"
+							tone="teal"
 						/>
 					</div>
 					<p class="text-xs leading-relaxed text-muted-foreground">

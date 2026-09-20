@@ -2,8 +2,8 @@ export const TILE_COLORS = [
 	'bg-info/10 text-info',
 	'bg-warn/10 text-warn',
 	'bg-success/10 text-success',
-	'bg-accent-purple/10 text-accent-purple',
-	'bg-accent-rose/10 text-accent-rose',
+	'bg-teal/10 text-teal',
+	'bg-gold/10 text-gold',
 	'bg-primary/10 text-primary'
 ] as const;
 

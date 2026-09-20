@@ -121,12 +121,12 @@
 		{
 			region: 'Türkiye & Central Asia',
 			countries: 'Türkiye, Azerbaijan, Kazakhstan, Uzbekistan',
-			cls: 'bg-accent-rose/10 text-accent-rose'
+			cls: 'bg-gold/10 text-gold'
 		},
 		{
 			region: 'South Asia',
 			countries: 'Pakistan, Bangladesh, India, Sri Lanka',
-			cls: 'bg-accent-purple/10 text-accent-purple'
+			cls: 'bg-teal/10 text-teal'
 		},
 		{
 			region: 'Africa',

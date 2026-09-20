@@ -21,8 +21,8 @@ semantic:
   info: 'light oklch(0.52 0.15 255) / dark oklch(0.72 0.14 255)'
   warn: 'light oklch(0.52 0.15 75) / dark oklch(0.75 0.14 80)'
   success: 'light oklch(0.5 0.16 150) / dark oklch(0.72 0.17 152)'
-  accent-purple: 'light oklch(0.55 0.18 300) / dark oklch(0.72 0.16 300)'
-  accent-rose: 'light oklch(0.55 0.19 12) / dark oklch(0.72 0.16 12)'
+  teal: 'light oklch(0.52 0.12 185) / dark oklch(0.72 0.12 185)'
+  gold: 'light oklch(0.52 0.11 80) / dark oklch(0.78 0.13 84)'
 typography:
   display:
     fontFamily: 'Space Grotesk, Almarai, ui-sans-serif, system-ui, sans-serif'
@@ -141,7 +141,7 @@ Sage-tinted green family — neutrals carry a warm cast (hue ~85–88 light) or 
 
 - **Certified Green** (`oklch(0.4 0.15 158)`, light `--primary`): primary buttons, links, active nav, verified badges, focus rings, icons marking certification. The only saturated hue on a screen. Darkened from 0.44 so white-on-green buttons and green link text both clear WCAG AA (4.58:1 / 4.40:1 — was 2.88:1).
 - **Certified Green (Dark)** (`oklch(0.77 0.185 154)`, dark `--primary`): same role in dark mode — brighter to hold contrast on dark surfaces. (WCAG: 7.02:1 on ink.)
-- **Chart Emerald** (`oklch(0.55 0.12 185)`, `--chart-2`): secondary chart/graph accent.
+- **Chart Teal** (`oklch(0.52 0.12 185)`, `--chart-2`): secondary chart/graph accent.
 
 ### Neutral
 
@@ -169,12 +169,12 @@ Five muted-role colors for wayfinding, never for large surfaces. Each has a ligh
 - **Info Blue** (`--info`: light `oklch(0.52 0.15 255)` / dark `oklch(0.72 0.14 255)`): tools, links-out, informational badges.
 - **Warn Amber** (`--warn`: light `oklch(0.52 0.15 75)` / dark `oklch(0.75 0.14 80)`): pending states, caution badges.
 - **Success Green** (`--success`: light `oklch(0.5 0.16 150)` / dark `oklch(0.72 0.17 152)`): certified/verified-positive states distinct from primary buttons.
-- **Accent Purple** (`--accent-purple`: light `oklch(0.55 0.18 300)` / dark `oklch(0.72 0.16 300)`): consultants/services, fourth category slot.
-- **Accent Rose** (`--accent-rose`: light `oklch(0.55 0.19 12)` / dark `oklch(0.72 0.16 12)`): editorial/blog, fifth category slot.
+- **Accent Teal** (`--teal`: light `oklch(0.52 0.12 185)` / dark `oklch(0.72 0.12 185)`): secondary wayfinding — services/consultants, region chips, fourth category slot. Replaced Accent Purple 2026-09-20 (§design-upgrade-plan 1.1 — off-family hues removed).
+- **Accent Gold** (`--gold`: light `oklch(0.52 0.11 80)` / dark `oklch(0.78 0.13 84)`): editorial/blog, fifth category slot; future home of certification-seal accents. Replaced Accent Rose 2026-09-20. Gold is chip/scale-scale only — never large surfaces.
 
 All five pass WCAG AA (≥4.5:1) as text on their own `/10` badge tints in both modes — verified by measurement, not by eye. (Light warn/info were darkened 0.55→0.52 for exactly this reason.)
 
-**Badge vocabulary (listing + detail pages).** Status and classification badges use a fixed color-to-meaning map, shared via `#lib/utils/region.ts` + `tile-colors.ts`: certified = Success + ShieldCheck; cert-pending = Warn; not-certified = Destructive; country = region map (`regionBadgeClass`); business type = Manufacturer Info / Wholesaler Purple / Trader Rose; brand owner = Rose. Chips sitting on card imagery use **opaque** fills (`bg-background/80`, semantic `/10` tints) — never `backdrop-blur` on a list card (§1.4). Text drawn directly onto a photo instead rides a `from-scrim/80 via-scrim/40` gradient with `text-on-dark`.
+**Badge vocabulary (listing + detail pages).** Status and classification badges use a fixed color-to-meaning map, shared via `#lib/utils/region.ts` + `tile-colors.ts`: certified = Success + ShieldCheck; cert-pending = Warn; not-certified = Destructive; country = region map (`regionBadgeClass`); business type = Manufacturer Info / Wholesaler Teal / Trader Gold; brand owner = Teal. Chips sitting on card imagery use **opaque** fills (`bg-background/80`, semantic `/10` tints) — never `backdrop-blur` on a list card (§1.4). Text drawn directly onto a photo instead rides a `from-scrim/80 via-scrim/40` gradient with `text-on-dark`.
 
 ### Named Rules
 

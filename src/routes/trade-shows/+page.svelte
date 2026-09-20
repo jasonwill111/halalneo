@@ -147,7 +147,7 @@
 		mega: 'bg-primary/15 text-primary',
 		large: 'bg-info/15 text-info',
 		medium: 'bg-muted text-muted-foreground',
-		regional: 'bg-accent-rose/15 text-accent-rose'
+		regional: 'bg-gold/15 text-gold'
 	};
 
 	const regionIcons: Record<string, string> = {

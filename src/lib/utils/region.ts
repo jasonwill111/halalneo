@@ -42,8 +42,8 @@ export function regionBadgeClass(region: string): string {
 	const map: Record<string, string> = {
 		'Southeast Asia': 'bg-info/10 text-info border-info/20',
 		'Middle East': 'bg-warn/10 text-warn border-warn/20',
-		'South Asia': 'bg-accent-purple/10 text-accent-purple border-accent-purple/20',
-		'East Asia': 'bg-accent-rose/10 text-accent-rose border-accent-rose/20',
+		'South Asia': 'bg-teal/10 text-teal border-teal/20',
+		'East Asia': 'bg-gold/10 text-gold border-gold/20',
 		Europe: 'bg-primary/10 text-primary border-primary/20',
 		Americas: 'bg-success/10 text-success border-success/20',
 		Africa: 'bg-warn/10 text-warn border-warn/20',

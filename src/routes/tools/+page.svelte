@@ -41,7 +41,7 @@
 		{
 			href: '/tools/rfq-builder',
 			icon: FileText,
-			tone: 'bg-accent-purple/10 text-accent-purple',
+			tone: 'bg-teal/10 text-teal',
 			name: 'RFQ Builder',
 			desc: 'Assemble a halal-ready request for quotation with cert, label and document requirements.',
 			badge: 'New'
@@ -57,7 +57,7 @@
 		{
 			href: '/tools/ai-chat',
 			icon: Bot,
-			tone: 'bg-accent-rose/10 text-accent-rose',
+			tone: 'bg-gold/10 text-gold',
 			name: 'HalalNeo AI',
 			desc: 'Plain-language answers grounded in certifier data. In preparation.',
 			badge: 'Soon'

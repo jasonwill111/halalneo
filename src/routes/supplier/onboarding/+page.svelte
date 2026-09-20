@@ -24,7 +24,7 @@
 		{ icon: Globe, title: 'Global buyer reach', desc: 'Connect with certified buyers across ASEAN, Gulf and Europe.', color: 'bg-info/10 text-info' },
 		{ icon: ShieldCheck, title: 'Certification trust', desc: 'Showcase verified halal certificates buyers can check.', color: 'bg-success/10 text-success' },
 		{ icon: BarChart3, title: 'Sales analytics', desc: 'Track inquiries, product views and market demand.', color: 'bg-warn/10 text-warn' },
-		{ icon: Users, title: 'Direct inquiries', desc: 'Receive qualified RFQs directly in your dashboard.', color: 'bg-accent-purple/10 text-accent-purple' }
+		{ icon: Users, title: 'Direct inquiries', desc: 'Receive qualified RFQs directly in your dashboard.', color: 'bg-teal/10 text-teal' }
 	];
 
 	const steps = ['Company info', 'Verification', 'Approval'];

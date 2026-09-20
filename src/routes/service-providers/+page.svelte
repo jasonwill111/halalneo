@@ -132,8 +132,8 @@
 			certification: 'bg-primary/10 text-primary',
 			logistics: 'bg-success/10 text-success',
 			finance: 'bg-warn/10 text-warn',
-			payment: 'bg-accent-purple/10 text-accent-purple',
-			insurance: 'bg-accent-rose/10 text-accent-rose',
+			payment: 'bg-teal/10 text-teal',
+			insurance: 'bg-gold/10 text-gold',
 			consulting: 'bg-info/10 text-info'
 		};
 		return colors[type];

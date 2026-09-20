@@ -255,8 +255,8 @@
 	function typeBadgeCls(type?: string | null): string {
 		if (type === 'manufacturer') return 'bg-info/10 text-info border-info/20';
 		if (type === 'wholesaler')
-			return 'bg-accent-purple/10 text-accent-purple border-accent-purple/20';
-		if (type === 'trader') return 'bg-accent-rose/10 text-accent-rose border-accent-rose/20';
+			return 'bg-teal/10 text-teal border-teal/20';
+		if (type === 'trader') return 'bg-gold/10 text-gold border-gold/20';
 		return '';
 	}
 

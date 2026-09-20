@@ -38,8 +38,8 @@
 		{ label: 'Goods value', value: num(goodsValue), tone: 'bg-primary' },
 		{ label: 'Freight + insurance', value: num(freight) + num(insurance), tone: 'bg-info' },
 		{ label: `Duty (${num(dutyRate)}%)`, value: duty, tone: 'bg-warn' },
-		{ label: `VAT (${num(vatRate)}%)`, value: vat, tone: 'bg-accent-purple' },
-		{ label: 'Clearance & handling', value: num(clearance), tone: 'bg-accent-rose' },
+		{ label: `VAT (${num(vatRate)}%)`, value: vat, tone: 'bg-teal' },
+		{ label: 'Clearance & handling', value: num(clearance), tone: 'bg-gold' },
 		{ label: 'Certification share', value: certPerShipment, tone: 'bg-success' }
 	]);
 	const maxBreak = $derived(Math.max(1, ...breakdown.map((b) => b.value)));
