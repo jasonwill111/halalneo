@@ -47,7 +47,13 @@ test-results
 
 # Local dev
 local.db
+local.db-shm
+local.db-wal
 build-error*.tmp
 tmp/
 wrangler-dev*.log
 wrangler-dev-err.log
+
+# Agent/tool local config
+.mcp.json
+.commandcode/
