@@ -96,9 +96,9 @@
 						class="w-full justify-start text-xs"
 						onclick={() => downloadTemplate(template.id)}
 					>
-						<DownloadIcon class="mr-1.5 size-3" />
+						<DownloadIcon class="me-1.5 size-3" />
 						Download
-						<span class="ml-auto text-muted-foreground">.{template.format}</span>
+						<span class="ms-auto text-muted-foreground">.{template.format}</span>
 					</Button>
 				</CardContent>
 			</Card>

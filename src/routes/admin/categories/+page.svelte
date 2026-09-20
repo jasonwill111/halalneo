@@ -337,9 +337,9 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<div class="relative w-full max-w-sm">
 			<Search
-				class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
-			<Input bind:value={search} placeholder="Search categories..." class="pl-9" />
+			<Input bind:value={search} placeholder="Search categories..." class="ps-9" />
 		</div>
 		<FilterPills
 			options={statusOptions}
@@ -355,7 +355,7 @@
 					<TableHead>Category</TableHead>
 					<TableHead>Parent</TableHead>
 					<TableHead>Description</TableHead>
-					<TableHead class="text-right">Actions</TableHead>
+					<TableHead class="text-end">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -365,7 +365,7 @@
 							<TableCell><Skeleton class="h-4 w-32" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-24" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-full max-w-xs" /></TableCell>
-							<TableCell class="text-right"><Skeleton class="ml-auto h-8 w-16" /></TableCell>
+							<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-16" /></TableCell>
 						</TableRow>
 					{/each}
 				{:else if loadError}
@@ -426,7 +426,7 @@
 							<TableCell class="max-w-xs truncate text-sm text-muted-foreground"
 								>{c.description}</TableCell
 							>
-							<TableCell class="text-right">
+							<TableCell class="text-end">
 								<div class="flex items-center justify-end gap-1">
 									<Button variant="ghost" size="icon" aria-label="Edit" onclick={() => openEdit(c)}>
 										<Pencil class="size-4"></Pencil>

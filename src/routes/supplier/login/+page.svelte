@@ -115,14 +115,14 @@
 						<Label class="text-2xs font-medium">Email</Label>
 						<div class="relative">
 							<Mail
-								class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+								class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 							></Mail>
 							<Input
 								bind:value={email}
 								type="email"
 								autocomplete="email"
 								placeholder="you@company.com"
-								class="h-9 pl-9 text-2xs-plus"
+								class="h-9 ps-9 text-2xs-plus"
 								aria-invalid={fieldErrors.email ? true : undefined}
 								oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
 							/>
@@ -133,14 +133,14 @@
 						<Label class="text-2xs font-medium">Password</Label>
 						<div class="relative">
 							<Lock
-								class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+								class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 							></Lock>
 							<Input
 								bind:value={password}
 								type="password"
 								autocomplete="current-password"
 								placeholder="••••••••"
-								class="h-9 pl-9 text-2xs-plus"
+								class="h-9 ps-9 text-2xs-plus"
 								aria-invalid={fieldErrors.password ? true : undefined}
 								oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
 							/>

@@ -392,9 +392,9 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search articles..." class="pl-9" />
+		<Input bind:value={search} placeholder="Search articles..." class="ps-9" />
 	</div>
 
 	{#if loadError}
@@ -432,7 +432,7 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 						<TableHead>Section</TableHead>
 						<TableHead>Status</TableHead>
 						<TableHead>Tags</TableHead>
-						<TableHead class="text-right">Actions</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -443,7 +443,7 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 								<TableCell><Skeleton class="h-4 w-28" /></TableCell>
 								<TableCell><Skeleton class="h-4 w-16" /></TableCell>
 								<TableCell><Skeleton class="h-4 w-24" /></TableCell>
-								<TableCell class="text-right"><Skeleton class="ml-auto h-8 w-16" /></TableCell>
+								<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-16" /></TableCell>
 							</TableRow>
 						{/each}
 					{:else if filtered.length === 0}
@@ -508,7 +508,7 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 										{/each}
 									</div>
 								</TableCell>
-								<TableCell class="text-right">
+								<TableCell class="text-end">
 									<div class="flex items-center justify-end gap-1">
 										<Button
 											variant="ghost"

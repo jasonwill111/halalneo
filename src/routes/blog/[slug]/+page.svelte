@@ -324,7 +324,7 @@
 									class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary transition-transform group-hover:translate-x-0.5"
 								>
 									{item.cta}
-									<ArrowRight class="size-3" />
+									<ArrowRight class="size-3 rtl:rotate-180" />
 								</span>
 							</a>
 						{/each}

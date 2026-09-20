@@ -67,10 +67,10 @@
 	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
 
 	function statusBorder(status: string): string {
-		if (status === 'active') return 'border-l-success';
-		if (status === 'pending') return 'border-l-primary';
-		if (status === 'flagged') return 'border-l-warn';
-		return 'border-l-muted';
+		if (status === 'active') return 'border-s-success';
+		if (status === 'pending') return 'border-s-primary';
+		if (status === 'flagged') return 'border-s-warn';
+		return 'border-s-muted';
 	}
 
 	function statusIconBg(status: string): string {
@@ -135,7 +135,7 @@
 				</p>
 				<Button href="/suppliers" variant="outline" size="sm" class="mt-3 h-7 text-2xs">
 					Browse suppliers
-					<ChevronRight class="size-3"></ChevronRight>
+					<ChevronRight class="size-3 rtl:rotate-180"></ChevronRight>
 				</Button>
 			{/if}
 		</div>
@@ -144,7 +144,7 @@
 			{#each paged as item (item.id)}
 				<div
 					class={cn(
-						'group rounded-xl bg-card border-l-2 p-2 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-md',
+						'group rounded-xl bg-card border-s-2 p-2 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:border-primary/20 hover:-translate-y-0.5 hover:shadow-md',
 						statusBorder(item.status)
 					)}
 				>
@@ -195,7 +195,7 @@
 										class="inline-flex h-5 items-center gap-0.5 text-2xs font-medium text-primary"
 									>
 										View product
-										<ChevronRight class="size-2.5"></ChevronRight>
+										<ChevronRight class="size-2.5 rtl:rotate-180"></ChevronRight>
 									</Button>
 								{:else if item.supplierSlug}
 									<Button
@@ -205,7 +205,7 @@
 										class="inline-flex h-5 items-center gap-0.5 text-2xs font-medium text-primary"
 									>
 										View supplier
-										<ChevronRight class="size-2.5"></ChevronRight>
+										<ChevronRight class="size-2.5 rtl:rotate-180"></ChevronRight>
 									</Button>
 								{/if}
 							</div>

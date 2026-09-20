@@ -224,7 +224,7 @@
 				type="button"
 				onclick={togglePause}
 				aria-label={paused ? 'Resume carousel' : 'Pause carousel'}
-				class="glass-sm absolute right-2 bottom-2 z-20 flex size-11 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground sm:bottom-3"
+				class="glass-sm absolute end-2 bottom-2 z-20 flex size-11 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground sm:bottom-3"
 			>
 				{#if paused}
 					<Play class="size-4" />

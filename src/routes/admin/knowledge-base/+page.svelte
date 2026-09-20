@@ -233,13 +233,13 @@
 		<TabsList>
 			<TabsTrigger value="articles"
 				>Articles <span
-					class="ml-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-2xs text-primary"
+					class="ms-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-2xs text-primary"
 					>{totalArticles}</span
 				></TabsTrigger
 			>
 			<TabsTrigger value="sections"
 				>Sections <span
-					class="ml-1 rounded-full bg-muted px-1.5 py-0.5 text-2xs text-muted-foreground"
+					class="ms-1 rounded-full bg-muted px-1.5 py-0.5 text-2xs text-muted-foreground"
 					>{sectionCards.filter((s) => s.count > 0).length}</span
 				></TabsTrigger
 			>
@@ -277,9 +277,9 @@
 		<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 			<div class="relative flex-1 sm:max-w-xs">
 				<Search
-					class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+					class="pointer-events-none absolute top-1/2 start-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
 				></Search>
-				<Input bind:value={search} placeholder="Search articles..." class="pl-8 text-2xs-plus" />
+				<Input bind:value={search} placeholder="Search articles..." class="ps-8 text-2xs-plus" />
 			</div>
 		</div>
 
@@ -290,7 +290,7 @@
 						<TableHead>Article</TableHead>
 						<TableHead>Section</TableHead>
 						<TableHead>Status</TableHead>
-						<TableHead class="text-right">Actions</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -300,7 +300,7 @@
 								<TableCell><Skeleton class="h-4 w-40" /></TableCell>
 								<TableCell><Skeleton class="h-4 w-28" /></TableCell>
 								<TableCell><Skeleton class="h-4 w-16" /></TableCell>
-								<TableCell class="text-right"><Skeleton class="ml-auto h-8 w-16" /></TableCell>
+								<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-16" /></TableCell>
 							</TableRow>
 						{/each}
 					{:else if filtered.length === 0}
@@ -375,7 +375,7 @@
 										{article.status ?? 'unknown'}
 									</Badge>
 								</TableCell>
-								<TableCell class="text-right">
+								<TableCell class="text-end">
 									<div class="flex items-center justify-end gap-1">
 										<Button
 											variant="ghost"

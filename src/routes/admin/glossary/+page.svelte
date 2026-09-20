@@ -226,9 +226,9 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search terms..." class="pl-9" />
+		<Input bind:value={search} placeholder="Search terms..." class="ps-9" />
 	</div>
 
 	{#if loadError}
@@ -264,7 +264,7 @@
 					<TableRow class="hover:bg-transparent">
 						<TableHead>Term</TableHead>
 						<TableHead>Definition</TableHead>
-						<TableHead class="text-right">Actions</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -273,7 +273,7 @@
 							<TableRow>
 								<TableCell><Skeleton class="h-4 w-32" /></TableCell>
 								<TableCell><Skeleton class="h-4 w-full max-w-md" /></TableCell>
-								<TableCell class="text-right"><Skeleton class="ml-auto h-8 w-16" /></TableCell>
+								<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-16" /></TableCell>
 							</TableRow>
 						{/each}
 					{:else if filtered.length === 0}
@@ -320,7 +320,7 @@
 								<TableCell class="max-w-md text-sm text-muted-foreground">
 									{t.definition ?? '—'}
 								</TableCell>
-								<TableCell class="text-right">
+								<TableCell class="text-end">
 									<div class="flex items-center justify-end gap-1">
 										<Button
 											variant="ghost"

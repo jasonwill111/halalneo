@@ -247,11 +247,11 @@
 	<form onsubmit={handleSearch} class="space-y-1.5" bind:this={formEl}>
 		<div class="flex gap-2">
 			<div class="relative flex-1">
-				<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+				<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="Search certificates, brands, products..."
-					class="pl-9"
+					class="ps-9"
 					bind:value={query}
 					maxlength={100}
 					aria-label="Search by certificate number, brand, product or certifying body"
@@ -290,7 +290,7 @@
 					}}
 				>
 					{c.name}
-					<span class="ml-1 opacity-60">{c.country}</span>
+					<span class="ms-1 opacity-60">{c.country}</span>
 				</Button>
 			{/each}
 		</div>
@@ -315,7 +315,7 @@
 							</div>
 							<div class="flex items-center gap-2 pt-1">
 								<Skeleton class="h-5 w-20 rounded-full" />
-								<Skeleton class="ml-auto h-7 w-16 rounded-md" />
+								<Skeleton class="ms-auto h-7 w-16 rounded-md" />
 							</div>
 						</CardContent>
 					</Card>
@@ -353,10 +353,10 @@
 					</p>
 					<div class="flex items-center gap-2">
 						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={() => copyResults()}>
-							Copy results<CopyIcon class="ml-1 size-3" />
+							Copy results<CopyIcon class="ms-1 size-3" />
 						</Button>
 						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={exportResults}>
-							Export<FileDownIcon class="ml-1 size-3" />
+							Export<FileDownIcon class="ms-1 size-3" />
 						</Button>
 					</div>
 				</div>
@@ -445,7 +445,7 @@
 										)}
 										variant="outline"
 										size="sm"
-										class="ml-auto h-7 text-xs"
+										class="ms-auto h-7 text-xs"
 									>
 										View
 										<ExternalLinkIcon class="size-3" />

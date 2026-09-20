@@ -700,7 +700,7 @@
 										{/if}
 										{#if product.certStatus === 'certified'}
 											<span
-												class="absolute top-1 left-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-3xs font-semibold text-success"
+												class="absolute top-1 start-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-3xs font-semibold text-success"
 											>
 												<ShieldCheck class="size-2.5"></ShieldCheck>
 												Cert

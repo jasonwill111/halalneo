@@ -159,7 +159,7 @@
 					{#each certifiers as c (c.id)}
 						<ToggleGroup.Item
 							value={c.id}
-							class="h-auto flex-col items-start gap-0.5 p-3 text-left"
+							class="h-auto flex-col items-start gap-0.5 p-3 text-start"
 						>
 							<span class="font-medium">{c.name}</span>
 							<span class="text-xs text-muted-foreground">{c.country}</span>
@@ -179,7 +179,7 @@
 					aria-labelledby="category-label"
 				>
 					{#each categories as cat (cat.id)}
-						<ToggleGroup.Item value={cat.id} class="h-auto justify-start p-3 text-left text-sm">
+						<ToggleGroup.Item value={cat.id} class="h-auto justify-start p-3 text-start text-sm">
 							{cat.name}
 						</ToggleGroup.Item>
 					{/each}
@@ -197,7 +197,7 @@
 					aria-labelledby="size-label"
 				>
 					{#each companySizes as s (s.id)}
-						<ToggleGroup.Item value={s.id} class="h-auto justify-start p-3 text-left text-sm">
+						<ToggleGroup.Item value={s.id} class="h-auto justify-start p-3 text-start text-sm">
 							{s.name}
 						</ToggleGroup.Item>
 					{/each}

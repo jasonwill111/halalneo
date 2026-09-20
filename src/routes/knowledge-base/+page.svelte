@@ -168,11 +168,11 @@
 	<form bind:this={formEl} onsubmit={handleSearch} class="space-y-1.5">
 		<div class="flex gap-2">
 			<div class="relative flex-1">
-				<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+				<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					type="search"
 					placeholder="Search sections..."
-					class="pl-9 text-xs sm:text-sm"
+					class="ps-9 text-xs sm:text-sm"
 					bind:value={query}
 					maxlength={MAX_SEARCH}
 					aria-label="Search knowledge base sections"

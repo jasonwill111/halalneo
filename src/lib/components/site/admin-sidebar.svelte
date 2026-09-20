@@ -114,7 +114,7 @@
 	<div
 		class={cn(
 			'pattern-girih flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16',
-			variant === 'mobile' && 'pr-10'
+			variant === 'mobile' && 'pe-10'
 		)}
 	>
 		<Mark class="size-5 shrink-0 text-sidebar-primary" />

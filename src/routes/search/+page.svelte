@@ -354,7 +354,7 @@
 	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-1 text-2xs text-muted-foreground">
 			<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
-			<ChevronRight class="size-3" />
+			<ChevronRight class="size-3 rtl:rotate-180" />
 			<h1 class="sr-only">Search — HalalNeo</h1>
 			<span class="font-medium text-foreground">Search results</span>
 		</div>
@@ -536,7 +536,7 @@
 							>
 								<div class="relative mb-2 aspect-square rounded-md bg-muted">
 									<span
-										class="absolute top-1.5 left-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-2xs font-medium text-secondary-foreground"
+										class="absolute top-1.5 start-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-2xs font-medium text-secondary-foreground"
 										>JAKIM</span
 									>
 								</div>

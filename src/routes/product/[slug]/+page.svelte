@@ -528,7 +528,7 @@
 						text={item.shortDescription ?? ''}
 					/>
 					{#if item.views != null}
-						<span class="ml-auto inline-flex items-center gap-1 text-2xs text-muted-foreground">
+						<span class="ms-auto inline-flex items-center gap-1 text-2xs text-muted-foreground">
 							<Eye class="size-3" />
 							{item.views} views
 						</span>
@@ -783,14 +783,14 @@
 								target="_blank"
 								rel="noopener"
 								variant="outline"
-								class="h-auto justify-start gap-2 p-3 text-left"
+								class="h-auto justify-start gap-2 p-3 text-start"
 							>
 								<Play class="size-4 shrink-0 text-primary" />
 								<span class="min-w-0">
 									<span class="block truncate text-sm font-medium">Watch video {i + 1}</span>
 									<span class="block truncate text-2xs text-muted-foreground">{url}</span>
 								</span>
-								<ExternalLink class="ml-auto size-3.5 shrink-0 text-muted-foreground" />
+								<ExternalLink class="ms-auto size-3.5 shrink-0 text-muted-foreground" />
 							</Button>
 						{/if}
 					{/each}

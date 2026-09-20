@@ -495,7 +495,7 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
 		/>
 		<Input
 			bind:value={search}
@@ -503,7 +503,7 @@
 				page = 1;
 			}}
 			placeholder="Search suppliers..."
-			class="pl-9"
+			class="ps-9"
 		/>
 	</div>
 
@@ -519,7 +519,7 @@
 						<TableHead>Country</TableHead>
 						<TableHead>Profile</TableHead>
 						<TableHead>Status</TableHead>
-						<TableHead class="text-right">Actions</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -539,8 +539,8 @@
 								<TableCell><Skeleton class="h-4 w-20"></Skeleton></TableCell>
 								<TableCell><Skeleton class="h-4 w-40"></Skeleton></TableCell>
 								<TableCell><Skeleton class="h-5 w-20 rounded-full"></Skeleton></TableCell>
-								<TableCell class="text-right"
-									><Skeleton class="ml-auto h-4 w-12"></Skeleton></TableCell
+								<TableCell class="text-end"
+									><Skeleton class="ms-auto h-4 w-12"></Skeleton></TableCell
 								>
 							</TableRow>
 						{/each}
@@ -612,7 +612,7 @@
 										>{m.status ?? '—'}</Badge
 									>
 								</TableCell>
-								<TableCell class="text-right">
+								<TableCell class="text-end">
 									<div class="flex items-center justify-end gap-1">
 										<Button
 											variant="ghost"

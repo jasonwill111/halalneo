@@ -119,11 +119,11 @@
 	<div class="rounded-xl bg-card p-3 sm:p-4 text-center">
 		<h2 class="text-base font-semibold sm:text-lg">How can we help?</h2>
 		<div class="relative mx-auto mt-3 max-w-md">
-			<SearchIcon class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search questions..."
-				class="pl-9"
+				class="ps-9"
 				bind:value={search}
 			/>
 		</div>

@@ -39,7 +39,7 @@
 		size="sm"
 		type="button"
 		onclick={() => (open = !open)}
-		class="h-auto w-full justify-between rounded-lg px-3 py-2.5 text-left font-medium hover:bg-accent/50"
+		class="h-auto w-full justify-between rounded-lg px-3 py-2.5 text-start font-medium hover:bg-accent/50"
 		aria-expanded={open}
 	>
 		<span class="flex items-center gap-2">

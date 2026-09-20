@@ -140,7 +140,7 @@
 </svelte:head>
 
 <section class="space-y-4 py-8 sm:space-y-6">
-	<div class="max-w-3xl space-y-2 text-center sm:text-left">
+	<div class="max-w-3xl space-y-2 text-center sm:text-start">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Market entry intelligence</h1>
 		<p class="text-xs text-muted-foreground sm:text-sm">
 			{guideStats.countries} country-level guides for navigating halal regulatory frameworks, import requirements,
@@ -178,7 +178,7 @@
 					onclick={() => (selectedRegion = region.value)}
 				>
 					{region.label}
-					<Badge variant="secondary" class="ml-1 text-3xs">
+					<Badge variant="secondary" class="ms-1 text-3xs">
 						{region.count}
 					</Badge>
 				</Button>
@@ -234,13 +234,13 @@
 							<div
 								class="absolute inset-0 bg-gradient-to-t from-scrim/80 via-scrim/40 to-transparent"
 							></div>
-							<div class="absolute right-2 bottom-2 left-2 sm:right-3 sm:bottom-3 sm:left-3">
+							<div class="absolute end-2 bottom-2 start-2 sm:end-3 sm:bottom-3 sm:start-3">
 								<h3 class="truncate text-sm font-semibold text-on-dark sm:text-base lg:text-lg">
 									{guide.country}
 								</h3>
 								<p class="truncate text-2xs-plus text-on-dark/80 sm:text-xs">{guide.region}</p>
 							</div>
-							<div class="absolute top-2 right-2 hidden sm:top-3 sm:right-3 sm:block">
+							<div class="absolute top-2 end-2 hidden sm:top-3 sm:end-3 sm:block">
 								<Badge>{guide.region}</Badge>
 							</div>
 						</div>
@@ -278,7 +278,7 @@
 								>
 								<div class="flex items-center gap-1 text-2xs-plus text-primary">
 									Read guide
-									<ArrowRight class="size-3.5" />
+									<ArrowRight class="size-3.5 rtl:rotate-180" />
 								</div>
 							</div>
 						</div>

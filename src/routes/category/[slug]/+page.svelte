@@ -135,12 +135,12 @@
 						{/if}
 						{#if product.certStatus === 'certified'}
 							<Badge
-								class="absolute top-1.5 left-1.5 bg-success/10 text-success hover:bg-success/20"
+								class="absolute top-1.5 start-1.5 bg-success/10 text-success hover:bg-success/20"
 							>
 								Halal
 							</Badge>
 						{:else if product.certStatus === 'pending'}
-							<Badge class="absolute top-1.5 left-1.5 bg-warn/10 text-warn hover:bg-warn/20">
+							<Badge class="absolute top-1.5 start-1.5 bg-warn/10 text-warn hover:bg-warn/20">
 								Pending
 							</Badge>
 						{/if}

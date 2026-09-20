@@ -475,8 +475,7 @@ html.theme-transitioning *::after {
 .header-scroll-edge::after {
 	content: '';
 	position: absolute;
-	left: 0;
-	right: 0;
+	inset-inline: 0;
 	bottom: -8px;
 	height: 8px;
 	background: linear-gradient(to bottom, oklch(from var(--background) l c h / 0.06), transparent);
@@ -650,7 +649,7 @@ html.theme-transitioning *::after {
 
 .content-body :where(ul, ol) {
 	margin: 0 0 1.25rem;
-	padding-left: 1.5rem;
+	padding-inline-start: 1.5rem;
 }
 
 .content-body :where(li) {

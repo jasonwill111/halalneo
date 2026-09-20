@@ -212,7 +212,7 @@
 					variant="outline"
 					onclick={() => (activeCategory = activeCategory === cat.slug ? 'all' : cat.slug)}
 					aria-pressed={activeCategory === cat.slug}
-					class="h-full w-full border-0 bg-transparent p-0 text-left shadow-none"
+					class="h-full w-full border-0 bg-transparent p-0 text-start shadow-none"
 				>
 					<Card
 						hoverable
@@ -279,13 +279,13 @@
 		</div>
 		<div class="relative w-full sm:max-w-xs">
 			<label for="product-search" class="sr-only">Search products by name</label>
-			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				id="product-search"
 				bind:value={query}
 				type="search"
 				placeholder="Search products by name..."
-				class="pl-9"
+				class="ps-9"
 			/>
 		</div>
 
@@ -354,7 +354,7 @@
 							{/if}
 							{#if cert}
 								<span
-									class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-2xs font-semibold {cert.cls}"
+									class="absolute top-1.5 start-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-2xs font-semibold {cert.cls}"
 								>
 									<cert.icon class="size-2.5"></cert.icon>
 									{cert.text}

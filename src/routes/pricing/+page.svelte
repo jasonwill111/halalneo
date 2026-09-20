@@ -122,7 +122,7 @@
 				class="mt-1 inline-flex items-center gap-1 text-xs font-medium text-info underline underline-offset-2 hover:text-info/80"
 			>
 				Apply to list on HalalNeo
-				<ArrowRight class="size-3"></ArrowRight>
+				<ArrowRight class="size-3 rtl:rotate-180"></ArrowRight>
 			</a>
 		</div>
 	</div>
@@ -134,7 +134,7 @@
 			<ToggleGroup.Item value="monthly">Monthly</ToggleGroup.Item>
 			<ToggleGroup.Item value="annual">Annual</ToggleGroup.Item>
 		</ToggleGroup.Root>
-		<span class="ml-1 text-2xs text-muted-foreground">Save 20%</span>
+		<span class="ms-1 text-2xs text-muted-foreground">Save 20%</span>
 	</div>
 </div>
 
@@ -159,7 +159,7 @@
 				<span class="text-muted-foreground text-2xs-plus">/mo</span>
 				{#if billing === 'annual' && plan.monthly > 0}
 					<span
-						class="ml-1 inline-flex items-center rounded-full bg-success/15 px-1.5 py-0.5 text-2xs font-medium text-success"
+						class="ms-1 inline-flex items-center rounded-full bg-success/15 px-1.5 py-0.5 text-2xs font-medium text-success"
 					>
 						Save {Math.round((1 - plan.annual / plan.monthly) * 100)}%
 					</span>
@@ -201,7 +201,7 @@
 			<p class="text-2xs text-success">Free during test mode</p>
 		</div>
 		<div class="flex items-center gap-2 shrink-0">
-			<div class="text-right">
+			<div class="text-end">
 				<span class="text-sm font-bold">$49</span>
 				<span class="text-muted-foreground text-2xs-plus">/mo</span>
 			</div>

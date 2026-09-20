@@ -158,9 +158,9 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search inquiries..." class="pl-9" />
+		<Input bind:value={search} placeholder="Search inquiries..." class="ps-9" />
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -178,7 +178,7 @@
 					<TableHead>Supplier</TableHead>
 					<TableHead>Subject</TableHead>
 					<TableHead>Status</TableHead>
-					<TableHead class="text-right">Actions</TableHead>
+					<TableHead class="text-end">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -190,7 +190,7 @@
 							<TableCell><Skeleton class="h-4 w-24" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-full max-w-xs" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-16" /></TableCell>
-							<TableCell class="text-right"><Skeleton class="ml-auto h-7 w-14" /></TableCell>
+							<TableCell class="text-end"><Skeleton class="ms-auto h-7 w-14" /></TableCell>
 						</TableRow>
 					{/each}
 				{:else if loadError}
@@ -251,7 +251,7 @@
 									>{inq.status}</Badge
 								>
 							</TableCell>
-							<TableCell class="text-right">
+							<TableCell class="text-end">
 								<Button
 									variant="ghost"
 									size="sm"

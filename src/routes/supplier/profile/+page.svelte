@@ -116,13 +116,13 @@
 			<dl class="space-y-2 text-2xs-plus">
 				<div class="flex items-center justify-between gap-3">
 					<dt class="text-muted-foreground">Company</dt>
-					<dd class="min-w-0 truncate font-medium text-right" title={profile.name}>
+					<dd class="min-w-0 truncate font-medium text-end" title={profile.name}>
 						{profile.name}
 					</dd>
 				</div>
 				<div class="flex items-center justify-between gap-3">
 					<dt class="text-muted-foreground">Listed as</dt>
-					<dd class="min-w-0 truncate text-right">
+					<dd class="min-w-0 truncate text-end">
 						<a
 							href={localizeHref(`/supplier/${profile.slug}`)}
 							class="font-medium text-primary hover:underline"

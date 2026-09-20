@@ -319,7 +319,7 @@
 					<TableHead>Slug</TableHead>
 					<TableHead>Category</TableHead>
 					<TableHead>Status</TableHead>
-					<TableHead class="text-right">Actions</TableHead>
+					<TableHead class="text-end">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -330,7 +330,7 @@
 							<TableCell><Skeleton class="h-4 w-28" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-20" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-16" /></TableCell>
-							<TableCell class="text-right"><Skeleton class="ml-auto h-8 w-20" /></TableCell>
+							<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-20" /></TableCell>
 						</TableRow>
 					{/each}
 				{:else if loadError}
@@ -400,7 +400,7 @@
 							<TableCell>
 								<Badge variant={t.status === 'active' ? 'default' : 'secondary'}>{t.status}</Badge>
 							</TableCell>
-							<TableCell class="text-right">
+							<TableCell class="text-end">
 								<div class="flex items-center justify-end gap-1">
 									{#if t.status === 'active'}
 										<Button

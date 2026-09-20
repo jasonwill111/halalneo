@@ -69,7 +69,7 @@
 />
 
 <section class="space-y-4 py-8 sm:space-y-6">
-	<div class="max-w-3xl space-y-2 text-center sm:text-left">
+	<div class="max-w-3xl space-y-2 text-center sm:text-start">
 		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product categories</h1>
 		<p class="text-xs text-muted-foreground sm:text-sm">
 			{data.categories.length} categorized product groups with detailed certification, sourcing, and market
@@ -79,8 +79,8 @@
 
 	<div class="space-y-4">
 		<div class="relative w-full max-w-sm">
-			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-			<Input bind:value={search} type="search" placeholder="Search categories..." class="pl-9" />
+			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<Input bind:value={search} type="search" placeholder="Search categories..." class="ps-9" />
 		</div>
 	</div>
 

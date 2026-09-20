@@ -57,7 +57,7 @@
 		<Icon class={className} />
 		<svg
 			viewBox="0 0 64 64"
-			class="absolute -top-1 -right-1 size-2.5 text-success sm:size-2"
+			class="absolute -top-1 -end-1 size-2.5 text-success sm:size-2"
 			fill="none"
 			stroke="currentColor"
 			stroke-width="7"

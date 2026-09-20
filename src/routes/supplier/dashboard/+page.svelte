@@ -357,7 +357,7 @@
 			<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10">
 				<Package class="size-4 text-primary" />
 			</div>
-			<div class="text-left">
+			<div class="text-start">
 				<div class="text-2xs-plus font-medium">My products</div>
 				<div class="text-2xs text-muted-foreground">See every listing and its status</div>
 			</div>
@@ -370,7 +370,7 @@
 			<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10">
 				<MessageCircle class="size-4 text-primary" />
 			</div>
-			<div class="text-left">
+			<div class="text-start">
 				<div class="text-2xs-plus font-medium">View messages</div>
 				<div class="text-2xs text-muted-foreground">
 					{pendingInquiries === null ? 'Buyer inquiries' : `${pendingInquiries} awaiting reply`}
@@ -455,7 +455,7 @@
 		<div class="mb-2 flex items-center gap-1.5">
 			<BarChart3 class="size-3.5 text-muted-foreground" />
 			<h2 class="text-sm font-semibold">Profile analytics</h2>
-			<Badge variant="secondary" class="ml-auto text-2xs">{supplierSlug}</Badge>
+			<Badge variant="secondary" class="ms-auto text-2xs">{supplierSlug}</Badge>
 		</div>
 		{#if loading && !analytics}
 			<div class="grid grid-cols-2 gap-2" aria-label="Loading analytics">

@@ -367,9 +367,9 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<div class="relative w-full max-w-sm">
 			<Search
-				class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
-			<Input bind:value={search} placeholder="Search providers..." class="pl-9" />
+			<Input bind:value={search} placeholder="Search providers..." class="ps-9" />
 		</div>
 		<FilterPills
 			options={statusOptions}
@@ -393,7 +393,7 @@
 					<TableHead>Country</TableHead>
 					<TableHead>Rating</TableHead>
 					<TableHead>Status</TableHead>
-					<TableHead class="text-right">Actions</TableHead>
+					<TableHead class="text-end">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -405,7 +405,7 @@
 							<TableCell><Skeleton class="h-4 w-20" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-10" /></TableCell>
 							<TableCell><Skeleton class="h-4 w-16" /></TableCell>
-							<TableCell class="text-right"><Skeleton class="ml-auto h-8 w-16" /></TableCell>
+							<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-16" /></TableCell>
 						</TableRow>
 					{/each}
 				{:else if loadError}
@@ -477,7 +477,7 @@
 									>{sp.status}</Badge
 								>
 							</TableCell>
-							<TableCell class="text-right">
+							<TableCell class="text-end">
 								<div class="flex items-center justify-end gap-1">
 									<Button
 										variant="ghost"

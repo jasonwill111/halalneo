@@ -257,11 +257,11 @@
 
 	<div class="min-w-0 flex-1">
 		<div class="relative mb-4">
-			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search providers by name..."
-				class="pl-9 text-xs"
+				class="ps-9 text-xs"
 				bind:value={searchQuery}
 			/>
 		</div>
@@ -368,7 +368,7 @@
 							class="flex-1 text-xs"
 							size="sm"
 						>
-							<Eye class="mr-1 size-3.5" />
+							<Eye class="me-1 size-3.5" />
 							View Details
 						</Button>
 						{#if provider.whatsapp}

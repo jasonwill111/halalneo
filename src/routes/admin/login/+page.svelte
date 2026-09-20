@@ -78,13 +78,13 @@
 					<FieldLabel>Email</FieldLabel>
 					<div class="relative">
 						<MailIcon
-							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></MailIcon>
 						<Input
 							bind:value={email}
 							type="email"
 							placeholder="admin@halalneo.com"
-							class="pl-9"
+							class="ps-9"
 							aria-invalid={fieldErrors.email ? true : undefined}
 							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
 						/>
@@ -95,13 +95,13 @@
 					<FieldLabel>Password</FieldLabel>
 					<div class="relative">
 						<LockIcon
-							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></LockIcon>
 						<Input
 							bind:value={password}
 							type="password"
 							placeholder="••••••••"
-							class="pl-9"
+							class="ps-9"
 							aria-invalid={fieldErrors.password ? true : undefined}
 							oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
 						/>

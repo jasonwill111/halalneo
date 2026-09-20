@@ -181,7 +181,7 @@
 					<TableHead class="text-2xs">Supplier</TableHead>
 					<TableHead class="text-2xs">Deal</TableHead>
 					<TableHead class="text-2xs">Status</TableHead>
-					<TableHead class="text-2xs text-right">Actions</TableHead>
+					<TableHead class="text-2xs text-end">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -193,7 +193,7 @@
 						<TableCell>
 							<Badge variant="secondary" class="text-2xs">{s.status ?? 'draft'}</Badge>
 						</TableCell>
-						<TableCell class="text-right">
+						<TableCell class="text-end">
 							<Button
 								variant="ghost"
 								size="icon"

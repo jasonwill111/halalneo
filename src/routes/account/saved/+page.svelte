@@ -123,10 +123,10 @@
 	<Tabs bind:value={tab} class="mb-3">
 		<TabsList variant="line">
 			<TabsTrigger value="products"
-				>Products <span class="ml-1 opacity-70">({savedProducts.length})</span></TabsTrigger
+				>Products <span class="ms-1 opacity-70">({savedProducts.length})</span></TabsTrigger
 			>
 			<TabsTrigger value="following"
-				>Following <span class="ml-1 opacity-70">({following.length})</span></TabsTrigger
+				>Following <span class="ms-1 opacity-70">({following.length})</span></TabsTrigger
 			>
 		</TabsList>
 	</Tabs>
@@ -236,7 +236,7 @@
 					<Button
 						variant="ghost"
 						size="sm"
-						class="absolute top-2 right-2 h-6 px-1.5 text-2xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-transparent hover:text-destructive"
+						class="absolute top-2 end-2 h-6 px-1.5 text-2xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-transparent hover:text-destructive"
 						onclick={(e) => {
 							e.preventDefault();
 							removeFavorite(item.productSlug, item.name ?? item.productSlug);

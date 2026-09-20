@@ -197,13 +197,13 @@
 					<FieldLabel>Email</FieldLabel>
 					<div class="relative">
 						<MailIcon
-							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></MailIcon>
 						<Input
 							bind:value={email}
 							type="email"
 							placeholder="you@company.com"
-							class="pl-9"
+							class="ps-9"
 							autocomplete="email"
 							aria-invalid={fieldErrors.email ? true : undefined}
 							oninput={() => {
@@ -218,13 +218,13 @@
 					<FieldLabel>Password</FieldLabel>
 					<div class="relative">
 						<LockIcon
-							class="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></LockIcon>
 						<Input
 							bind:value={password}
 							type="password"
 							placeholder="Min. 8 characters"
-							class="pl-9"
+							class="ps-9"
 							autocomplete="new-password"
 							aria-invalid={fieldErrors.password ? true : undefined}
 							oninput={() => {
@@ -268,7 +268,7 @@
 							Creating…
 						{:else}
 							Create Account
-							<ArrowRight class="size-3.5" />
+							<ArrowRight class="size-3.5 rtl:rotate-180" />
 						{/if}
 					</span>
 				</Button>

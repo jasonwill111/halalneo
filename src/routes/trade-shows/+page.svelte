@@ -198,11 +198,11 @@
 
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div class="relative flex-1 sm:max-w-xs">
-			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search events, cities..."
-				class="pl-9"
+				class="ps-9"
 				bind:value={search}
 			/>
 		</div>
@@ -336,7 +336,7 @@
 								rel="noopener"
 								variant="outline"
 								size="sm"
-								class="ml-auto h-7 text-xs"
+								class="ms-auto h-7 text-xs"
 							>
 								Website
 								<ExternalLinkIcon class="size-3" />
@@ -428,10 +428,10 @@
 						{/each}
 					</svg>
 					<div class="p-3 text-center text-xs text-muted-foreground">
-						<span class="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-success"></span> Happening
+						<span class="me-1 inline-block h-2.5 w-2.5 rounded-full bg-success"></span> Happening
 						now ·
-						<span class="mr-1 ml-1 inline-block h-2.5 w-2.5 rounded-full bg-info"></span> Upcoming ·
-						<span class="mr-1 ml-1 inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50"
+						<span class="me-1 ms-1 inline-block h-2.5 w-2.5 rounded-full bg-info"></span> Upcoming ·
+						<span class="me-1 ms-1 inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50"
 						></span> Past
 					</div>
 				</div>

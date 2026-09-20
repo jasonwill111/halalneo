@@ -237,7 +237,7 @@
 	{#if !isPortalRoute}
 		<a
 			href="#main-content"
-			class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-60 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-60 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
 			>Skip to content</a
 		>
 	{/if}

@@ -147,8 +147,8 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input bind:value={search} placeholder="Search promotions..." class="pl-9" />
+		<Search class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input bind:value={search} placeholder="Search promotions..." class="ps-9" />
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -167,7 +167,7 @@
 					<TableHead>Price Range</TableHead>
 					<TableHead>Valid Until</TableHead>
 					<TableHead>Status</TableHead>
-					<TableHead class="text-right">Actions</TableHead>
+					<TableHead class="text-end">Actions</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -209,7 +209,7 @@
 									{p.status ?? 'active'}
 								</Badge>
 							</TableCell>
-							<TableCell class="text-right">
+							<TableCell class="text-end">
 								<div class="flex items-center justify-end gap-1">
 									<Button variant="ghost" size="icon" aria-label="View" class="size-8" onclick={() => viewDetail(p)}>
 										<Eye class="size-3.5" />

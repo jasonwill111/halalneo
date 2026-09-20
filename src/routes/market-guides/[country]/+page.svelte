@@ -237,7 +237,7 @@
 							<li class="relative flex gap-3 pb-4 last:pb-0">
 								{#if i < steps.length - 1}
 									<span
-										class="absolute top-7 left-[13px] h-[calc(100%-1.75rem)] w-px bg-border"
+										class="absolute top-7 start-[13px] h-[calc(100%-1.75rem)] w-px bg-border"
 										aria-hidden="true"
 									></span>
 								{/if}
@@ -274,11 +274,11 @@
 					<dl class="space-y-2.5 text-sm">
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Standard basis</dt>
-							<dd class="text-right font-medium">{guide.standardBasis}</dd>
+							<dd class="text-end font-medium">{guide.standardBasis}</dd>
 						</div>
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Estimated cost</dt>
-							<dd class="text-right font-medium">{guide.estimatedCostUsd}</dd>
+							<dd class="text-end font-medium">{guide.estimatedCostUsd}</dd>
 						</div>
 						<div class="flex items-start justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Certifying bodies</dt>
@@ -669,7 +669,7 @@
 									<Button
 										href={localizeHref(`/market-guides/${rel.slug}`)}
 										variant="outline"
-										class="h-auto w-full justify-between p-4 text-left"
+										class="h-auto w-full justify-between p-4 text-start"
 									>
 										<span class="flex items-center gap-2">
 											<span class="text-lg">{rel.flag}</span>

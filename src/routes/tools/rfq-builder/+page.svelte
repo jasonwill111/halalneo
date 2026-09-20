@@ -411,13 +411,13 @@
 							{#if publishResult.id}
 								<a
 									href={localizeHref(`/rfqs/${publishResult.id}`)}
-									class="ml-1 font-semibold underline"
+									class="ms-1 font-semibold underline"
 								>
 									View request
 								</a>
 							{/if}
 							{#if publishResult.needsLogin}
-								<a href={localizeHref('/login')} class="ml-1 font-semibold underline"> Sign in </a>
+								<a href={localizeHref('/login')} class="ms-1 font-semibold underline"> Sign in </a>
 							{/if}
 						</div>
 					{/if}
@@ -428,7 +428,7 @@
 					<div class="text-xs text-muted-foreground">Price it before you send it.</div>
 					<Button href={localizeHref('/tools/landed-cost')} variant="outline" size="sm">
 						Landed cost calculator
-						<ArrowRight class="size-3.5" />
+						<ArrowRight class="size-3.5 rtl:rotate-180" />
 					</Button>
 				</CardContent>
 			</Card>

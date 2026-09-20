@@ -141,22 +141,22 @@
 					<dl class="space-y-2.5 text-sm">
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Dates</dt>
-							<dd class="flex items-center gap-1.5 text-right font-medium tabular-nums">
+							<dd class="flex items-center gap-1.5 text-end font-medium tabular-nums">
 								<CalendarDaysIcon class="size-3.5 shrink-0 text-muted-foreground" />
 								{formatDateRange(show.startDate, show.endDate)}
 							</dd>
 						</div>
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Venue</dt>
-							<dd class="text-right font-medium">{show.venue || '—'}</dd>
+							<dd class="text-end font-medium">{show.venue || '—'}</dd>
 						</div>
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Location</dt>
-							<dd class="text-right font-medium">{show.city}, {show.country}</dd>
+							<dd class="text-end font-medium">{show.city}, {show.country}</dd>
 						</div>
 						<div class="flex items-center justify-between gap-4">
 							<dt class="text-xs text-muted-foreground">Region</dt>
-							<dd class="text-right font-medium">{show.region || '—'}</dd>
+							<dd class="text-end font-medium">{show.region || '—'}</dd>
 						</div>
 					</dl>
 				</CardContent>

@@ -198,12 +198,12 @@
 			{/if}
 		</div>
 		<div class="relative w-full sm:max-w-xs">
-			<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				bind:value={query}
 				type="search"
 				placeholder="Search suppliers by name..."
-				class="pl-9 text-xs"
+				class="ps-9 text-xs"
 			/>
 		</div>
 
@@ -273,7 +273,7 @@
 								<Badge variant="outline" class="text-3xs">{s.businessType}</Badge>
 								{#if s.isBrand}
 									<Badge variant="secondary" class="text-3xs">
-										<ArrowRight class="mr-0.5 size-2" /> Brand
+										<ArrowRight class="me-0.5 size-2 rtl:rotate-180" /> Brand
 									</Badge>
 								{/if}
 							</div>

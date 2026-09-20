@@ -199,14 +199,14 @@
 	>
 		<div class="relative flex-1 sm:w-56">
 			<Search
-				class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute top-1/2 start-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
 			/>
 			<Input
 				type="search"
 				bind:value={searchTerm}
 				placeholder="Search listings"
 				aria-label="Search your listings"
-				class="h-9 pl-8 text-sm"
+				class="h-9 ps-8 text-sm"
 				maxlength={100}
 			/>
 		</div>
@@ -300,7 +300,7 @@
 									{p.status ?? 'unknown'}
 								</Badge>
 							</TableCell>
-							<TableCell class="text-right">
+							<TableCell class="text-end">
 								<DropdownMenu>
 									<DropdownMenuTrigger>
 										{#snippet child({ props })}

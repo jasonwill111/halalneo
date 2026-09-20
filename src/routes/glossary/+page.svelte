@@ -110,8 +110,8 @@
 	</div>
 
 	<div class="relative">
-		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input type="search" placeholder="Search glossary terms..." class="pl-9" bind:value={search} />
+		<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input type="search" placeholder="Search glossary terms..." class="ps-9" bind:value={search} />
 	</div>
 
 	{#if !isSearching}

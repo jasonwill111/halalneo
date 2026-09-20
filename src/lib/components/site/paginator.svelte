@@ -21,7 +21,7 @@
 			onclick={() => (page = Math.max(1, page - 1))}
 			aria-label="Previous page"
 		>
-			<ChevronLeft class="size-4" />
+			<ChevronLeft class="size-4 rtl:rotate-180" />
 		</Button>
 		{#each Array(totalPages) as _, i (i + 1)}
 			{@const p = i + 1}
@@ -46,7 +46,7 @@
 			onclick={() => (page = Math.min(totalPages, page + 1))}
 			aria-label="Next page"
 		>
-			<ChevronRight class="size-4" />
+			<ChevronRight class="size-4 rtl:rotate-180" />
 		</Button>
 	</nav>
 {/if}

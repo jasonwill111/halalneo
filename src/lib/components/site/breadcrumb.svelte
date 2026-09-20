@@ -8,7 +8,7 @@
 <nav class="mb-3 flex items-center gap-1 text-2xs text-muted-foreground">
 	<a href={localizeHref('/')} class="hover:text-primary transition-colors">Home</a>
 	{#each items as item, i (item.href ?? item.label)}
-		<ChevronRight class="size-2.5"></ChevronRight>
+		<ChevronRight class="size-2.5 rtl:rotate-180"></ChevronRight>
 		{#if item.href && i < items.length - 1}
 			<a href={localizeHref(item.href)} class="hover:text-primary transition-colors">{item.label}</a>
 		{:else}

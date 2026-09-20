@@ -84,13 +84,13 @@
 	<div class="flex items-center gap-2">
 		<div class="relative max-w-sm flex-1">
 			<Search
-				class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
 			<Input
 				bind:value={search}
 				type="search"
 				placeholder="Search name, email or company..."
-				class="pl-9"
+				class="ps-9"
 				aria-label="Search users"
 			/>
 		</div>

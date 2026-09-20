@@ -223,6 +223,7 @@ Arbitrary values (`text-[10px]`, `text-[0.8rem]`, …) are banned everywhere out
 - **Lists paginate:** every listing page uses the shared `Paginator` (`PAGE_SIZE` matched to grid columns: 8/9/12 for 2/3/4 cols); filters reset to page 1; hidden when a single page suffices.
 - **Header:** `sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl`; mobile nav via a bottom glass tab bar (Explore/Menu popovers) plus a `md–lg`-only hamburger Sheet.
 - **Footer:** `bg-muted/30` translucent, `grid-cols-2 sm:grid-cols-3 lg:grid-cols-6` (brand + 5 link groups) with a copyright bar.
+- **Directional layout is logical, not physical (RTL-ready):** spacing/padding/margins use `ps-*`/`pe-*`/`ms-*`/`me-*`, positioning uses `start-*`/`end-*`, alignment uses `text-start`/`text-end`, borders use `border-s-*`; raw CSS in `layout.css` uses `inset-inline`/`padding-inline-start`. Mirror-sensitive icons (chevrons, arrows, list markers) carry `rtl:rotate-180`. Deliberate physical exceptions: `left-1/2 … -translate-x-1/2` centering pairs (translate is a physical property; a logical `start-1/2` would break in RTL) and the JS-measured sliding indicator in `mobile-tab.svelte` (`left-0` + `translateX(px)`). Vendored `ui/` stays as shipped.
 
 ## Elevation & Depth
 

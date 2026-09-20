@@ -158,7 +158,7 @@
 						size="sm"
 					>
 						GSO 9 labelling checklist
-						<ArrowRight class="size-3.5" />
+						<ArrowRight class="size-3.5 rtl:rotate-180" />
 					</Button>
 				</CardContent>
 			</Card>

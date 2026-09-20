@@ -89,12 +89,12 @@
 
 	<div class="relative max-w-xs">
 		<label for="deal-search" class="sr-only">Search deals</label>
-		<SearchIcon class="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
 		<Input
 			id="deal-search"
 			type="search"
 			placeholder="Search deals..."
-			class="pl-9"
+			class="ps-9"
 			bind:value={query}
 		/>
 	</div>
@@ -136,7 +136,7 @@
 				>
 					{#if p.discountPct}
 						<span
-							class="absolute top-2 right-2 rounded-full bg-destructive/90 px-2 py-0.5 text-2xs font-bold text-destructive-foreground"
+							class="absolute top-2 end-2 rounded-full bg-destructive/90 px-2 py-0.5 text-2xs font-bold text-destructive-foreground"
 						>
 							-{p.discountPct}%
 						</span>

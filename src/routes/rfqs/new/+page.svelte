@@ -128,7 +128,7 @@
 			>
 				{result.message}
 				{#if result.needsLogin}
-					<Button href={localizeHref('/login')} variant="outline" size="sm" class="ml-2">
+					<Button href={localizeHref('/login')} variant="outline" size="sm" class="ms-2">
 						Sign in
 					</Button>
 				{/if}
@@ -255,7 +255,7 @@
 		<Card>
 			<CardContent class="space-y-3 p-4">
 				<h2 class="text-sm font-semibold">Requests that get quotes</h2>
-				<ul class="list-disc space-y-1.5 pl-4 text-xs text-muted-foreground">
+				<ul class="list-disc space-y-1.5 ps-4 text-xs text-muted-foreground">
 					<li>Exact grade, spec and cert standard (JAKIM, BPJPH, ESMA…)</li>
 					<li>Packaging format and pallet or container quantity</li>
 					<li>Destination port and delivery window</li>
