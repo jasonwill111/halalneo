@@ -58,7 +58,7 @@
 		<h2 class="mb-2 text-base font-bold text-foreground">Our Mission</h2>
 		<p class="text-sm leading-relaxed text-muted-foreground">
 			HalalNeo simplifies halal trade by providing verified supplier profiles, certified product
-			catalogs, and comprehensive trade intelligence â€?all in one platform. We help buyers find
+			catalogs, and comprehensive trade intelligence â€” all in one platform. We help buyers find
 			genuinely certified suppliers and verify certifications before committing to a shipment.
 		</p>
 	</Card>
@@ -71,7 +71,7 @@
 			</CardHeader>
 			<CardContent>
 				<p class="text-sm text-muted-foreground">
-					Every supplier on the platform carries independently issued halal certification â€?with
+					Every supplier on the platform carries independently issued halal certification â€” with
 					certifying body, standard and scope shown up front.
 				</p>
 			</CardContent>
@@ -148,7 +148,7 @@
 			<div class="space-y-3">
 				<h2 class="text-base font-semibold tracking-tight sm:text-2xl">What's on the platform</h2>
 				<p class="text-xs text-muted-foreground sm:text-sm">
-					Researched knowledge base, trade tools, and market intelligence â€?built for halal B2B
+					Researched knowledge base, trade tools, and market intelligence â€” built for halal B2B
 					buyers and suppliers.
 				</p>
 			</div>
@@ -156,8 +156,8 @@
 				<StatTile value={data.stats.kbSectionCount} label="knowledge sections" tone="info" />
 				<StatTile value={data.stats.certifierCount} label="certifying bodies" tone="warn" />
 				<StatTile value={3} label="trade tools" tone="success" />
-				<StatTile value={data.stats.guideCount} label="market guides" tone="teal" />
-				<StatTile value="80+" label="glossary terms" tone="gold" />
+				<StatTile value={data.stats.guideCount} label="market guides" tone="accent-purple" />
+				<StatTile value="80+" label="glossary terms" tone="accent-rose" />
 				<StatTile value={data.stats.showCount} label="trade shows" tone="info" />
 			</div>
 		</div>
@@ -167,7 +167,7 @@
 		<h2 class="mb-2 text-base font-bold text-foreground">How we source data</h2>
 		<p class="text-sm leading-relaxed text-muted-foreground">
 			All certification data on HalalNeo is sourced from publicly available registers of accredited
-			halal certifying bodies â€?JAKIM, MUI/LPPOM, ESMA, SFDA, IFANCA, and others. We cross-reference
+			halal certifying bodies â€” JAKIM, MUI/LPPOM, ESMA, SFDA, IFANCA, and others. We cross-reference
 			certificate numbers, issuing organisations and scope details against each body's published
 			records. Supplier and product listings are illustrative examples to demonstrate the platform;
 			always verify directly with the certifying body before entering into any commercial agreement.
