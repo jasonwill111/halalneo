@@ -148,6 +148,14 @@
 - 同一页面在三端下都"看起来像为该设备专门设计的"，而不是简单适配。
 - 横向滑动组件在 Mobile 端使用得当，并在更大屏幕上正确降级。
 
+### 2.7 逻辑属性与 RTL 就绪（强制 · 2026-09-20 起）
+
+- 所有新增 CSS/类一律使用 CSS 逻辑属性：间距 `ps-*/pe-*/ms-*/me-*`，定位 `start-*/end-*` / `inset-inline-*`，对齐 `text-start/text-end`，圆角 `rounded-s*/e*`，边框 `border-s/e`；镜像敏感图标（箭头/返回/分享）用 `rtl:rotate-180`
+- 例外白名单：物理方向语义正确的场景（slider 轨道、地图标注、方向无关的 background-position）可保留 left/right
+- 禁止用 `dir` 硬编码做布局分支（`dir` 由 `app.html` 的 `%paraglide.dir%` 驱动，组件层只写逻辑属性）
+- 存量物理属性迁移见 `docs/design-upgrade-plan.md` §9.2 / B6 批次；新增 RTL locale 前必须完成 B6
+- 未来新增语言时：hreflang + sitemap 多语言条目 + `Intl` 数字/货币 formatter 收口（见 design-upgrade-plan §9.3）
+
 ---
 
 ## 3. UI/UX 交互与体验规范

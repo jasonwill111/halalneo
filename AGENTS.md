@@ -11,6 +11,7 @@
 - **动效纪律**：滚动显现只用 `reveal` attach（`layout.css` 的 `.reveal/.in`）；入场用 `.animate-enter` + `--enter-delay` stagger；装饰浮动用 `.animate-float` / `.animate-glow`；只许 opacity/transform（GPU 属性），backdrop-blur 仅用于 header/浮层/hero，禁止下放到列表卡片网格。`prefers-reduced-motion` 已全局兜底。主题切换一律走 `#lib/utils/theme-toggle.ts` 的 `switchTheme()`（instant swap：切换期间用 `.theme-transitioning` 抑制全部 transition + 强制 reflow + rAF 释放），禁止用颜色 transition 做整页 cross-fade。
 - **内容规范**：KB/blog 正文存 Markdown（渲染器转 HTML + 自动 TOC；禁止存裸 HTML）。新增市场指南必须同步：`COUNTRY_IMAGES`（无图用 GuideHero 兜底）、`RECOGNITION_DATA`（如涉及新认证机构）、sitemap 自动覆盖（DB 驱动）。市场指南 `status` 用 `'active'`（seed 约定）。
 - **响应式/排版原则**（mobile 优先紧凑，2026-09 落定）：
+  - **RTL/逻辑属性纪律**（2026-09-20 起，§2.7）：新增代码一律逻辑属性（`ps/pe/ms/me/start/end/text-start`），镜像图标 `rtl:rotate-180`；`dir` 由 paraglide 驱动，组件层禁止 dir 分支；存量迁移见 design-upgrade-plan B6
   - 断点：base（<640 mobile）/ sm（≥640 tablet）/ lg（≥1024 desktop），xl 仅用于 4 列大屏。
   - 列表网格 mobile 一律 ≥2 列（`grid-cols-2` 起步），卡片图用小比例（`aspect-[16/10]` 或更小），mobile 藏次要描述（`hidden sm:block`）、标题 truncate、padding 降档（p-2.5 vs sm:p-4）。
   - 详情页 mobile 单列堆叠、桌面双栏（主内容 + sticky 侧栏）；容器 `max-w-6xl` 起步，禁止无故 `max-w-4xl` 留白。

@@ -87,5 +87,56 @@
 | B3 | §2.2 certification-seal + §3.1 verified 角标 | trust-badges、详情头 3 处 | 真实认证数据回归 |
 | B4 | §3.3/3.4 空状态 + favicon/OG 生成 | empty 状态组件、static/ | og 抓取预览 |
 | B5 | §4 排版 + §5 动效 + §6 admin 徽记 | 零散小改 | PSI 抽查 |
+| B6 | §9.2 逻辑属性迁移（存量 pl/pr、left/right、text-left/right → ps/pe/start/end/text-start） | header/mobile-tab/footer/breadcrumb/表单/详情头优先 | `dir="rtl"` devtools 冒烟不断版；svelte-check |
 
 **每批完成后**：`pnpm run check`（0/0 门槛）+ 红线 grep（R2/色板/any/blur）+ DESIGN.md frontmatter 逐值比对 + 本文档勾销对应批次。
+
+## 8. 文化适配红线（Halal / Muslim 群体合规，强制）
+
+> 原则：**尊重且专业**。平台是清真贸易的商业工具，不是宗教宣介——既不冒犯，也不消费宗教符号。
+
+### 8.1 审计结果（2026-09-20 全库扫描）
+
+- ✅ 敏感品类内容（pork/alcohol/gelatin 等）全部存在于 glossary/KB/分类描述中，均为**定义与合规教育**语境——这正是行业平台的正确姿态，保留
+- ✅ 无任何装饰性/推广性的 haram 元素（无酒瓶图、无猪肉类图标、无赌场意象）
+- ✅ 图标全部为通用中性 lucide（utensils/drumstick/milk 等），无宗教符号滥用
+- ✅ 绿色（主 accent）在伊斯兰视觉语境中为积极色（合法/清真），金=尊贵，白=洁净——色彩方向天然正确
+
+### 8.2 强制红线（新增/未来变更均受约束）
+
+1. **宗教符号不作 UI 装饰**：新月、清真寺、宣礼塔、古兰经文（含书法体 bismillah）一律不作为图标/插画/水印/加载动画。几何纹样（八角星/girih）是安全的行业母题——它是艺术传统而非宗教符号
+2. **认证 seal 不模仿任何真实发证机构标志**（JAKIM/MUI/HFA 等均为注册商标）；机构名只以文本呈现
+3. **图像内容审查**：分类/国家/供应商封面图不得出现酒类、猪肉制品、赌场等意象；用工厂、作物、市集、港口场景表达行业（`COUNTRY_IMAGES`、分类图库按此复核）
+4. **haram 内容只以合规语境出现**：glossary/KB/检测工具中的引用须保持"定义 + 如何避免/验证"框架，禁止在营销文案、空状态插画、示例数据中把 haram 品类当作"正常商品"陈列（如示例 RFQ/产品 seed 数据不得含酒类/猪肉条目）
+5. **称谓与文案**：使用 industry-standard 术语（halal-certified、Zabiha 可选注释、haram 定义引用 Arabic 原词时附英文），避免布道式语气；节日营销（Eid 等）仅作问候、不做促销噱头
+6. **数字与日期**：Gregorian 历为主；未来面向 GCC 用户可评估 Hijri 对照显示（仅展示层，不进 schema）
+
+## 9. 多语言 / RTL 就绪（未来阿语等，强制）
+
+### 9.1 已就绪 ✅
+
+- `app.html`：`lang="%paraglide.lang%" dir="%paraglide.dir%"`——Paraglide 驱动的 RTL 切换链路已存在
+- Paraglide 2.0 `strategy: ['url', 'cookie', 'baseLocale']` + URL 策略，新增 locale 零架构改动
+- 字体栈已双保险：阿语场景 `--font-heading` 自动降级 Almarai（Space Grotesk 无阿拉伯字形），无需新增字体加载
+- 语义色/布局 token 与语言无关
+
+### 9.2 缺口与迁移策略（CSS 物理属性 → 逻辑属性）
+
+2026-09-20 实测：`pl/pr` 84 处、`left/right` 92 处、`text-left/right` 79 处，逻辑属性仅 1 处——**RTL 一开即碎的存量**。
+
+**规则即刻生效**（新增代码部分）：
+- 间距用 `ps-*/pe-*/ms-*/me-*`，定位用 `start-*/end-*`，对齐用 `text-start/text-end`、`items-start/end`、`justify-start/end`、`rounded-s*/e*`，边框用 `border-s/e`
+- 绝对定位装饰性元素优先 `inset-inline-*`；镜像敏感的图标（箭头/分享/返回）用 `rtl:rotate-180`（Tailwind v4 内建 `rtl:` variant，由 `dir` 驱动）
+- **例外白名单**：物理方向语义正确的场景保留 left/right（如 slider 轨道、地图标注、`background-position` 与方向无关的值）
+
+**存量迁移**：按批次进行（B6），优先级 = 用户路径高频组件（header/mobile-tab/footer/breadcrumb/表单/详情头）→ 列表卡 → 长尾页面；每批迁移后用 `dir="rtl"` 手动冒烟（devtools 强制切 dir）验证不断版。
+
+**验收**：阿语 locale 接入演练 = 新增 paraglide locale 配置 + 任一高流量页手动 dir 切换无布局错乱（文本可不译，结构必须不破）。
+
+### 9.3 未来语言扩展清单（届时执行，现在不做的部分）
+
+- 新 locale 的 messages 目录 + paraglide 编译（架构已就绪）
+- Almarai 补充阿拉伯子集 `unicode-range`（当前刻意不限定——见 checklist §1.2，已天然支持）
+- hreflang 输出（seo-meta.svelte 扩展）、sitemap 多语言条目
+- 数字/货币格式化走 `Intl`（现有价格渲染处收口到统一 formatter）
+
