@@ -70,6 +70,7 @@ opacity:
   disabled: 0.5
   subtle: 0.1
   noticeable: 0.2
+  pattern-girih: '0.04 light / 0.06 dark (--pattern-opacity, .pattern-girih texture overlay)'
 animation:
   transition-duration-fast: '120ms (utility: duration-fast)'
   transition-duration-base: '200ms (utility: duration-base)'
@@ -267,6 +268,11 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 
 **Radius audit rule (2026-09).** Only three corner values exist on any surface: `rounded-md` (8px) for controls, `rounded-xl` (14px) for cards/popovers/panels (incl. the mobile glass tab bar and its popovers, Select/Dropdown panels, alerts), and pills for chips. `rounded-2xl/3xl` are banned; `rounded-lg` is reserved for icon tiles / avatar initials tiles / stat tiles only. Pages must not hand-roll card corners — use the shared `Card` or `rounded-xl bg-card ring-1`.
 
+### Brand Mark & Girih Texture (design plan §2)
+
+- The single brand motif is the octagram (rub el hizb interlocked-squares geometry — an artistic tradition, never a religious symbol per §8.2 red lines). One shared component owns it: `site/mark.svelte`, three variants — `outline` (logo/brand chips), `solid` (seal cores), `pattern` (large faint watermark behind empty/error states). Geometry lives in the component's path constants only; pages must never copy the star SVG.
+- `.pattern-girih` overlays the star-grid texture via a CSS mask tinted by `currentColor` at `--pattern-opacity` (0.04 light / 0.06 dark). Whitelist — the only allowed hosts: hero carousel container, site footer, admin/supplier sidebar brand bars, login/register pages, 404/error page. Banned on list grids, tables, and modals (§1.4 discipline). Zero JS, zero blur.
+
 ## Components
 
 ### Buttons
@@ -322,6 +328,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - `site/paginator` (`bind:page` + `totalPages`, PAGE_SIZE 8/9/12 for 2/3/4-col grids, reset to page 1 on filter change), `site/section-head` (number/title/description/link) for section headers.
 - `site/collapsible-section`, `site/share-buttons`, `site/related-links`, `site/guide-hero` (guide fallback), `site/confirm-dialog` (replaces `window.confirm`), `site/breadcrumb`, `site/image-upload` (client WebP compression → `POST /api/media/upload`, fills a URL field via `onuploaded` — use for every R2-backed image field instead of pasting URLs only).
 - Portals: `site/account-nav`, `site/admin-sidebar`, `site/supplier-sidebar` (fixed bottom cluster: user + email + theme + home + sign-out).
+- Brand: `site/mark` (octagram motif, variants `outline|solid|pattern`) — the only source of the star geometry; `.pattern-girih` texture hosts are whitelisted (see Brand Mark & Girih Texture).
 - Listing grids start at `grid-cols-2` on mobile with compact cards (`p-2.5` vs `sm:p-4`, truncated titles, secondary descriptions `hidden sm:block`); empty states inside grids must span full width (`col-span-full`).
 
 ## Do's and Don'ts

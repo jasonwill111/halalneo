@@ -357,7 +357,7 @@
 			{@render children()}
 		</main>
 
-		<footer class="border-t border-border/50 bg-muted/30">
+		<footer class="pattern-girih border-t border-border/50 bg-muted/30">
 			<div class="mx-auto max-w-7xl px-4 pt-2 pb-24 sm:px-6 sm:pt-4 md:pb-3">
 				<div class="hidden gap-3 sm:grid sm:grid-cols-3 sm:gap-4 lg:grid-cols-7">
 					<!-- Brand -->

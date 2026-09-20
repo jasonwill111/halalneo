@@ -83,7 +83,7 @@
 | 批次 | 内容 | 文件面 | 验证 |
 |---|---|---|---|
 | B1 | ✅ **已完成 2026-09-20**：§1.1 token 替换（teal/gold 进 layout.css + DESIGN.md，purple/rose 移除，chart-2/4/5 同步收敛品牌色族）+ 使用点全量替换（stat-tile、region.ts、tile-colors.ts、首页/about/products/suppliers/tools/trade-shows/supplier/market-guides/admin-kb） | layout.css、DESIGN.md、stat-tile、region.ts、tile-colors.ts、12 个页面 | 红线 grep 0；svelte-check |
-| B2 | §2 mark.svelte + pattern-girih token + 白名单落点 | layout.css、site/mark.svelte、6 个页面容器 | blur 红线 grep；Lighthouse CLS 复核 |
+| B2 | ✅ **已完成 2026-09-20**：§2 mark.svelte（rub el hizb 三变体）+ pattern-girih token（`--pattern-opacity` 0.04/0.06，mask 纹理）+ 白名单落点 7 处（hero、footer、admin/supplier sidebar 品牌条、login、register、404） | layout.css、site/mark.svelte、6 个页面容器 | blur 红线 grep 0 新增；白名单外 0 使用；computed CSS 实测 mask/opacity 生效；light/dark 截图复核 |
 | B3 | §2.2 certification-seal + §3.1 verified 角标 | trust-badges、详情头 3 处 | 真实认证数据回归 |
 | B4 | §3.3/3.4 空状态 + favicon/OG 生成 | empty 状态组件、static/ | og 抓取预览 |
 | B5 | §4 排版 + §5 动效 + §6 admin 徽记 | 零散小改 | PSI 抽查 |

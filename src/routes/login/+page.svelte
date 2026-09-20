@@ -15,6 +15,7 @@
 	import LockIcon from '@lucide/svelte/icons/lock';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import Loader2 from '@lucide/svelte/icons/loader-2';
+	import Mark from '#lib/components/site/mark.svelte';
 
 	let email = $state('');
 	let password = $state('');
@@ -76,14 +77,14 @@
 </svelte:head>
 
 <main
-	class="login-pattern flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pt-8 pb-20"
+	class="login-pattern pattern-girih flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pt-8 pb-20"
 >
 	<div class="w-full max-w-md">
 		<div class="mb-5 text-center">
 			<div
-				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground"
+				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
 			>
-				H
+				<Mark class="size-7" />
 			</div>
 			<h1 class="text-lg font-bold tracking-tight text-foreground">Welcome back</h1>
 			<p class="mt-1 text-xs text-muted-foreground">Sign in to your HalalNeo account</p>

@@ -134,6 +134,8 @@
 	/* Bare `transition` must be token-backed too, never Tailwind's magic 150ms default */
 	--default-transition-duration: var(--transition-duration-fast);
 	--default-transition-timing-function: var(--ease-in-out);
+	/* Girih pattern overlay opacity — see `.pattern-girih` in @layer utilities */
+	--pattern-opacity: 0.04;
 }
 
 :root {
@@ -187,6 +189,8 @@
 }
 
 .dark {
+	/* Girih texture reads slightly stronger on the dark canvas (design plan §2.3) */
+	--pattern-opacity: 0.06;
 	/* Deep-teal ink canvas, desaturated for long-reading comfort: the previous
 	   0.028 chroma tinted the whole viewport teal and tired the eyes; 0.022
 	   keeps the identity without the cast. Foreground softened 0.935→0.915 to
@@ -308,6 +312,25 @@
 	}
 	.text-balance {
 		text-wrap: balance;
+	}
+	/* Brand girih texture (design plan §2.3): octagram tile masked over the current
+	   color so both light/dark themes derive from one token. Whitelist only:
+	   hero, footer band, sidebar brand bars, login/register, 404 — never list
+	   grids/tables/modals (§1.4 discipline). The ::before is absolute and
+	   pointer-events:none, so it is safe on elements with static children. */
+	.pattern-girih {
+		position: relative;
+	}
+	.pattern-girih::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-color: currentColor;
+		opacity: var(--pattern-opacity);
+		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.5' stroke-linejoin='round'%3E%3Cpath d='M15 15L49 15L49 49L15 49Z'/%3E%3Cpath d='M32 7.96L56.04 32L32 56.04L7.96 32Z'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='3' fill='%23fff'/%3E%3C/svg%3E");
+		mask-size: 56px 56px;
+		mask-repeat: repeat;
 	}
 	/* Scroll-reveal (paired with the `reveal` attach action) */
 	.reveal {

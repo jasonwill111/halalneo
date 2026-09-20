@@ -6,6 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { cn } from '#lib/utils.js';
+	import Mark from '#lib/components/site/mark.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import LayoutDashboard from '@lucide/svelte/icons/layout-dashboard';
@@ -97,10 +98,11 @@
 	     positioned top-right — reserve space for it there only. -->
 	<div
 		class={cn(
-			'flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16',
+			'pattern-girih flex h-14 shrink-0 items-center gap-2 border-b border-border/50 px-4 sm:h-16',
 			variant === 'mobile' && 'pr-10'
 		)}
 	>
+		<Mark class="size-5 shrink-0 text-sidebar-primary" />
 		<span class="truncate text-base font-bold tracking-tight text-primary">Supplier Portal</span>
 	</div>
 {/snippet}

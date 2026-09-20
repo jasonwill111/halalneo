@@ -140,7 +140,7 @@
 
 	<!-- Hero Carousel -->
 	<div
-		class="animate-enter relative mb-2 w-full overflow-hidden rounded-xl shadow-lg sm:mb-3"
+		class="animate-enter pattern-girih relative mb-2 w-full overflow-hidden rounded-xl shadow-lg sm:mb-3"
 		style="--enter-delay: 90ms"
 	>
 		<div class="relative aspect-[16/10] sm:aspect-[16/5]">
@@ -249,7 +249,7 @@
 	<StatTile value={data.stats.kbSections} label="KB sections" tone="info" />
 	<StatTile value={data.stats.glossaryTerms} label="Glossary" tone="warn" />
 	<StatTile value={`${data.stats.certifierCount}+`} label="Certifiers" tone="success" />
-	<StatTile value={data.stats.guideCount} label="Guides" tone="accent-purple" />
+	<StatTile value={data.stats.guideCount} label="Guides" tone="teal" />
 </section>
 
 <!-- TOOLS -->
@@ -264,7 +264,7 @@
 	<div
 		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
 	>
-		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-accent-purple', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/export-docs', icon: FileText, tone: 'text-info', name: 'Export Docs', desc: 'Templates for suppliers & importers.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
+		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-teal', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/export-docs', icon: FileText, tone: 'text-info', name: 'Export Docs', desc: 'Templates for suppliers & importers.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
 				class="group press-scale flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
@@ -393,13 +393,13 @@
 		description="Market guides, trade shows, consultants and insights."
 	/>
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-		{#each [{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' }, { href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' }, { href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'accent-purple' }, { href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'accent-rose' }] as item (item.href)}
+		{#each [{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' }, { href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' }, { href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'teal' }, { href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'gold' }] as item (item.href)}
 			<a
 				href={localizeHref(item.href)}
 				class="group press-scale flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
 			>
 				<div
-					class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${item.tone === 'info' ? 'bg-info/10 text-info' : item.tone === 'warn' ? 'bg-warn/10 text-warn' : item.tone === 'accent-purple' ? 'bg-accent-purple/10 text-accent-purple' : 'bg-accent-rose/10 text-accent-rose'}`}
+					class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${item.tone === 'info' ? 'bg-info/10 text-info' : item.tone === 'warn' ? 'bg-warn/10 text-warn' : item.tone === 'teal' ? 'bg-teal/10 text-teal' : 'bg-gold/10 text-gold'}`}
 				>
 					<item.icon class="size-4" />
 				</div>
