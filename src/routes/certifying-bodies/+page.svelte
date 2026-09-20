@@ -6,11 +6,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
@@ -148,7 +148,7 @@
 				{:else}
 					<Empty>
 						<EmptyHeader>
-							<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground" /></EmptyMedia>
+							<BrandedEmptyMedia><GlobeIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 							<EmptyTitle>No certifying bodies found</EmptyTitle>
 							<EmptyDescription>
 								{#if query.trim() || selectedRegion}

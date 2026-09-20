@@ -28,7 +28,7 @@
 	const readTime = $derived<string | null | undefined>(data.item?.readTime);
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/brand/og-default.png`);
 
 	const toIsoDate = (v: unknown): string | undefined => {
 		if (v == null || v === '') return undefined;
@@ -122,7 +122,7 @@
 						name: 'HalalNeo',
 						logo: {
 							'@type': 'ImageObject',
-							url: `${baseUrl}/api/media/og-default.png`,
+							url: `${baseUrl}/brand/og-default.png`,
 							width: 600,
 							height: 600
 						}

@@ -15,11 +15,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
@@ -392,7 +392,7 @@
 					{:else}
 						<Empty>
 							<EmptyHeader>
-								<EmptyMedia><SearchIcon class="size-6 text-muted-foreground" /></EmptyMedia>
+								<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 								<EmptyTitle>No service providers found</EmptyTitle>
 								<EmptyDescription>
 									{#if filtersActive}

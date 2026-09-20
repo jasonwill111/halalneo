@@ -127,10 +127,9 @@ const handleCacheHeaders: Handle = async ({ event, resolve }) => {
 	if (
 		pathname.startsWith('/_app/') ||
 		pathname.startsWith('/fonts/') ||
-		pathname.startsWith('/icons/') ||
+		pathname.startsWith('/brand/') ||
 		pathname === '/manifest.json' ||
 		pathname === '/sw.js' ||
-		pathname === '/favicon.svg' ||
 		pathname === '/robots.txt'
 	) {
 		const response = await resolve(event);

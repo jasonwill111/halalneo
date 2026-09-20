@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				description:
 					data.metaDescription ||
 					`HalalNeo — ${params.slug}. Halal trade intelligence, certification guides, and market entry resources.`,
-					ogImage: data.featuredImage || 'https://halalneo.com/api/media/og-default.png',
+					ogImage: data.featuredImage || 'https://halalneo.com/brand/og-default.png',
 					keywords: data.keywords || []
 				},
 				item: data

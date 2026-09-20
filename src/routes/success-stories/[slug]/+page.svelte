@@ -37,7 +37,7 @@
 			url: 'https://halalneo.com',
 			logo: {
 				'@type': 'ImageObject',
-				url: 'https://halalneo.com/api/media/og-default.png',
+				url: 'https://halalneo.com/brand/og-default.png',
 				width: 600,
 				height: 600
 			}

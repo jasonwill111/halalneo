@@ -10,11 +10,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import SeoMeta from '#lib/components/seo-meta.svelte';
@@ -93,7 +93,7 @@
 			<div class="col-span-full">
 				<Empty>
 					<EmptyHeader>
-						<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+						<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia>
 						<EmptyTitle>No categories found</EmptyTitle>
 						<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
 					</EmptyHeader>

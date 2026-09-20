@@ -117,7 +117,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 						data.metaDescription ||
 						data.summary ||
 						`Read about ${data.title || params.article} on HalalNeo — halal certification and compliance guide.`,
-					ogImage: 'https://halalneo.com/api/media/og-kb.png',
+					ogImage: 'https://halalneo.com/brand/og-default.png',
 					keywords: tagsParsed.length
 						? tagsParsed
 						: ['halal certification', 'compliance guide', 'trade knowledge'],

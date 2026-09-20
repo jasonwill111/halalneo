@@ -9,7 +9,7 @@ const seo = {
 	title: 'Halal Trade Glossary — HalalNeo',
 	description:
 		'80+ professional terms covering halal certification, packaging, trade, finance, logistics and regulation — explained for B2B buyers and suppliers.',
-	ogImage: 'https://halalneo.com/api/media/og-default.png',
+	ogImage: 'https://halalneo.com/brand/og-default.png',
 	keywords: [
 		'halal glossary',
 		'certification terms',

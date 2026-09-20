@@ -6,7 +6,7 @@ export const load: PageLoad = async () => {
 			title: 'Landed Cost Calculator — HalalNeo',
 			description:
 				'Calculate true per-unit landed cost for halal imports: CIF, duty, VAT, clearance and amortised halal certification cost.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png'
+			ogImage: 'https://halalneo.com/brand/og-default.png'
 		}
 	};
 };

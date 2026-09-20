@@ -12,11 +12,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 
 	let { data } = $props();
 
@@ -104,7 +104,7 @@
 	{:else if paged.length === 0}
 		<Empty>
 			<EmptyHeader>
-				<EmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></EmptyMedia>
+				<BrandedEmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></BrandedEmptyMedia>
 				<EmptyTitle>
 					{query.trim() ? 'No deals match your search' : 'No active deals right now'}
 				</EmptyTitle>

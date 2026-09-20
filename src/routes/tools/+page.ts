@@ -61,7 +61,7 @@ export const load: PageLoad = async () => {
 			title: 'Halal Trade Tools — HalalNeo',
 			description:
 				'Free halal trade tools: ingredient checker, certification cost estimator, landed cost calculator, RFQ builder and certificate verification.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png'
+			ogImage: 'https://halalneo.com/brand/og-default.png'
 		},
 		itemList
 	};

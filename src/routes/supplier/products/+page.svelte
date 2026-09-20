@@ -16,7 +16,8 @@
 		TableRow
 	} from '#lib/components/ui/table/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import {
 		DropdownMenu,
 		DropdownMenuContent,
@@ -216,7 +217,7 @@
 {#if !supplierSlug}
 	<div class="mt-4 rounded-xl bg-card p-6 ring-1 ring-foreground/10">
 		<Empty>
-			<EmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></EmptyMedia>
+			<BrandedEmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 			<div class="space-y-1">
 				<p class="font-medium">No supplier account linked</p>
 				<p class="text-sm text-muted-foreground">

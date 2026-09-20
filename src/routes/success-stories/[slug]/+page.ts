@@ -26,7 +26,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			seo: {
 				title: `${story.title ?? 'Success story'} — HalalNeo`,
 				description: (story.excerpt || story.body || '').slice(0, 155),
-				ogImage: 'https://halalneo.com/api/media/og-default.png',
+				ogImage: 'https://halalneo.com/brand/og-default.png',
 				ogType: 'article'
 			},
 			slug: params.slug,

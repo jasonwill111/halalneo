@@ -6,7 +6,7 @@ export const load: LayoutServerLoad = async () => {
 			title: 'HalalNeo — Halal Trade Intelligence',
 			description:
 				'Halal trade intelligence for buyers and suppliers — certification, sourcing and market guides in one place.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			twitterSite: '@halalneo'
 		}
 	};

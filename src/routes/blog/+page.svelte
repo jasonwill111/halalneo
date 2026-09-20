@@ -8,7 +8,8 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
-	import { Empty, EmptyMedia, EmptyTitle } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyTitle } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 
 	let { data } = $props();
 	let search = $state('');
@@ -101,7 +102,7 @@
 
 	{#if published.length === 0}
 		<Empty>
-			<EmptyMedia><Newspaper class="size-6 text-muted-foreground"></Newspaper></EmptyMedia>
+			<BrandedEmptyMedia><Newspaper class="size-6 text-muted-foreground"></Newspaper></BrandedEmptyMedia>
 			<EmptyTitle>No published posts yet.</EmptyTitle>
 		</Empty>
 	{:else}

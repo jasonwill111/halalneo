@@ -14,11 +14,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import SeoMeta from '#lib/components/seo-meta.svelte';
 
@@ -212,7 +212,7 @@
 		{:else if paged.length === 0}
 			<Empty>
 				<EmptyHeader>
-					<EmptyMedia><Package class="size-6 text-muted-foreground"></Package></EmptyMedia>
+					<BrandedEmptyMedia><Package class="size-6 text-muted-foreground"></Package></BrandedEmptyMedia>
 					<EmptyTitle
 						>{query.trim() || activeType !== 'all'
 							? 'No suppliers match these filters'

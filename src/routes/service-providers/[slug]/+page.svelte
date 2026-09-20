@@ -84,7 +84,7 @@
 			name: provider.name,
 			description: provider.description,
 			url: provider.website ?? `${baseUrl}/service-providers/${data.slug}`,
-			image: `${baseUrl}/api/media/og-services.png`,
+			image: `${baseUrl}/brand/og-default.png`,
 			address: provider.country
 				? { '@type': 'PostalAddress', addressCountry: provider.country }
 				: undefined,

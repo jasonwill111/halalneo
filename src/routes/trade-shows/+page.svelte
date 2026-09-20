@@ -21,11 +21,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 
 	import type { TradeShowDto } from '#lib/schemas/trade-shows.js';
 
@@ -226,8 +226,8 @@
 	{:else if filtered.length === 0}
 		<Empty>
 			<EmptyHeader>
-				<EmptyMedia
-					><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></EmptyMedia
+				<BrandedEmptyMedia
+					><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></BrandedEmptyMedia
 				>
 				<EmptyTitle>No events found</EmptyTitle>
 				<EmptyDescription>
@@ -378,7 +378,7 @@
 			{#if mappedShows.length === 0}
 				<Empty>
 					<EmptyHeader>
-						<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
+						<BrandedEmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></BrandedEmptyMedia>
 						<EmptyTitle>No mapped events</EmptyTitle>
 						<EmptyDescription
 							>The map only shows events with coordinates. Switch to list view for full details.</EmptyDescription

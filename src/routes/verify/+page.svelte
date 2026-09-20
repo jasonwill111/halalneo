@@ -9,11 +9,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import CertificationSeal from '#lib/components/site/certification-seal.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
@@ -331,7 +331,7 @@
 		{:else if results.length === 0}
 			<Empty>
 				<EmptyHeader>
-					<EmptyMedia><XCircleIcon class="size-6 text-muted-foreground"></XCircleIcon></EmptyMedia>
+					<BrandedEmptyMedia><XCircleIcon class="size-6 text-muted-foreground"></XCircleIcon></BrandedEmptyMedia>
 					<EmptyTitle>No certificates found</EmptyTitle>
 					<EmptyDescription>
 						Nothing matched “{query.trim()}”. Try a different certificate number, brand or product

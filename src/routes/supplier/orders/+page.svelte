@@ -5,7 +5,8 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
@@ -123,7 +124,7 @@
 {#if !supplierSlug}
 	<div class="mt-4 rounded-xl bg-card p-6 ring-1 ring-foreground/10">
 		<Empty>
-			<EmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></EmptyMedia>
+			<BrandedEmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 			<div class="space-y-1">
 				<p class="font-medium">No supplier account linked</p>
 				<p class="text-sm text-muted-foreground">
@@ -165,7 +166,7 @@
 		{:else if items.length === 0}
 			<div class="rounded-xl bg-card px-4 py-12 text-center ring-1 ring-foreground/10">
 				<Empty>
-					<EmptyMedia><Inbox class="size-6 text-muted-foreground" /></EmptyMedia>
+					<BrandedEmptyMedia><Inbox class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 					<div class="space-y-1">
 						<p class="font-medium">No inquiries{activeStatus ? ` marked ${activeStatus}` : ''}</p>
 						<p class="max-w-sm text-sm text-muted-foreground">

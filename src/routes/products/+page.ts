@@ -69,7 +69,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Halal-Certified Products — HalalNeo',
 			description:
 				'Browse halal-certified products from verified suppliers worldwide. Food, beverages, cosmetics and nutritional products.',
-			ogImage: 'https://halalneo.com/api/media/og-products.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			keywords: ['halal products', 'certified suppliers', 'B2B marketplace', 'halal food']
 		},
 		products,

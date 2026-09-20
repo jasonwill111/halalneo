@@ -62,7 +62,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				description:
 					category.description ||
 					`Browse halal-certified products in the ${category.name ?? params.slug} category.`,
-				ogImage: 'https://halalneo.com/api/media/og-default.png',
+				ogImage: 'https://halalneo.com/brand/og-default.png',
 				keywords: [category.name, 'halal products', 'halal certification']
 			},
 			slug: params.slug,

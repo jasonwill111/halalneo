@@ -2,7 +2,7 @@
  * HalalNeo Service Worker — production-grade caching for global users.
  *
  * Strategies:
- *   Static assets (_app/, fonts/, icons/)  → cache-first (immutable)
+ *   Static assets (_app/, fonts/, brand/)  → cache-first (immutable)
  *   Fonts                                  → cache-first (immutable)
  *   Images (api/media/)                    → cache-first (immutable, small)
  *   API reads (GET /api/*)                 → network-first, cache fallback
@@ -10,13 +10,16 @@
  *   Save-Data header                       → aggressive cache, skip non-essentials
  */
 
-const CACHE_NAME = 'halalneo-v2';
+const CACHE_NAME = 'halalneo-v3';
 
 // Precache immutable static assets (content-hashed by SvelteKit build)
 const STATIC_ASSETS = [
 	'/manifest.json',
-	'/icons/icon-192.svg',
-	'/icons/icon-512.svg',
+	'/brand/favicon.svg',
+	'/brand/favicon-32.png',
+	'/brand/apple-touch-icon.png',
+	'/brand/icon-192.png',
+	'/brand/icon-512.png',
 	'/fonts/space-grotesk/space-grotesk-latin.woff2',
 	'/fonts/space-grotesk/space-grotesk-latin-ext.woff2',
 	'/fonts/almarai/almarai-400.woff2',
@@ -64,7 +67,7 @@ self.addEventListener('fetch', (event) => {
 	if (
 		url.pathname.startsWith('/_app/') ||
 		url.pathname.startsWith('/fonts/') ||
-		url.pathname.startsWith('/icons/') ||
+		url.pathname.startsWith('/brand/') ||
 		url.pathname.endsWith('.woff2') ||
 		url.pathname.endsWith('.svg')
 	) {

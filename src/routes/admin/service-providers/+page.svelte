@@ -38,7 +38,8 @@
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import WifiOff from '@lucide/svelte/icons/wifi-off';
-	import { Empty, EmptyContent, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
@@ -411,13 +412,13 @@
 					<TableRow>
 						<TableCell colspan={6} class="py-8">
 							<Empty>
-								<EmptyMedia>
+								<BrandedEmptyMedia>
 									{#if offline}
 										<WifiOff class="size-6 text-muted-foreground" />
 									{:else}
 										<TriangleAlert class="size-6 text-destructive" />
 									{/if}
-								</EmptyMedia>
+								</BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load providers'}</p>
 									<p class="text-sm text-muted-foreground">{loadError}</p>
@@ -435,7 +436,7 @@
 					<TableRow>
 						<TableCell colspan={6} class="py-8">
 							<Empty>
-								<EmptyMedia><ShieldCheck class="size-6 text-muted-foreground" /></EmptyMedia>
+								<BrandedEmptyMedia><ShieldCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{search.trim() ? 'No matching providers' : 'No providers found'}

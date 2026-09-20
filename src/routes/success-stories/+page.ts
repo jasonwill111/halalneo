@@ -35,7 +35,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Success Stories — Halal Trade Wins',
 			description:
 				'Real deals closed on HalalNeo: buyers who sourced certified suppliers, suppliers who won export orders.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			keywords: ['halal success stories', 'trade case studies', 'export wins']
 		},
 		stories,

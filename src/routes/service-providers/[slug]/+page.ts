@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 						data.metaDescription ||
 						data.description ||
 						`${data.name || params.slug} — halal service provider (${data.type || 'specialist'}) in ${data.country || 'worldwide'}. View details on HalalNeo.`,
-					ogImage: 'https://halalneo.com/api/media/og-services.png',
+					ogImage: 'https://halalneo.com/brand/og-default.png',
 					keywords: [data.name, 'halal service provider', data.type, data.country].filter(Boolean)
 				},
 				item: data,
@@ -37,7 +37,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		seo: {
 			title: `${params.slug} — HalalNeo`,
 			description: `${params.slug} — halal service provider on HalalNeo.`,
-			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			robots: 'noindex, nofollow'
 		},
 		item: null,

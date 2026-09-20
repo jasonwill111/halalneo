@@ -11,7 +11,8 @@
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Tabs, TabsList, TabsTrigger } from '#lib/components/ui/tabs/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import {
 		Table,
 		TableBody,
@@ -307,7 +308,7 @@
 							<TableCell colspan={4} class="py-8">
 								{#if articles.length === 0}
 									<Empty>
-										<EmptyMedia variant="icon"><FileText class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><FileText class="size-6" /></BrandedEmptyMedia>
 										<div class="space-y-1">
 											<p class="font-medium">No articles yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -328,7 +329,7 @@
 									</Empty>
 								{:else}
 									<Empty>
-										<EmptyMedia variant="icon"><Search class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><Search class="size-6" /></BrandedEmptyMedia>
 										<div class="space-y-1">
 											<p class="font-medium">No matching articles</p>
 											<p class="text-sm text-muted-foreground">

@@ -14,7 +14,8 @@
 	import * as Field from '#lib/components/ui/field/index.js';
 	import { FieldError } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { focusFirstInvalid, mergeServerDetails, type ServerFieldDetails } from '#lib/utils/forms.js';
 	import {
 		Table,
@@ -423,7 +424,7 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 							<TableCell colspan={7} class="py-8">
 								{#if items.length === 0}
 									<Empty>
-										<EmptyMedia variant="icon"><Newspaper class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><Newspaper class="size-6" /></BrandedEmptyMedia>
 										<div class="space-y-1">
 											<p class="font-medium">No blog posts yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -439,7 +440,7 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 									</Empty>
 								{:else}
 									<Empty>
-										<EmptyMedia variant="icon"><Search class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><Search class="size-6" /></BrandedEmptyMedia>
 										<div class="space-y-1">
 											<p class="font-medium">No matching posts</p>
 											<p class="text-sm text-muted-foreground">

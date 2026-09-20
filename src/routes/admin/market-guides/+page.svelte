@@ -36,9 +36,9 @@
 		EmptyContent,
 		EmptyDescription,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -557,7 +557,7 @@
 							<TableCell colspan={6} class="py-8">
 								<Empty>
 									<EmptyHeader>
-										<EmptyMedia variant="icon"><Globe class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><Globe class="size-6" /></BrandedEmptyMedia>
 										<EmptyTitle>
 											{search.trim() ? 'No matching guides' : 'No market guides yet'}
 										</EmptyTitle>

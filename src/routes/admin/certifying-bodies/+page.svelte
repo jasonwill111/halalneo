@@ -29,7 +29,8 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
@@ -353,13 +354,13 @@
 					<TableRow>
 						<TableCell colspan={4} class="py-8">
 							<Empty>
-								<EmptyMedia>
+								<BrandedEmptyMedia>
 									{#if offline}
 										<WifiOff class="size-6 text-muted-foreground" />
 									{:else}
 										<TriangleAlert class="size-6 text-destructive" />
 									{/if}
-								</EmptyMedia>
+								</BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load certifying bodies'}</p>
 									<p class="text-sm text-muted-foreground">{loadError}</p>
@@ -377,7 +378,7 @@
 					<TableRow>
 						<TableCell colspan={4} class="py-8">
 							<Empty>
-								<EmptyMedia><ShieldCheck class="size-6 text-muted-foreground" /></EmptyMedia>
+								<BrandedEmptyMedia><ShieldCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{search.trim() ? 'No matching bodies' : 'No certifying bodies yet'}

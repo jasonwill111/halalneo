@@ -16,7 +16,7 @@
 
   // Defaults
   const siteTitle = 'HalalNeo';
-  const defaultOgImage = '/api/media/og-default.png' as string;
+  const defaultOgImage = '/brand/og-default.png' as string;
 
   // Use $derived for computed values
   const effectiveDescription = $derived(description);

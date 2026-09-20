@@ -7,7 +7,8 @@
 	import * as Field from '#lib/components/ui/field/index.js';
 	import { FieldError } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import {
 		Table,
 		TableBody,
@@ -280,7 +281,7 @@
 							<TableCell colspan={3} class="py-8">
 								{#if items.length === 0}
 									<Empty>
-										<EmptyMedia variant="icon"><BookOpenText class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><BookOpenText class="size-6" /></BrandedEmptyMedia>
 										<div class="space-y-1">
 											<p class="font-medium">No terms yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -296,7 +297,7 @@
 									</Empty>
 								{:else}
 									<Empty>
-										<EmptyMedia variant="icon"><Search class="size-6" /></EmptyMedia>
+										<BrandedEmptyMedia variant="icon"><Search class="size-6" /></BrandedEmptyMedia>
 										<div class="space-y-1">
 											<p class="font-medium">No matching terms</p>
 											<p class="text-sm text-muted-foreground">

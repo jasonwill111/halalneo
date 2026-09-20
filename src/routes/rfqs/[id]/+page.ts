@@ -19,7 +19,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			seo: {
 				title: `${rfq.title ?? 'Buying request'} — Halal RFQ`,
 				description: (rfq.description ?? '').slice(0, 155) || `Halal sourcing request: ${rfq.title ?? ''}. Quote directly on HalalNeo.`,
-				ogImage: 'https://halalneo.com/api/media/og-default.png',
+				ogImage: 'https://halalneo.com/brand/og-default.png',
 				keywords: ['halal RFQ', rfq.title, 'sourcing request'].filter(Boolean)
 			},
 			id: params.id,

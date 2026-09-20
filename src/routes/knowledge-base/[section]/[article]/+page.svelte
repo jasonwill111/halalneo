@@ -100,7 +100,7 @@
 	});
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/brand/og-default.png`);
 
 	const articleSchema = $derived(
 		item
@@ -124,7 +124,7 @@
 						url: baseUrl,
 						logo: {
 							'@type': 'ImageObject',
-							url: `${baseUrl}/api/media/og-default.png`,
+							url: `${baseUrl}/brand/og-default.png`,
 							width: 600,
 							height: 600
 						}

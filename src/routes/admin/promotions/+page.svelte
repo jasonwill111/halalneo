@@ -19,7 +19,8 @@
   		DialogTitle
   	} from '#lib/components/ui/dialog/index.js';
   	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-  	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+  	import { Empty } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
   	import Search from '@lucide/svelte/icons/search';
   	import Eye from '@lucide/svelte/icons/eye';
   	import Trash2 from '@lucide/svelte/icons/trash-2';
@@ -180,7 +181,7 @@
 					<TableRow>
 						<TableCell colspan={7} class="py-8">
 							<Empty>
-								<EmptyMedia><PackageIcon class="size-6 text-muted-foreground" /></EmptyMedia>
+								<BrandedEmptyMedia><PackageIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">No promotions found</p>
 									<p class="text-sm text-muted-foreground">No deals or special offers to display.</p>

@@ -51,7 +51,7 @@
 			name: body?.name,
 			description: body?.description ?? '',
 			url: `${baseUrl}/certifying-bodies/${data.slug}`,
-			image: 'https://halalneo.com/api/media/og-certifiers.png',
+			image: 'https://halalneo.com/brand/og-default.png',
 			address: body?.country
 				? { '@type': 'PostalAddress', addressCountry: body.country }
 				: undefined,

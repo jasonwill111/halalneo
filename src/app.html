@@ -3,17 +3,16 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta
-			name="theme-color"
-			content="oklch(0.968 0.013 88)"
-			media="(prefers-color-scheme: light)"
-		/>
-		<meta name="theme-color" content="oklch(0.16 0.022 205)" media="(prefers-color-scheme: dark)" />
+		<!-- theme-color must equal light/dark --background (hex: browsers ignore oklch here) -->
+		<meta name="theme-color" content="#f8f4eb" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#021012" media="(prefers-color-scheme: dark)" />
 		<link rel="manifest" href="/manifest.json" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<meta name="apple-mobile-web-app-title" content="HalalNeo" />
-		<link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+		<link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/brand/favicon-32.png" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
 		<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
 		<link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
 		<link

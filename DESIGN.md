@@ -274,6 +274,8 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - `.pattern-girih` overlays the star-grid texture via a CSS mask tinted by `currentColor` at `--pattern-opacity` (0.04 light / 0.06 dark). Whitelist — the only allowed hosts: hero carousel container, site footer, admin/supplier sidebar brand bars, login/register pages, 404/error page. Banned on list grids, tables, and modals (§1.4 discipline). Zero JS, zero blur.
 - `site/certification-seal` renders a certification as a ring + micro-octagram + certifier abbreviation seal (40px). Status colors: `certified` → `success`, `pending` → `warn`, `expired`/`not-certified` → `destructive`. Hover reveals full certifier name (+ scope tooltip, CSS-only `group-hover`, hidden at rest). Motion is one `duration-slow` `stroke-dashoffset` draw-in; zero blur. Hosts: supplier cert cards, product cert tab, verify result cards. Per §8.2 a seal is an artistic motif, never an imitation of a real certifier's logo.
 - `site/icon` accepts `verified` — overlays a 10px `success` octagram corner badge on category icons (products-page category tiles when the category holds certified products). No other icon carries the badge.
+- `site/branded-empty-media` is the Empty icon slot everywhere (replaces raw `ui/empty` `EmptyMedia` in pages): the foreground lucide icon centered over a 64px `mark pattern` octagram watermark at `opacity-30 dark:opacity-40` (one tier above the 4–6% page texture). Never hand-stack the star behind icons ad hoc.
+- Brand assets are generated, not hand-drawn: `pnpm brand` (`scripts/gen-brand-assets.mjs`) parses the path constants from `mark.svelte` and the oklch tokens from `layout.css`, then rasterizes to `static/brand/` — favicon.svg + favicon-32.png, apple-touch-icon.png (180), manifest PNG icons (192/512, maskable-safe), and the 1200×630 `og-default.png` social card (primary-green, girih texture, octagram, Space Grotesk wordmark). Assets live in `/static` (never R2, §5.12). `app.html` theme-color metas are the hex equivalents of light/dark `--background` (browsers ignore oklch in meta tags) — re-run `pnpm brand` and re-sync both after any token change.
 
 ## Components
 
@@ -330,7 +332,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - `site/paginator` (`bind:page` + `totalPages`, PAGE_SIZE 8/9/12 for 2/3/4-col grids, reset to page 1 on filter change), `site/section-head` (number/title/description/link) for section headers.
 - `site/collapsible-section`, `site/share-buttons`, `site/related-links`, `site/guide-hero` (guide fallback), `site/confirm-dialog` (replaces `window.confirm`), `site/breadcrumb`, `site/image-upload` (client WebP compression → `POST /api/media/upload`, fills a URL field via `onuploaded` — use for every R2-backed image field instead of pasting URLs only).
 - Portals: `site/account-nav`, `site/admin-sidebar`, `site/supplier-sidebar` (fixed bottom cluster: user + email + theme + home + sign-out).
-- Brand: `site/mark` (octagram motif, variants `outline|solid|pattern`) — the only source of the star geometry; `site/certification-seal` (ring + abbreviation trust seal, status-colored); `.pattern-girih` texture hosts are whitelisted (see Brand Mark & Girih Texture).
+- Brand: `site/mark` (octagram motif, variants `outline|solid|pattern`) — the only source of the star geometry; `site/certification-seal` (ring + abbreviation trust seal, status-colored); `site/branded-empty-media` (Empty icon slot, star watermark); `.pattern-girih` texture hosts are whitelisted (see Brand Mark & Girih Texture).
 - Listing grids start at `grid-cols-2` on mobile with compact cards (`p-2.5` vs `sm:p-4`, truncated titles, secondary descriptions `hidden sm:block`); empty states inside grids must span full width (`col-span-full`).
 
 ## Do's and Don'ts
@@ -372,7 +374,7 @@ Every data surface implements the same three states — loading, empty, and erro
 
 ### Empty
 
-- Use `ui/empty` (`Empty`, `EmptyTitle`, `EmptyDescription`) with a muted icon and one clear next action (e.g. "Clear filters", "Publish the first story"). Match the list's grid width; don't stretch a full-width card.
+- Use `ui/empty` (`Empty`, `EmptyTitle`, `EmptyDescription`) with `site/branded-empty-media` as the icon slot (octagram watermark + muted lucide icon, see Brand Mark & Girih Texture) and one clear next action (e.g. "Clear filters", "Publish the first story"). Match the list's grid width; don't stretch a full-width card.
 - Empty states must state _why_ it's empty when it isn't obviously zero: "No products match these filters" not just "No products".
 
 ### Error

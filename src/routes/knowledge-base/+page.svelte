@@ -26,11 +26,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { z } from 'zod';
 
 	let { data } = $props();
@@ -288,7 +288,7 @@
 					{:else}
 						<Empty>
 							<EmptyHeader>
-								<EmptyMedia><BookOpen class="size-6 text-muted-foreground"></BookOpen></EmptyMedia>
+								<BrandedEmptyMedia><BookOpen class="size-6 text-muted-foreground"></BookOpen></BrandedEmptyMedia>
 								<EmptyTitle>No sections found</EmptyTitle>
 								<EmptyDescription>
 									{#if search}

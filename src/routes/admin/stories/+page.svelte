@@ -14,7 +14,8 @@
 		DialogHeader,
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
-	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { toast } from 'svelte-sonner';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { z } from 'zod';
@@ -165,7 +166,7 @@
 	{:else if stories.length === 0}
 		<div class="p-6">
 			<Empty>
-				<EmptyMedia><FileText class="size-6 text-muted-foreground" /></EmptyMedia>
+				<BrandedEmptyMedia><FileText class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 				<div class="space-y-1 text-center">
 					<p class="font-medium">No stories yet</p>
 					<p class="text-sm text-muted-foreground">Publish the first success story.</p>

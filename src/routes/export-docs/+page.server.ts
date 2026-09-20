@@ -6,7 +6,7 @@ export const load: PageServerLoad = async () => {
 			title: 'Halal Export Documentation Templates',
 			description:
 				'Download ready-to-use templates for halal suppliers, importers, and certifying bodies. RFQ templates, certificate checklists, product catalogs.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png'
+			ogImage: 'https://halalneo.com/brand/og-default.png'
 		}
 	};
 };

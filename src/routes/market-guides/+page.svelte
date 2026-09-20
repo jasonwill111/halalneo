@@ -8,11 +8,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import { COUNTRY_IMAGES } from '#lib/data/country-images.js';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
@@ -193,7 +193,7 @@
 		{:else if paged.length === 0}
 			<Empty>
 				<EmptyHeader>
-					<EmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></EmptyMedia>
+					<BrandedEmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></BrandedEmptyMedia>
 					<EmptyTitle>No market guides available yet</EmptyTitle>
 					<EmptyDescription
 						>New country guides are added as market research completes.</EmptyDescription

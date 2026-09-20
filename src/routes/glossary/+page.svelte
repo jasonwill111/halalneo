@@ -10,11 +10,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import type { GlossaryTerm } from '#lib/types/index.js';
@@ -145,7 +145,7 @@
 			{#if !data.loadError}
 				<Empty>
 					<EmptyHeader>
-						<EmptyMedia><BookText class="size-6 text-muted-foreground"></BookText></EmptyMedia>
+						<BrandedEmptyMedia><BookText class="size-6 text-muted-foreground"></BookText></BrandedEmptyMedia>
 						<EmptyTitle>No glossary terms found</EmptyTitle>
 						<EmptyDescription>Try adjusting your search.</EmptyDescription>
 					</EmptyHeader>

@@ -13,7 +13,8 @@
 		TableHeader,
 		TableRow
 	} from '#lib/components/ui/table/index.js';
-	import { Empty, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import Search from '@lucide/svelte/icons/search';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
@@ -107,7 +108,7 @@
 
 	{#if filtered.length === 0}
 		<Empty>
-			<EmptyMedia><Users class="size-6 text-muted-foreground" /></EmptyMedia>
+			<BrandedEmptyMedia><Users class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 			<div class="space-y-1">
 				<p class="font-medium">
 					{data.users.length === 0 ? 'No accounts yet' : 'No users found'}

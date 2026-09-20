@@ -13,11 +13,11 @@
 	import {
 		Empty,
 		EmptyHeader,
-		EmptyMedia,
 		EmptyTitle,
 		EmptyDescription,
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import FileText from '@lucide/svelte/icons/file-text';
@@ -487,7 +487,7 @@
 			{#if query.trim() === ''}
 				<Empty>
 					<EmptyHeader>
-						<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+						<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia>
 						<EmptyTitle>Start typing to search</EmptyTitle>
 						<EmptyDescription
 							>Search across {(data.glossary ?? []).length} glossary terms, plus live supplier, product
@@ -504,7 +504,7 @@
 			{:else if resultCount === 0}
 				<Empty>
 					<EmptyHeader>
-						<EmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></EmptyMedia>
+						<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia>
 						<EmptyTitle>No results</EmptyTitle>
 						<EmptyDescription>
 							Nothing matched “{query.trim()}”{#if filtersActive}

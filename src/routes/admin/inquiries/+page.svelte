@@ -27,7 +27,8 @@
 	} from '#lib/components/ui/select/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent, EmptyMedia } from '#lib/components/ui/empty/index.js';
+	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Search from '@lucide/svelte/icons/search';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
@@ -196,13 +197,13 @@
 					<TableRow>
 						<TableCell colspan={6} class="py-8">
 							<Empty>
-								<EmptyMedia>
+								<BrandedEmptyMedia>
 									{#if offline}
 										<WifiOff class="size-6 text-muted-foreground" />
 									{:else}
 										<TriangleAlert class="size-6 text-destructive" />
 									{/if}
-								</EmptyMedia>
+								</BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{offline ? 'Connection failed' : 'Could not load inquiries'}
@@ -222,7 +223,7 @@
 					<TableRow>
 						<TableCell colspan={6} class="py-8">
 							<Empty>
-								<EmptyMedia><MessageCircle class="size-6 text-muted-foreground" /></EmptyMedia>
+								<BrandedEmptyMedia><MessageCircle class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{search.trim() ? 'No matching inquiries' : 'No inquiries yet'}

@@ -139,7 +139,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					parsed.metaDescription ||
 					parsed.shortDescription ||
 					`Product details for ${parsed.name || params.slug} on HalalNeo — halal-certified products with verified certification scope.`,
-					ogImage: parsed.image || 'https://halalneo.com/api/media/og-products.png',
+					ogImage: parsed.image || 'https://halalneo.com/brand/og-default.png',
 					keywords: [parsed.name, 'halal product', parsed.category, 'certified product'].filter(
 						Boolean
 					)

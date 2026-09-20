@@ -124,7 +124,7 @@
 	const item = $derived(data.item);
 
 	const baseUrl = 'https://halalneo.com';
-	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/api/media/og-default.png`);
+	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/brand/og-default.png`);
 
 	const priceDisplay = $derived(
 		item?.priceMin

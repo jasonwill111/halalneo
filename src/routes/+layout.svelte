@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '#lib/assets/favicon.svg';
+	import Mark from '#lib/components/site/mark.svelte';
 	import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
 	import { mode, userPrefersMode } from 'mode-watcher';
@@ -103,7 +103,7 @@
 			`${path === '/' ? 'Home' : path.split('/').pop()?.replace(/-/g, ' ')} — ${siteName}`;
 		const description = page.data?.seo?.description ?? defaultDescription;
 		const canonical = localizeUrl(`${baseUrl}${path}`).toString();
-		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/api/media/og-default.png`;
+		const ogImage = page.data?.seo?.ogImage ?? `${baseUrl}/brand/og-default.png`;
 		const robots =
 			page.data?.seo?.robots ??
 			'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
@@ -119,7 +119,7 @@
 		'@type': 'Organization',
 		name: siteName,
 		url: siteUrl,
-		logo: `${siteUrl}/favicon.svg`,
+		logo: `${siteUrl}/brand/icon-512.png`,
 		description: defaultDescription,
 		contactPoint: {
 			'@type': 'ContactPoint',
@@ -187,7 +187,6 @@
 <NavProgress />
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
 	<title>{seo.title}</title>
 	<meta name="description" content={seo.description} />
 	<link rel="canonical" href={seo.canonical} />
@@ -257,15 +256,7 @@
 					href={localizeHref('/')}
 					class="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
 				>
-					<img
-						src={favicon}
-						alt="HalalNeo"
-						class="size-7"
-						width="28"
-						height="28"
-						loading="eager"
-						decoding="async"
-					/>
+					<Mark variant="outline" class="size-7 shrink-0 text-primary" />
 					<span class="text-lg font-bold tracking-tight text-primary">HalalNeo</span>
 				</a>
 
@@ -363,15 +354,7 @@
 					<!-- Brand -->
 					<div class="col-span-2 space-y-2 sm:col-span-1 lg:col-span-1">
 						<a href={localizeHref('/')} class="flex items-center gap-2">
-							<img
-								src={favicon}
-								alt="HalalNeo"
-								class="size-5"
-								width="20"
-								height="20"
-								loading="lazy"
-								decoding="async"
-							/>
+							<Mark variant="outline" class="size-5 shrink-0 text-primary" />
 							<span class="text-sm font-bold text-primary">{siteName}</span>
 						</a>
 						<p class="max-w-xs text-xs leading-relaxed text-muted-foreground">

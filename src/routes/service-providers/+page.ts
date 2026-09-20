@@ -39,7 +39,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Halal Service Providers — HalalNeo',
 			description:
 				'Find halal-certified service providers —certification consultants, logistics partners, finance, and compliance experts.',
-			ogImage: 'https://halalneo.com/api/media/og-services.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			keywords: ['halal service providers', 'certification consultants', 'halal logistics', 'compliance experts']
 		},
 		providers,

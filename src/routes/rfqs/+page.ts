@@ -19,7 +19,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Buying Requests — Halal Sourcing RFQs',
 			description:
 				'Live buying requests from halal buyers worldwide. Quote directly on sourcing needs for certified food, cosmetics, pharma and ingredients.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			keywords: ['halal RFQ', 'buying requests', 'halal sourcing', 'trade leads']
 		},
 		rfqs,

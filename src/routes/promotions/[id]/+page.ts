@@ -27,7 +27,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				description:
 					(promo.description ?? '').slice(0, 155) ||
 					`Limited-time halal deal: ${promo.title ?? ''}.`,
-				ogImage: 'https://halalneo.com/api/media/og-default.png'
+				ogImage: 'https://halalneo.com/brand/og-default.png'
 			},
 			id: params.id,
 			promo,

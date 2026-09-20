@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Quick Deals — Halal Clearance Offers',
 			description:
 				'Time-boxed clearance deals from halal suppliers: discounted food, cosmetics, pharma and ingredients while stock lasts.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			keywords: ['halal deals', 'clearance', 'wholesale offers', 'halal promotions']
 		},
 		promos,

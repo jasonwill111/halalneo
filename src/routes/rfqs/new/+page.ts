@@ -11,7 +11,7 @@ export const load: PageLoad = async ({ fetch }) => {
 			title: 'Post a Buying Request — Halal RFQ',
 			description:
 				'Post your halal sourcing need — free, 1 request per week. Suppliers quote directly, no middlemen.',
-			ogImage: 'https://halalneo.com/api/media/og-default.png',
+			ogImage: 'https://halalneo.com/brand/og-default.png',
 			robots: 'noindex, nofollow'
 		},
 		categories: categories.map((c) => ({ slug: c.slug, name: c.name }))
