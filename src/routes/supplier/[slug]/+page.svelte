@@ -37,6 +37,7 @@
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 	import type { ApiList, SupplierMembershipItem, SupplierUpdateItem } from '#lib/types/api.js';
 	import Package from '@lucide/svelte/icons/package';
+	import CertificationSeal from '#lib/components/site/certification-seal.svelte';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
 	import Megaphone from '@lucide/svelte/icons/megaphone';
 
@@ -611,14 +612,12 @@
 								<Card class="p-3">
 									<CardContent class="space-y-1.5 p-0">
 										<div class="flex items-start justify-between gap-2">
-											<div class="flex items-center gap-1.5">
-												<div
-													class="flex size-6 shrink-0 items-center justify-center rounded-lg {expired
-														? 'bg-destructive/10 text-destructive'
-														: 'bg-success/10 text-success'}"
-												>
-													<ShieldCheck class="size-3.5"></ShieldCheck>
-												</div>
+											<div class="flex min-w-0 items-center gap-1.5">
+												<CertificationSeal
+													name={cert.name}
+													status={expired ? 'expired' : cert.status === 'pending' ? 'pending' : 'certified'}
+													scope={cert.scope || null}
+												/>
 												{#if cert.bodyId}
 													<a
 														href={localizeHref(`/certifying-bodies/${cert.bodyId}`)}

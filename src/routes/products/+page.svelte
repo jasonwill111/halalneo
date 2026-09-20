@@ -53,6 +53,17 @@
 		return map;
 	});
 
+	const certifiedByCategory = $derived.by(() => {
+		const map = new SvelteMap<string, number>();
+		for (const c of productCategories) {
+			map.set(
+				c.slug,
+				allProducts.filter((p) => p.categorySlug === c.slug && p.certStatus === 'certified').length
+			);
+		}
+		return map;
+	});
+
 	// Category filter — 'all' shows everything
 	let activeCategory = $state('all');
 	let query = $state('');
@@ -213,7 +224,11 @@
 									i % TILE_COLORS.length
 								]}"
 							>
-								<Icon name={cat.icon ?? 'Package'} class="size-4 sm:size-5" />
+								<Icon
+									name={cat.icon ?? 'Package'}
+									verified={(certifiedByCategory.get(cat.slug) ?? 0) > 0}
+									class="size-4 sm:size-5"
+								/>
 							</div>
 							<div class="min-w-0">
 								<h3

@@ -15,6 +15,7 @@
 		EmptyContent
 	} from '#lib/components/ui/empty/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import CertificationSeal from '#lib/components/site/certification-seal.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import {
@@ -56,12 +57,28 @@
 		slug: string;
 		name: string;
 		certStatus?: string | null;
-		certifications?: string[];
+		certifications?: unknown[];
 		country?: string | null;
 		businessType?: string | null;
 		category?: string | null;
 		supplierName?: string | null;
 		recognitions?: VerifyRecognition[] | null;
+	}
+
+	// The API returns certification entries as objects ({ body: { name } } or
+	// { name }) — collapse to display names so badges never render [object Object].
+	function certNames(r: VerifyResult): string[] {
+		return (r.certifications ?? [])
+			.map((c) => {
+				if (typeof c === 'string') return c;
+				if (c && typeof c === 'object') {
+					const o = c as { name?: unknown; body?: { name?: unknown } };
+					if (typeof o.body?.name === 'string') return o.body.name;
+					if (typeof o.name === 'string') return o.name;
+				}
+				return '';
+			})
+			.filter(Boolean);
 	}
 
 	let { data } = $props();
@@ -398,8 +415,18 @@
 									</Button>
 								</div>
 
-								<div class="flex flex-wrap gap-1">
-									{#each r.certifications ?? [] as cert (cert)}
+								<div class="flex flex-wrap items-center gap-1">
+									{#if certNames(r).length > 0}
+										<CertificationSeal
+											name={certNames(r)[0]}
+											status={r.certStatus === 'certified'
+												? 'certified'
+												: r.certStatus === 'pending'
+													? 'pending'
+													: 'not-certified'}
+										/>
+									{/if}
+									{#each certNames(r) as cert (cert)}
 										<Badge variant="secondary" class="text-2xs">{cert}</Badge>
 									{/each}
 								</div>

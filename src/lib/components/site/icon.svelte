@@ -39,9 +39,34 @@
 		FlaskConical
 	} as const;
 
-	let { name, class: className = 'size-4' }: { name: string; class?: string } = $props();
+	// rub el hizb micro-badge (same motif as site/mark.svelte), scaled from the 64 grid
+	const STAR_A = 'M15 15L49 15L49 49L15 49Z';
+	const STAR_B = 'M32 7.96L56.04 32L32 56.04L7.96 32Z';
+
+	let {
+		name,
+		verified = false,
+		class: className = 'size-4'
+	}: { name: string; verified?: boolean; class?: string } = $props();
 
 	const Icon = $derived(icons[name as keyof typeof icons] ?? Sparkles);
 </script>
 
-<Icon class={className} />
+{#if verified}
+	<span class="relative inline-flex shrink-0">
+		<Icon class={className} />
+		<svg
+			viewBox="0 0 64 64"
+			class="absolute -top-1 -right-1 size-2.5 text-success sm:size-2"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="7"
+			aria-hidden="true"
+		>
+			<path d={STAR_A} />
+			<path d={STAR_B} />
+		</svg>
+	</span>
+{:else}
+	<Icon class={className} />
+{/if}

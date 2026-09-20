@@ -18,6 +18,7 @@
 	} from '#lib/components/ui/dialog/index.js';
 	import ShareButtons from '#lib/components/site/share-buttons.svelte';
 	import Icon from '#lib/components/site/icon.svelte';
+	import CertificationSeal from '#lib/components/site/certification-seal.svelte';
 	import { TILE_COLORS } from '#lib/utils/tile-colors.js';
 	import { getRegion, regionBadgeClass } from '#lib/utils/region.js';
 	import ShieldCheck from '@lucide/svelte/icons/shield-check';
@@ -598,8 +599,8 @@
 					<h2 class="text-base font-semibold">Certifications</h2>
 					<div class="space-y-2">
 						{#if item.certStatus === 'certified'}
-							<div class="flex items-center gap-2 rounded-xl bg-success/5 p-3">
-								<ShieldCheck class="size-5 text-success"></ShieldCheck>
+							<div class="flex items-center gap-3 rounded-xl bg-success/5 p-3">
+								<CertificationSeal name="Halal" status="certified" />
 								<div>
 									<p class="text-sm font-medium">Halal Certified</p>
 									<p class="text-xs text-muted-foreground">
@@ -608,8 +609,8 @@
 								</div>
 							</div>
 						{:else if item.certStatus === 'pending'}
-							<div class="flex items-center gap-2 rounded-xl bg-warn/5 p-3">
-								<ShieldCheck class="size-5 text-warn"></ShieldCheck>
+							<div class="flex items-center gap-3 rounded-xl bg-warn/5 p-3">
+								<CertificationSeal name="Pending" status="pending" />
 								<div>
 									<p class="text-sm font-medium">Certification pending</p>
 									<p class="text-xs text-muted-foreground">

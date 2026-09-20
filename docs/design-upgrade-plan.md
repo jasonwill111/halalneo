@@ -84,7 +84,7 @@
 |---|---|---|---|
 | B1 | ✅ **已完成 2026-09-20**：§1.1 token 替换（teal/gold 进 layout.css + DESIGN.md，purple/rose 移除，chart-2/4/5 同步收敛品牌色族）+ 使用点全量替换（stat-tile、region.ts、tile-colors.ts、首页/about/products/suppliers/tools/trade-shows/supplier/market-guides/admin-kb） | layout.css、DESIGN.md、stat-tile、region.ts、tile-colors.ts、12 个页面 | 红线 grep 0；svelte-check |
 | B2 | ✅ **已完成 2026-09-20**：§2 mark.svelte（rub el hizb 三变体）+ pattern-girih token（`--pattern-opacity` 0.04/0.06，mask 纹理）+ 白名单落点 7 处（hero、footer、admin/supplier sidebar 品牌条、login、register、404） | layout.css、site/mark.svelte、6 个页面容器 | blur 红线 grep 0 新增；白名单外 0 使用；computed CSS 实测 mask/opacity 生效；light/dark 截图复核 |
-| B3 | §2.2 certification-seal + §3.1 verified 角标 | trust-badges、详情头 3 处 | 真实认证数据回归 |
+| B3 | ✅ **已完成 2026-09-20**：§2.2 certification-seal（圆环+八角星+机构缩写，success/warn/destructive 状态色，hover 全名+scope CSS-only tooltip，stroke-dashoffset draw-in）+ §3.1 icon `verified` 角标（products 品类瓦片，仅含认证产品的 7 类亮起）；接入 supplier 认证卡 / product 认证 tab / verify 结果卡；顺带修复 verify 结果 certifications 对象渲染 `[object Object]` 的存量 bug | certification-seal.svelte（新）、icon.svelte、supplier/product/verify/products 4 页、DESIGN.md | 浏览器实测：徽章 DOM 精确匹配认证数据、tooltip 静息 none/悬停 block、三处 seal 渲染截图复核；svelte-check 0/0；红线 grep 0 |
 | B4 | §3.3/3.4 空状态 + favicon/OG 生成 | empty 状态组件、static/ | og 抓取预览 |
 | B5 | §4 排版 + §5 动效 + §6 admin 徽记 | 零散小改 | PSI 抽查 |
 | B6 | §9.2 逻辑属性迁移（存量 pl/pr、left/right、text-left/right → ps/pe/start/end/text-start） | header/mobile-tab/footer/breadcrumb/表单/详情头优先 | `dir="rtl"` devtools 冒烟不断版；svelte-check |

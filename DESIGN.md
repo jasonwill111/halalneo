@@ -272,6 +272,8 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 
 - The single brand motif is the octagram (rub el hizb interlocked-squares geometry — an artistic tradition, never a religious symbol per §8.2 red lines). One shared component owns it: `site/mark.svelte`, three variants — `outline` (logo/brand chips), `solid` (seal cores), `pattern` (large faint watermark behind empty/error states). Geometry lives in the component's path constants only; pages must never copy the star SVG.
 - `.pattern-girih` overlays the star-grid texture via a CSS mask tinted by `currentColor` at `--pattern-opacity` (0.04 light / 0.06 dark). Whitelist — the only allowed hosts: hero carousel container, site footer, admin/supplier sidebar brand bars, login/register pages, 404/error page. Banned on list grids, tables, and modals (§1.4 discipline). Zero JS, zero blur.
+- `site/certification-seal` renders a certification as a ring + micro-octagram + certifier abbreviation seal (40px). Status colors: `certified` → `success`, `pending` → `warn`, `expired`/`not-certified` → `destructive`. Hover reveals full certifier name (+ scope tooltip, CSS-only `group-hover`, hidden at rest). Motion is one `duration-slow` `stroke-dashoffset` draw-in; zero blur. Hosts: supplier cert cards, product cert tab, verify result cards. Per §8.2 a seal is an artistic motif, never an imitation of a real certifier's logo.
+- `site/icon` accepts `verified` — overlays a 10px `success` octagram corner badge on category icons (products-page category tiles when the category holds certified products). No other icon carries the badge.
 
 ## Components
 
@@ -328,7 +330,7 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 - `site/paginator` (`bind:page` + `totalPages`, PAGE_SIZE 8/9/12 for 2/3/4-col grids, reset to page 1 on filter change), `site/section-head` (number/title/description/link) for section headers.
 - `site/collapsible-section`, `site/share-buttons`, `site/related-links`, `site/guide-hero` (guide fallback), `site/confirm-dialog` (replaces `window.confirm`), `site/breadcrumb`, `site/image-upload` (client WebP compression → `POST /api/media/upload`, fills a URL field via `onuploaded` — use for every R2-backed image field instead of pasting URLs only).
 - Portals: `site/account-nav`, `site/admin-sidebar`, `site/supplier-sidebar` (fixed bottom cluster: user + email + theme + home + sign-out).
-- Brand: `site/mark` (octagram motif, variants `outline|solid|pattern`) — the only source of the star geometry; `.pattern-girih` texture hosts are whitelisted (see Brand Mark & Girih Texture).
+- Brand: `site/mark` (octagram motif, variants `outline|solid|pattern`) — the only source of the star geometry; `site/certification-seal` (ring + abbreviation trust seal, status-colored); `.pattern-girih` texture hosts are whitelisted (see Brand Mark & Girih Texture).
 - Listing grids start at `grid-cols-2` on mobile with compact cards (`p-2.5` vs `sm:p-4`, truncated titles, secondary descriptions `hidden sm:block`); empty states inside grids must span full width (`col-span-full`).
 
 ## Do's and Don'ts
