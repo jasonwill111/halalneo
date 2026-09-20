@@ -176,6 +176,7 @@ pnpm run check（worker-types + svelte-kit sync + svelte-check）→ "svelte-che
 ```
 
 > 09-20 AI 链路迁移记录：`/api/chat` 改纯 Vercel AI SDK（`streamText` + `await convertToModelMessages()` + `toUIMessageStream()`，provider `#lib/server/ai/agnes.ts`，60s abortSignal）；`@mastra/core`、`@mastra/ai-sdk` 从 package.json 移除；`agnes-3.0-flash` 标记为临时选型，后续新增大模型仍必须经 AI SDK provider 收敛到 agnes.ts。
+> 09-20 已 push + `wrangler deploy`（版本 a973e1f2）：生产冒烟 home 200（128KB HTML）、/api/chat 未登录 POST 被拒（403，鉴权/边缘防护生效）。prod AI 实流仍等 Agnes 429 解除（见待办）。
 
 ## 用户侧待办（无法本地完成）
 
