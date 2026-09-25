@@ -12,6 +12,8 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import { z } from 'zod';
 	import { toast } from 'svelte-sonner';
@@ -232,21 +234,23 @@
 			<FileText class="size-4" />
 			RFQ Builder
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">RFQs suppliers answer</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">RFQs suppliers answer</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Vague RFQs get vague quotes. Specify certification, documents and delivery terms up front —
 			then copy or download the finished text.
 		</p>
 	</div>
 
-	<div class="grid gap-4 lg:grid-cols-2">
-		<Card class="p-4 sm:p-5">
+	<div class="grid min-w-0 gap-4 lg:grid-cols-2">
+		<Card class="min-w-0 p-4 sm:p-5">
 			<CardContent class="space-y-3 p-0">
 				<CardTitle class="text-sm sm:text-base">Your requirements</CardTitle>
-				<div class="grid gap-3 sm:grid-cols-2" bind:this={fieldsEl}>
+				<div class="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2" bind:this={fieldsEl}>
 					<Field class="sm:col-span-2">
-						<FieldLabel>Product</FieldLabel>
+						<FieldLabel for="rfq-product">Product</FieldLabel>
 						<Input
+							id="rfq-product"
+							class="min-h-11 sm:min-h-8"
 							placeholder="e.g. Frozen boneless chicken breast"
 							bind:value={product}
 							maxlength={200}
@@ -258,16 +262,20 @@
 						{#if fieldErrors.product}<FieldError>{fieldErrors.product}</FieldError>{/if}
 					</Field>
 					<Field class="sm:col-span-2">
-						<FieldLabel>Key specifications</FieldLabel>
+						<FieldLabel for="rfq-specs">Key specifications</FieldLabel>
 						<Textarea
+							id="rfq-specs"
+							class="min-h-24 min-w-0 resize-y"
 							rows={2}
 							placeholder="Grade, size, packaging, shelf life…"
 							bind:value={specs}
 						/>
 					</Field>
 					<Field>
-						<FieldLabel>Quantity</FieldLabel>
+						<FieldLabel for="rfq-quantity">Quantity</FieldLabel>
 						<Input
+							id="rfq-quantity"
+							class="min-h-11 sm:min-h-8"
 							placeholder="e.g. 20ft container / 12 MT"
 							bind:value={quantity}
 							maxlength={200}
@@ -279,13 +287,21 @@
 						{#if fieldErrors.quantity}<FieldError>{fieldErrors.quantity}</FieldError>{/if}
 					</Field>
 					<Field>
-						<FieldLabel>Target price (optional)</FieldLabel>
-						<Input placeholder="e.g. USD 2,400 / MT CIF" bind:value={targetPrice} maxlength={200} />
+						<FieldLabel for="rfq-target-price">Target price (optional)</FieldLabel>
+						<Input
+							id="rfq-target-price"
+							class="min-h-11 sm:min-h-8"
+							placeholder="e.g. USD 2,400 / MT CIF"
+							bind:value={targetPrice}
+							maxlength={200}
+						/>
 					</Field>
 					<Field>
-						<FieldLabel>Destination market</FieldLabel>
+						<FieldLabel for="rfq-destination">Destination market</FieldLabel>
 						<Select type="single" bind:value={destination}>
-							<SelectTrigger>{destination}</SelectTrigger>
+							<SelectTrigger id="rfq-destination" class="min-h-11 sm:min-h-8">
+								{destination}
+							</SelectTrigger>
 							<SelectContent>
 								{#each destinations as d (d)}
 									<SelectItem value={d}>{d}</SelectItem>
@@ -294,9 +310,11 @@
 						</Select>
 					</Field>
 					<Field>
-						<FieldLabel>Incoterm</FieldLabel>
+						<FieldLabel for="rfq-incoterm">Incoterm</FieldLabel>
 						<Select type="single" bind:value={incoterm}>
-							<SelectTrigger>{incoterm}</SelectTrigger>
+							<SelectTrigger id="rfq-incoterm" class="min-h-11 sm:min-h-8">
+								{incoterm}
+							</SelectTrigger>
 							<SelectContent>
 								{#each ['EXW', 'FOB', 'CFR', 'CIF', 'DAP', 'DDP'] as t (t)}
 									<SelectItem value={t}>{t}</SelectItem>
@@ -305,12 +323,19 @@
 						</Select>
 					</Field>
 					<Field>
-						<FieldLabel>Required timeline</FieldLabel>
-						<Input placeholder="e.g. shipment before Ramadan" bind:value={timeline} />
+						<FieldLabel for="rfq-timeline">Required timeline</FieldLabel>
+						<Input
+							id="rfq-timeline"
+							class="min-h-11 sm:min-h-8"
+							placeholder="e.g. shipment before Ramadan"
+							bind:value={timeline}
+						/>
 					</Field>
 					<Field>
-						<FieldLabel>Contact email</FieldLabel>
+						<FieldLabel for="rfq-email">Contact email</FieldLabel>
 						<Input
+							id="rfq-email"
+							class="min-h-11 sm:min-h-8"
 							type="email"
 							placeholder="you@company.com"
 							bind:value={contactEmail}
@@ -331,7 +356,7 @@
 					<div class="flex flex-wrap gap-1.5">
 						{#each certOptions as c (c)}
 							<label
-								class="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs transition-colors {selectedCerts.includes(
+								class="flex min-h-11 cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1.5 text-xs transition-colors sm:min-h-8 {selectedCerts.includes(
 									c
 								)
 									? 'border-primary bg-primary/5'
@@ -351,7 +376,7 @@
 					<div class="flex flex-wrap gap-1.5">
 						{#each docOptions as d (d)}
 							<label
-								class="flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs transition-colors {selectedDocs.includes(
+								class="flex min-h-11 cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1.5 text-xs transition-colors sm:min-h-8 {selectedDocs.includes(
 									d
 								)
 									? 'border-primary bg-primary/5'
@@ -369,25 +394,35 @@
 			</CardContent>
 		</Card>
 
-		<div class="space-y-4 lg:sticky lg:top-24 lg:h-fit">
-			<Card class="p-4 sm:p-5">
-				<CardContent class="space-y-3 p-0">
-					<div class="flex items-center justify-between">
+		<div class="min-w-0 space-y-4 lg:sticky lg:top-24 lg:h-fit">
+			<Card class="min-w-0 p-4 sm:p-5">
+				<CardContent class="min-w-0 space-y-3 p-0">
+					<div class="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 						<CardTitle class="text-sm sm:text-base">Preview</CardTitle>
-						<div class="flex gap-1.5">
-							<Button variant="outline" size="sm" class="h-7 text-xs" onclick={copyRfq}>
+						<div class="grid min-w-0 grid-cols-3 gap-1.5 sm:flex">
+							<Button
+								variant="outline"
+								size="sm"
+								class="h-11 min-w-0 px-2 text-xs sm:h-7"
+								onclick={copyRfq}
+							>
 								{#if copied}
 									<Check class="size-3.5 text-success" /> Copied
 								{:else}
 									<Copy class="size-3.5" /> Copy
 								{/if}
 							</Button>
-							<Button variant="outline" size="sm" class="h-7 text-xs" onclick={downloadRfq}>
+							<Button
+								variant="outline"
+								size="sm"
+								class="h-11 min-w-0 px-2 text-xs sm:h-7"
+								onclick={downloadRfq}
+							>
 								<Download class="size-3.5" /> .txt
 							</Button>
 							<Button
 								size="sm"
-								class="h-7 text-xs"
+								class="h-11 min-w-0 px-2 text-xs sm:h-7"
 								disabled={publishing}
 								aria-busy={publishing}
 								onclick={publishRfq}
@@ -401,32 +436,41 @@
 							</Button>
 						</div>
 					</div>
-					<pre
-						class="max-h-[420px] overflow-auto rounded-lg bg-muted/60 p-3 font-mono text-2xs-plus leading-relaxed whitespace-pre-wrap">{rfqText}</pre>
-					{#if publishResult}
-						<div
-							class={`rounded-xl px-3 py-2 text-xs ${publishResult.type === 'success' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
-						>
-							{publishResult.message}
-							{#if publishResult.id}
-								<a
-									href={localizeHref(`/rfqs/${publishResult.id}`)}
-									class="ms-1 font-semibold underline"
-								>
-									View request
-								</a>
-							{/if}
-							{#if publishResult.needsLogin}
-								<a href={localizeHref('/login')} class="ms-1 font-semibold underline"> Sign in </a>
-							{/if}
+					{#if publishing}
+						<div class="space-y-2" aria-label="Publishing RFQ" aria-busy="true">
+							<Skeleton class="h-3 w-24" />
+							<Skeleton class="h-3 w-full" />
+							<Skeleton class="h-3 w-4/5" />
 						</div>
+					{/if}
+					<pre
+						class="max-h-[420px] max-w-full overflow-x-hidden overflow-y-auto rounded-lg bg-muted/60 p-3 font-mono text-2xs-plus leading-relaxed [overflow-wrap:anywhere] break-words whitespace-pre-wrap">{rfqText}</pre>
+					{#if publishResult}
+						<Alert variant={publishResult.type === 'error' ? 'destructive' : 'default'}>
+							<AlertDescription class="text-xs sm:text-sm">
+								<span>{publishResult.message}</span>
+								{#if publishResult.id}
+									<a href={localizeHref(`/rfqs/${publishResult.id}`)} class="ms-1 font-semibold">
+										View request
+									</a>
+								{/if}
+								{#if publishResult.needsLogin}
+									<a href={localizeHref('/login')} class="ms-1 font-semibold">Sign in</a>
+								{/if}
+							</AlertDescription>
+						</Alert>
 					{/if}
 				</CardContent>
 			</Card>
 			<Card class="p-4">
 				<CardContent class="flex flex-wrap items-center justify-between gap-2 p-0">
 					<div class="text-xs text-muted-foreground">Price it before you send it.</div>
-					<Button href={localizeHref('/tools/landed-cost')} variant="outline" size="sm">
+					<Button
+						href={localizeHref('/tools/landed-cost')}
+						variant="outline"
+						size="sm"
+						class="min-h-11 sm:min-h-7"
+					>
 						Landed cost calculator
 						<ArrowRight class="size-3.5 rtl:rotate-180" />
 					</Button>

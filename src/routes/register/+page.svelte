@@ -7,6 +7,8 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { z } from 'zod';
 	import { toast } from 'svelte-sonner';
@@ -106,187 +108,222 @@
 </svelte:head>
 
 <main
-	class="register-pattern pattern-girih flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pt-8 pb-20"
+	class="register-pattern pattern-girih flex min-h-[calc(100vh-4rem)] items-start justify-center px-4 py-6 pb-16 sm:items-center sm:px-5 sm:py-8"
 >
-	<div class="w-full max-w-md">
-		<div class="mb-5 text-center">
+	<div class="w-full max-w-lg">
+		<div class="mb-4 text-center sm:mb-5">
 			<div
-				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+				class="mx-auto mb-2 flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground sm:size-12"
 			>
-				<Mark class="size-7" />
+				<Mark class="size-6 sm:size-7" />
 			</div>
-			<h1 class="text-lg font-bold tracking-tight text-foreground">Create your account</h1>
-			<p class="mt-1 text-xs text-muted-foreground">Join the global halal trade network</p>
+			<h1 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+				Create your account
+			</h1>
+			<p class="mt-1 text-xs text-muted-foreground sm:text-sm">
+				Join the global halal trade network
+			</p>
 		</div>
 
-		<div class="rounded-xl bg-card p-5 ring-1 ring-foreground/10">
-			<!-- Step indicator -->
-			<div class="mb-5 flex items-center justify-center gap-1.5">
-				<div class="flex items-center gap-1.5">
-					<div
-						class="flex size-6 items-center justify-center rounded-full bg-primary text-2xs font-semibold text-primary-foreground"
-					>
-						1
+		<Card class="p-4 sm:p-5">
+			<CardContent class="p-0">
+				<!-- Step indicator -->
+				<div class="mb-4 flex items-center justify-center gap-1.5 sm:mb-5">
+					<div class="flex items-center gap-1.5">
+						<div
+							class="flex size-6 items-center justify-center rounded-full bg-primary text-2xs font-semibold text-primary-foreground"
+						>
+							1
+						</div>
+						<span class="text-2xs font-medium text-primary">Account</span>
 					</div>
-					<span class="text-2xs font-medium text-primary">Account</span>
-				</div>
-				<div class="h-px w-6 bg-border"></div>
-				<div class="flex items-center gap-1.5">
-					<div
-						class="flex size-6 items-center justify-center rounded-full bg-muted text-2xs font-semibold text-muted-foreground"
-					>
-						2
+					<div class="h-px w-6 bg-border"></div>
+					<div class="flex items-center gap-1.5">
+						<div
+							class="flex size-6 items-center justify-center rounded-full bg-muted text-2xs font-semibold text-muted-foreground"
+						>
+							2
+						</div>
+						<span class="text-2xs text-muted-foreground">Verify</span>
 					</div>
-					<span class="text-2xs text-muted-foreground">Verify</span>
 				</div>
-			</div>
 
-			<!-- Supplier banner -->
-			<div class="mb-3 rounded-lg bg-muted/50 px-3 py-2 text-center">
-				<p class="text-2xs text-muted-foreground">
-					Want to sell products?
-					<a
-						href={localizeHref('/supplier/onboarding')}
-						class="font-semibold text-primary hover:underline"
-					>
-						Apply as a Supplier
-					</a>
-				</p>
-			</div>
+				<!-- Supplier banner -->
+				<div class="mb-3 rounded-lg bg-muted/50 px-3 py-2 text-center">
+					<p class="text-2xs text-muted-foreground">
+						Want to sell products?
+						<a
+							href={localizeHref('/supplier/onboarding')}
+							class="inline-flex min-h-11 items-center font-semibold text-primary hover:underline"
+						>
+							Apply as a Supplier
+						</a>
+					</p>
+				</div>
 
-			<form
-				bind:this={formEl}
-				class="space-y-2.5"
-				onsubmit={(e) => {
-					e.preventDefault();
-					void submit();
-				}}
-			>
-				<div class="grid grid-cols-2 gap-2.5">
-					<Field>
-						<FieldLabel>First Name</FieldLabel>
-						<Input
-							bind:value={firstName}
-							type="text"
-							placeholder="John"
-							autocomplete="given-name"
-							aria-invalid={fieldErrors.firstName ? true : undefined}
-							oninput={() => {
-								if (fieldErrors.firstName) fieldErrors = { ...fieldErrors, firstName: '' };
-							}}
-						/>
-						{#if fieldErrors.firstName}<FieldError>{fieldErrors.firstName}</FieldError>{/if}
+				<form
+					bind:this={formEl}
+					class="grid gap-3"
+					aria-busy={busy}
+					onsubmit={(e) => {
+						e.preventDefault();
+						void submit();
+					}}
+				>
+					<div class="grid gap-3 sm:grid-cols-2">
+						<Field data-invalid={Boolean(fieldErrors.firstName)}>
+							<FieldLabel for="first-name">First Name</FieldLabel>
+							<Input
+								id="first-name"
+								bind:value={firstName}
+								type="text"
+								placeholder="John"
+								class="h-11 min-w-0 text-sm"
+								autocomplete="given-name"
+								aria-invalid={fieldErrors.firstName ? true : undefined}
+								aria-describedby={fieldErrors.firstName ? 'first-name-error' : undefined}
+								oninput={() => {
+									if (fieldErrors.firstName) fieldErrors = { ...fieldErrors, firstName: '' };
+								}}
+							/>
+							{#if fieldErrors.firstName}
+								<FieldError id="first-name-error">{fieldErrors.firstName}</FieldError>
+							{/if}
+						</Field>
+						<Field data-invalid={Boolean(fieldErrors.lastName)}>
+							<FieldLabel for="last-name">Last Name</FieldLabel>
+							<Input
+								id="last-name"
+								bind:value={lastName}
+								type="text"
+								placeholder="Doe"
+								class="h-11 min-w-0 text-sm"
+								autocomplete="family-name"
+								aria-invalid={fieldErrors.lastName ? true : undefined}
+								aria-describedby={fieldErrors.lastName ? 'last-name-error' : undefined}
+								oninput={() => {
+									if (fieldErrors.lastName) fieldErrors = { ...fieldErrors, lastName: '' };
+								}}
+							/>
+							{#if fieldErrors.lastName}
+								<FieldError id="last-name-error">{fieldErrors.lastName}</FieldError>
+							{/if}
+						</Field>
+					</div>
+
+					<div class="grid gap-3 sm:grid-cols-2">
+						<Field data-invalid={Boolean(fieldErrors.email)}>
+							<FieldLabel for="register-email">Email</FieldLabel>
+							<div class="relative min-w-0">
+								<MailIcon
+									class="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
+								></MailIcon>
+								<Input
+									id="register-email"
+									bind:value={email}
+									type="email"
+									placeholder="you@company.com"
+									class="h-11 min-w-0 ps-9 text-sm"
+									autocomplete="email"
+									aria-invalid={fieldErrors.email ? true : undefined}
+									aria-describedby={fieldErrors.email ? 'register-email-error' : undefined}
+									oninput={() => {
+										if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+									}}
+								/>
+							</div>
+							{#if fieldErrors.email}
+								<FieldError id="register-email-error">{fieldErrors.email}</FieldError>
+							{/if}
+						</Field>
+
+						<Field data-invalid={Boolean(fieldErrors.password)}>
+							<FieldLabel for="register-password">Password</FieldLabel>
+							<div class="relative min-w-0">
+								<LockIcon
+									class="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
+								></LockIcon>
+								<Input
+									id="register-password"
+									bind:value={password}
+									type="password"
+									placeholder="Min. 8 characters"
+									class="h-11 min-w-0 ps-9 text-sm"
+									autocomplete="new-password"
+									aria-invalid={fieldErrors.password ? true : undefined}
+									aria-describedby={fieldErrors.password ? 'register-password-error' : undefined}
+									oninput={() => {
+										if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
+									}}
+								/>
+							</div>
+							{#if fieldErrors.password}
+								<FieldError id="register-password-error">{fieldErrors.password}</FieldError>
+							{/if}
+						</Field>
+					</div>
+
+					<Field data-invalid={Boolean(fieldErrors.termsAccepted)}>
+						<div class="flex min-h-11 items-start gap-2">
+							<Checkbox
+								id="terms"
+								bind:checked={termsAccepted}
+								class="mt-0.5 after:-inset-3.5"
+								aria-required="true"
+								aria-invalid={fieldErrors.termsAccepted ? true : undefined}
+								aria-describedby={fieldErrors.termsAccepted ? 'terms-error' : undefined}
+								onCheckedChange={() => {
+									if (fieldErrors.termsAccepted)
+										fieldErrors = { ...fieldErrors, termsAccepted: '' };
+								}}
+							/>
+							<label for="terms" class="text-xs leading-snug text-muted-foreground sm:text-sm">
+								I agree to the
+								<span class="font-medium text-primary">Terms of Service</span>
+								and
+								<span class="font-medium text-primary">Privacy Policy</span>
+							</label>
+						</div>
+						{#if fieldErrors.termsAccepted}
+							<FieldError id="terms-error">{fieldErrors.termsAccepted}</FieldError>
+						{/if}
 					</Field>
-					<Field>
-						<FieldLabel>Last Name</FieldLabel>
-						<Input
-							bind:value={lastName}
-							type="text"
-							placeholder="Doe"
-							autocomplete="family-name"
-							aria-invalid={fieldErrors.lastName ? true : undefined}
-							oninput={() => {
-								if (fieldErrors.lastName) fieldErrors = { ...fieldErrors, lastName: '' };
-							}}
-						/>
-						{#if fieldErrors.lastName}<FieldError>{fieldErrors.lastName}</FieldError>{/if}
-					</Field>
-				</div>
 
-				<Field>
-					<FieldLabel>Email</FieldLabel>
-					<div class="relative">
-						<MailIcon
-							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
-						></MailIcon>
-						<Input
-							bind:value={email}
-							type="email"
-							placeholder="you@company.com"
-							class="ps-9"
-							autocomplete="email"
-							aria-invalid={fieldErrors.email ? true : undefined}
-							oninput={() => {
-								if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
-							}}
-						/>
-					</div>
-					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
-				</Field>
+					{#if error && !Object.keys(fieldErrors).length}
+						<Alert variant="destructive">
+							<AlertDescription class="text-xs sm:text-sm">{error}</AlertDescription>
+						</Alert>
+					{/if}
 
-				<Field>
-					<FieldLabel>Password</FieldLabel>
-					<div class="relative">
-						<LockIcon
-							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
-						></LockIcon>
-						<Input
-							bind:value={password}
-							type="password"
-							placeholder="Min. 8 characters"
-							class="ps-9"
-							autocomplete="new-password"
-							aria-invalid={fieldErrors.password ? true : undefined}
-							oninput={() => {
-								if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
-							}}
-						/>
-					</div>
-					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}
-				</Field>
-
-				<div class="flex items-start gap-2">
-					<Checkbox
-						id="terms"
-						bind:checked={termsAccepted}
-						class="mt-0.5"
-						aria-required="true"
-						aria-invalid={fieldErrors.termsAccepted ? true : undefined}
-						onCheckedChange={() => {
-							if (fieldErrors.termsAccepted) fieldErrors = { ...fieldErrors, termsAccepted: '' };
-						}}
-					/>
-					<label for="terms" class="text-xs leading-snug text-muted-foreground">
-						I agree to the
-						<span class="font-medium text-primary">Terms of Service</span>
-						and
-						<span class="font-medium text-primary">Privacy Policy</span>
-					</label>
-				</div>
-				{#if fieldErrors.termsAccepted}<FieldError>{fieldErrors.termsAccepted}</FieldError>{/if}
-
-				{#if error && !Object.keys(fieldErrors).length}
-					<FieldError class="rounded-md bg-destructive/10 px-3 py-2 text-center">
-						{error}
-					</FieldError>
-				{/if}
-
-				<Button type="submit" class="w-full" disabled={busy} aria-busy={busy}>
-					<span class="inline-flex items-center gap-2">
+					<Button type="submit" class="h-11 w-full" disabled={busy} aria-busy={busy}>
 						{#if busy}
-							<Loader2 class="size-3.5 animate-spin" />
+							<Loader2 class="size-3.5 animate-spin" data-icon="inline-start" />
 							Creating…
 						{:else}
 							Create Account
-							<ArrowRight class="size-3.5 rtl:rotate-180" />
+							<ArrowRight class="size-3.5 rtl:rotate-180" data-icon="inline-end" />
 						{/if}
-					</span>
-				</Button>
-			</form>
-		</div>
+					</Button>
+				</form>
+			</CardContent>
+		</Card>
 
-		<div class="mt-5 text-center">
-			<p class="text-xs text-muted-foreground">
+		<div class="mt-3 text-center sm:mt-5">
+			<p class="text-xs text-muted-foreground sm:text-sm">
 				Already have an account?
-				<a href={localizeHref('/login')} class="font-semibold text-primary hover:underline">
+				<a
+					href={localizeHref('/login')}
+					class="inline-flex min-h-11 items-center font-semibold text-primary hover:underline"
+				>
 					Sign in
 				</a>
 			</p>
-			<p class="mt-1.5 text-2xs text-muted-foreground">
-				<a href={localizeHref('/')} class="transition-colors hover:text-primary">
-					&larr; Back to home
-				</a>
-			</p>
+			<a
+				href={localizeHref('/')}
+				class="inline-flex min-h-11 items-center text-2xs text-muted-foreground transition-colors hover:text-primary"
+			>
+				&larr; Back to home
+			</a>
 		</div>
 	</div>
 </main>

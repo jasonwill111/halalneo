@@ -33,7 +33,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	// Real display name from the static section definitions (e.g. slug
 	// 'country-market-guides' -> 'Country / Market Guides'); fall back to
 	// title-casing the slug for unknown sections.
-	const sectionTitle = getSection(params.section)?.title ?? params.section.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+	const sectionTitle =
+		getSection(params.section)?.title ??
+		params.section.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
 	try {
 		const res = await fetch(`/api/knowledge-base?section=${params.section}&limit=50`);
@@ -41,8 +43,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			const data: KbSectionResponse = await readJson<KbSectionResponse>(res);
 			const articles = (data.items ?? data.articles ?? []).map((a) => ({
 				...a,
-				tags:
-					typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : (a.tags ?? [])
+				tags: typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : (a.tags ?? [])
 			}));
 
 			// ItemList for articles within this section

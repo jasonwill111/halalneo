@@ -3,7 +3,7 @@
 	import Mark from '#lib/components/site/mark.svelte';
 	import { localizeHref, deLocalizeUrl, localizeUrl, locales } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
-	import { mode, userPrefersMode } from 'mode-watcher';
+	import { mode } from 'mode-watcher';
 	import { switchTheme } from '#lib/utils/theme-toggle.js';
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/state';
@@ -29,6 +29,7 @@
 	import { primaryNav, navGroups } from '#lib/data/navigation.js';
 	import { afterNavigate } from '$app/navigation';
 	import { trackPageView } from '#lib/utils/analytics.js';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
 
@@ -39,38 +40,8 @@
 		if (url) trackPageView(url, document.title);
 	});
 
-	// §1.3 theme-color follows the *effective* mode: the static media-query
-	// metas in app.html cover pre-JS; once hydrated, a manual light/dark pick
-	// rewrites them (system mode restores the originals).
-	const THEME_COLOR_LIGHT = 'oklch(0.968 0.013 88)'; // == light --background
-	const THEME_COLOR_DARK = 'oklch(0.16 0.022 205)'; // == dark --background
-	let themeMetaDefaults: {
-		el: HTMLMetaElement;
-		media: string | null;
-		content: string;
-	}[] = [];
-	$effect(() => {
-		const m = userPrefersMode.current;
-		if (typeof document === 'undefined') return;
-		if (themeMetaDefaults.length === 0) {
-			themeMetaDefaults = Array.from(
-				document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
-			).map((el) => ({
-				el,
-				media: el.getAttribute('media'),
-				content: el.getAttribute('content') ?? ''
-			}));
-		}
-		for (const t of themeMetaDefaults) {
-			if (m === 'system') {
-				if (t.media) t.el.setAttribute('media', t.media);
-				else t.el.removeAttribute('media');
-				t.el.setAttribute('content', t.content);
-			} else {
-				t.el.removeAttribute('media');
-				t.el.setAttribute('content', m === 'dark' ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
-			}
-		}
+	onMount(() => {
+		initWebVitals();
 	});
 
 	// Chromeless portals: these routes render their own fixed-height shell
@@ -162,12 +133,6 @@
 	let headerHidden = $state(false);
 	let headerHasContent = $state(false);
 
-	// Real-user Core Web Vitals -> /api/vitals -> Analytics Engine (once per load).
-	// $effect only runs in the browser, so no browser guard is needed.
-	$effect(() => {
-		initWebVitals();
-	});
-
 	function onScroll() {
 		const scrollY = window.scrollY;
 		headerHasContent = scrollY > 4;
@@ -225,9 +190,13 @@
 	<meta name="twitter:title" content={seo.title} />
 	<meta name="twitter:description" content={seo.description} />
 	<meta name="twitter:image" content={seo.ogImage} />
-	{@html `\u003cscript type="application/ld+json">${JSON.stringify(organizationSchema)}\u003c/script>`}
+	<svelte:element this={"script"} type="application/ld+json">
+		{JSON.stringify(organizationSchema)}
+	</svelte:element>
 	{#if breadcrumbSchema}
-		{@html `\u003cscript type="application/ld+json">${JSON.stringify(breadcrumbSchema)}\u003c/script>`}
+		<svelte:element this={"script"} type="application/ld+json">
+			{JSON.stringify(breadcrumbSchema)}
+		</svelte:element>
 	{/if}
 </svelte:head>
 
@@ -237,7 +206,7 @@
 	{#if !isPortalRoute}
 		<a
 			href="#main-content"
-			class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-60 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+			class="sr-only focus:not-sr-only focus:fixed focus:start-2 focus:top-2 focus:z-60 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
 			>Skip to content</a
 		>
 	{/if}
@@ -262,7 +231,7 @@
 
 				<NavigationMenuRoot
 					viewport={false}
-					class="hidden md:flex md:max-w-none md:min-w-0 md:justify-start"
+					class="hidden lg:flex lg:max-w-none lg:min-w-0 lg:justify-start"
 				>
 					<NavigationMenuList class="flex-wrap">
 						{#each primaryNav as item (item.href)}
@@ -271,7 +240,7 @@
 									href={localizeHref(item.href)}
 									class={cn(
 										navigationMenuTriggerStyle(),
-										'md:px-2.5 md:text-xs lg:px-4 lg:text-sm',
+										'lg:px-4 lg:text-sm',
 										isActive(deLocalizeUrl(page.url.href).pathname, item.href) && 'bg-muted'
 									)}
 								>
@@ -283,7 +252,7 @@
 							<NavigationMenuItem>
 								<NavigationMenuTrigger
 									class={cn(
-										'md:px-2.5 md:text-xs lg:px-4 lg:text-sm',
+										'lg:px-4 lg:text-sm',
 										isGroupActive(deLocalizeUrl(page.url.href).pathname, group.items) && 'bg-muted'
 									)}
 								>

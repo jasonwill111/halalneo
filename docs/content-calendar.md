@@ -6,19 +6,19 @@ Every news post doubles as a backlink outreach hook (see week notes).
 
 ## Section inventory (D1, live)
 
-| Section | Articles | Status |
-|---|---|---|
-| trade-sourcing | 26 | OK |
-| due-diligence | 24 | OK |
-| logistics | 23 | OK |
-| country-market-guides | 19 | OK |
-| halal-certification | 19 | OK |
-| packaging-labeling | 14 | filled wk1–2 ✅ |
-| Market guides (countries) | 11 | ID, MY, SA, UAE, TR, PK, US, TH, SG, BD, EG |
-| Certifying bodies | 15 | +IS EG Halal (EG gatekeeper) |
-| Blog (published) | 8 | 3 evergreen + 5 news |
-| Glossary | 83 terms | OK, expand opportunistically |
-| Tools | 6 | +landed-cost, +rfq-builder, +tools hub (wk of Sep 6) |
+| Section                   | Articles | Status                                               |
+| ------------------------- | -------- | ---------------------------------------------------- |
+| trade-sourcing            | 26       | OK                                                   |
+| due-diligence             | 24       | OK                                                   |
+| logistics                 | 23       | OK                                                   |
+| country-market-guides     | 19       | OK                                                   |
+| halal-certification       | 19       | OK                                                   |
+| packaging-labeling        | 14       | filled wk1–2 ✅                                      |
+| Market guides (countries) | 11       | ID, MY, SA, UAE, TR, PK, US, TH, SG, BD, EG          |
+| Certifying bodies         | 15       | +IS EG Halal (EG gatekeeper)                         |
+| Blog (published)          | 8        | 3 evergreen + 5 news                                 |
+| Glossary                  | 83 terms | OK, expand opportunistically                         |
+| Tools                     | 6        | +landed-cost, +rfq-builder, +tools hub (wk of Sep 6) |
 
 ## Weeks 1–2 ✅ DONE (shipped)
 

@@ -1,4 +1,5 @@
 # 🚀 **HalalNeo 生产部署完整指南**
+
 ## **基于2026-09-16优化状态报告**
 
 ---
@@ -6,6 +7,7 @@
 ### **📋 部署前验证清单**
 
 #### **第4阶段 - 基础设施准备**
+
 - [x] **Cloudflare 配置**
   - Workers 客户端配置
   - D1 数据库连接
@@ -19,6 +21,7 @@
   - ESLint 语法检查通过
 
 #### **第5阶段 - 质量验证完成**
+
 - [x] **Meta 标签完整性**
   - 12/12 核心标签
   - 7/7 多语言支持
@@ -37,12 +40,14 @@
 ### **⚡ 一键部署步骤**
 
 #### **步骤 1: 环境准备 (2 分钟)**
+
 ```bash
 git pull origin main
 pnpm install --frozen-lockfile
 ```
 
 #### **步骤 2: 构建与测试 (7 分钟)**
+
 ```bash
 # 构建项目
 pnpm build
@@ -55,6 +60,7 @@ node verify-optimization.js
 ```
 
 #### **步骤 3: 部署到 Cloudflare (3 分钟)**
+
 ```bash
 # 使用 wrangler 进行 Workers 部署
 wrangler deploy --branch ${BRANCH_NAME:-main}
@@ -65,6 +71,7 @@ wrangler tail
 ```
 
 #### **步骤 4: 生产验证 (5 分钟)**
+
 ```bash
 # 自动访问生产URL并运行 Lighthouse
 node verify-optimization.js
@@ -80,6 +87,7 @@ node verify-optimization.js
 ### **🔧 部署后监控配置**
 
 #### **成本监控仪表板**
+
 ```bash
 # 配置 Cloudflare Dashboard
 wrangler config set dashboard.enable true
@@ -88,11 +96,12 @@ wrangler config set alerts.threshold cost 30  # $30月度预算
 ```
 
 #### **SEO 性能追踪**
+
 ```ts
 // 自动向 Google Search Console 发送索引请求
 // 实现: src/lib/seo/indexing.ts
 export function submitToSearchConsole(url: string): Promise<void> {
-  // 使用 Search Console API
+	// 使用 Search Console API
 }
 
 // 每小时自动提交一次新功能页面
@@ -100,6 +109,7 @@ setInterval(submitNewPages, 1000 * 60 * 60);
 ```
 
 #### **Web Vitals 持续监控**
+
 ```ts
 // 利用 @opentelemetry/web-vitals 实现
 import { webVitalsInstrumentation } from '@opentelemetry/web-vitals';
@@ -110,12 +120,14 @@ import { webVitalsInstrumentation } from '@opentelemetry/web-vitals';
 ### **🚨 回滚方案设计**
 
 #### **自动回滚条件**
+
 1. **错误率激增**: 5xx > 1%
 2. **成本超标**: $100+/周
 3. **性能下降**: Lighthouse 评分 < 80
 4. **用户体验**: 错误日志 > 50/分钟
 
 #### **回滚脚本**
+
 ```bash
 #!/bin/bash
 # rollback.sh
@@ -136,18 +148,21 @@ fi
 ### **📈 部署后预期效果**
 
 #### **成本节省预测**
+
 - **Workers 请求**: 降低 35%
 - **D1 查询**: 减少 42%
 - **R2 存储**: 压缩 55%
 - **总运营成本**: 降低 60%
 
 #### **SEO 提升预测**
+
 - **有机流量**: +300-500% (90 天)
 - **搜索排名**: 平均提升 60%
 - **关键词覆盖**: +200%
 - **页面索引率**: 100%
 
 #### **用户体验提升**
+
 - **页面加载速度**: 提升 40%
 - **焦点时间**: 增加 300%
 - **跳出率**: 降低 40%
@@ -158,6 +173,7 @@ fi
 ### **🎯 部署检查清单**
 
 #### **生产部署前 (15 分钟)**
+
 - [x] **Code 审查**
   - 优化日志消息：手动发送的文章
   - 环境变量配置正确
@@ -172,6 +188,7 @@ fi
   - 错误日志收集
 
 #### **部署后 30 分钟**
+
 - [x] **功能验证**
   - Meta 标签检测
   - 结构化数据验证
@@ -184,6 +201,7 @@ fi
   - DNS 解析
 
 #### **部署后 24 小时**
+
 - [x] **SEO 指数跟踪**
   - Search Console 收录
   - 关键词排名变化
@@ -200,6 +218,7 @@ fi
 ### **🔥 常见问题快速解决**
 
 #### **Q1: Meta 标签不显示？**
+
 ```bash
 # 检查构建输出中是否包含正确 meta 标签
 grep -r "SeoMeta" dist/  # 应该返回 8+ 文件
@@ -209,6 +228,7 @@ grep -r "SeoMeta" dist/  # 应该返回 8+ 文件
 ```
 
 #### **Q2: 多语言切换失效？**
+
 ```bash
 # 检查 +layout.svelte 中 hreflang 标签
 grep -A5 "hreflang" src/routes/+layout.svelte
@@ -219,6 +239,7 @@ pnpm build && ls build/_worker.js | grep paraglide
 ```
 
 #### **Q3: 结构化数据错误？**
+
 ```bash
 # 使用 Google 结构化数据测试工具
 # 或部署后检查控制台输出
@@ -229,6 +250,7 @@ pnpm build && ls build/_worker.js | grep paraglide
 ```
 
 #### **Q4: 核心 Web 指标未达标？**
+
 ```bash
 # 典型 LCP=2.1s 优化方案:
 # - 优化首屏图片加载
@@ -244,15 +266,15 @@ node verify-optimization.js --lighthouse
 
 ### **🎉 生产部署就绪状态**
 
-| 项目 | 状态 | 说明 |
-|------|------|------|
-| **业务功能** | ✅ 完整 | 13 种内容类型全部支持 |
+| 项目         | 状态    | 说明                   |
+| ------------ | ------- | ---------------------- |
+| **业务功能** | ✅ 完整 | 13 种内容类型全部支持  |
 | **SEO 优化** | ✅ 完成 | Meta 标签 + 结构化数据 |
-| **多语言** | ✅ 完成 | 7 种语言 + hreflang |
-| **性能** | ✅ 通过 | Core Web Vitals 达标 |
-| **成本** | ✅ 优化 | 预计降低 60% |
-| **监控** | ✅ 就绪 | 实时告警 + 追踪 |
-| **测试** | ✅ 通过 | 87% 覆盖率 |
+| **多语言**   | ✅ 完成 | 7 种语言 + hreflang    |
+| **性能**     | ✅ 通过 | Core Web Vitals 达标   |
+| **成本**     | ✅ 优化 | 预计降低 60%           |
+| **监控**     | ✅ 就绪 | 实时告警 + 追踪        |
+| **测试**     | ✅ 通过 | 87% 覆盖率             |
 
 ---
 
@@ -292,5 +314,6 @@ wrangler deploy
 
 ---
 
-## **上次更新**: 2026-09-16T20:00:00+08:00  
+## **上次更新**: 2026-09-16T20:00:00+08:00
+
 **下一步**: 监控部署效果并收集用户反馈

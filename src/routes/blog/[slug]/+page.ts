@@ -59,9 +59,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					date: toIsoDate(p.publishedAt),
 					author: { name: p.author || 'HalalNeo' },
 					tags:
-						typeof p.tags === 'string'
-							? (JSON.parse(p.tags || '[]') as string[])
-							: (p.tags ?? [])
+						typeof p.tags === 'string' ? (JSON.parse(p.tags || '[]') as string[]) : (p.tags ?? [])
 				}));
 
 			const wordCount = data.body ? data.body.replace(/<[^>]*>/g, '').split(/\s+/).length : 0;
@@ -89,9 +87,12 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			return {
 				slug: params.slug,
 				seo: {
-					title: data.metaTitle || (data.title ? `${data.title} — HalalNeo Blog` : `${params.slug} — HalalNeo Blog`),
+					title:
+						data.metaTitle ||
+						(data.title ? `${data.title} — HalalNeo Blog` : `${params.slug} — HalalNeo Blog`),
 					description:
-						data.metaDescription || data.excerpt ||
+						data.metaDescription ||
+						data.excerpt ||
 						`Read about ${data.title || params.slug} on the HalalNeo blog — insights on halal certification and sourcing.`,
 					ogImage: data.featuredImage || 'https://halalneo.com/brand/og-default.png',
 					keywords: data.keywords || ['halal blog', 'certification insights', 'trade news'],

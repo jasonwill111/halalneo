@@ -1,11 +1,11 @@
 {
-  "defaultPath": "./src/lib/paraglide",
-  "sourceLanguage": "en",
-  "locales": ["en", "ar", "tr", "id", "ms", "bn", "ur"],
-  "messagesPath": "./src/lib/paraglide/messages",
-  "web": {
-    "public": {
-      "urls": true
-    }
-  }
+	"defaultPath": "./src/lib/paraglide",
+	"sourceLanguage": "en",
+	"locales": ["en", "ar", "tr", "id", "ms", "bn", "ur"],
+	"messagesPath": "./src/lib/paraglide/messages",
+	"web": {
+		"public": {
+			"urls": true
+		}
+	}
 }

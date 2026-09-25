@@ -29,12 +29,21 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	const suppliers = (await readItems<SupplierCard>(suppliersRes)).map((s) => ({
 		...s,
-		certifications: typeof s.certifications === 'string' ? (JSON.parse(s.certifications || '[]') as string[]) : s.certifications ?? [],
-		mainMarkets: typeof s.mainMarkets === 'string' ? (JSON.parse(s.mainMarkets || '[]') as string[]) : s.mainMarkets ?? []
+		certifications:
+			typeof s.certifications === 'string'
+				? (JSON.parse(s.certifications || '[]') as string[])
+				: (s.certifications ?? []),
+		mainMarkets:
+			typeof s.mainMarkets === 'string'
+				? (JSON.parse(s.mainMarkets || '[]') as string[])
+				: (s.mainMarkets ?? [])
 	}));
 	const products = (await readItems<SupplierProduct>(productsRes)).map((p) => ({
 		...p,
-		features: typeof p.features === 'string' ? (JSON.parse(p.features || '[]') as string[]) : p.features ?? [],
+		features:
+			typeof p.features === 'string'
+				? (JSON.parse(p.features || '[]') as string[])
+				: (p.features ?? [])
 	}));
 	// Response shape (verified against /api/certifying-bodies handler): { items, total, limit, offset }
 	const certifierCount = await readTotal(certifiersRes);
@@ -63,7 +72,12 @@ export const load: PageLoad = async ({ fetch }) => {
 			description:
 				'Discover halal-certified suppliers and manufacturers from Southeast Asia to the Gulf. Verified B2B partners for global trade.',
 			ogImage: 'https://halalneo.com/brand/og-default.png',
-			keywords: ['halal suppliers', 'certified manufacturers', 'B2B suppliers', 'halal trade partners']
+			keywords: [
+				'halal suppliers',
+				'certified manufacturers',
+				'B2B suppliers',
+				'halal trade partners'
+			]
 		},
 		suppliers,
 		businessTypes: [...new Set(suppliers.flatMap((s) => (s.businessType ? [s.businessType] : [])))],

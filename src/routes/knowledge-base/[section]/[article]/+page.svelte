@@ -144,7 +144,7 @@
 	{/if}
 </svelte:head>
 
-<div class="mx-auto max-w-6xl py-8">
+<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
 	{#if data.item}
 		<Breadcrumb
 			items={[
@@ -157,8 +157,8 @@
 			]}
 		/>
 
-		<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
-			<main class="space-y-4 sm:space-y-6" bind:this={articleEl}>
+		<div class="grid items-start gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+			<main class="min-w-0 space-y-4 sm:space-y-6" bind:this={articleEl}>
 				<header class="space-y-4">
 					<div class="flex flex-wrap items-center gap-2">
 						<Badge variant="secondary">{sectionName}</Badge>
@@ -174,11 +174,11 @@
 							{meta.views ?? 0} reads
 						</span>
 					</div>
-					<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
+					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{data.item.title}</h1>
 					<p class="text-sm text-muted-foreground">{data.item.summary}</p>
 				</header>
 
-				<div class="content-body overflow-hidden">
+				<div class="content-body max-w-[65ch] overflow-hidden">
 					{@html renderedBody}
 				</div>
 
@@ -201,7 +201,7 @@
 				</div>
 
 				{#if related.length > 0}
-					<section class="space-y-4 border-t border-border pt-8">
+					<section class="hidden space-y-4 border-t border-border pt-8 lg:block">
 						<h2 class="text-base font-semibold tracking-tight sm:text-lg">Related Articles</h2>
 						<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 							{#each related as rel (rel.slug)}
@@ -249,8 +249,8 @@
 				</div>
 			</main>
 
-			<aside class="hidden shrink-0 lg:block">
-				<div class="sticky top-24 z-10 space-y-4">
+			<aside class="min-w-0 lg:shrink-0">
+				<div class="space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
 					<Card>
 						<CardContent class="p-4">
 							<h3 class="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">

@@ -221,8 +221,9 @@ Arbitrary values (`text-[10px]`, `text-[0.8rem]`, …) are banned everywhere out
 - **Density:** compact controls — buttons and inputs are `h-8` (32px); labels 10–11px, body 12–14px; tight but not cramped. No decorative text above `text-base` on mobile (hero titles excepted). Page lead paragraphs are `text-xs sm:text-sm`; section `h2`s cap at `text-base` on mobile and step up at `sm:`; `CardTitle` renders `text-sm sm:text-base` (never `text-lg` on phones); share buttons collapse to icon-only marks (`X` / `in` / `WA` / `f` + link glyph) below `sm`.
 - **Detail pages:** single-column stack on mobile; two columns (content + sticky sidebar) on desktop.
 - **Lists paginate:** every listing page uses the shared `Paginator` (`PAGE_SIZE` matched to grid columns: 8/9/12 for 2/3/4 cols); filters reset to page 1; hidden when a single page suffices.
-- **Header:** `sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl`; mobile nav via a bottom glass tab bar (Explore/Menu popovers) plus a `md–lg`-only hamburger Sheet.
-- **Footer:** `bg-muted/30` translucent, `grid-cols-2 sm:grid-cols-3 lg:grid-cols-6` (brand + 5 link groups) with a copyright bar.
+- **Header:** `sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl`; the bottom glass tab bar owns base/sm/md navigation (Explore/Menu popovers), while the full desktop menu appears from `lg`; the next navigation group uses a measured logical popover position.
+- **Footer:** `bg-muted/30` translucent, `hidden sm:grid sm:grid-cols-3 lg:grid-cols-7` (brand + navigation groups) with a copyright bar.
+- **Entry pages:** home, About, Pricing and Tools use compact mobile H1 (`text-xl` baseline), `max-w-2xl` lead copy, two-column mobile tool/category grids and CTA blocks that expand to multi-column layouts from `sm`/`lg`.
 - **Directional layout is logical, not physical (RTL-ready):** spacing/padding/margins use `ps-*`/`pe-*`/`ms-*`/`me-*`, positioning uses `start-*`/`end-*`, alignment uses `text-start`/`text-end`, borders use `border-s-*`; raw CSS in `layout.css` uses `inset-inline`/`padding-inline-start`. Mirror-sensitive icons (chevrons, arrows, list markers) carry `rtl:rotate-180`. Deliberate physical exceptions: `left-1/2 … -translate-x-1/2` centering pairs (translate is a physical property; a logical `start-1/2` would break in RTL) and the JS-measured sliding indicator in `mobile-tab.svelte` (`left-0` + `translateX(px)`). Vendored `ui/` stays as shipped.
 
 ## Elevation & Depth
@@ -318,8 +319,8 @@ Ledger-like form language: gently squared corners with a controlled radius scale
 ### Navigation
 
 - **Style:** sticky translucent header (`bg-background/90 backdrop-blur`) with a border-bottom hairline; nav links are plain text turning green on hover, active page in green; right cluster holds theme toggle (Sun/Moon), search icon button, and Sign in (green) / mobile hamburger (Sheet).
-- **Mobile:** bottom glass tab bar (Home / Categories / Products / Explore / Menu) with glass Explore/Menu popovers mirroring desktop nav; a hamburger Sheet covers `md–lg` widths with Sign in / Create account buttons.
-- **Footer:** four-column responsive grid (brand + Marketplace / Resources / Company columns); copyright bar with the demo-data disclaimer.
+- **Mobile:** bottom glass tab bar (Home / Categories / Products / Explore / Menu) with glass Explore/Menu popovers mirroring desktop nav; the full desktop menu starts at `lg`, so tablets do not enter a crowded intermediate state.
+- **Footer:** responsive navigation grid (brand + Marketplace / Resources / Company columns); copyright bar with the demo-data disclaimer.
 
 ### Accordion (FAQ)
 

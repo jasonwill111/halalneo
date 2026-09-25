@@ -184,21 +184,21 @@
 <Breadcrumb items={[{ label: 'Trade Shows', href: '/trade-shows' }]} />
 
 <section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+	<div class="max-w-2xl space-y-1">
+		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:text-sm">
 			<CalendarIcon class="size-4"></CalendarIcon>
 			Trade Shows
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Global halal events</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Global halal events</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Upcoming halal trade shows, exhibitions, and industry events worldwide. Plan your attendance
 			and connect with buyers and suppliers.
 		</p>
 	</div>
 
-	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-		<div class="relative flex-1 sm:max-w-xs">
-			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+	<div class="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<div class="relative min-w-0 flex-1 sm:max-w-xs">
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search events, cities..."
@@ -227,7 +227,8 @@
 		<Empty>
 			<EmptyHeader>
 				<BrandedEmptyMedia
-					><CalendarDaysIcon class="size-6 text-muted-foreground"></CalendarDaysIcon></BrandedEmptyMedia
+					><CalendarDaysIcon class="size-6 text-muted-foreground"
+					></CalendarDaysIcon></BrandedEmptyMedia
 				>
 				<EmptyTitle>No events found</EmptyTitle>
 				<EmptyDescription>
@@ -267,12 +268,11 @@
 						? 'opacity-50'
 						: ''}"
 				>
-					<CardContent class="flex flex-1 flex-col gap-2.5 p-3 sm:p-4">
+					<CardContent class="flex flex-1 flex-col gap-2 p-2.5 sm:gap-2.5 sm:p-4">
 						<div class="flex items-start justify-between gap-2">
 							<div class="min-w-0 flex-1 space-y-1">
 								<a href={localizeHref(`/trade-shows/${show.id}`)} class="hover:text-primary">
-									<CardTitle class="truncate text-sm leading-snug sm:text-base"
-										>{show.name}</CardTitle
+									<CardTitle class="truncate text-xs leading-snug sm:text-sm">{show.name}</CardTitle
 									>
 								</a>
 								<div class="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
@@ -370,7 +370,9 @@
 						<p class="truncate text-xs text-muted-foreground">{show.city}, {show.country}</p>
 						<div class="mt-1 flex items-center gap-1.5">
 							<CalendarDaysIcon class="size-3" />
-							<span class="text-xs tabular-nums">{formatDateRange(show.startDate, show.endDate)}</span>
+							<span class="text-xs tabular-nums"
+								>{formatDateRange(show.startDate, show.endDate)}</span
+							>
 						</div>
 					</Card>
 				{/each}
@@ -378,7 +380,9 @@
 			{#if mappedShows.length === 0}
 				<Empty>
 					<EmptyHeader>
-						<BrandedEmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></BrandedEmptyMedia>
+						<BrandedEmptyMedia
+							><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></BrandedEmptyMedia
+						>
 						<EmptyTitle>No mapped events</EmptyTitle>
 						<EmptyDescription
 							>The map only shows events with coordinates. Switch to list view for full details.</EmptyDescription
@@ -430,8 +434,8 @@
 					<div class="p-3 text-center text-xs text-muted-foreground">
 						<span class="me-1 inline-block h-2.5 w-2.5 rounded-full bg-success"></span> Happening
 						now ·
-						<span class="me-1 ms-1 inline-block h-2.5 w-2.5 rounded-full bg-info"></span> Upcoming ·
-						<span class="me-1 ms-1 inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50"
+						<span class="ms-1 me-1 inline-block h-2.5 w-2.5 rounded-full bg-info"></span> Upcoming ·
+						<span class="ms-1 me-1 inline-block h-2.5 w-2.5 rounded-full bg-muted-foreground/50"
 						></span> Past
 					</div>
 				</div>

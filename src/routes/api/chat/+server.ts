@@ -1,6 +1,11 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { convertToModelMessages, createUIMessageStreamResponse, streamText, type UIMessage } from 'ai';
+import {
+	convertToModelMessages,
+	createUIMessageStreamResponse,
+	streamText,
+	type UIMessage
+} from 'ai';
 import { z } from 'zod';
 import { createAgnes, AGNES_MODEL_ID } from '#lib/server/ai/agnes.js';
 import { HALAL_SYSTEM_PROMPT } from '#lib/server/ai/system-prompt.js';

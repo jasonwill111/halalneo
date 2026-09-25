@@ -15,7 +15,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		const story = await readJson<SuccessStoryItem>(res);
 		const suppliers = await readItems<SupplierListItem>(supRes);
-		const supplierName = suppliers.find((s) => s.slug === story.supplierSlug)?.name ?? story.supplierSlug;
+		const supplierName =
+			suppliers.find((s) => s.slug === story.supplierSlug)?.name ?? story.supplierSlug;
 
 		const listRes = await fetch('/api/success-stories?limit=10');
 		const related = (await readItems<SuccessStoryItem>(listRes))

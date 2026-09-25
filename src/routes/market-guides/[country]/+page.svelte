@@ -168,7 +168,7 @@
 	]}
 />
 
-<div class="mx-auto max-w-6xl space-y-6 py-8">
+<div class="mx-auto w-full max-w-6xl space-y-6 px-4 py-8 sm:px-6">
 	{#if countryImages[guide.country]}
 		<div class="relative overflow-hidden rounded-xl">
 			<img
@@ -195,9 +195,9 @@
 	<div class="space-y-6">
 		<div class="space-y-3">
 			<div class="flex items-center gap-3">
-				<span class="text-2xl sm:text-4xl">{guide.flag}</span>
+				<span class="text-2xl sm:text-3xl">{guide.flag}</span>
 				<div>
-					<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{guide.country}</h1>
+					<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">{guide.country}</h1>
 					<p class="text-sm text-muted-foreground">{guide.region}</p>
 				</div>
 			</div>
@@ -218,11 +218,7 @@
 			/>
 			<StatTile value={guide.marketSizeUsd ?? ''} label="Market size" tone="success" />
 			<StatTile value={guide.processingTime ?? ''} label="Processing time" tone="warn" />
-			<StatTile
-				value={guide.certificateValidity ?? ''}
-				label="Certificate validity"
-				tone="teal"
-			/>
+			<StatTile value={guide.certificateValidity ?? ''} label="Certificate validity" tone="teal" />
 		</div>
 
 		<div class="grid gap-4 lg:grid-cols-2">
@@ -237,7 +233,7 @@
 							<li class="relative flex gap-3 pb-4 last:pb-0">
 								{#if i < steps.length - 1}
 									<span
-										class="absolute top-7 start-[13px] h-[calc(100%-1.75rem)] w-px bg-border"
+										class="absolute start-[13px] top-7 h-[calc(100%-1.75rem)] w-px bg-border"
 										aria-hidden="true"
 									></span>
 								{/if}
@@ -491,8 +487,8 @@
 		</div>
 	</div>
 
-	<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
-		<main class="space-y-6">
+	<div class="grid items-start gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+		<main class="min-w-0 space-y-6">
 			<div class="grid gap-4 lg:grid-cols-2">
 				<Card class="bg-card">
 					<CardContent class="space-y-3 p-5">
@@ -609,8 +605,8 @@
 			</div>
 		</main>
 
-		<aside class="hidden shrink-0 lg:block">
-			<div class="sticky top-24 z-10 space-y-4">
+		<aside class="min-w-0 lg:shrink-0">
+			<div class="space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
 				<Card class="bg-card">
 					<CardContent class="space-y-3 p-5">
 						<div class="flex items-center gap-2">

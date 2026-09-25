@@ -3,6 +3,7 @@
 	import type { PageProps } from './$types';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Alert } from '#lib/components/ui/alert/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import {
 		Table,
@@ -16,6 +17,8 @@
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { toast } from 'svelte-sonner';
 	import Plus from '@lucide/svelte/icons/plus';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
@@ -28,7 +31,11 @@
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
-	import { describeFetchFailure, describeThrownFailure, type LoadFailure } from '#lib/utils/load-error.js';
+	import {
+		describeFetchFailure,
+		describeThrownFailure,
+		type LoadFailure
+	} from '#lib/utils/load-error.js';
 	import type { InquiryDto, InquiryListResponse } from '#lib/schemas/inquiries.js';
 
 	let { data }: PageProps = $props();
@@ -97,13 +104,9 @@
 		// `limit=1` everywhere we only need `total` — both products and inquiries
 		// count queries are indexed on supplier_slug.
 		const [products, inquiries, pending, views] = await Promise.all([
-			getJson<{ total?: number }>(
-				`/api/products?supplierSlug=${qs}&status=active&limit=1`
-			),
+			getJson<{ total?: number }>(`/api/products?supplierSlug=${qs}&status=active&limit=1`),
 			getJson<InquiryListResponse>(`/api/inquiries?supplierSlug=${qs}&limit=5`),
-			getJson<{ total?: number }>(
-				`/api/inquiries?supplierSlug=${qs}&status=pending&limit=1`
-			),
+			getJson<{ total?: number }>(`/api/inquiries?supplierSlug=${qs}&status=pending&limit=1`),
 			// Membership-checked server-side (supplier_members).
 			getJson<ViewsAnalytics>(`/api/views?supplierSlug=${qs}`)
 		]);
@@ -198,7 +201,8 @@
 		if (!parsed.success) {
 			for (const issue of parsed.error.issues) {
 				const key = DEAL_SERVER_TO_CLIENT[String(issue.path[0] ?? '')] ?? '';
-				if (key && !dealFieldErrors[key]) dealFieldErrors = { ...dealFieldErrors, [key]: issue.message };
+				if (key && !dealFieldErrors[key])
+					dealFieldErrors = { ...dealFieldErrors, [key]: issue.message };
 			}
 			focusFirstInvalid(dealFormEl);
 			return;
@@ -260,66 +264,71 @@
 </svelte:head>
 
 {#if !supplierSlug}
-	<div class="rounded-xl bg-card p-6 ring-1 ring-foreground/10">
-		<div class="flex items-start gap-3">
-			<div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-				<ShieldQuestion class="size-5 text-primary" />
-			</div>
-			<div class="space-y-1">
-				<h1 class="text-lg font-semibold tracking-tight">Welcome, {data.supplierUser?.name ?? 'there'}</h1>
-				<p class="max-w-md text-sm text-muted-foreground">
-					Your account isn't linked to a supplier company yet, so there is no dashboard data
-					to show. Apply for access and an administrator will connect this account to your
-					company profile.
-				</p>
-				<div class="flex flex-wrap gap-2 pt-1">
-					<Button size="sm" href={localizeHref('/supplier/onboarding')}>
-						Apply to become a supplier
-					</Button>
-					<Button size="sm" variant="outline" href={localizeHref('/contact')}>
-						Contact support
-					</Button>
-				</div>
-			</div>
+	<div class="space-y-3">
+		<div>
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Supplier dashboard</h1>
+			<p class="text-xs text-muted-foreground sm:text-sm">
+				Your supplier workspace, buyer activity, and profile performance in one place.
+			</p>
 		</div>
+		<Empty class="rounded-xl border bg-card p-6 ring-1 ring-foreground/10">
+			<BrandedEmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+			<div class="max-w-md space-y-1">
+				<p class="font-medium">Welcome, {data.supplierUser?.name ?? 'there'}</p>
+				<p class="text-sm text-muted-foreground">
+					Your account isn't linked to a supplier company yet, so there is no dashboard data to
+					show. Apply for access and an administrator will connect this account to your company
+					profile.
+				</p>
+			</div>
+			<div class="flex flex-wrap justify-center gap-2">
+				<Button size="sm" href={localizeHref('/supplier/onboarding')}>
+					Apply to become a supplier
+				</Button>
+				<Button size="sm" variant="outline" href={localizeHref('/contact')}>Contact support</Button>
+			</div>
+		</Empty>
 	</div>
 {:else}
-	<div
-		class="rounded-xl border p-3 {verification?.label === 'verified'
-			? 'border-success/20 bg-success/5'
-			: 'border-border/50 bg-card'}"
-	>
-		<div class="flex flex-wrap items-center gap-2">
-			<Eye class="size-4 text-muted-foreground" />
-			<span class="text-xs font-medium">Welcome back, {greetingName}!</span>
-			{#if verification}
-				<Badge variant="secondary" class="text-2xs capitalize">{verification.label}</Badge>
-				<span class="text-2xs-plus text-muted-foreground">{verification.note}</span>
-			{:else}
-				<span class="text-2xs-plus text-muted-foreground">Profile status unavailable.</span>
-			{/if}
-		</div>
+	<div class="mb-3">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Dashboard</h1>
+		<p class="text-xs text-muted-foreground sm:text-sm">
+			Track your listings, buyer inquiries, and profile visibility.
+		</p>
 	</div>
 
-	<div class="mt-3 flex flex-wrap gap-2">
+	<Alert
+		class={verification?.label === 'verified'
+			? 'border-success/20 bg-success/5'
+			: 'border-border/50 bg-card'}
+	>
+		<Eye class="size-4 text-muted-foreground" />
+		<div class="min-w-0 space-y-0.5">
+			<p class="text-xs font-medium">Welcome back, {greetingName}!</p>
+			{#if verification}
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+					<Badge variant="secondary" class="text-2xs capitalize">{verification.label}</Badge>
+					<span class="text-2xs text-muted-foreground">{verification.note}</span>
+				</div>
+			{:else}
+				<p class="text-2xs text-muted-foreground">Profile status unavailable.</p>
+			{/if}
+		</div>
+	</Alert>
+
+	<div class="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
 		<StatTile
 			value={activeListings ?? '—'}
 			label="Active listings"
 			tone="primary"
 			hint="public products"
-			loading={loading}
+			{loading}
 		>
 			{#snippet icon()}
 				<Package class="size-4" />
 			{/snippet}
 		</StatTile>
-		<StatTile
-			value={inquiryTotal ?? '—'}
-			label="Inquiries"
-			tone="info"
-			hint="all time"
-			loading={loading}
-		>
+		<StatTile value={inquiryTotal ?? '—'} label="Inquiries" tone="info" hint="all time" {loading}>
 			{#snippet icon()}
 				<MessageCircle class="size-4" />
 			{/snippet}
@@ -329,7 +338,7 @@
 			label="Awaiting reply"
 			tone="warn"
 			hint="pending status"
-			loading={loading}
+			{loading}
 		>
 			{#snippet icon()}
 				<Tag class="size-4" />
@@ -340,7 +349,7 @@
 			label="Profile views"
 			tone="success"
 			hint={analytics ? `${analytics.profileViews30d} in last 30 days` : 'live beacon data'}
-			loading={loading}
+			{loading}
 		>
 			{#snippet icon()}
 				<BarChart3 class="size-4" />
@@ -385,7 +394,6 @@
 		onretry={() => loadDashboard(supplierSlug ?? '')}
 	/>
 
-	<!-- Recent inquiries -->
 	<div class="mt-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10">
 		<div class="mb-2 flex items-center justify-between gap-2">
 			<h2 class="text-sm font-semibold">Recent inquiries</h2>
@@ -398,22 +406,59 @@
 				View all
 			</Button>
 		</div>
-		<div class="overflow-x-auto">
-			{#if loading}
-				<div class="space-y-2" aria-label="Loading recent inquiries">
-					{#each [0, 1, 2] as i (i)}
-						<Skeleton class="h-8 w-full" />
-					{/each}
+		{#if loading}
+			<div class="space-y-2" aria-label="Loading recent inquiries">
+				{#each [0, 1, 2] as i (i)}
+					<Skeleton class="h-12 w-full" />
+				{/each}
+			</div>
+		{:else if loadFailure}
+			<Alert variant="destructive" class="border-destructive/20 bg-destructive/5">
+				<Eye class="size-4" />
+				<div>
+					<p class="text-xs font-medium">Inquiries unavailable</p>
+					<p class="text-2xs text-muted-foreground">
+						Use “Try again” above to reload your dashboard.
+					</p>
 				</div>
-			{:else if loadFailure}
-				<p class="py-6 text-center text-xs text-muted-foreground">
-					Inquiries unavailable — use “Try again” above.
-				</p>
-			{:else if recent.length === 0}
-				<p class="py-6 text-center text-xs text-muted-foreground">
-					No inquiries yet — buyers reach you from your public profile and listings.
-				</p>
-			{:else}
+			</Alert>
+		{:else if recent.length === 0}
+			<Empty class="border-0 p-4">
+				<BrandedEmptyMedia><MessageCircle class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+				>
+				<div class="max-w-sm space-y-1">
+					<p class="font-medium">No inquiries yet</p>
+					<p class="text-xs text-muted-foreground">
+						Buyers can reach you from your public profile and listings.
+					</p>
+				</div>
+				<Button
+					size="sm"
+					variant="outline"
+					onclick={() => void goto(localizeHref('/supplier/orders'))}
+				>
+					View inquiries
+				</Button>
+			</Empty>
+		{:else}
+			<div class="space-y-2 sm:hidden">
+				{#each recent as inquiry (inquiry.id)}
+					<article class="rounded-lg bg-muted/40 p-2.5">
+						<div class="flex min-w-0 items-start justify-between gap-2">
+							<p class="min-w-0 truncate text-xs font-medium" title={inquiry.subject}>
+								{inquiry.subject}
+							</p>
+							<Badge variant="secondary" class="shrink-0 text-2xs capitalize"
+								>{inquiry.status}</Badge
+							>
+						</div>
+						<p class="mt-1 truncate text-2xs text-muted-foreground">
+							{humanize(inquiry.buyerSlug, '—')} · {formatDate(inquiry.createdAt)}
+						</p>
+					</article>
+				{/each}
+			</div>
+			<div class="hidden overflow-x-auto sm:block">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -427,7 +472,10 @@
 					<TableBody>
 						{#each recent as inquiry (inquiry.id)}
 							<TableRow>
-								<TableCell class="max-w-[220px] truncate text-2xs-plus font-medium" title={inquiry.subject}>
+								<TableCell
+									class="max-w-[220px] truncate text-2xs-plus font-medium"
+									title={inquiry.subject}
+								>
 									{inquiry.subject}
 								</TableCell>
 								<TableCell class="text-2xs">{humanize(inquiry.buyerSlug, '—')}</TableCell>
@@ -438,7 +486,7 @@
 									{formatDate(inquiry.createdAt)}
 								</TableCell>
 								<TableCell>
-									<Badge variant="secondary" class="capitalize text-2xs">
+									<Badge variant="secondary" class="text-2xs capitalize">
 										{inquiry.status}
 									</Badge>
 								</TableCell>
@@ -446,8 +494,8 @@
 						{/each}
 					</TableBody>
 				</Table>
-			{/if}
-		</div>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Live profile analytics (GET /api/views, membership-scoped on the server) -->
@@ -468,10 +516,15 @@
 				<Skeleton class="col-span-2 h-16 w-full" />
 			</div>
 		{:else if analyticsFailed || !analytics}
-			<p class="rounded-xl bg-muted/40 px-3 py-4 text-center text-2xs-plus text-muted-foreground">
-				Analytics are unavailable right now. They are only served for the supplier company
-				your account is a member of.
-			</p>
+			<Alert variant="destructive" class="border-destructive/20 bg-destructive/5">
+				<BarChart3 class="size-4" />
+				<div>
+					<p class="text-xs font-medium">Analytics unavailable</p>
+					<p class="text-2xs text-muted-foreground">
+						Analytics are only served for the supplier company your account is a member of.
+					</p>
+				</div>
+			</Alert>
 		{:else}
 			<div class="mb-2 grid grid-cols-2 gap-2">
 				<div class="rounded-xl bg-muted/50 px-3 py-2">
@@ -493,17 +546,19 @@
 						></div>
 					{/each}
 				</div>
-				<p class="mt-1 text-2xs text-muted-foreground">Daily profile views over the last 30 days.</p>
+				<p class="mt-1 text-2xs text-muted-foreground">
+					Daily profile views over the last 30 days.
+				</p>
 			{/if}
 			{#if analytics.topProducts.length > 0}
-				<h3 class="mb-1 mt-3 text-2xs font-semibold text-muted-foreground">
+				<h3 class="mt-3 mb-1 text-2xs font-semibold text-muted-foreground">
 					Top products by views
 				</h3>
 				<div class="space-y-1">
 					{#each analytics.topProducts as p (p.slug)}
 						<div class="flex items-center justify-between gap-2 text-2xs-plus">
 							<span class="truncate font-medium">{p.name}</span>
-							<span class="shrink-0 tabular-nums text-muted-foreground">{p.views ?? 0} views</span>
+							<span class="shrink-0 text-muted-foreground tabular-nums">{p.views ?? 0} views</span>
 						</div>
 					{/each}
 				</div>
@@ -593,7 +648,8 @@
 						class="text-xs"
 						aria-invalid={dealFieldErrors.dealPrice ? true : undefined}
 						oninput={() => {
-							if (dealFieldErrors.dealPrice) dealFieldErrors = { ...dealFieldErrors, dealPrice: '' };
+							if (dealFieldErrors.dealPrice)
+								dealFieldErrors = { ...dealFieldErrors, dealPrice: '' };
 						}}
 					/>
 					{#if dealFieldErrors.dealPrice}
@@ -628,7 +684,8 @@
 						class="text-xs"
 						aria-invalid={dealFieldErrors.dealValid ? true : undefined}
 						oninput={() => {
-							if (dealFieldErrors.dealValid) dealFieldErrors = { ...dealFieldErrors, dealValid: '' };
+							if (dealFieldErrors.dealValid)
+								dealFieldErrors = { ...dealFieldErrors, dealValid: '' };
 						}}
 					/>
 					{#if dealFieldErrors.dealValid}
@@ -636,9 +693,14 @@
 					{/if}
 				</Field>
 			</div>
-			<div class="flex items-center justify-between gap-2">
+			<div class="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
 				<p class="text-2xs text-muted-foreground">Free plan: 1 deal per week.</p>
-				<Button type="submit" size="sm" class="gap-1.5" disabled={dealSending || !dealTitle.trim()}>
+				<Button
+					type="submit"
+					size="sm"
+					class="w-full gap-1.5 sm:w-auto"
+					disabled={dealSending || !dealTitle.trim()}
+				>
 					<Plus class="size-3.5" />
 					{dealSending ? 'Publishing…' : 'Publish deal'}
 				</Button>

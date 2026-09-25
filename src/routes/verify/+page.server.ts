@@ -11,7 +11,11 @@ export const load: PageServerLoad = async ({ url }) => {
 	try {
 		const db = getDb(getBindings().DB);
 		certifiers = await db
-			.select({ id: certifyingBodies.id, name: certifyingBodies.name, country: certifyingBodies.country })
+			.select({
+				id: certifyingBodies.id,
+				name: certifyingBodies.name,
+				country: certifyingBodies.country
+			})
 			.from(certifyingBodies)
 			.where(eq(certifyingBodies.status, 'active'))
 			.limit(100);

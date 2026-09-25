@@ -4,7 +4,7 @@ export const COUNTRY_IMAGES: Record<string, string> = {
 	'United Arab Emirates': '/api/media/market-uae.webp',
 	'Saudi Arabia': '/api/media/market-saudi.webp',
 	Japan: '/api/media/market-japan.webp',
-	'Türkiye': '/api/media/market-turkey.webp',
+	Türkiye: '/api/media/market-turkey.webp',
 	India: '/api/media/market-india.webp',
 	Pakistan: '/api/media/market-pakistan.webp',
 	'United States': '/api/media/market-usa.webp'

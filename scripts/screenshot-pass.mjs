@@ -104,9 +104,7 @@ for (const [w, h, tag] of [
 ]) {
 	const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: 'light' });
 	const page = await ctx.newPage();
-	await page
-		.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 60000 })
-		.catch(() => {});
+	await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
 	await page.waitForTimeout(3000);
 	await page.screenshot({ path: `${OUT}/light-home-${tag}.png`, fullPage: true });
 	await signIn(page);

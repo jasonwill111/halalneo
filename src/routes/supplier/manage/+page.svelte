@@ -2,19 +2,27 @@
 	import type { PageProps } from './$types';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Alert } from '#lib/components/ui/alert/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { Field, FieldLabel, FieldError } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyContent,
+		EmptyDescription,
+		EmptyHeader,
+		EmptyTitle
+	} from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Save from '@lucide/svelte/icons/save';
 	import Building2 from '@lucide/svelte/icons/building-2';
 	import Users from '@lucide/svelte/icons/users';
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 	import ShieldQuestion from '@lucide/svelte/icons/shield-question';
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import { toast } from 'svelte-sonner';
 	import { z } from 'zod';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
@@ -107,7 +115,12 @@
 			.map((c) => {
 				if (!c || typeof c !== 'object') return null;
 				const rec = c as Record<string, unknown>;
-				const name = typeof rec.name === 'string' ? rec.name : typeof rec.bodyName === 'string' ? rec.bodyName : '';
+				const name =
+					typeof rec.name === 'string'
+						? rec.name
+						: typeof rec.bodyName === 'string'
+							? rec.bodyName
+							: '';
 				if (!name) return null;
 				return { name, scope: typeof rec.scope === 'string' ? rec.scope : '' };
 			})
@@ -234,7 +247,9 @@
 					name: updated.name ?? companyName.trim(),
 					country: updated.country ?? country.trim(),
 					description: updated.description ?? description.trim(),
-					yearEstablished: updated.yearEstablished ?? (yearEstablished.trim() ? Number(yearEstablished.trim()) : null),
+					yearEstablished:
+						updated.yearEstablished ??
+						(yearEstablished.trim() ? Number(yearEstablished.trim()) : null),
 					website: updated.website ?? (website.trim() || null)
 				};
 			}
@@ -254,23 +269,29 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="space-y-1 mb-4">
+<div class="mb-3 space-y-1">
 	<nav class="flex items-center gap-1.5 text-2xs text-muted-foreground">
-		<a href={localizeHref('/')} class="hover:text-foreground transition-colors">Home</a>
+		<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
 		<span>/</span>
-		<a href={localizeHref('/supplier/dashboard')} class="hover:text-foreground transition-colors">Supplier</a>
+		<a href={localizeHref('/supplier/dashboard')} class="transition-colors hover:text-foreground"
+			>Supplier</a
+		>
 		<span>/</span>
-		<span class="text-foreground font-medium">Manage</span>
+		<span class="font-medium text-foreground">Manage</span>
 	</nav>
-	<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Company Profile</h1>
-	<p class="text-sm text-muted-foreground">Manage the company information buyers see on your public profile.</p>
+	<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Company Profile</h1>
+	<p class="text-xs text-muted-foreground sm:text-sm">
+		Manage the company information buyers see on your public profile.
+	</p>
 </div>
 
 {#if !supplierSlug}
 	<Card class="p-3 ring-1 ring-foreground/10">
 		<CardContent class="p-0">
 			<Empty>
-				<BrandedEmptyMedia><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+				<BrandedEmptyMedia
+					><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+				>
 				<div class="space-y-1">
 					<p class="font-medium">No supplier profile linked</p>
 					<p class="text-sm text-muted-foreground">
@@ -286,8 +307,8 @@
 	</Card>
 {:else if loading}
 	<div class="grid gap-3 sm:gap-4 lg:grid-cols-3">
-		<div class="lg:col-span-2 space-y-4">
-			<Card>
+		<div class="space-y-4 lg:col-span-2">
+			<Card size="sm">
 				<CardHeader class="pb-3"><CardTitle class="text-sm">Company Details</CardTitle></CardHeader>
 				<CardContent class="space-y-4">
 					<div class="grid gap-4 sm:grid-cols-2">
@@ -303,7 +324,7 @@
 			</Card>
 		</div>
 		<div class="space-y-4">
-			<Card>
+			<Card size="sm">
 				<CardHeader class="pb-3"><CardTitle class="text-sm">Account Status</CardTitle></CardHeader>
 				<CardContent class="space-y-3">
 					{#each [0, 1, 2] as i (i)}
@@ -314,32 +335,36 @@
 		</div>
 	</div>
 {:else if loadError}
-	<Card class="p-3 ring-1 ring-foreground/10">
-		<CardContent class="flex flex-col items-center gap-2 p-0 py-6 text-center">
-			<p class="text-sm font-medium text-destructive">{loadError}</p>
+	<Alert variant="destructive" class="border-destructive/20 bg-destructive/5">
+		<TriangleAlert class="size-4" />
+		<div>
+			<p class="text-xs font-medium">Could not load your company details</p>
+			<p class="text-2xs text-muted-foreground">{loadError}</p>
+		</div>
+		<div class="col-start-2">
 			<Button size="sm" variant="outline" onclick={() => void loadProfile()}>Try again</Button>
-		</CardContent>
-	</Card>
+		</div>
+	</Alert>
 {:else}
 	<div class="grid gap-3 sm:gap-4 lg:grid-cols-3">
-		<div class="lg:col-span-2 space-y-4">
-			<Card>
+		<div class="space-y-4 lg:col-span-2">
+			<Card size="sm">
 				<CardHeader class="pb-3">
 					<CardTitle class="flex items-center gap-2 text-sm">
 						<Building2 class="size-4 text-muted-foreground"></Building2>
 						Company Details
 					</CardTitle>
 				</CardHeader>
-				<CardContent class="p-0">
+				<CardContent class="p-3 sm:p-4">
 					<form
-						class="space-y-4"
+						class="space-y-3 sm:space-y-4"
 						bind:this={formEl}
 						onsubmit={(e) => {
 							e.preventDefault();
 							void save();
 						}}
 					>
-						<div class="grid gap-4 sm:grid-cols-2">
+						<div class="grid gap-3 sm:grid-cols-2 sm:gap-4">
 							<Field>
 								<FieldLabel for="company-name">Company Name</FieldLabel>
 								<Input
@@ -348,7 +373,9 @@
 									maxlength={200}
 									placeholder="Company name"
 									aria-invalid={fieldErrors.name ? true : undefined}
-									oninput={() => { if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' }; }}
+									oninput={() => {
+										if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+									}}
 								/>
 								{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 							</Field>
@@ -360,12 +387,14 @@
 									maxlength={100}
 									placeholder="Country"
 									aria-invalid={fieldErrors.country ? true : undefined}
-									oninput={() => { if (fieldErrors.country) fieldErrors = { ...fieldErrors, country: '' }; }}
+									oninput={() => {
+										if (fieldErrors.country) fieldErrors = { ...fieldErrors, country: '' };
+									}}
 								/>
 								{#if fieldErrors.country}<FieldError>{fieldErrors.country}</FieldError>{/if}
 							</Field>
 						</div>
-						<div class="grid gap-4 sm:grid-cols-2">
+						<div class="grid gap-3 sm:grid-cols-2 sm:gap-4">
 							<Field>
 								<FieldLabel for="year">Year Established</FieldLabel>
 								<Input
@@ -376,9 +405,14 @@
 									max={String(currentYear)}
 									inputmode="numeric"
 									aria-invalid={fieldErrors.yearEstablished ? true : undefined}
-									oninput={() => { if (fieldErrors.yearEstablished) fieldErrors = { ...fieldErrors, yearEstablished: '' }; }}
+									oninput={() => {
+										if (fieldErrors.yearEstablished)
+											fieldErrors = { ...fieldErrors, yearEstablished: '' };
+									}}
 								/>
-								{#if fieldErrors.yearEstablished}<FieldError>{fieldErrors.yearEstablished}</FieldError>{/if}
+								{#if fieldErrors.yearEstablished}<FieldError
+										>{fieldErrors.yearEstablished}</FieldError
+									>{/if}
 							</Field>
 							<Field>
 								<FieldLabel for="website">Website</FieldLabel>
@@ -389,7 +423,9 @@
 									placeholder="https://..."
 									maxlength={300}
 									aria-invalid={fieldErrors.website ? true : undefined}
-									oninput={() => { if (fieldErrors.website) fieldErrors = { ...fieldErrors, website: '' }; }}
+									oninput={() => {
+										if (fieldErrors.website) fieldErrors = { ...fieldErrors, website: '' };
+									}}
 								/>
 								{#if fieldErrors.website}<FieldError>{fieldErrors.website}</FieldError>{/if}
 							</Field>
@@ -403,16 +439,24 @@
 								maxlength={2000}
 								placeholder="Company description..."
 								aria-invalid={fieldErrors.description ? true : undefined}
-								oninput={() => { if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' }; }}
+								oninput={() => {
+									if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' };
+								}}
 							/>
 							{#if fieldErrors.description}<FieldError>{fieldErrors.description}</FieldError>{/if}
 						</Field>
 						{#if formError && Object.keys(fieldErrors).length === 0}
-							<p class="text-xs text-destructive">{formError}</p>
+							<Alert variant="destructive" class="border-destructive/20 bg-destructive/5">
+								<TriangleAlert class="size-4" />
+								<div>
+									<p class="text-xs font-medium">Could not save your changes</p>
+									<p class="text-2xs text-muted-foreground">{formError}</p>
+								</div>
+							</Alert>
 						{/if}
 						<div class="flex justify-end">
-							<Button type="submit" size="sm" class="gap-1.5" disabled={saving}>
-								<Save class="size-3.5"></Save>
+							<Button type="submit" size="sm" class="w-full gap-1.5 sm:w-auto" disabled={saving}>
+								<Save class="size-3.5" />
 								{saving ? 'Saving…' : 'Save Changes'}
 							</Button>
 						</div>
@@ -420,7 +464,7 @@
 				</CardContent>
 			</Card>
 
-			<Card>
+			<Card size="sm">
 				<CardHeader class="pb-3">
 					<CardTitle class="flex items-center gap-2 text-sm">
 						<Users class="size-4 text-muted-foreground"></Users>
@@ -429,7 +473,9 @@
 				</CardHeader>
 				<CardContent class="space-y-3">
 					<div class="flex items-center gap-3 rounded-lg bg-muted/40 px-3 py-2">
-						<div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+						<div
+							class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary"
+						>
 							{(data.supplierUser?.name ?? 'S')
 								.split(/\s+/)
 								.map((p) => p[0])
@@ -440,7 +486,9 @@
 						</div>
 						<div class="min-w-0 flex-1">
 							<p class="truncate text-2xs-plus font-medium">{data.supplierUser?.name ?? '—'}</p>
-							<p class="truncate text-2xs text-muted-foreground">{data.supplierUser?.email ?? '—'}</p>
+							<p class="truncate text-2xs text-muted-foreground">
+								{data.supplierUser?.email ?? '—'}
+							</p>
 						</div>
 						<Badge variant="secondary" class="text-2xs">Owner</Badge>
 					</div>
@@ -454,7 +502,7 @@
 		</div>
 
 		<div class="space-y-4">
-			<Card>
+			<Card size="sm">
 				<CardHeader class="pb-3">
 					<CardTitle class="text-sm">Account Status</CardTitle>
 				</CardHeader>
@@ -462,7 +510,11 @@
 					<div class="flex items-center justify-between text-2xs-plus">
 						<span class="text-muted-foreground">Verification</span>
 						{#if detail}
-							<Badge class="text-2xs {(statusMeta[detail.status ?? ''] ?? { cls: 'bg-muted text-muted-foreground' }).cls}">
+							<Badge
+								class="text-2xs {(
+									statusMeta[detail.status ?? ''] ?? { cls: 'bg-muted text-muted-foreground' }
+								).cls}"
+							>
 								{(statusMeta[detail.status ?? ''] ?? { label: 'Unknown', cls: '' }).label}
 							</Badge>
 						{:else}
@@ -484,7 +536,8 @@
 					</div>
 					<div class="flex items-center justify-between text-2xs-plus">
 						<span class="text-muted-foreground">Listed as</span>
-						<span class="max-w-[60%] truncate font-medium" title={detail?.slug}>{detail?.slug}</span>
+						<span class="max-w-[60%] truncate font-medium" title={detail?.slug}>{detail?.slug}</span
+						>
 					</div>
 					<div class="flex items-center justify-between text-2xs-plus">
 						<span class="text-muted-foreground">Member since</span>
@@ -493,7 +546,7 @@
 				</CardContent>
 			</Card>
 
-			<Card>
+			<Card size="sm">
 				<CardHeader class="pb-3">
 					<CardTitle class="flex items-center gap-2 text-sm">
 						<BadgeCheck class="size-4 text-muted-foreground"></BadgeCheck>
@@ -504,19 +557,39 @@
 					{#if certificationList.length > 0}
 						{#each certificationList as cert (cert.name)}
 							<div class="flex items-center gap-2 rounded-lg bg-muted/40 px-2.5 py-2 text-2xs-plus">
-								<Badge class="bg-success/10 text-success text-2xs">{cert.name}</Badge>
+								<Badge class="bg-success/10 text-2xs text-success">{cert.name}</Badge>
 								<span class="truncate text-muted-foreground">{cert.scope}</span>
 							</div>
 						{/each}
 					{:else}
-						<p class="text-2xs text-muted-foreground">
-							No certifications on file. Send your certificate details to HalalNeo support and
-							our team will add them after verification.
-						</p>
+						<Empty class="border-0 p-0">
+							<BrandedEmptyMedia
+								><BadgeCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+							>
+							<EmptyHeader>
+								<EmptyTitle>No certifications on file</EmptyTitle>
+								<EmptyDescription>
+									Send your certificate details to HalalNeo support and our team will add them after
+									verification.
+								</EmptyDescription>
+							</EmptyHeader>
+							<EmptyContent>
+								<Button variant="outline" size="sm" href={localizeHref('/contact')}>
+									Contact support
+								</Button>
+							</EmptyContent>
+						</Empty>
 					{/if}
-					<Button variant="outline" size="sm" class="w-full mt-2 text-2xs" href={localizeHref('/contact')}>
-						Contact support
-					</Button>
+					{#if certificationList.length > 0}
+						<Button
+							variant="outline"
+							size="sm"
+							class="mt-2 w-full text-2xs"
+							href={localizeHref('/contact')}
+						>
+							Contact support
+						</Button>
+					{/if}
 				</CardContent>
 			</Card>
 		</div>

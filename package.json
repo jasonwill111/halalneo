@@ -8,7 +8,7 @@
 		"build": "node scripts/worker-types.mjs && vite build",
 		"preview": "wrangler dev .svelte-kit/cloudflare/_worker.js --port 4174",
 		"prepare": "svelte-kit sync || echo ''",
-		"check": "node scripts/worker-types.mjs && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check": "node scripts/worker-types.mjs && svelte-kit sync && node scripts/clean-check-artifacts.mjs && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",

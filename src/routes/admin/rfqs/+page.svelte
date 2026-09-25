@@ -1,35 +1,35 @@
 <script lang="ts">
-  	import { Button } from '#lib/components/ui/button/index.js';
-  	import { Badge } from '#lib/components/ui/badge/index.js';
-  	import { Input } from '#lib/components/ui/input/index.js';
-  	import {
-  		Table,
-  		TableBody,
-  		TableCell,
-  		TableHead,
-  		TableHeader,
-  		TableRow
-  	} from '#lib/components/ui/table/index.js';
-  	import {
-  		Dialog,
-  		DialogContent,
-  		DialogDescription,
-  		DialogFooter,
-  		DialogHeader,
-  		DialogTitle
-  	} from '#lib/components/ui/dialog/index.js';
-  	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-  	import { Empty } from '#lib/components/ui/empty/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import {
+		Table,
+		TableBody,
+		TableCell,
+		TableHead,
+		TableHeader,
+		TableRow
+	} from '#lib/components/ui/table/index.js';
+	import {
+		Dialog,
+		DialogContent,
+		DialogDescription,
+		DialogFooter,
+		DialogHeader,
+		DialogTitle
+	} from '#lib/components/ui/dialog/index.js';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { Empty } from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
-  	import Search from '@lucide/svelte/icons/search';
-  	import Eye from '@lucide/svelte/icons/eye';
-  	import Trash2 from '@lucide/svelte/icons/trash-2';
-  	import Inbox from '@lucide/svelte/icons/inbox';
-  	import StatTile from '#lib/components/site/stat-tile.svelte';
-  	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
-  	import { toast } from 'svelte-sonner';
-  	import { SvelteURLSearchParams } from 'svelte/reactivity';
-  	import type { ApiList, BuyingRequestItem } from '#lib/types/api.js';
+	import Search from '@lucide/svelte/icons/search';
+	import Eye from '@lucide/svelte/icons/eye';
+	import Trash2 from '@lucide/svelte/icons/trash-2';
+	import Inbox from '@lucide/svelte/icons/inbox';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
+	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import { toast } from 'svelte-sonner';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import type { ApiList, BuyingRequestItem } from '#lib/types/api.js';
 
 	let search = $state('');
 	let items = $state<BuyingRequestItem[]>([]);
@@ -48,7 +48,10 @@
 	async function loadItems() {
 		loading = true;
 		try {
-			const params = new SvelteURLSearchParams({ limit: String(limit), offset: String((page - 1) * limit) });
+			const params = new SvelteURLSearchParams({
+				limit: String(limit),
+				offset: String((page - 1) * limit)
+			});
 			if (search.trim()) params.set('search', search.trim());
 			const res = await fetch(`/api/rfqs?${params}`);
 			if (res.ok) {
@@ -124,7 +127,11 @@
 	function formatDate(d: string): string {
 		if (!d) return '—';
 		try {
-			return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+			return new Date(d).toLocaleDateString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric'
+			});
 		} catch {
 			return d;
 		}
@@ -147,7 +154,9 @@
 	</div>
 
 	<div class="relative max-w-sm">
-		<Search class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Search
+			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+		/>
 		<Input bind:value={search} placeholder="Search RFQs..." class="ps-9" />
 	</div>
 
@@ -173,14 +182,15 @@
 				{#if loading}
 					<TableRow>
 						<TableCell colspan={6} class="py-8 text-center">
-							<Skeleton class="h-5 w-32 mx-auto" />
+							<Skeleton class="mx-auto h-5 w-32" />
 						</TableCell>
 					</TableRow>
 				{:else if items.length === 0}
 					<TableRow>
 						<TableCell colspan={6} class="py-8">
 							<Empty>
-								<BrandedEmptyMedia><Inbox class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+								<BrandedEmptyMedia><Inbox class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+								>
 								<div class="space-y-1">
 									<p class="font-medium">No RFQs found</p>
 									<p class="text-sm text-muted-foreground">No buying requests to display.</p>
@@ -201,13 +211,22 @@
 							<TableCell class="text-xs">{r.categorySlug ?? '—'}</TableCell>
 							<TableCell class="text-xs">{formatDate(r.createdAt ?? '')}</TableCell>
 							<TableCell>
-								<Badge variant="secondary" class={`px-1.5 py-0.5 text-2xs capitalize ${statusColor(r.status ?? 'active')}`}>
+								<Badge
+									variant="secondary"
+									class={`px-1.5 py-0.5 text-2xs capitalize ${statusColor(r.status ?? 'active')}`}
+								>
 									{r.status ?? 'active'}
 								</Badge>
 							</TableCell>
 							<TableCell class="text-end">
 								<div class="flex items-center justify-end gap-1">
-									<Button variant="ghost" size="icon" aria-label="View" class="size-8" onclick={() => viewDetail(r)}>
+									<Button
+										variant="ghost"
+										size="icon"
+										aria-label="View"
+										class="size-8"
+										onclick={() => viewDetail(r)}
+									>
 										<Eye class="size-3.5" />
 									</Button>
 									<Button
@@ -230,11 +249,18 @@
 
 	{#if total > limit}
 		<div class="flex justify-center gap-2">
-			<Button variant="outline" size="sm" disabled={page <= 1} onclick={() => page--}>Previous</Button>
+			<Button variant="outline" size="sm" disabled={page <= 1} onclick={() => page--}
+				>Previous</Button
+			>
 			<span class="flex items-center px-3 text-sm text-muted-foreground">
 				Page {page} of {Math.ceil(total / limit)}
 			</span>
-			<Button variant="outline" size="sm" disabled={page >= Math.ceil(total / limit)} onclick={() => page++}>Next</Button>
+			<Button
+				variant="outline"
+				size="sm"
+				disabled={page >= Math.ceil(total / limit)}
+				onclick={() => page++}>Next</Button
+			>
 		</div>
 	{/if}
 </div>
@@ -247,14 +273,32 @@
 		</DialogHeader>
 		{#if selected}
 			<div class="space-y-3 text-sm">
-				<div><span class="text-muted-foreground">Buyer Country:</span> {selected.buyerCountry ?? '—'}</div>
-				<div><span class="text-muted-foreground">Category:</span> {selected.categorySlug ?? '—'}</div>
+				<div>
+					<span class="text-muted-foreground">Buyer Country:</span>
+					{selected.buyerCountry ?? '—'}
+				</div>
+				<div>
+					<span class="text-muted-foreground">Category:</span>
+					{selected.categorySlug ?? '—'}
+				</div>
 				<div><span class="text-muted-foreground">Quantity:</span> {selected.quantity ?? '—'}</div>
-				<div><span class="text-muted-foreground">Target Price:</span> {selected.targetPrice ?? '—'}</div>
-				<div><span class="text-muted-foreground">Destination:</span> {selected.destination ?? '—'}</div>
-				<div><span class="text-muted-foreground">Description:</span> {selected.description ?? '—'}</div>
+				<div>
+					<span class="text-muted-foreground">Target Price:</span>
+					{selected.targetPrice ?? '—'}
+				</div>
+				<div>
+					<span class="text-muted-foreground">Destination:</span>
+					{selected.destination ?? '—'}
+				</div>
+				<div>
+					<span class="text-muted-foreground">Description:</span>
+					{selected.description ?? '—'}
+				</div>
 				<div><span class="text-muted-foreground">Status:</span> {selected.status ?? 'active'}</div>
-				<div><span class="text-muted-foreground">Created:</span> {formatDate(selected.createdAt ?? '')}</div>
+				<div>
+					<span class="text-muted-foreground">Created:</span>
+					{formatDate(selected.createdAt ?? '')}
+				</div>
 			</div>
 			<div class="mt-4 flex flex-wrap gap-2">
 				{#each statusOptions as s (s)}

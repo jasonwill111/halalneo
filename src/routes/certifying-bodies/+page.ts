@@ -41,7 +41,13 @@ export const load: PageLoad = async ({ fetch }) => {
 			description:
 				'Browse recognized halal certifying bodies worldwide —JAKIM, BPJPH, MUIS, SFDA, and more. Find accredited certifiers for your market.',
 			ogImage: 'https://halalneo.com/brand/og-default.png',
-			keywords: ['halal certifying bodies', 'JAKIM', 'BPJPH', 'accredited certifiers', 'halal accreditation']
+			keywords: [
+				'halal certifying bodies',
+				'JAKIM',
+				'BPJPH',
+				'accredited certifiers',
+				'halal accreditation'
+			]
 		},
 		certifiers,
 		itemList,

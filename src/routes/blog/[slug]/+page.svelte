@@ -142,20 +142,20 @@
 	{/if}
 </svelte:head>
 
-<div class="mx-auto max-w-6xl py-8">
+<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
 	{#if data.item}
 		<Breadcrumb
 			items={[{ label: 'Blog', href: '/blog' }, { label: data.item.title ?? 'Blog Post' }]}
 		/>
-		<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
-			<main class="space-y-4 sm:space-y-6">
+		<div class="grid items-start gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+			<main class="min-w-0 space-y-4 sm:space-y-6">
 				<header class="space-y-4">
 					<div class="flex flex-wrap gap-2">
 						{#each data.item.tags as tag (tag)}
 							<Badge variant="secondary">{tag}</Badge>
 						{/each}
 					</div>
-					<h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{data.item.title}</h1>
+					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{data.item.title}</h1>
 					<div class="flex items-center gap-3">
 						<Avatar>
 							<AvatarFallback>{data.item.author.initials}</AvatarFallback>
@@ -212,7 +212,7 @@
 					</div>
 				{/if}
 
-				<div class="content-body overflow-hidden">
+				<div class="content-body max-w-[65ch] overflow-hidden">
 					<div bind:this={articleEl}>
 						{@html renderedBody}
 					</div>
@@ -248,7 +248,7 @@
 					{/each}
 				</div>
 
-				<Card>
+				<Card class="hidden bg-card lg:block">
 					<CardContent class="space-y-3 p-4">
 						<p class="text-sm text-muted-foreground">
 							Found this helpful? Share it with your network.
@@ -258,7 +258,7 @@
 				</Card>
 
 				{#if data.related?.length}
-					<section class="space-y-4 border-t border-border pt-8">
+					<section class="hidden space-y-4 border-t border-border pt-8 lg:block">
 						<h2 class="text-base font-semibold tracking-tight sm:text-lg">Related articles</h2>
 						<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
 							{#each data.related as related (related.slug)}
@@ -332,8 +332,8 @@
 				</div>
 			</main>
 
-			<aside class="hidden shrink-0 lg:block">
-				<div class="sticky top-24 z-10 space-y-4">
+			<aside class="min-w-0 lg:shrink-0">
+				<div class="space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
 					<Card class="bg-card">
 						<CardContent class="space-y-3 p-5">
 							<div class="space-y-3">

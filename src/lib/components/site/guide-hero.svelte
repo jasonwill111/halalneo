@@ -13,17 +13,11 @@
 	let { country, flag, region, class: className, rounded = 'rounded-xl' }: Props = $props();
 
 	// Deterministic gradient per country (stable hue from name hash)
-	const hue = $derived(
-		[...country].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 360
-	);
+	const hue = $derived([...country].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 360);
 </script>
 
 <div
-	class={cn(
-		'relative flex items-center justify-center overflow-hidden',
-		rounded,
-		className
-	)}
+	class={cn('relative flex items-center justify-center overflow-hidden', rounded, className)}
 	style={`background: linear-gradient(135deg, oklch(0.42 0.09 ${hue}) 0%, oklch(0.3 0.1 ${(hue + 40) % 360}) 100%)`}
 	role="img"
 	aria-label={`${country} market illustration`}

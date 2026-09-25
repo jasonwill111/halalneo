@@ -130,10 +130,5 @@ export const mobileTabs: NavItem[] = [
 
 /** Every routable public link, flattened — used for coverage checks. */
 export function allNavItems(): NavItem[] {
-	return [
-		...primaryNav,
-		...navGroups.flatMap((g) => g.items),
-		...utilityNav,
-		...footerOnlyNav
-	];
+	return [...primaryNav, ...navGroups.flatMap((g) => g.items), ...utilityNav, ...footerOnlyNav];
 }

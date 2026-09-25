@@ -150,8 +150,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
 
 	// 0. Response-level cache for plain full-object GETs. Conditional and
 	// range requests skip it — they need header-level negotiation below.
-	const isPlainGet =
-		!request.headers.get('range') && !request.headers.get('if-none-match');
+	const isPlainGet = !request.headers.get('range') && !request.headers.get('if-none-match');
 	const cacheUrl = (k: string) => new URL(`/api/media/${k}`, request.url).toString();
 	let cache: Cache | null = null;
 	try {
@@ -165,7 +164,8 @@ export const GET: RequestHandler = async ({ params, request }) => {
 			// Matched responses have immutable headers — rebuild before handing
 			// them back to the hooks chain (handleSecurityHeaders would throw
 			// "Can't modify immutable headers" on the frozen Response).
-			if (hit) return new Response(hit.body, { status: hit.status, headers: new Headers(hit.headers) });
+			if (hit)
+				return new Response(hit.body, { status: hit.status, headers: new Headers(hit.headers) });
 		} catch {
 			// match can reject on runtime quirks — fall through to R2
 		}

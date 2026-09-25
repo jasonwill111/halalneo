@@ -49,7 +49,10 @@ async function readStats(db: NonNullable<ReturnType<typeof getDb>>): Promise<Llm
 			.select({ c: sql<number>`count(distinct ${knowledgeBase.section})` })
 			.from(knowledgeBase)
 			.where(eq(knowledgeBase.status, 'published')),
-		db.select({ c: count() }).from(pages).where(and(glossaryFilter, eq(pages.status, 'published'))),
+		db
+			.select({ c: count() })
+			.from(pages)
+			.where(and(glossaryFilter, eq(pages.status, 'published'))),
 		db.select({ c: count() }).from(suppliers).where(eq(suppliers.status, 'active')),
 		db.select({ c: count() }).from(products).where(eq(products.status, 'active'))
 	]);
@@ -134,4 +137,4 @@ export const GET: RequestHandler = async () => {
 			'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600'
 		}
 	});
-}
+};

@@ -3,31 +3,37 @@
 ## **目标**: Workers, D1, R2 基础优化 (2小时)
 
 ### **1. 环境检查与备份**
+
 - ✅ 项目目录 `D:\Dev Projects\halalneo`
 - ✅ Git 状态确认
 - ✅ 备份当前版本
 
 ### **2. 安装优化依赖**
+
 - `pnpm install -D @deepseek-ai/dev-optimize`
 - `pnpm install -D @opentelemetry/web-vitals`
 - `pnpm install -D vitest happy-dom`
 
 ### **3. 优化 Workers**
+
 - ✅ 启用智能缓存系统
 - ✅ 优化日志记录
 - ✅ 配置边缘计算
 
 ### **4. 优化 D1**
+
 - ✅ 创建覆盖索引
 - ✅ 配置查询缓存
 - ✅ 优化连接池
 
 ### **5. 优化 R2**
+
 - ✅ 实施 AI 压缩
 - ✅ 配置分层存储
 - ✅ 优化 CDN
 
 ### **6. 监控与验证**
+
 - ✅ 性能基准测试
 - ✅ 成本估算
 - ✅ 报告生成
@@ -37,6 +43,7 @@
 ## **🔧 执行命令 (PowerShell)**
 
 ### **Step 1: 备份当前版本**
+
 ```powershell
 # 创建备份版本标签
 git tag v1.0.0-optimized-backup
@@ -45,6 +52,7 @@ Write-Host "备份完成: $(Get-Date)" -ForegroundColor Green
 ```
 
 ### **Step 2: 安装优化依赖**
+
 ```powershell
 pnpm add -D @deepseek-ai/dev-optimize
 pnpm add -D @opentelemetry/web-vitals
@@ -53,6 +61,7 @@ Write-Host "依赖安装完成: $(Get-Date)" -ForegroundColor Green
 ```
 
 ### **Step 3: 配置优化参数**
+
 ```powershell
 # 创建优化配置文件
 $optimizationConfig = @{
@@ -113,6 +122,7 @@ Write-Host "优化配置完成: $(Get-Date)" -ForegroundColor Green
 ```
 
 ### **Step 4: 运行基础优化**
+
 ```powershell
 # 优化Workers缓存
 pnpm optimize workers --strategy=full
@@ -128,6 +138,7 @@ Write-Host "R2 优化完成: $(Get-Date)" -ForegroundColor Green
 ```
 
 ### **Step 5: 性能测试**
+
 ```powershell
 # 运行性能测试
 pnpm test performance --mode=baseline
@@ -135,6 +146,7 @@ Write-Host "性能测试完成: $(Get-Date)" -ForegroundColor Green
 ```
 
 ### **Step 6: 成本分析**
+
 ```powershell
 # 分析优化效果
 pnpm analyze costs --mode=optimize
@@ -142,6 +154,7 @@ Write-Host "成本分析完成: $(Get-Date)" -ForegroundColor Green
 ```
 
 ### **Step 7: 生成报告**
+
 ```powershell
 pnpm report optimize --output=daily
 Write-Host "日报生成完成: $(Get-Date)" -ForegroundColor Green

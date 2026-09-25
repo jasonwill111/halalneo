@@ -92,9 +92,10 @@
 	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
-		'name': 'FAQ — HalalNeo',
-		'description': 'Frequently asked questions about halal certification, supplier verification and how HalalNeo works for buyers and suppliers.',
-		'url': 'https://halalneo.com/faq',
+		name: 'FAQ — HalalNeo',
+		description:
+			'Frequently asked questions about halal certification, supplier verification and how HalalNeo works for buyers and suppliers.',
+		url: 'https://halalneo.com/faq',
 		mainEntity: faqs.map((faq) => ({
 			'@type': 'Question',
 			name: faq.q,
@@ -108,50 +109,60 @@
 
 <Breadcrumb items={[{ label: 'FAQ', href: '/faq' }]} />
 
-<section class="mx-auto max-w-7xl space-y-4 sm:space-y-6">
-	<div class="mx-auto max-w-2xl space-y-2 text-center">
-		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Frequently asked questions</h1>
-		<p class="text-sm text-muted-foreground sm:text-base">
+<section class="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
+	<div class="mx-auto flex w-full max-w-2xl flex-col gap-1.5 text-center">
+		<h1 class="text-xl font-semibold tracking-tight text-pretty sm:text-2xl">
+			Frequently asked questions
+		</h1>
+		<p
+			class="mx-auto max-w-[60ch] text-xs leading-relaxed text-pretty text-muted-foreground sm:text-sm"
+		>
 			Everything buyers ask us about certification, verification and how HalalNeo works.
 		</p>
 	</div>
 
-	<div class="rounded-xl bg-card p-3 sm:p-4 text-center">
-		<h2 class="text-base font-semibold sm:text-lg">How can we help?</h2>
-		<div class="relative mx-auto mt-3 max-w-md">
+	<div
+		class="mx-auto flex w-full max-w-2xl flex-col gap-2.5 rounded-xl bg-card p-3 text-center sm:p-4"
+	>
+		<h2 class="text-sm font-semibold sm:text-base">How can we help?</h2>
+		<div class="relative mx-auto w-full max-w-md">
 			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-			<Input
-				type="search"
-				placeholder="Search questions..."
-				class="ps-9"
-				bind:value={search}
-			/>
+			<Input type="search" placeholder="Search questions..." class="ps-9" bind:value={search} />
 		</div>
 	</div>
 
-	<div class="flex justify-center">
-		<FilterPills options={filterOptions} bind:value={category} ariaLabel="Filter questions by category" />
+	<div class="overflow-x-auto pb-1 sm:flex sm:justify-center sm:overflow-visible sm:pb-0">
+		<FilterPills
+			options={filterOptions}
+			bind:value={category}
+			ariaLabel="Filter questions by category"
+			class="w-max min-w-full justify-start sm:w-auto sm:min-w-0 sm:justify-center"
+		/>
 	</div>
 
-	<div class="mx-auto max-w-2xl">
-		<Accordion type="multiple">
+	<div class="w-full max-w-[65ch]">
+		<Accordion type="multiple" class="w-full">
 			{#each filteredFaqs as faq (faq.q)}
-				<AccordionItem value={faq.q}>
-					<AccordionTrigger>{faq.q}</AccordionTrigger>
-					<AccordionContent>{faq.a}</AccordionContent>
+				<AccordionItem value={faq.q} class="px-2 sm:px-3">
+					<AccordionTrigger class="min-h-11 text-pretty sm:min-h-10">{faq.q}</AccordionTrigger>
+					<AccordionContent class="text-pretty">{faq.a}</AccordionContent>
 				</AccordionItem>
 			{/each}
 		</Accordion>
 	</div>
 
-	<div class="mx-auto max-w-md rounded-xl border border-border p-3 sm:p-4 text-center">
-		<MessageCircle class="mx-auto size-7 text-primary" data-icon="header" />
-		<h2 class="mt-3 text-base font-semibold sm:text-lg">Still have a question?</h2>
-		<p class="mt-1 text-sm text-muted-foreground">
+	<div
+		class="mx-auto flex w-full max-w-md flex-col gap-2 rounded-xl border border-border p-3 text-center sm:p-4"
+	>
+		<MessageCircle class="mx-auto size-6 text-primary" data-icon="header" />
+		<h2 class="text-sm font-semibold sm:text-base">Still have a question?</h2>
+		<p class="text-xs leading-relaxed text-muted-foreground">
 			Talk to our team —we reply within one business day.
 		</p>
-		<div class="mt-4">
-			<Button href={localizeHref('/contact')} variant="outline">Contact us</Button>
+		<div class="mt-1">
+			<Button href={localizeHref('/contact')} variant="outline" class="w-full sm:w-auto"
+				>Contact us</Button
+			>
 		</div>
 	</div>
 </section>

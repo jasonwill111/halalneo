@@ -29,8 +29,16 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Malaysia International Trade and Exhibition Centre (MITEC)',
 		website: 'https://mihas.my',
 		scale: 'mega',
-		description: 'World\'s largest halal trade fair. Hosted by Malaysia\'s MITI and organised by MATRADE with JAKIM and HDC. Covers 14 halal industry clusters including food, pharma, Islamic finance, modest fashion, technology, and logistics.',
-		focus: ['Food & Beverage', 'Pharmaceuticals', 'Islamic Finance', 'Modest Fashion', 'Technology', 'Logistics'],
+		description:
+			"World's largest halal trade fair. Hosted by Malaysia's MITI and organised by MATRADE with JAKIM and HDC. Covers 14 halal industry clusters including food, pharma, Islamic finance, modest fashion, technology, and logistics.",
+		focus: [
+			'Food & Beverage',
+			'Pharmaceuticals',
+			'Islamic Finance',
+			'Modest Fashion',
+			'Technology',
+			'Logistics'
+		],
 		exhibitors: '1,200+',
 		visitors: '50,000+',
 		lat: 3.1392,
@@ -47,7 +55,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Dubai World Trade Centre',
 		website: 'https://gulfood.com',
 		scale: 'mega',
-		description: 'World\'s largest food and beverage exhibition. Major halal sourcing hub connecting buyers from Middle East, Africa, and South Asia with global suppliers.',
+		description:
+			"World's largest food and beverage exhibition. Major halal sourcing hub connecting buyers from Middle East, Africa, and South Asia with global suppliers.",
 		focus: ['Food & Beverage', 'Halal Products', 'Dairy', 'Meat', 'Confectionery'],
 		exhibitors: '5,000+',
 		visitors: '100,000+',
@@ -65,7 +74,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Istanbul Expo Center (İFM)',
 		website: 'https://ifm.com.tr',
 		scale: 'mega',
-		description: 'Most politically significant halal industry event. Co-located with World Halal Summit and World Halal Council general assembly. Türkiye holds OIC/SMIIC secretariat. Covers mutual recognition agreements between certification bodies globally.',
+		description:
+			'Most politically significant halal industry event. Co-located with World Halal Summit and World Halal Council general assembly. Türkiye holds OIC/SMIIC secretariat. Covers mutual recognition agreements between certification bodies globally.',
 		focus: ['Certification', 'Standards', 'OIC Trade', 'Food', 'Cosmetics', 'Pharmaceuticals'],
 		exhibitors: '500+',
 		visitors: '50,000+',
@@ -83,7 +93,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Riyadh International Convention & Exhibition Center (RICEC)',
 		website: 'https://saudihalalexp.com',
 		scale: 'large',
-		description: 'MENA region\'s largest dedicated halal industry exhibition. Covers food, pharmaceuticals, cosmetics, modest fashion, tourism, and Islamic finance.',
+		description:
+			"MENA region's largest dedicated halal industry exhibition. Covers food, pharmaceuticals, cosmetics, modest fashion, tourism, and Islamic finance.",
 		focus: ['Food', 'Pharmaceuticals', 'Cosmetics', 'Modest Fashion', 'Islamic Finance'],
 		lat: 24.7136,
 		lng: 46.6753
@@ -99,7 +110,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Metro Toronto Convention Centre',
 		website: 'https://halalexpo.ca',
 		scale: 'large',
-		description: 'North America\'s core halal B2B platform. Attracts exhibitors from Malaysia, Turkey, UAE, Pakistan alongside North American producers targeting 1.4 million Muslim-majority households.',
+		description:
+			"North America's core halal B2B platform. Attracts exhibitors from Malaysia, Turkey, UAE, Pakistan alongside North American producers targeting 1.4 million Muslim-majority households.",
 		focus: ['Food & Beverage', 'B2B Matching', 'North American Market'],
 		lat: 43.6532,
 		lng: -79.3832
@@ -115,10 +127,11 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Indonesia Convention Exhibition (ICE BSD City)',
 		website: 'https://jakartahalalexp.com',
 		scale: 'large',
-		description: 'Indonesia\'s flagship halal trade event. World\'s largest Muslim population market. Covers fashion, halal products, tourism, lifestyle, and Islamic finance.',
+		description:
+			"Indonesia's flagship halal trade event. World's largest Muslim population market. Covers fashion, halal products, tourism, lifestyle, and Islamic finance.",
 		focus: ['Fashion', 'Halal Products', 'Tourism', 'Lifestyle', 'Islamic Finance'],
-		lat: -6.2250,
-		lng: 106.6500
+		lat: -6.225,
+		lng: 106.65
 	},
 	{
 		id: 'mihas-dubai-2026',
@@ -131,7 +144,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Dubai World Trade Centre',
 		website: 'https://mihasdubai.com',
 		scale: 'large',
-		description: 'International edition of MIHAS. Showcases 200+ Malaysian halal suppliers to GCC and Middle Eastern buyers.',
+		description:
+			'International edition of MIHAS. Showcases 200+ Malaysian halal suppliers to GCC and Middle Eastern buyers.',
 		focus: ['Malaysian Products', 'GCC Market', 'B2B Matching'],
 		lat: 25.0989,
 		lng: 55.1341
@@ -147,7 +161,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Doha Exhibition and Convention Center (DECC)',
 		website: 'https://qatarhalalexp.com',
 		scale: 'medium',
-		description: 'Qatar\'s dedicated halal trade platform. Growing market driven by FIFA 2022 legacy infrastructure and Vision 2030.',
+		description:
+			"Qatar's dedicated halal trade platform. Growing market driven by FIFA 2022 legacy infrastructure and Vision 2030.",
 		focus: ['Food', 'Hospitality', 'Islamic Finance']
 	},
 	{
@@ -161,7 +176,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Tokyo Big Sight',
 		website: 'https://halaljapan.jp',
 		scale: 'medium',
-		description: 'Japan\'s halal trade event connecting halal exporters with Japanese importers and retailers. Growing demand for halal products in Japan\'s tourism and retail sectors.',
+		description:
+			"Japan's halal trade event connecting halal exporters with Japanese importers and retailers. Growing demand for halal products in Japan's tourism and retail sectors.",
 		focus: ['Food', 'Tourism', 'Japanese Market']
 	},
 	{
@@ -175,7 +191,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Eko Hotel & Suites',
 		website: 'https://halalexponigeria.com',
 		scale: 'regional',
-		description: 'West Africa\'s halal trade platform. Nigeria has Africa\'s largest Muslim population and growing halal demand.',
+		description:
+			"West Africa's halal trade platform. Nigeria has Africa's largest Muslim population and growing halal demand.",
 		focus: ['Food', 'Agriculture', 'West African Market']
 	},
 	{
@@ -189,7 +206,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Istanbul Expo Center',
 		website: 'https://worldhalalsummit.org',
 		scale: 'large',
-		description: 'Global summit on halal standards, certification, and policy. World Halal Council general assembly determines mutual recognition agreements between certification bodies.',
+		description:
+			'Global summit on halal standards, certification, and policy. World Halal Council general assembly determines mutual recognition agreements between certification bodies.',
 		focus: ['Certification', 'Standards', 'Policy', 'Mutual Recognition']
 	},
 	{
@@ -203,7 +221,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'MITEC',
 		website: 'https://ghas.my',
 		scale: 'large',
-		description: 'Co-located with MIHAS. Global summit on halal industry trends, standards, and market access.',
+		description:
+			'Co-located with MIHAS. Global summit on halal industry trends, standards, and market access.',
 		focus: ['Industry Trends', 'Standards', 'Market Access']
 	},
 	{
@@ -217,7 +236,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Koelnmesse',
 		website: 'https://anuga.com',
 		scale: 'mega',
-		description: 'World\'s largest food and beverage trade fair with dedicated Halal Market section. 7,000+ exhibitors from 200+ countries.',
+		description:
+			"World's largest food and beverage trade fair with dedicated Halal Market section. 7,000+ exhibitors from 200+ countries.",
 		focus: ['Food & Beverage', 'European Market', 'Global Sourcing'],
 		exhibitors: '7,000+',
 		visitors: '150,000+'
@@ -233,7 +253,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'World Trade Center Manila',
 		website: 'https://philippinehalalexp.com',
 		scale: 'regional',
-		description: 'Philippines\' halal trade platform. Growing Southeast Asian halal market with strong Muslim-majority southern regions.',
+		description:
+			"Philippines' halal trade platform. Growing Southeast Asian halal market with strong Muslim-majority southern regions.",
 		focus: ['Food', 'Halal Certification', 'ASEAN Market']
 	},
 	{
@@ -247,7 +268,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Saigon Exhibition & Convention Center (SECC)',
 		website: 'https://vietnamhalalexp.com',
 		scale: 'regional',
-		description: 'Vietnam\'s halal trade event. Emerging halal manufacturing hub targeting ASEAN and OIC markets.',
+		description:
+			"Vietnam's halal trade event. Emerging halal manufacturing hub targeting ASEAN and OIC markets.",
 		focus: ['Manufacturing', 'ASEAN Market', 'Export']
 	},
 	{
@@ -261,7 +283,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Paris-Nord Villepinte',
 		website: 'https://francehalalexp.com',
 		scale: 'medium',
-		description: 'Europe\'s largest halal consumer market event. France has 5+ million Muslim consumers.',
+		description:
+			"Europe's largest halal consumer market event. France has 5+ million Muslim consumers.",
 		focus: ['Consumer Products', 'European Market', 'Food & Beverage']
 	},
 	{
@@ -275,7 +298,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Pragati Maidan',
 		website: 'https://indiahalalexp.com',
 		scale: 'large',
-		description: 'India\'s halal trade platform. World\'s third-largest Muslim population market with growing halal industry.',
+		description:
+			"India's halal trade platform. World's third-largest Muslim population market with growing halal industry.",
 		focus: ['Food', 'Cosmetics', 'Pharmaceuticals', 'Indian Market']
 	},
 	{
@@ -289,7 +313,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'MITEC',
 		website: 'https://halfest.my',
 		scale: 'medium',
-		description: 'Malaysia\'s consumer halal festival. B2C focused with food tasting, product launches, and consumer engagement.',
+		description:
+			"Malaysia's consumer halal festival. B2C focused with food tasting, product launches, and consumer engagement.",
 		focus: ['Consumer Products', 'Food', 'Lifestyle']
 	},
 	{
@@ -303,7 +328,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Abu Dhabi National Exhibition Centre',
 		website: 'https://adife.ae',
 		scale: 'large',
-		description: 'Abu Dhabi\'s international food exhibition. Major sourcing event for Middle Eastern and North African food markets.',
+		description:
+			"Abu Dhabi's international food exhibition. Major sourcing event for Middle Eastern and North African food markets.",
 		focus: ['Food & Beverage', 'Middle East Market', 'Halal Sourcing']
 	},
 	{
@@ -317,7 +343,8 @@ export const tradeShows: TradeShow[] = [
 		venue: 'Messe Frankfurt',
 		website: 'https://halalexpo-deutschland.de',
 		scale: 'medium',
-		description: 'Central Europe\'s halal trade platform. Growing audience of Central European buyers with no prior dedicated halal event.',
+		description:
+			"Central Europe's halal trade platform. Growing audience of Central European buyers with no prior dedicated halal event.",
 		focus: ['European Market', 'Food', 'B2B Matching']
 	}
 ];

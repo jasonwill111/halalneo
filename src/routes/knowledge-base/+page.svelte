@@ -148,27 +148,29 @@
 
 <Breadcrumb items={[{ label: 'Knowledge Base', href: '/knowledge-base' }]} />
 
-<section class="space-y-4 sm:space-y-6">
-	<div class="space-y-4">
-		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+<section class="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
+	<div class="flex flex-col gap-2">
+		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:text-sm">
 			<BookOpen class="size-4"></BookOpen>
 			Knowledge Base
 		</div>
-		<div class="max-w-2xl space-y-2">
-			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+		<div class="flex flex-col gap-2">
+			<h1 class="max-w-3xl text-xl font-semibold tracking-tight sm:text-2xl">
 				Halal trade intelligence, explained
 			</h1>
-			<p class="text-xs text-muted-foreground sm:text-sm">
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				{(data.articles ?? []).length} articles across {(data.sections ?? []).length} areas of halal trade
 				—from certification and sourcing to logistics, labeling and market entry.
 			</p>
 		</div>
 	</div>
 
-	<form bind:this={formEl} onsubmit={handleSearch} class="space-y-1.5">
-		<div class="flex gap-2">
-			<div class="relative flex-1">
-				<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+	<form bind:this={formEl} onsubmit={handleSearch} class="flex flex-col gap-1.5">
+		<div class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-2">
+			<div class="relative min-w-0">
+				<SearchIcon
+					class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+				/>
 				<Input
 					type="search"
 					placeholder="Search sections..."
@@ -194,26 +196,31 @@
 	</form>
 
 	<!-- Resource Hubs -->
-	<div class="space-y-3">
+	<div class="flex flex-col gap-3">
 		<h2 class="text-sm font-semibold text-foreground">Explore by Category</h2>
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+		<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each subForms as form, i (form.href)}
-				<a href={localizeHref(form.href)} class="group h-full">
-					<Card hoverable class="h-full p-2.5 transition-shadow group-hover:shadow-md sm:p-4">
+				<a href={localizeHref(form.href)} class="group h-full min-w-0">
+					<Card
+						hoverable
+						class="h-full min-w-0 p-2.5 transition-shadow group-hover:shadow-md sm:p-4"
+					>
 						<CardHeader class="gap-2 sm:gap-3">
 							<div
-								class="flex size-8 items-center justify-center rounded-lg sm:size-10 {tileColors[
+								class="flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-10 {tileColors[
 									i % tileColors.length
 								]}"
 							>
 								<form.icon class="size-4 sm:size-5" />
 							</div>
-							<div class="space-y-1">
-								<CardTitle class="text-sm sm:text-base">{form.title}</CardTitle>
-								<CardDescription class="hidden sm:block">{form.description}</CardDescription>
+							<div class="min-w-0">
+								<CardTitle class="line-clamp-2 text-sm sm:text-base">{form.title}</CardTitle>
+								<CardDescription class="line-clamp-2 hidden sm:block">
+									{form.description}
+								</CardDescription>
 							</div>
 						</CardHeader>
-						<CardContent class="space-y-2 sm:space-y-3">
+						<CardContent class="flex flex-col gap-2 sm:gap-3">
 							<p class="text-xs text-muted-foreground sm:text-sm">
 								{form.count}
 								{form.countLabel}
@@ -230,7 +237,7 @@
 	</div>
 
 	<!-- KB Sections -->
-	<div class="flex items-center justify-between gap-2">
+	<div class="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
 		<h2 class="text-sm font-semibold text-foreground">Knowledge Base Sections</h2>
 		<Button
 			href={localizeHref('/search')}
@@ -242,27 +249,27 @@
 			Search all articles
 		</Button>
 	</div>
-	<div class="space-y-3">
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+	<div class="flex flex-col gap-3">
+		<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each pagedSections as section, i (section.slug)}
-				<article>
-					<Card hoverable class="h-full overflow-hidden p-2.5 sm:p-4">
+				<article class="min-w-0">
+					<Card hoverable class="h-full min-w-0 overflow-hidden p-2.5 sm:p-4">
 						<CardHeader class="gap-2 sm:gap-3">
 							<div
-								class="flex size-8 items-center justify-center rounded-lg sm:size-10 {tileColors[
+								class="flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-10 {tileColors[
 									i % tileColors.length
 								]}"
 							>
 								<Icon name={section.icon} class="size-4 sm:size-5"></Icon>
 							</div>
-							<div class="space-y-1">
-								<CardTitle class="text-sm sm:text-base">{section.title}</CardTitle>
-								<CardDescription class="hidden sm:block">
+							<div class="min-w-0">
+								<CardTitle class="line-clamp-2 text-sm sm:text-base">{section.title}</CardTitle>
+								<CardDescription class="line-clamp-2 hidden sm:block">
 									{section.description}
 								</CardDescription>
 							</div>
 						</CardHeader>
-						<CardContent class="space-y-2 sm:space-y-3">
+						<CardContent class="flex flex-col gap-2 sm:gap-3">
 							{@const count = (data.articles ?? []).filter(
 								(a) => a.section === section.slug
 							).length}
@@ -288,7 +295,9 @@
 					{:else}
 						<Empty>
 							<EmptyHeader>
-								<BrandedEmptyMedia><BookOpen class="size-6 text-muted-foreground"></BookOpen></BrandedEmptyMedia>
+								<BrandedEmptyMedia
+									><BookOpen class="size-6 text-muted-foreground"></BookOpen></BrandedEmptyMedia
+								>
 								<EmptyTitle>No sections found</EmptyTitle>
 								<EmptyDescription>
 									{#if search}
@@ -330,9 +339,9 @@
 
 	<!-- Popular Articles -->
 	{#if popularArticles.length > 0}
-		<div>
-			<h2 class="mb-2.5 text-sm font-semibold text-foreground">Popular Articles</h2>
-			<div class="grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="flex flex-col gap-2.5">
+			<h2 class="text-sm font-semibold text-foreground">Popular Articles</h2>
+			<div class="grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 				{#each popularArticles as article, i (article.slug)}
 					<a
 						href={localizeHref(`/knowledge-base/${article.section ?? ''}/${article.slug}`)}
@@ -361,14 +370,16 @@
 		</div>
 	{/if}
 
-	<div class="rounded-xl bg-primary/5 p-4 text-center ring-1 ring-primary/20 sm:p-6">
+	<div
+		class="flex flex-col items-center gap-2 rounded-xl bg-primary/5 p-4 text-center ring-1 ring-primary/20 sm:p-6"
+	>
 		<div
-			class="mx-auto mb-3 flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:size-12"
+			class="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:size-12"
 		>
 			<MessageCircle class="size-4 sm:size-6" />
 		</div>
-		<h3 class="mb-1 text-sm font-bold text-foreground">Need Help?</h3>
-		<p class="mb-3 text-xs text-muted-foreground sm:mb-4 sm:text-sm">
+		<h3 class="text-sm font-bold text-foreground">Need Help?</h3>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Analyze ingredients for halal compliance instantly.
 		</p>
 		<Button href={localizeHref('/tools/ingredient-checker')}>

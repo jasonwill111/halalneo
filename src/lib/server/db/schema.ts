@@ -44,7 +44,9 @@ export const suppliers = sqliteTable('suppliers', {
 	country: text('country').notNull(),
 	businessType: text('business_type', { enum: ['manufacturer', 'wholesaler', 'trader'] }).notNull(),
 	isBrand: integer('is_brand', { mode: 'boolean' }).default(false),
-	status: text('status', { enum: ['active', 'pending', 'suspended', 'rejected'] }).default('pending'),
+	status: text('status', { enum: ['active', 'pending', 'suspended', 'rejected'] }).default(
+		'pending'
+	),
 	adminNotes: text('admin_notes'),
 	logoInitials: text('logo_initials'),
 	description: text('description'),
@@ -111,7 +113,9 @@ export const products = sqliteTable('products', {
 	priceMin: real('price_min'),
 	priceMax: real('price_max'),
 	priceUnit: text('price_unit'),
-	certStatus: text('cert_status', { enum: ['certified', 'pending', 'not-certified', 'not-applicable'] }).default('pending'),
+	certStatus: text('cert_status', {
+		enum: ['certified', 'pending', 'not-certified', 'not-applicable']
+	}).default('pending'),
 	units: text('units'),
 	originCountry: text('origin_country'),
 	features: text('features'), // JSON array
@@ -259,7 +263,9 @@ export const marketGuides = sqliteTable('market_guides', {
 	marketSizeUsd: text('market_size_usd').default(''),
 	mandateStatus: text('mandate_status').default(''),
 	mandatorySince: text('mandatory_since').default(''),
-	certifyingBodies: text('certifying_bodies', { mode: 'json' }).default([]).$type<{ slug: string; name: string }[]>(),
+	certifyingBodies: text('certifying_bodies', { mode: 'json' })
+		.default([])
+		.$type<{ slug: string; name: string }[]>(),
 	importRequirements: text('import_requirements', { mode: 'json' }).default([]).$type<string[]>(),
 	standardBasis: text('standard_basis').default(''),
 	certificateValidity: text('certificate_validity').default(''),
@@ -452,7 +458,9 @@ export const productsNameIdx = index('idx_products_name').on(products.name);
 export const suppliersStatusIdx = index('idx_suppliers_status').on(suppliers.status);
 export const suppliersCountryIdx = index('idx_suppliers_country').on(suppliers.country);
 export const suppliersNameIdx = index('idx_suppliers_name').on(suppliers.name);
-export const suppliersBusinessTypeIdx = index('idx_suppliers_business_type').on(suppliers.businessType);
+export const suppliersBusinessTypeIdx = index('idx_suppliers_business_type').on(
+	suppliers.businessType
+);
 
 // Pages
 export const pagesTypeIdx = index('idx_pages_type').on(pages.type);

@@ -6,6 +6,14 @@
 	import { toast } from 'svelte-sonner';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
+	import {
+		Empty,
+		EmptyContent,
+		EmptyDescription,
+		EmptyHeader,
+		EmptyTitle
+	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import { Avatar, AvatarFallback } from '#lib/components/ui/avatar/index.js';
 	import Building2 from '@lucide/svelte/icons/building-2';
 	import Mail from '@lucide/svelte/icons/mail';
@@ -58,14 +66,14 @@
 </svelte:head>
 
 <div class="space-y-1">
-	<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Account</h1>
-	<p class="text-sm text-muted-foreground">
+	<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Account</h1>
+	<p class="text-xs text-muted-foreground sm:text-sm">
 		Your login, the company it is linked to, and where to change each of them.
 	</p>
 </div>
 
 <div class="mt-4 grid gap-3 sm:gap-4 lg:grid-cols-2">
-	<section class="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+	<section class="min-w-0 rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:p-4">
 		<h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
 			<Mail class="size-4 text-muted-foreground" />
 			Your login
@@ -97,12 +105,24 @@
 				{signingOut ? 'Signing out…' : 'Sign out'}
 			</Button>
 		{:else}
-			<p class="text-sm text-muted-foreground">You are not signed in.</p>
-			<Button size="sm" class="mt-3" href={localizeHref('/supplier/login')}>Sign in</Button>
+			<Empty class="border-0 p-0">
+				<BrandedEmptyMedia
+					><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+				>
+				<EmptyHeader>
+					<EmptyTitle>You are not signed in</EmptyTitle>
+					<EmptyDescription
+						>Sign in to view your supplier account and linked company.</EmptyDescription
+					>
+				</EmptyHeader>
+				<EmptyContent>
+					<Button size="sm" href={localizeHref('/supplier/login')}>Sign in</Button>
+				</EmptyContent>
+			</Empty>
 		{/if}
 	</section>
 
-	<section class="rounded-xl bg-card p-4 ring-1 ring-foreground/10">
+	<section class="min-w-0 rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:p-4">
 		<h2 class="mb-3 flex items-center gap-2 text-sm font-semibold">
 			{#if profile}
 				<Building2 class="size-4 text-muted-foreground" />
@@ -116,7 +136,7 @@
 			<dl class="space-y-2 text-2xs-plus">
 				<div class="flex items-center justify-between gap-3">
 					<dt class="text-muted-foreground">Company</dt>
-					<dd class="min-w-0 truncate font-medium text-end" title={profile.name}>
+					<dd class="min-w-0 truncate text-end font-medium" title={profile.name}>
 						{profile.name}
 					</dd>
 				</div>
@@ -162,18 +182,38 @@
 				to grant a colleague access to this account.
 			</p>
 		{:else if user}
-			<div class="space-y-2">
-				<p class="text-sm font-medium">Your account isn't linked to a supplier company yet</p>
-				<p class="text-2xs-plus text-muted-foreground">
-					Apply for supplier access and an administrator will connect this account to your
-					company profile; the rest of the portal unlocks at that point.
-				</p>
-				<Button size="sm" class="mt-1" href={localizeHref('/supplier/onboarding')}>
-					Apply to become a supplier
-				</Button>
-			</div>
+			<Empty class="border-0 p-0">
+				<BrandedEmptyMedia
+					><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+				>
+				<EmptyHeader>
+					<EmptyTitle>No company linked</EmptyTitle>
+					<EmptyDescription>
+						Apply for supplier access and an administrator will connect this account to your company
+						profile.
+					</EmptyDescription>
+				</EmptyHeader>
+				<EmptyContent>
+					<Button size="sm" href={localizeHref('/supplier/onboarding')}>
+						Apply to become a supplier
+					</Button>
+				</EmptyContent>
+			</Empty>
 		{:else}
-			<p class="text-sm text-muted-foreground">Sign in to see your linked company.</p>
+			<Empty class="border-0 p-0">
+				<BrandedEmptyMedia
+					><ShieldQuestion class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+				>
+				<EmptyHeader>
+					<EmptyTitle>Sign in to view your company</EmptyTitle>
+					<EmptyDescription
+						>Your linked supplier company appears here after you sign in.</EmptyDescription
+					>
+				</EmptyHeader>
+				<EmptyContent>
+					<Button size="sm" href={localizeHref('/supplier/login')}>Sign in</Button>
+				</EmptyContent>
+			</Empty>
 		{/if}
 	</section>
 </div>

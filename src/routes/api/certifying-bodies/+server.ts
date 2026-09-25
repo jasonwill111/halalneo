@@ -7,7 +7,10 @@ import { certifyingBodies } from '#lib/server/db/schema.js';
 import { and, eq, like, sql } from 'drizzle-orm';
 import { cachedQuery, cacheLong, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { requireAdmin } from '#lib/server/auth-guard.js';
-import { certifyingBodyCreateSchema, certifyingBodyStatusSchema } from '#lib/schemas/certifying-bodies.js';
+import {
+	certifyingBodyCreateSchema,
+	certifyingBodyStatusSchema
+} from '#lib/schemas/certifying-bodies.js';
 
 /** Explicit column projection — never SELECT * (§5.9). */
 const CB_COLUMNS = {

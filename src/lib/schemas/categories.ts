@@ -24,7 +24,11 @@ const text = (max: number, label: string) =>
 
 /** Columns shared by create + update (everything except the immutable `slug` PK). */
 const categoryFields = {
-	name: z.string().trim().min(1, 'Name is required.').max(200, 'Name must be 200 characters or fewer.'),
+	name: z
+		.string()
+		.trim()
+		.min(1, 'Name is required.')
+		.max(200, 'Name must be 200 characters or fewer.'),
 	description: text(5000, 'Description').nullable().optional(),
 	parentSlug: slug.nullable().optional(),
 	icon: text(100, 'Icon').nullable().optional(),
@@ -46,10 +50,12 @@ const categoryFields = {
  * The admin form always submits every field; blanks are normalised to `null`
  * client-side so the nullable DB columns stay clean.
  */
-export const categoryCreateSchema = z.object({ slug, ...categoryFields }).refine(
-	(d) => !d.slug || !d.parentSlug || d.slug !== d.parentSlug,
-	{ path: ['parentSlug'], message: 'A category cannot be its own parent.' }
-);
+export const categoryCreateSchema = z
+	.object({ slug, ...categoryFields })
+	.refine((d) => !d.slug || !d.parentSlug || d.slug !== d.parentSlug, {
+		path: ['parentSlug'],
+		message: 'A category cannot be its own parent.'
+	});
 
 /**
  * Full-record payload for PUT /api/categories/[slug].

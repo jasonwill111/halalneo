@@ -42,7 +42,11 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
-	import { focusFirstInvalid, mergeServerDetails, type ServerFieldDetails } from '#lib/utils/forms.js';
+	import {
+		focusFirstInvalid,
+		mergeServerDetails,
+		type ServerFieldDetails
+	} from '#lib/utils/forms.js';
 	import {
 		AI_TOOL_CATEGORIES,
 		AI_TOOL_STATUSES,
@@ -345,7 +349,9 @@
 									{/if}
 								</BrandedEmptyMedia>
 								<div class="space-y-1">
-									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load AI tools'}</p>
+									<p class="font-medium">
+										{offline ? 'Connection failed' : 'Could not load AI tools'}
+									</p>
 									<p class="text-sm text-muted-foreground">{loadError}</p>
 								</div>
 								<EmptyContent>
@@ -455,7 +461,10 @@
 						placeholder="Certification Checker"
 						disabled={saving}
 						aria-invalid={!!errors.name}
-						oninput={() => { errors.name = ''; formError = ''; }}
+						oninput={() => {
+							errors.name = '';
+							formError = '';
+						}}
 					/>
 					{#if errors.name}<FieldError>{errors.name}</FieldError>{/if}
 				</Field.Field>
@@ -466,7 +475,10 @@
 						placeholder="certification-checker"
 						disabled={!!editing || saving}
 						aria-invalid={!!errors.slug}
-						oninput={() => { errors.slug = ''; formError = ''; }}
+						oninput={() => {
+							errors.slug = '';
+							formError = '';
+						}}
 					/>
 					<p class="text-xs text-muted-foreground">
 						Unique URL segment — auto-derived from the name when left blank.
@@ -538,7 +550,12 @@
 			{/if}
 
 			<DialogFooter>
-				<Button variant="outline" type="button" disabled={saving} onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button
+					variant="outline"
+					type="button"
+					disabled={saving}
+					onclick={() => (dialogOpen = false)}>Cancel</Button
+				>
 				<Button variant="default" type="submit" disabled={saving}
 					>{saving ? 'Saving…' : editing ? 'Save changes' : 'Create tool'}</Button
 				>

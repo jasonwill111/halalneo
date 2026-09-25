@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { localizeHref } from '#lib/paraglide/runtime.js';
-	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import * as ToggleGroup from '#lib/components/ui/toggle-group/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import CalculatorIcon from '@lucide/svelte/icons/calculator';
@@ -137,80 +138,89 @@
 			<CalculatorIcon class="size-4"></CalculatorIcon>
 			Certification Cost Estimator
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Estimate certification costs</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Estimate certification costs</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Select your certifier, product category, and company size to get an estimated cost range and
 			timeline for halal certification.
 		</p>
 	</div>
 
-	<div class="grid gap-4 sm:gap-5 lg:grid-cols-[1fr_auto]">
-		<div class="space-y-4 sm:space-y-6">
-			<div class="space-y-2">
-				<span class="text-sm font-medium" id="certifier-label">Certifying Body</span>
-				<ToggleGroup.Root
-					type="single"
-					bind:value={selectedCertifier}
-					variant="outline"
-					spacing={2}
-					class="grid w-full gap-2 sm:grid-cols-2"
-					aria-labelledby="certifier-label"
-				>
-					{#each certifiers as c (c.id)}
-						<ToggleGroup.Item
-							value={c.id}
-							class="h-auto flex-col items-start gap-0.5 p-3 text-start"
-						>
-							<span class="font-medium">{c.name}</span>
-							<span class="text-xs text-muted-foreground">{c.country}</span>
-						</ToggleGroup.Item>
-					{/each}
-				</ToggleGroup.Root>
-			</div>
+	<div class="grid min-w-0 gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)]">
+		<Card class="min-w-0">
+			<CardContent class="space-y-4 p-4 sm:space-y-5 sm:p-5">
+				<CardTitle class="text-sm sm:text-base">Certification requirements</CardTitle>
+				<div class="space-y-2">
+					<span class="text-sm font-medium" id="certifier-label">Certifying Body</span>
+					<ToggleGroup.Root
+						type="single"
+						bind:value={selectedCertifier}
+						variant="outline"
+						spacing={2}
+						class="grid w-full gap-2 sm:grid-cols-2"
+						aria-labelledby="certifier-label"
+					>
+						{#each certifiers as c (c.id)}
+							<ToggleGroup.Item
+								value={c.id}
+								class="h-auto min-h-11 flex-col items-start gap-0.5 p-3 text-start"
+							>
+								<span class="font-medium">{c.name}</span>
+								<span class="text-xs text-muted-foreground">{c.country}</span>
+							</ToggleGroup.Item>
+						{/each}
+					</ToggleGroup.Root>
+				</div>
 
-			<div class="space-y-2">
-				<span class="text-sm font-medium" id="category-label">Product Category</span>
-				<ToggleGroup.Root
-					type="single"
-					bind:value={selectedCategory}
-					variant="outline"
-					spacing={2}
-					class="grid w-full gap-2 sm:grid-cols-2"
-					aria-labelledby="category-label"
-				>
-					{#each categories as cat (cat.id)}
-						<ToggleGroup.Item value={cat.id} class="h-auto justify-start p-3 text-start text-sm">
-							{cat.name}
-						</ToggleGroup.Item>
-					{/each}
-				</ToggleGroup.Root>
-			</div>
+				<div class="space-y-2">
+					<span class="text-sm font-medium" id="category-label">Product Category</span>
+					<ToggleGroup.Root
+						type="single"
+						bind:value={selectedCategory}
+						variant="outline"
+						spacing={2}
+						class="grid w-full gap-2 sm:grid-cols-2"
+						aria-labelledby="category-label"
+					>
+						{#each categories as cat (cat.id)}
+							<ToggleGroup.Item
+								value={cat.id}
+								class="h-auto min-h-11 justify-start p-3 text-start text-sm"
+							>
+								{cat.name}
+							</ToggleGroup.Item>
+						{/each}
+					</ToggleGroup.Root>
+				</div>
 
-			<div class="space-y-2">
-				<span class="text-sm font-medium" id="size-label">Company Size</span>
-				<ToggleGroup.Root
-					type="single"
-					bind:value={selectedSize}
-					variant="outline"
-					spacing={2}
-					class="grid w-full gap-2 sm:grid-cols-2"
-					aria-labelledby="size-label"
-				>
-					{#each companySizes as s (s.id)}
-						<ToggleGroup.Item value={s.id} class="h-auto justify-start p-3 text-start text-sm">
-							{s.name}
-						</ToggleGroup.Item>
-					{/each}
-				</ToggleGroup.Root>
-			</div>
-		</div>
+				<div class="space-y-2">
+					<span class="text-sm font-medium" id="size-label">Company Size</span>
+					<ToggleGroup.Root
+						type="single"
+						bind:value={selectedSize}
+						variant="outline"
+						spacing={2}
+						class="grid w-full gap-2 sm:grid-cols-2"
+						aria-labelledby="size-label"
+					>
+						{#each companySizes as s (s.id)}
+							<ToggleGroup.Item
+								value={s.id}
+								class="h-auto min-h-11 justify-start p-3 text-start text-sm"
+							>
+								{s.name}
+							</ToggleGroup.Item>
+						{/each}
+					</ToggleGroup.Root>
+				</div>
+			</CardContent>
+		</Card>
 
-		<div class="space-y-4 lg:sticky lg:top-24 lg:h-fit">
-			<Card class="bg-card">
-				<CardContent class="space-y-4 p-5">
-					<div class="text-center">
+		<div class="min-w-0 space-y-4 lg:sticky lg:top-24 lg:h-fit">
+			<Card class="min-w-0 bg-card">
+				<CardContent class="min-w-0 space-y-4 p-4 sm:p-5">
+					<div class="min-w-0 text-center">
 						<p class="text-xs text-muted-foreground">Estimated Total Cost</p>
-						<p class="text-4xl font-bold text-primary">
+						<p class="text-3xl font-bold break-words text-primary tabular-nums sm:text-4xl">
 							${costRange.low.toLocaleString()}–${costRange.high.toLocaleString()}
 						</p>
 						<p class="text-xs text-muted-foreground">USD (approximate)</p>
@@ -243,14 +253,16 @@
 						</ul>
 					</div>
 
-					<p class="text-xs leading-relaxed text-muted-foreground">{certifier.notes}</p>
+					<p class="text-xs leading-relaxed break-words text-muted-foreground">
+						{certifier.notes}
+					</p>
 
 					<div class="rounded-xl bg-muted/50 p-3 text-center text-xs text-muted-foreground">
 						<Button
 							href={localizeHref(`/certifying-bodies/${certifier.id}`)}
 							variant="outline"
 							size="sm"
-							class="w-full"
+							class="min-h-11 w-full"
 						>
 							View {certifier.name} Details
 						</Button>
@@ -258,15 +270,13 @@
 				</CardContent>
 			</Card>
 
-			<div
-				class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground"
-			>
-				<AlertTriangleIcon class="mx-auto mb-2 size-6 opacity-40" />
-				<p class="text-2xs-plus leading-relaxed">
+			<Alert class="border-dashed bg-muted/20 p-4 text-center">
+				<AlertTriangleIcon class="mx-auto size-6 opacity-50" />
+				<AlertDescription class="mx-auto max-w-2xl text-xs leading-relaxed sm:text-sm">
 					Estimates are based on publicly available fee structures and may vary. Contact the
 					certifier directly for an exact quote.
-				</p>
-			</div>
+				</AlertDescription>
+			</Alert>
 		</div>
 	</div>
 </section>

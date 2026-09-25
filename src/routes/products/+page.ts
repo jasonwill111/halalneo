@@ -33,13 +33,23 @@ export const load: PageLoad = async ({ fetch }) => {
 
 	const products = (await readItems<CatalogueProduct>(productsRes)).map((p) => ({
 		...p,
-		features: typeof p.features === 'string' ? (JSON.parse(p.features || '[]') as string[]) : p.features ?? [],
-		images: typeof p.images === 'string' ? (JSON.parse(p.images || '[]') as string[]) : p.images ?? [],
+		features:
+			typeof p.features === 'string'
+				? (JSON.parse(p.features || '[]') as string[])
+				: (p.features ?? []),
+		images:
+			typeof p.images === 'string' ? (JSON.parse(p.images || '[]') as string[]) : (p.images ?? [])
 	}));
 	const suppliers = (await readItems<CatalogueSupplier>(suppliersRes)).map((s) => ({
 		...s,
-		certifications: typeof s.certifications === 'string' ? (JSON.parse(s.certifications || '[]') as string[]) : s.certifications ?? [],
-		mainMarkets: typeof s.mainMarkets === 'string' ? (JSON.parse(s.mainMarkets || '[]') as string[]) : s.mainMarkets ?? []
+		certifications:
+			typeof s.certifications === 'string'
+				? (JSON.parse(s.certifications || '[]') as string[])
+				: (s.certifications ?? []),
+		mainMarkets:
+			typeof s.mainMarkets === 'string'
+				? (JSON.parse(s.mainMarkets || '[]') as string[])
+				: (s.mainMarkets ?? [])
 	}));
 	const categories = await readItems<CategoryRecord>(categoriesRes);
 

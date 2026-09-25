@@ -20,9 +20,15 @@ async function getJSON(path, opts = {}) {
 	const res = await fetch(BASE + path, opts);
 	const text = await res.text();
 	let body;
-	try { body = JSON.parse(text); } catch { body = text; }
+	try {
+		body = JSON.parse(text);
+	} catch {
+		body = text;
+	}
 	if (opts.expectStatus && res.status !== opts.expectStatus) {
-		throw new Error(`expected ${opts.expectStatus}, got ${res.status}: ${String(body).slice(0, 200)}`);
+		throw new Error(
+			`expected ${opts.expectStatus}, got ${res.status}: ${String(body).slice(0, 200)}`
+		);
 	}
 	return { status: res.status, body, headers: res.headers };
 }
@@ -32,7 +38,8 @@ const main = async () => {
 	await check('GET /api/products', async () => {
 		const { status, body } = await getJSON('/api/products?limit=5');
 		if (status !== 200) throw new Error(`status ${status}`);
-		if (!Array.isArray(body.items) || body.total === undefined) throw new Error('missing items/total');
+		if (!Array.isArray(body.items) || body.total === undefined)
+			throw new Error('missing items/total');
 		return { total: body.total, shown: body.items.length };
 	});
 
@@ -278,8 +285,8 @@ const main = async () => {
 	}
 
 	// ── Report ─────────────────────────────────────────────────────────
-	const pass = results.filter(r => r.ok);
-	const fail = results.filter(r => !r.ok);
+	const pass = results.filter((r) => r.ok);
+	const fail = results.filter((r) => !r.ok);
 	console.log('\n' + '='.repeat(70));
 	console.log(`API + page smoke test: ${pass.length} passed, ${fail.length} failed`);
 	console.log('='.repeat(70));

@@ -17,7 +17,6 @@
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
-	import SeoMeta from '#lib/components/seo-meta.svelte';
 	import type { CategoryRecord } from '#lib/schemas/categories.js';
 
 	let { data } = $props();
@@ -58,28 +57,18 @@
 	}
 </script>
 
-<!-- SEO Meta Tags -->
-<SeoMeta
-	title="Halal Product Categories - Global Halal Certification & Sourcing Guide"
-	description="Browse 50+ defined halal product categories with detailed descriptions, certification standards, and supplier directories for global halal trade."
-	ogTitle="HalalNeo - Halal Product Categories Directory"
-	ogDescription="Comprehensive guide to halal product categories. Certification requirements, sourcing opportunities, and market insights for each category."
-	keywords="halal categories, halal product categories, halal certification types, food safety standards, halal product standards, import categories, halal product classification, haram versus halal products, islamic dietary laws, halal certification process"
-	canonical="/categories"
-/>
-
-<section class="space-y-4 py-8 sm:space-y-6">
-	<div class="max-w-3xl space-y-2 text-center sm:text-start">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product categories</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+<section class="space-y-4 py-4 sm:space-y-6 sm:py-6">
+	<div class="max-w-2xl space-y-1 sm:text-start">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Halal product categories</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			{data.categories.length} categorized product groups with detailed certification, sourcing, and market
 			information.
 		</p>
 	</div>
 
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div class="relative w-full max-w-sm">
-			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input bind:value={search} type="search" placeholder="Search categories..." class="ps-9" />
 		</div>
 	</div>
@@ -93,7 +82,9 @@
 			<div class="col-span-full">
 				<Empty>
 					<EmptyHeader>
-						<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia>
+						<BrandedEmptyMedia
+							><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia
+						>
 						<EmptyTitle>No categories found</EmptyTitle>
 						<EmptyDescription>Try different search terms or view all categories.</EmptyDescription>
 					</EmptyHeader>

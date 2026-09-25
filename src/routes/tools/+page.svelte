@@ -71,46 +71,51 @@
 
 <Breadcrumb items={[{ label: 'Tools', href: '/tools' }]} />
 
-<section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+<section class="mx-auto flex w-full max-w-7xl min-w-0 flex-col gap-3 sm:gap-4">
+	<div class="flex min-w-0 flex-col gap-1.5">
+		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:text-sm">
 			<Wrench class="size-4" />
 			Halal Trade Tools
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Free tools for halal buyers</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="max-w-3xl text-xl font-semibold tracking-tight sm:text-2xl">
+			Free tools for halal buyers
+		</h1>
+		<p class="max-w-[65ch] text-xs text-muted-foreground sm:text-sm">
 			Estimate costs, check compliance and draft sourcing documents — no account needed.
 		</p>
 	</div>
 
-	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+	<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 		{#each tools as tool (tool.href)}
-			<a href={localizeHref(tool.href)} class="group h-full">
+			<a href={localizeHref(tool.href)} class="group h-full min-w-0">
 				<Card
-					class="press-scale h-full p-3 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="press-scale h-full min-w-0 overflow-hidden p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-3"
 				>
-					<CardContent class="space-y-2 p-0 sm:space-y-2.5">
-						<div class="flex items-center justify-between">
+					<CardContent class="flex flex-col gap-2 p-0 sm:gap-2.5">
+						<div class="flex min-w-0 items-center justify-between gap-1.5">
 							<div
-								class={`flex size-8 items-center justify-center rounded-lg sm:size-9 ${tool.tone}`}
+								class={`flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-9 ${tool.tone}`}
 							>
 								<tool.icon class="size-4" />
 							</div>
-							<Badge variant={tool.badge === 'Live' ? 'secondary' : 'outline'} class="text-2xs">
+							<Badge
+								variant={tool.badge === 'Live' ? 'secondary' : 'outline'}
+								class="max-w-full shrink-0 truncate text-2xs"
+							>
 								{tool.badge}
 							</Badge>
 						</div>
-						<div>
+						<div class="min-w-0">
 							<h2
-								class="flex items-center gap-1 text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm"
+								class="flex min-w-0 items-start gap-1 text-xs font-semibold transition-colors group-hover:text-primary sm:text-sm"
 							>
-								{tool.name}
+								<span class="line-clamp-2 min-w-0">{tool.name}</span>
 								<ArrowUpRight
-									class="size-3.5 text-muted-foreground transition-colors group-hover:text-primary"
+									class="mt-0.5 size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
 								/>
 							</h2>
 							<p
-								class="mt-0.5 line-clamp-2 text-2xs-plus leading-snug text-muted-foreground sm:text-xs sm:leading-relaxed"
+								class="mt-0.5 line-clamp-2 hidden text-xs leading-relaxed text-muted-foreground sm:block"
 							>
 								{tool.desc}
 							</p>

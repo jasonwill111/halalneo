@@ -28,18 +28,23 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyContent,
+		EmptyDescription,
+		EmptyHeader,
+		EmptyTitle
+	} from '#lib/components/ui/empty/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Search from '@lucide/svelte/icons/search';
 	import Plus from '@lucide/svelte/icons/plus';
 	import Pencil from '@lucide/svelte/icons/pencil';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 	import FolderTree from '@lucide/svelte/icons/folder-tree';
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
-	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
-	import WifiOff from '@lucide/svelte/icons/wifi-off';
 	import CollapsibleSection from '#lib/components/site/collapsible-section.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import { toast } from 'svelte-sonner';
 	import {
@@ -47,6 +52,11 @@
 		mergeServerDetails,
 		type ServerFieldDetails
 	} from '#lib/utils/forms.js';
+	import {
+		describeFetchFailure,
+		describeThrownFailure,
+		type LoadFailure
+	} from '#lib/utils/load-error.js';
 	import {
 		CATEGORY_STATUSES,
 		categoryCreateSchema,
@@ -61,9 +71,7 @@
 	let items = $state<CategoryRecord[]>([]);
 	let total = $state(0);
 	let loading = $state(true);
-	let loadError = $state('');
-	/** Network failures and server errors must look different (§3.1). */
-	let offline = $state(false);
+	let loadFailure = $state<LoadFailure | null>(null);
 	// Kept as a plain string so it can bind to <FilterPills>; the API validates
 	// it against the category status enum and answers 400 otherwise.
 	let statusFilter = $state('active');
@@ -144,14 +152,12 @@
 
 	async function loadItems() {
 		loading = true;
-		loadError = '';
-		offline = false;
+		loadFailure = null;
 		try {
 			const params = new SvelteURLSearchParams({ limit: '100', status: statusFilter });
 			const res = await fetch(`/api/categories?${params}`);
 			if (!res.ok) {
-				const body = (await res.json().catch(() => ({}))) as { error?: string };
-				loadError = body.error || `Could not load categories (HTTP ${res.status}).`;
+				loadFailure = describeFetchFailure(res);
 				items = [];
 				total = 0;
 				return;
@@ -159,9 +165,8 @@
 			const data = (await res.json().catch(() => null)) as CategoryListResponse | null;
 			items = data?.items ?? [];
 			total = data?.total ?? items.length;
-		} catch {
-			offline = true;
-			loadError = 'Network error — the server could not be reached.';
+		} catch (error: unknown) {
+			loadFailure = describeThrownFailure(error);
 			items = [];
 			total = 0;
 		} finally {
@@ -323,8 +328,8 @@
 <div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="space-y-1">
-			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Categories</h1>
-			<p class="max-w-2xl text-sm text-muted-foreground">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Categories</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				Product categories used across the marketplace and knowledge base.
 			</p>
 		</div>
@@ -337,7 +342,7 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<div class="relative w-full max-w-sm">
 			<Search
-				class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
 			<Input bind:value={search} placeholder="Search categories..." class="ps-9" />
 		</div>
@@ -348,18 +353,18 @@
 		/>
 	</div>
 
-	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
-		<Table>
-			<TableHeader>
-				<TableRow class="hover:bg-transparent">
-					<TableHead>Category</TableHead>
-					<TableHead>Parent</TableHead>
-					<TableHead>Description</TableHead>
-					<TableHead class="text-end">Actions</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{#if loading}
+	{#if loading}
+		<div class="min-w-0 overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+			<Table class="min-w-[40rem]">
+				<TableHeader>
+					<TableRow class="hover:bg-transparent">
+						<TableHead class="whitespace-nowrap">Category</TableHead>
+						<TableHead class="whitespace-nowrap">Parent</TableHead>
+						<TableHead class="whitespace-nowrap">Description</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
 					{#each [0, 1, 2, 3] as row (row)}
 						<TableRow>
 							<TableCell><Skeleton class="h-4 w-32" /></TableCell>
@@ -368,61 +373,55 @@
 							<TableCell class="text-end"><Skeleton class="ms-auto h-8 w-16" /></TableCell>
 						</TableRow>
 					{/each}
-				{:else if loadError}
-					<TableRow>
-						<TableCell colspan={4} class="py-8">
-							<Empty>
-								<BrandedEmptyMedia>
-									{#if offline}
-										<WifiOff class="size-6 text-muted-foreground" />
-									{:else}
-										<TriangleAlert class="size-6 text-destructive" />
-									{/if}
-								</BrandedEmptyMedia>
-								<div class="space-y-1">
-									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load categories'}</p>
-									<p class="text-sm text-muted-foreground">{loadError}</p>
-								</div>
-								<EmptyContent>
-									<Button variant="outline" size="sm" onclick={() => loadItems()}>
-										<RefreshCw class="size-4"></RefreshCw>
-										Try again
-									</Button>
-								</EmptyContent>
-							</Empty>
-						</TableCell>
-					</TableRow>
-				{:else if filtered.length === 0}
-					<TableRow>
-						<TableCell colspan={4} class="py-8">
-							<Empty>
-								<BrandedEmptyMedia><FolderTree class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
-								<div class="space-y-1">
-									<p class="font-medium">
-										{search.trim() ? 'No matching categories' : 'No categories yet'}
-									</p>
-									<p class="text-sm text-muted-foreground">
-										{search.trim()
-											? `Nothing matches “${search.trim()}” in ${statusFilter} categories.`
-											: 'Create your first category to organise the marketplace.'}
-									</p>
-								</div>
-								{#if !search.trim()}
-									<EmptyContent>
-										<Button variant="default" size="sm" onclick={openCreate}>
-											<Plus class="size-4"></Plus>
-											New category
-										</Button>
-									</EmptyContent>
-								{/if}
-							</Empty>
-						</TableCell>
-					</TableRow>
+				</TableBody>
+			</Table>
+		</div>
+	{:else if loadFailure}
+		<ErrorRetry failure={loadFailure} subject="categories" onretry={loadItems} />
+	{:else if filtered.length === 0}
+		<Empty class="border">
+			<EmptyHeader>
+				<BrandedEmptyMedia variant="icon">
+					<FolderTree />
+				</BrandedEmptyMedia>
+				<EmptyTitle>
+					{search.trim() ? 'No matching categories' : 'No categories yet'}
+				</EmptyTitle>
+				<EmptyDescription>
+					{search.trim()
+						? `Nothing matches “${search.trim()}” in ${statusFilter} categories.`
+						: 'Create your first category to organise the marketplace.'}
+				</EmptyDescription>
+			</EmptyHeader>
+			<EmptyContent>
+				{#if search.trim()}
+					<Button variant="outline" size="sm" onclick={() => (search = '')}>Clear search</Button>
 				{:else}
+					<Button variant="default" size="sm" onclick={openCreate}>
+						<Plus class="size-4"></Plus>
+						New category
+					</Button>
+				{/if}
+			</EmptyContent>
+		</Empty>
+	{:else}
+		<div class="min-w-0 overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+			<Table class="min-w-[40rem]">
+				<TableHeader>
+					<TableRow class="hover:bg-transparent">
+						<TableHead class="whitespace-nowrap">Category</TableHead>
+						<TableHead class="whitespace-nowrap">Parent</TableHead>
+						<TableHead class="whitespace-nowrap">Description</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
 					{#each filtered as c (c.slug)}
 						<TableRow>
-							<TableCell class="font-medium">{c.name}</TableCell>
-							<TableCell class="text-sm text-muted-foreground">{parentName(c.parentSlug)}</TableCell>
+							<TableCell class="font-medium whitespace-nowrap">{c.name}</TableCell>
+							<TableCell class="text-sm whitespace-nowrap text-muted-foreground">
+								{parentName(c.parentSlug)}
+							</TableCell>
 							<TableCell class="max-w-xs truncate text-sm text-muted-foreground"
 								>{c.description}</TableCell
 							>
@@ -444,14 +443,15 @@
 							</TableCell>
 						</TableRow>
 					{/each}
-				{/if}
-			</TableBody>
-		</Table>
-	</div>
+				</TableBody>
+			</Table>
+		</div>
+	{/if}
 
-	{#if !loading && !loadError && total > items.length}
+	{#if !loading && !loadFailure && total > items.length}
 		<p class="text-xs text-muted-foreground">
-			Showing {items.length} of {total} {statusFilter} categories (API caps at 100).
+			Showing {items.length} of {total}
+			{statusFilter} categories (API caps at 100).
 		</p>
 	{/if}
 </div>
@@ -470,7 +470,10 @@
 					placeholder="Category name"
 					disabled={saving}
 					aria-invalid={!!fieldErrors.name}
-					oninput={() => { fieldErrors.name = ''; formError = ''; }}
+					oninput={() => {
+						fieldErrors.name = '';
+						formError = '';
+					}}
 				/>
 				{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 			</Field.Field>
@@ -481,14 +484,19 @@
 					placeholder="category-slug"
 					disabled={!!editing || saving}
 					aria-invalid={!!fieldErrors.slug}
-					oninput={() => { fieldErrors.slug = ''; formError = ''; }}
+					oninput={() => {
+						fieldErrors.slug = '';
+						formError = '';
+					}}
 				/>
 				{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Parent</Field.FieldLabel>
 				<Select bind:value={form.parentSlug} type="single">
-					<SelectTrigger class="w-full" disabled={saving}>{parentName(form.parentSlug)}</SelectTrigger>
+					<SelectTrigger class="w-full" disabled={saving}
+						>{parentName(form.parentSlug)}</SelectTrigger
+					>
 					<SelectContent>
 						<SelectItem value="">None (top level)</SelectItem>
 						{#each parentOptions as c (c.slug)}
@@ -518,7 +526,9 @@
 						placeholder="0"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.sortOrder}
-						oninput={() => { fieldErrors.sortOrder = ''; }}
+						oninput={() => {
+							fieldErrors.sortOrder = '';
+						}}
 					/>
 					{#if fieldErrors.sortOrder}<FieldError>{fieldErrors.sortOrder}</FieldError>{/if}
 				</Field.Field>
@@ -529,7 +539,12 @@
 			</Field.Field>
 			<Field.Field>
 				<Field.FieldLabel>Description</Field.FieldLabel>
-				<Textarea bind:value={form.description} rows={3} placeholder="Category description..." disabled={saving} />
+				<Textarea
+					bind:value={form.description}
+					rows={3}
+					placeholder="Category description..."
+					disabled={saving}
+				/>
 			</Field.Field>
 
 			<!-- ===================== SEO & METADATA (collapsed) ===================== -->
@@ -542,7 +557,9 @@
 						placeholder="SEO page title (max 60 chars)"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaTitle}
-						oninput={() => { fieldErrors.metaTitle = ''; }}
+						oninput={() => {
+							fieldErrors.metaTitle = '';
+						}}
 					/>
 					{#if fieldErrors.metaTitle}<FieldError>{fieldErrors.metaTitle}</FieldError>{/if}
 				</Field.Field>
@@ -556,7 +573,8 @@
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaDescription}
 					/>
-					{#if fieldErrors.metaDescription}<FieldError>{fieldErrors.metaDescription}</FieldError>{/if}
+					{#if fieldErrors.metaDescription}<FieldError>{fieldErrors.metaDescription}</FieldError
+						>{/if}
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Keywords</Field.FieldLabel>
@@ -571,10 +589,17 @@
 			</CollapsibleSection>
 
 			{#if formError}
-				<p class="text-sm text-destructive">{formError}</p>
+				<Alert variant="destructive">
+					<AlertDescription>{formError}</AlertDescription>
+				</Alert>
 			{/if}
 			<div class="flex justify-end gap-2 pt-2">
-				<Button variant="outline" type="button" disabled={saving} onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button
+					variant="outline"
+					type="button"
+					disabled={saving}
+					onclick={() => (dialogOpen = false)}>Cancel</Button
+				>
 				<Button variant="default" type="submit" disabled={saving}
 					>{saving ? 'Saving…' : editing ? 'Save changes' : 'Create category'}</Button
 				>

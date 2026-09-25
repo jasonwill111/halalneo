@@ -30,18 +30,22 @@ export const certifyingBodyRefSchema = z.object({
 export type CertifyingBodyRef = z.infer<typeof certifyingBodyRefSchema>;
 
 export const marketGuideCreateSchema = z.object({
-	slug: text(200).optional().refine((s) => !s || SLUG_PATTERN.test(s), {
-		message: 'Slug may only contain lowercase letters, numbers and dashes.'
-	}),
+	slug: text(200)
+		.optional()
+		.refine((s) => !s || SLUG_PATTERN.test(s), {
+			message: 'Slug may only contain lowercase letters, numbers and dashes.'
+		}),
 	country: text(120).min(1, 'Country is required.'),
 	flag: text(16).optional(),
 	region: text(60).optional(),
 	muslimPopulation: text(160).optional(),
 	totalPopulation: text(160).optional(),
 	marketSizeUsd: text(200).optional(),
-	mandateStatus: z.enum(MANDATE_STATUSES, {
-		error: 'Choose mandatory, phasing-in or voluntary.'
-	}).optional(),
+	mandateStatus: z
+		.enum(MANDATE_STATUSES, {
+			error: 'Choose mandatory, phasing-in or voluntary.'
+		})
+		.optional(),
 	mandatorySince: text(200).optional().nullable(),
 	certifyingBodies: z.array(certifyingBodyRefSchema).max(30).optional(),
 	importRequirements: list(30).optional(),
@@ -56,9 +60,11 @@ export const marketGuideCreateSchema = z.object({
 	metaTitle: text(200).optional(),
 	metaDescription: text(500).optional(),
 	keywords: text(500).optional(),
-	status: z.enum(MARKET_GUIDE_STATUSES, {
-		error: 'Status must be active, inactive or draft.'
-	}).optional()
+	status: z
+		.enum(MARKET_GUIDE_STATUSES, {
+			error: 'Status must be active, inactive or draft.'
+		})
+		.optional()
 });
 
 /** PUT payload: every field optional, enums still constrained. */

@@ -90,9 +90,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					);
 					if (relRes.ok) {
 						const rel = await readList<SupplierListItem>(relRes);
-						relatedSuppliers = (rel.items ?? [])
-							.filter((s) => s.slug !== params.slug)
-							.slice(0, 4);
+						relatedSuppliers = (rel.items ?? []).filter((s) => s.slug !== params.slug).slice(0, 4);
 					}
 				}
 			} catch {
@@ -102,13 +100,20 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				slug: params.slug,
 				seo: {
 					// DB per-row meta wins when admins filled it; else derive.
-					title: data.metaTitle || (data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`),
+					title:
+						data.metaTitle || (data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`),
 					description:
 						data.metaDescription ||
 						data.description ||
 						`${data.name || params.slug} — halal-certified ${data.businessType || 'supplier'} from ${data.country || 'worldwide'}. View products, certifications, and contact info on HalalNeo.`,
 					ogImage: 'https://halalneo.com/brand/og-default.png',
-					keywords: [data.name, 'halal supplier', data.country, data.businessType, 'certified'].filter(Boolean)
+					keywords: [
+						data.name,
+						'halal supplier',
+						data.country,
+						data.businessType,
+						'certified'
+					].filter(Boolean)
 				},
 				item: { ...data, certifications: certificationsParsed },
 				products,

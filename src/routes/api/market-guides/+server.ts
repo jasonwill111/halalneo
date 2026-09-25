@@ -26,7 +26,9 @@ type StatusFilter = MarketGuideStatus | 'all';
  */
 function resolveStatusFilter(raw: string | null): StatusFilter {
 	if (raw === 'all') return 'all';
-	return MARKET_GUIDE_STATUSES.includes(raw as MarketGuideStatus) ? (raw as MarketGuideStatus) : 'active';
+	return MARKET_GUIDE_STATUSES.includes(raw as MarketGuideStatus)
+		? (raw as MarketGuideStatus)
+		: 'active';
 }
 
 /** Static seed entries are curated public content — implicitly active. */
@@ -36,13 +38,18 @@ function fallbackList(offset: number, limit: number, search?: string, country?: 
 		filtered = filtered.filter((g) => g.country.toLowerCase().includes(search.toLowerCase()));
 	}
 	if (country) filtered = filtered.filter((g) => g.country === country);
-	const items = filtered
-		.slice(offset, offset + limit)
-		.map((g) => ({ ...g, status: 'active' }));
+	const items = filtered.slice(offset, offset + limit).map((g) => ({ ...g, status: 'active' }));
 	return { items, total: filtered.length, limit, offset };
 }
 
-async function queryList(db: Db, status: StatusFilter, search: string | undefined, country: string | undefined, limit: number, offset: number) {
+async function queryList(
+	db: Db,
+	status: StatusFilter,
+	search: string | undefined,
+	country: string | undefined,
+	limit: number,
+	offset: number
+) {
 	const conditions = [];
 	if (search) conditions.push(like(marketGuides.country, `%${search}%`));
 	if (status !== 'all') conditions.push(eq(marketGuides.status, status));

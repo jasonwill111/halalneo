@@ -15,6 +15,7 @@
 		SelectTrigger
 	} from '#lib/components/ui/select/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import Mail from '@lucide/svelte/icons/mail';
 	import MapPin from '@lucide/svelte/icons/map-pin';
 	import Phone from '@lucide/svelte/icons/phone';
@@ -156,29 +157,30 @@
 
 <Breadcrumb items={[{ label: 'Contact', href: '/contact' }]} />
 
-<section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Contact HalalNeo</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+<section class="flex flex-col gap-4 sm:gap-6">
+	<div class="max-w-2xl">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Contact HalalNeo</h1>
+		<p class="mt-1 text-xs text-muted-foreground sm:text-sm">
 			Questions about certification, sourcing, or listing your products —send us a message and we'll
 			point you in the right direction.
 		</p>
 	</div>
 
-	<div class="grid gap-4 sm:gap-6 lg:grid-cols-5">
-		<div class="space-y-4 lg:col-span-2">
-			<!-- Global Headquarters -->
-			<Card>
+	<div
+		class="grid min-w-0 items-start gap-3 sm:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-3"
+	>
+		<div class="flex min-w-0 flex-col gap-3">
+			<Card size="sm" class="min-w-0">
 				<CardHeader class="pb-2">
 					<div class="flex items-center gap-2">
 						<MapPin class="size-4 text-primary" />
 						<CardTitle class="text-sm">Global Headquarters</CardTitle>
 					</div>
 				</CardHeader>
-				<CardContent class="space-y-1.5 text-sm text-muted-foreground">
+				<CardContent class="flex flex-col gap-1.5 text-xs text-muted-foreground sm:text-sm">
 					<p class="flex items-start gap-1.5">
 						<MapPin class="mt-0.5 size-3.5 shrink-0 text-primary"></MapPin>
-						Kuala Lumpur, Malaysia
+						<span>Kuala Lumpur, Malaysia</span>
 					</p>
 					<p class="flex items-center gap-1.5">
 						<Phone class="size-3.5 shrink-0 text-primary"></Phone>
@@ -186,156 +188,193 @@
 							+60 3-XXXX XXXX
 						</a>
 					</p>
-					<p class="flex items-center gap-1.5">
+					<p class="flex min-w-0 items-center gap-1.5">
 						<Mail class="size-3.5 shrink-0 text-primary"></Mail>
-						<a href="mailto:contact@halalneo.com" class="transition-colors hover:text-foreground">
+						<a
+							href="mailto:contact@halalneo.com"
+							class="min-w-0 break-all transition-colors hover:text-foreground sm:break-normal"
+						>
 							contact@halalneo.com
 						</a>
 					</p>
 				</CardContent>
 			</Card>
 
-			<Card>
+			<Card size="sm" class="min-w-0">
 				<CardHeader class="pb-2">
 					<div class="flex items-center gap-2">
 						<MapPin class="size-4 text-primary" />
 						<CardTitle class="text-sm">Regional Offices</CardTitle>
 					</div>
 				</CardHeader>
-				<CardContent class="space-y-3">
+				<CardContent class="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
 					{#each offices as office (office.city)}
-						<div>
-							<p class="text-sm font-medium">{office.city}</p>
-							<p class="text-sm text-muted-foreground">{office.address}</p>
+						<div class="min-w-0">
+							<p class="text-xs font-medium sm:text-sm">{office.city}</p>
+							<p class="text-xs text-muted-foreground sm:text-sm">{office.address}</p>
 						</div>
 					{/each}
 				</CardContent>
 			</Card>
 
-			<Card>
+			<Card size="sm" class="min-w-0">
 				<CardHeader class="pb-2">
 					<div class="flex items-center gap-2">
 						<Clock class="size-4 text-primary" />
 						<CardTitle class="text-sm">Office Hours</CardTitle>
 					</div>
 				</CardHeader>
-				<CardContent class="space-y-1.5 text-sm text-muted-foreground">
+				<CardContent class="flex flex-col gap-1.5 text-xs text-muted-foreground sm:text-sm">
 					<p>Monday — Friday: 9:00 AM — 6:00 PM (GMT+8)</p>
 					<p>Saturday: 9:00 AM — 1:00 PM</p>
 				</CardContent>
 			</Card>
 		</div>
 
-		<div class="rounded-xl bg-card p-5 sm:p-6 lg:col-span-3">
-			<h2 class="mb-4 text-sm font-bold text-foreground">Send a Message</h2>
-			{#if sent}
-				<div class="flex h-full min-h-72 flex-col items-center justify-center gap-3 text-center">
-					<CheckCircle class="size-10 text-primary" data-icon="header" />
-					<h2 class="text-base font-semibold sm:text-lg">Message received</h2>
-					<p class="max-w-sm text-sm text-muted-foreground">
-						Thanks, {name.split(' ')[0] || 'there'}. A member of our team will get back to you at
-						<span class="font-medium text-foreground">{email}</span> within one business day.
-					</p>
-					<Button variant="outline" size="sm" onclick={() => (sent = false)}>
-						Send another message
-					</Button>
-				</div>
-			{:else}
-				{#if submitError}
-					<div class="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-						{submitError}
+		<Card size="sm" class="min-w-0">
+			<CardHeader>
+				<CardTitle>Send a Message</CardTitle>
+			</CardHeader>
+			<CardContent>
+				{#if sent}
+					<div class="flex h-full min-h-64 flex-col items-center justify-center gap-3 text-center">
+						<CheckCircle class="size-10 text-primary" data-icon="header" />
+						<h2 class="text-base font-semibold sm:text-lg">Message received</h2>
+						<p class="max-w-sm text-xs text-muted-foreground sm:text-sm">
+							Thanks, {name.split(' ')[0] || 'there'}. A member of our team will get back to you at
+							<span class="font-medium break-all text-foreground sm:break-normal">{email}</span> within
+							one business day.
+						</p>
+						<Button variant="outline" class="h-11" onclick={() => (sent = false)}>
+							Send another message
+						</Button>
 					</div>
+				{:else}
+					{#if submitError}
+						<Alert variant="destructive" class="mb-3">
+							<AlertDescription class="text-xs sm:text-sm">{submitError}</AlertDescription>
+						</Alert>
+					{/if}
+					<form
+						class="grid min-w-0 gap-3"
+						bind:this={formEl}
+						aria-busy={sending}
+						onsubmit={(e) => {
+							e.preventDefault();
+							void submit();
+						}}
+					>
+						<div class="grid min-w-0 gap-3 sm:grid-cols-2">
+							<Field data-invalid={Boolean(fieldErrors.name)}>
+								<FieldLabel for="contact-name">Full name</FieldLabel>
+								<Input
+									id="contact-name"
+									bind:value={name}
+									placeholder="Jane Doe"
+									class="h-11 min-w-0 text-sm"
+									autocomplete="name"
+									maxlength={200}
+									required
+									aria-invalid={fieldErrors.name ? true : undefined}
+									aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
+									oninput={() => {
+										if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+									}}
+								/>
+								{#if fieldErrors.name}
+									<FieldError id="contact-name-error">{fieldErrors.name}</FieldError>
+								{/if}
+							</Field>
+							<Field data-invalid={Boolean(fieldErrors.email)}>
+								<FieldLabel for="contact-email">Work email</FieldLabel>
+								<Input
+									id="contact-email"
+									type="email"
+									bind:value={email}
+									placeholder="jane@company.com"
+									class="h-11 min-w-0 text-sm"
+									autocomplete="email"
+									maxlength={200}
+									required
+									aria-invalid={fieldErrors.email ? true : undefined}
+									aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
+									oninput={() => {
+										if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+									}}
+								/>
+								{#if fieldErrors.email}
+									<FieldError id="contact-email-error">{fieldErrors.email}</FieldError>
+								{/if}
+							</Field>
+						</div>
+						<div class="grid min-w-0 gap-3 sm:grid-cols-2">
+							<Field>
+								<FieldLabel for="contact-company">Company (optional)</FieldLabel>
+								<Input
+									id="contact-company"
+									bind:value={company}
+									placeholder="Your company"
+									class="h-11 min-w-0 text-sm"
+									autocomplete="organization"
+									maxlength={200}
+								/>
+							</Field>
+							<Field>
+								<FieldLabel for="contact-topic">Topic</FieldLabel>
+								<Select type="single" bind:value={topic}>
+									<SelectTrigger id="contact-topic" class="h-11 w-full min-w-0 text-sm">
+										Select a topic
+									</SelectTrigger>
+									<SelectContent>
+										{#each topics as t (t)}
+											<SelectItem value={t}>{t}</SelectItem>
+										{/each}
+									</SelectContent>
+								</Select>
+							</Field>
+						</div>
+						<Field data-invalid={Boolean(fieldErrors.message)}>
+							<FieldLabel for="contact-message">Message</FieldLabel>
+							<Textarea
+								id="contact-message"
+								bind:value={message}
+								rows={5}
+								placeholder="Tell us what you need..."
+								class="max-h-80 min-h-28 w-full max-w-full resize-y overflow-auto text-sm"
+								maxlength={5000}
+								required
+								aria-invalid={fieldErrors.message ? true : undefined}
+								aria-describedby={fieldErrors.message
+									? 'contact-message-error contact-message-description'
+									: 'contact-message-description'}
+								oninput={() => {
+									if (fieldErrors.message) fieldErrors = { ...fieldErrors, message: '' };
+								}}
+							/>
+							{#if fieldErrors.message}
+								<FieldError id="contact-message-error">{fieldErrors.message}</FieldError>
+							{/if}
+							<FieldDescription id="contact-message-description">
+								Include your certifying body or standard if your question is about verification.
+							</FieldDescription>
+						</Field>
+						<Button
+							type="submit"
+							class="h-11 w-full sm:w-auto"
+							disabled={sending}
+							aria-busy={sending}
+						>
+							{#if sending}
+								<Loader2 class="size-4 animate-spin" data-icon="inline-start" />
+								Sending...
+							{:else}
+								Send message
+								<Send class="size-4" data-icon="inline-end" />
+							{/if}
+						</Button>
+					</form>
 				{/if}
-				<form
-					class="space-y-4"
-					bind:this={formEl}
-					onsubmit={(e) => {
-						e.preventDefault();
-						submit();
-					}}
-				>
-					<div class="grid gap-4 sm:grid-cols-2">
-						<Field>
-							<FieldLabel>Full name</FieldLabel>
-							<Input
-								bind:value={name}
-								placeholder="Jane Doe"
-								autocomplete="name"
-								maxlength={200}
-								required
-								aria-invalid={fieldErrors.name ? true : undefined}
-								oninput={() => {
-									if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
-								}}
-							/>
-							{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
-						</Field>
-						<Field>
-							<FieldLabel>Work email</FieldLabel>
-							<Input
-								type="email"
-								bind:value={email}
-								placeholder="jane@company.com"
-								autocomplete="email"
-								maxlength={200}
-								required
-								aria-invalid={fieldErrors.email ? true : undefined}
-								oninput={() => {
-									if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
-								}}
-							/>
-							{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
-						</Field>
-					</div>
-					<Field>
-						<FieldLabel>Company (optional)</FieldLabel>
-						<Input
-							bind:value={company}
-							placeholder="Your company"
-							autocomplete="organization"
-							maxlength={200}
-						/>
-					</Field>
-					<Field>
-						<FieldLabel>Topic</FieldLabel>
-						<Select type="single" bind:value={topic}>
-							<SelectTrigger class="w-full text-sm">Select a topic</SelectTrigger>
-							<SelectContent>
-								{#each topics as t (t)}
-									<SelectItem value={t}>{t}</SelectItem>
-								{/each}
-							</SelectContent>
-						</Select>
-					</Field>
-					<Field>
-						<FieldLabel>Message</FieldLabel>
-						<Textarea
-							bind:value={message}
-							rows={5}
-							placeholder="Tell us what you need..."
-							maxlength={5000}
-							required
-							aria-invalid={fieldErrors.message ? true : undefined}
-							oninput={() => {
-								if (fieldErrors.message) fieldErrors = { ...fieldErrors, message: '' };
-							}}
-						/>
-						{#if fieldErrors.message}<FieldError>{fieldErrors.message}</FieldError>{/if}
-						<FieldDescription>
-							Include your certifying body or standard if your question is about verification.
-						</FieldDescription>
-					</Field>
-					<Button type="submit" class="w-full sm:w-auto" disabled={sending} aria-busy={sending}>
-						{#if sending}
-							<Loader2 class="size-4 animate-spin" />
-							Sending...
-						{:else}
-							Send message
-							<Send class="size-4" data-icon="inline-end" />
-						{/if}
-					</Button>
-				</form>
-			{/if}
-		</div>
+			</CardContent>
+		</Card>
 	</div>
 </section>

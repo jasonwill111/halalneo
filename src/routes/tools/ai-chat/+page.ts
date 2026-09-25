@@ -5,7 +5,8 @@ export const prerender = false;
 export const load: PageLoad = () => ({
 	seo: {
 		title: 'Halal AI Chat Assistant — Ask About Certification, Suppliers & Markets — HalalNeo',
-		description: 'Get instant answers about halal certification, find suppliers, compare markets, and navigate compliance requirements with HalalNeo AI assistant.',
+		description:
+			'Get instant answers about halal certification, find suppliers, compare markets, and navigate compliance requirements with HalalNeo AI assistant.',
 		robots: 'noindex, nofollow'
 	}
 });

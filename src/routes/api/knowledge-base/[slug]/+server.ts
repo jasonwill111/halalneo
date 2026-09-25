@@ -34,7 +34,11 @@ export const GET: RequestHandler = async (event) => {
 			return json(sections);
 		}
 
-		const [row] = await db.select().from(knowledgeBase).where(eq(knowledgeBase.slug, params.slug)).limit(1);
+		const [row] = await db
+			.select()
+			.from(knowledgeBase)
+			.where(eq(knowledgeBase.slug, params.slug))
+			.limit(1);
 
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 
@@ -47,11 +51,7 @@ export const GET: RequestHandler = async (event) => {
 			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
 		}
 
-		const cached = await cachedQuery(
-			url.toString(),
-			async () => row ?? null,
-			{ ...cacheLong() }
-		);
+		const cached = await cachedQuery(url.toString(), async () => row ?? null, { ...cacheLong() });
 
 		if (!cached) return json({ error: 'Not found' }, { status: 404 });
 		return json(cached);

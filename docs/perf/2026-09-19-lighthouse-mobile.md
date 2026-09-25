@@ -4,15 +4,15 @@
 
 ## 结果（两次运行）
 
-| 指标 | Run 1 | Run 2 | 规则目标（§7.3） |
-|---|---|---|---|
-| Performance score | 0.53 | 0.51 | — |
-| FCP | 2.8s | 2.9s | — |
-| LCP | 4.7s | 4.9s | ≤2.5s ❌ |
-| TBT（INP 代理） | 960ms | 1020ms | ≤200ms（INP）❌ |
-| CLS | 0 | 0 | ≤0.1 ✅ |
-| Speed Index | 5.2s | 5.1s | — |
-| Total Byte Weight | — | 610KiB | — |
+| 指标              | Run 1 | Run 2  | 规则目标（§7.3） |
+| ----------------- | ----- | ------ | ---------------- |
+| Performance score | 0.53  | 0.51   | —                |
+| FCP               | 2.8s  | 2.9s   | —                |
+| LCP               | 4.7s  | 4.9s   | ≤2.5s ❌         |
+| TBT（INP 代理）   | 960ms | 1020ms | ≤200ms（INP）❌  |
+| CLS               | 0     | 0      | ≤0.1 ✅          |
+| Speed Index       | 5.2s  | 5.1s   | —                |
+| Total Byte Weight | —     | 610KiB | —                |
 
 ## 诊断（lab 归因）
 

@@ -55,10 +55,7 @@ const PRIMARY = oklchToHex(0.4, 0.15, 158); // --primary light
 const ON_PRIMARY = oklchToHex(0.985, 0.004, 88); // --primary-foreground light
 
 // ─── geometry from mark.svelte (single source) ─────────────────────
-const markSrc = readFileSync(
-	join(ROOT, 'src', 'lib', 'components', 'site', 'mark.svelte'),
-	'utf8'
-);
+const markSrc = readFileSync(join(ROOT, 'src', 'lib', 'components', 'site', 'mark.svelte'), 'utf8');
 const grab = (name) => {
 	const m = markSrc.match(new RegExp(`const ${name} =\\s*\\n?\\s*'([^']+)'`));
 	if (!m) throw new Error(`could not parse ${name} from mark.svelte`);
@@ -111,7 +108,9 @@ for (const [name, size] of [
 }
 
 // ─── OG 1200×630 via headless Chromium (real Space Grotesk) ────────
-const fontB64 = readFileSync(join(ROOT, 'static', 'fonts', 'space-grotesk', 'space-grotesk-latin.woff2')).toString('base64');
+const fontB64 = readFileSync(
+	join(ROOT, 'static', 'fonts', 'space-grotesk', 'space-grotesk-latin.woff2')
+).toString('base64');
 const girihUri = encodeURIComponent(
 	`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><g transform="scale(1.5)" fill="none" stroke="white" stroke-width="2" opacity="0.06"><path d="${SQUARE_A}"/><path d="${SQUARE_B}"/></g></svg>`
 );

@@ -330,7 +330,7 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search pages..." class="ps-9" />
 	</div>
@@ -381,7 +381,9 @@
 									{/if}
 								</BrandedEmptyMedia>
 								<div class="space-y-1">
-									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load pages'}</p>
+									<p class="font-medium">
+										{offline ? 'Connection failed' : 'Could not load pages'}
+									</p>
 									<p class="text-sm text-muted-foreground">{loadError}</p>
 								</div>
 								<EmptyContent>
@@ -397,7 +399,9 @@
 					<TableRow>
 						<TableCell colspan={5} class="py-8">
 							<Empty>
-								<BrandedEmptyMedia><FileText class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+								<BrandedEmptyMedia
+									><FileText class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+								>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{search.trim() ? 'No matching pages' : 'No pages yet'}
@@ -473,14 +477,14 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit page' : 'New page'}</DialogTitle>
 			<DialogDescription>Create or update a page in the site.</DialogDescription>
 		</DialogHeader>
 
 		<form bind:this={formEl} onsubmit={save} class="contents">
-			<div class="flex flex-col gap-4">
+			<div class="flex min-w-0 flex-col gap-4">
 				<Field.Field>
 					<Field.FieldLabel>Title *</Field.FieldLabel>
 					<Input
@@ -488,12 +492,15 @@
 						placeholder="Page title"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.title}
-						oninput={() => { fieldErrors.title = ''; formError = ''; }}
+						oninput={() => {
+							fieldErrors.title = '';
+							formError = '';
+						}}
 					/>
 					{#if fieldErrors.title}<FieldError>{fieldErrors.title}</FieldError>{/if}
 				</Field.Field>
 
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Slug</Field.FieldLabel>
 						<Input
@@ -501,7 +508,10 @@
 							placeholder="page-slug"
 							disabled={!!editing || saving}
 							aria-invalid={!!fieldErrors.slug}
-							oninput={() => { fieldErrors.slug = ''; formError = ''; }}
+							oninput={() => {
+								fieldErrors.slug = '';
+								formError = '';
+							}}
 						/>
 						{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 					</Field.Field>
@@ -546,7 +556,7 @@
 						<p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">
 							Landing Page Settings
 						</p>
-						<div class="grid grid-cols-2 gap-3">
+						<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							<Field.Field>
 								<Field.FieldLabel>Target Audience</Field.FieldLabel>
 								<Input
@@ -605,7 +615,9 @@
 						placeholder="Page content..."
 						disabled={saving}
 						aria-invalid={!!fieldErrors.body}
-						oninput={() => { fieldErrors.body = ''; }}
+						oninput={() => {
+							fieldErrors.body = '';
+						}}
 					/>
 					{#if fieldErrors.body}<FieldError>{fieldErrors.body}</FieldError>{/if}
 				</Field.Field>
@@ -616,7 +628,12 @@
 			{/if}
 
 			<DialogFooter>
-				<Button variant="outline" type="button" disabled={saving} onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button
+					variant="outline"
+					type="button"
+					disabled={saving}
+					onclick={() => (dialogOpen = false)}>Cancel</Button
+				>
 				<Button variant="default" type="submit" disabled={saving}>
 					{saving ? 'Saving…' : editing ? 'Save changes' : 'Create page'}
 				</Button>

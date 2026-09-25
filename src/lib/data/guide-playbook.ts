@@ -18,7 +18,7 @@ const COUNTRY_ALIASES: Record<string, string> = {
 	uae: 'united arab emirates',
 	'united arab emirates': 'united arab emirates',
 	turkey: 'türkiye',
-	'türkiye': 'türkiye',
+	türkiye: 'türkiye',
 	usa: 'united states',
 	us: 'united states',
 	'united states': 'united states',
@@ -36,7 +36,9 @@ const COUNTRY_ALIASES: Record<string, string> = {
 };
 
 export function normalizeCountry(name: string | null | undefined): string {
-	const key = String(name ?? '').trim().toLowerCase();
+	const key = String(name ?? '')
+		.trim()
+		.toLowerCase();
 	return COUNTRY_ALIASES[key] ?? key;
 }
 
@@ -116,9 +118,12 @@ export const PHASE_TONES: Record<RequirementPhase | 'Requirement', string> = {
 
 export function classifyRequirement(req: string): RequirementPhase | 'Requirement' {
 	const s = req.toLowerCase();
-	if (/(label|logo|arabic|bahasa|urdu|english|packaging|nutrition|mark)/.test(s)) return 'Labelling';
-	if (/(certif|recogni|fhcb|jakim|audit|standard|halal scheme|accredit)/.test(s)) return 'Certification';
-	if (/(regist|sihalal|portal|saber|licen|authoriz|approval|psw|e-portal)/.test(s)) return 'Registration';
+	if (/(label|logo|arabic|bahasa|urdu|english|packaging|nutrition|mark)/.test(s))
+		return 'Labelling';
+	if (/(certif|recogni|fhcb|jakim|audit|standard|halal scheme|accredit)/.test(s))
+		return 'Certification';
+	if (/(regist|sihalal|portal|saber|licen|authoriz|approval|psw|e-portal)/.test(s))
+		return 'Registration';
 	if (/(custom|shipment|port|clearance|coc|conformity|slaughter|countersign|import)/.test(s))
 		return 'Customs';
 	return 'Requirement';
@@ -262,9 +267,7 @@ export function storiesInMarket(
 	stories: GuideStory[],
 	limit = 2
 ): GuideStory[] {
-	return (stories ?? [])
-		.filter((s) => sameCountry(s.buyerCountry, guideCountry))
-		.slice(0, limit);
+	return (stories ?? []).filter((s) => sameCountry(s.buyerCountry, guideCountry)).slice(0, limit);
 }
 
 // ---------------------------------------------------------------------------

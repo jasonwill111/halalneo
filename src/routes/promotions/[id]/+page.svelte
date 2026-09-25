@@ -146,23 +146,29 @@
 			items={[{ label: 'Quick Deals', href: '/promotions' }, { label: promo.title ?? 'Deal' }]}
 		/>
 
-		<div class="grid gap-4 lg:grid-cols-[1fr_320px]">
-			<div class="min-w-0 space-y-4">
+		<div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+			<div class="max-w-2xl min-w-0 space-y-4">
 				<div class="space-y-2">
-					<div class="flex flex-wrap items-center gap-1.5">
-						<Badge class="bg-success/15 text-2xs text-success">Deal</Badge>
+					<div class="flex min-w-0 flex-wrap items-center gap-1.5">
+						<Badge class="max-w-full truncate bg-success/15 text-2xs text-success">Deal</Badge>
 						{#if promo.discountPct}
-							<Badge variant="destructive" class="text-2xs">-{promo.discountPct}%</Badge>
+							<Badge variant="destructive" class="max-w-full truncate text-2xs"
+								>-{promo.discountPct}%</Badge
+							>
 						{/if}
 					</div>
-					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{promo.title}</h1>
+					<h1 class="line-clamp-2 text-xl font-bold tracking-tight sm:text-2xl">{promo.title}</h1>
 					{#if promo.description}
-						<p class="text-sm leading-relaxed text-muted-foreground">{promo.description}</p>
+						<p class="max-w-[65ch] text-sm leading-relaxed text-muted-foreground">
+							{promo.description}
+						</p>
 					{/if}
 				</div>
 
 				<div class="space-y-3 rounded-xl bg-card p-3 sm:p-4">
-					<div class="text-lg font-bold text-primary sm:text-2xl">{priceText(promo)}</div>
+					<div class="text-lg font-bold text-primary tabular-nums sm:text-2xl">
+						{priceText(promo)}
+					</div>
 					{#if promo.moq}
 						<div class="text-xs text-muted-foreground">MOQ: {promo.moq}</div>
 					{/if}
@@ -185,10 +191,12 @@
 					</Button>
 				</div>
 
-				<div class="flex items-center gap-2">
+				<div class="flex flex-wrap items-center gap-2">
 					<span class="text-xs text-muted-foreground">Share:</span>
 					<ShareButtons title={promo.title ?? 'HalalNeo deal'} text={promo.description ?? ''} />
 				</div>
+
+				<RelatedLinks title="More quick deals" items={moreDeals} />
 			</div>
 
 			<aside class="min-w-0 space-y-3 lg:sticky lg:top-20 lg:self-start">
@@ -206,8 +214,6 @@
 				</Card>
 			</aside>
 		</div>
-
-		<RelatedLinks title="More quick deals" items={moreDeals} />
 	</div>
 {:else}
 	<div class="flex min-h-[50vh] items-center justify-center">

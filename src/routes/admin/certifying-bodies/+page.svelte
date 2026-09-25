@@ -319,7 +319,7 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<div class="relative w-full max-w-sm">
 			<Search
-				class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
 			<Input bind:value={search} placeholder="Search bodies..." class="ps-9" />
 		</div>
@@ -362,7 +362,9 @@
 									{/if}
 								</BrandedEmptyMedia>
 								<div class="space-y-1">
-									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load certifying bodies'}</p>
+									<p class="font-medium">
+										{offline ? 'Connection failed' : 'Could not load certifying bodies'}
+									</p>
 									<p class="text-sm text-muted-foreground">{loadError}</p>
 								</div>
 								<EmptyContent>
@@ -378,7 +380,9 @@
 					<TableRow>
 						<TableCell colspan={4} class="py-8">
 							<Empty>
-								<BrandedEmptyMedia><ShieldCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+								<BrandedEmptyMedia
+									><ShieldCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+								>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{search.trim() ? 'No matching bodies' : 'No certifying bodies yet'}
@@ -431,21 +435,30 @@
 
 	{#if !loading && !loadError && total > items.length}
 		<p class="text-xs text-muted-foreground">
-			Showing {items.length} of {total} {statusFilter} bodies (API caps at 100).
+			Showing {items.length} of {total}
+			{statusFilter} bodies (API caps at 100).
 		</p>
 	{/if}
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit body' : 'New certifying body'}</DialogTitle>
 			<DialogDescription>Register or update a halal certification body.</DialogDescription>
 		</DialogHeader>
-		<form bind:this={formEl} onsubmit={save} class="space-y-4">
+		<form bind:this={formEl} onsubmit={save} class="min-w-0 space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Name</Field.FieldLabel>
-				<Input bind:value={form.name} placeholder="JAKIM" disabled={saving} aria-invalid={!!fieldErrors.name} oninput={() => { fieldErrors = { ...fieldErrors, name: '' }; }} />
+				<Input
+					bind:value={form.name}
+					placeholder="JAKIM"
+					disabled={saving}
+					aria-invalid={!!fieldErrors.name}
+					oninput={() => {
+						fieldErrors = { ...fieldErrors, name: '' };
+					}}
+				/>
 				{#if fieldErrors.name}
 					<FieldError>{fieldErrors.name}</FieldError>
 				{/if}
@@ -457,7 +470,9 @@
 					placeholder="jakim"
 					disabled={!!editing || saving}
 					aria-invalid={!!fieldErrors.id}
-					oninput={() => { fieldErrors = { ...fieldErrors, id: '' }; }}
+					oninput={() => {
+						fieldErrors = { ...fieldErrors, id: '' };
+					}}
 				/>
 				<p class="text-xs text-muted-foreground">
 					URL segment — derived from the name when left blank.
@@ -466,17 +481,30 @@
 					<FieldError>{fieldErrors.id}</FieldError>
 				{/if}
 			</Field.Field>
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Country</Field.FieldLabel>
-					<Input bind:value={form.country} placeholder="Malaysia" disabled={saving} aria-invalid={!!fieldErrors.country} oninput={() => { fieldErrors = { ...fieldErrors, country: '' }; }} />
+					<Input
+						bind:value={form.country}
+						placeholder="Malaysia"
+						disabled={saving}
+						aria-invalid={!!fieldErrors.country}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, country: '' };
+						}}
+					/>
 					{#if fieldErrors.country}
 						<FieldError>{fieldErrors.country}</FieldError>
 					{/if}
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Standard</Field.FieldLabel>
-					<Input bind:value={form.standard} placeholder="MS 1500:2019" disabled={saving} aria-invalid={!!fieldErrors.standard} />
+					<Input
+						bind:value={form.standard}
+						placeholder="MS 1500:2019"
+						disabled={saving}
+						aria-invalid={!!fieldErrors.standard}
+					/>
 					{#if fieldErrors.standard}
 						<FieldError>{fieldErrors.standard}</FieldError>
 					{/if}
@@ -484,7 +512,12 @@
 			</div>
 			<Field.Field>
 				<Field.FieldLabel>Website</Field.FieldLabel>
-				<Input bind:value={form.website} placeholder="https://example.com" disabled={saving} aria-invalid={!!fieldErrors.website} />
+				<Input
+					bind:value={form.website}
+					placeholder="https://example.com"
+					disabled={saving}
+					aria-invalid={!!fieldErrors.website}
+				/>
 				{#if fieldErrors.website}
 					<FieldError>{fieldErrors.website}</FieldError>
 				{/if}
@@ -537,7 +570,8 @@
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaDescription}
 					/>
-					{#if fieldErrors.metaDescription}<FieldError>{fieldErrors.metaDescription}</FieldError>{/if}
+					{#if fieldErrors.metaDescription}<FieldError>{fieldErrors.metaDescription}</FieldError
+						>{/if}
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Keywords</Field.FieldLabel>
@@ -555,7 +589,12 @@
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
 			<DialogFooter>
-				<Button variant="outline" type="button" disabled={saving} onclick={() => (dialogOpen = false)}>Cancel</Button>
+				<Button
+					variant="outline"
+					type="button"
+					disabled={saving}
+					onclick={() => (dialogOpen = false)}>Cancel</Button
+				>
 				<Button type="submit" variant="default" disabled={saving}
 					>{saving ? 'Saving…' : editing ? 'Save changes' : 'Create body'}</Button
 				>

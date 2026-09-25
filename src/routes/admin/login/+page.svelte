@@ -60,11 +60,11 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<main class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pb-20 pt-8">
+<main class="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 pt-8 pb-20">
 	<div class="w-full max-w-md">
 		<div class="mb-5 text-center">
 			<div
-				class="bg-primary text-primary-foreground mx-auto mb-2 flex size-12 items-center justify-center rounded-xl"
+				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
 			>
 				<ShieldCheck class="size-6"></ShieldCheck>
 			</div>
@@ -73,12 +73,19 @@
 		</div>
 
 		<div class="rounded-xl bg-card p-5 ring-1 ring-foreground/10">
-			<form bind:this={formEl} class="space-y-3" onsubmit={(e) => { e.preventDefault(); submit(); }}>
+			<form
+				bind:this={formEl}
+				class="space-y-3"
+				onsubmit={(e) => {
+					e.preventDefault();
+					submit();
+				}}
+			>
 				<Field>
 					<FieldLabel>Email</FieldLabel>
 					<div class="relative">
 						<MailIcon
-							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+							class="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></MailIcon>
 						<Input
 							bind:value={email}
@@ -86,7 +93,9 @@
 							placeholder="admin@halalneo.com"
 							class="ps-9"
 							aria-invalid={fieldErrors.email ? true : undefined}
-							oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+							oninput={() => {
+								if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+							}}
 						/>
 					</div>
 					{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
@@ -95,7 +104,7 @@
 					<FieldLabel>Password</FieldLabel>
 					<div class="relative">
 						<LockIcon
-							class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+							class="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
 						></LockIcon>
 						<Input
 							bind:value={password}
@@ -103,7 +112,9 @@
 							placeholder="••••••••"
 							class="ps-9"
 							aria-invalid={fieldErrors.password ? true : undefined}
-							oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
+							oninput={() => {
+								if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
+							}}
 						/>
 					</div>
 					{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}

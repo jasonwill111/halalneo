@@ -30,7 +30,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 				show.metaDescription ||
 				(show.description || `${show.name} in ${show.city}, ${show.country}.`).slice(0, 155),
 			ogImage: 'https://halalneo.com/brand/og-default.png',
-			keywords: [show.name, show.city, show.country, 'halal trade show', show.region].filter(Boolean)
+			keywords: [show.name, show.city, show.country, 'halal trade show', show.region].filter(
+				Boolean
+			)
 		}
 	};
 };

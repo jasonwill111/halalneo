@@ -36,10 +36,12 @@
 	import { z } from 'zod';
 	import { focusFirstInvalid, mergeServerDetails } from '#lib/utils/forms.js';
 	import type { ApiList, SupplierMembershipItem, SupplierUpdateItem } from '#lib/types/api.js';
+	import { toast } from 'svelte-sonner';
 	import Package from '@lucide/svelte/icons/package';
 	import CertificationSeal from '#lib/components/site/certification-seal.svelte';
 	import UserPlus from '@lucide/svelte/icons/user-plus';
 	import Megaphone from '@lucide/svelte/icons/megaphone';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	let { data } = $props();
 
@@ -48,6 +50,7 @@
 	let following = $state(false);
 	let followerCount = $state(0);
 	let isOwner = $state(false);
+	let followPending = $state(false);
 
 	interface FollowStateResult {
 		following?: boolean;
@@ -77,33 +80,43 @@
 
 	async function toggleFollow() {
 		const slug = data.item?.slug;
-		if (!slug) return;
+		if (!slug || followPending) return;
+		followPending = true;
+		const wasFollowing = following;
 		try {
-			if (following) {
-				const res = await fetch(`/api/follows?supplierSlug=${encodeURIComponent(slug)}`, {
-					method: 'DELETE'
-				});
-				if (res.ok) {
-					following = false;
-					followerCount = Math.max(0, followerCount - 1);
-				} else if (res.status === 401) {
-					window.location.href = localizeHref('/login');
-				}
+			const res = wasFollowing
+				? await fetch(`/api/follows?supplierSlug=${encodeURIComponent(slug)}`, {
+						method: 'DELETE'
+					})
+				: await fetch('/api/follows', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ supplierSlug: slug })
+					});
+			if (!res.ok) {
+				const body = (await res.json().catch(() => ({}))) as { error?: string };
+				toast.error(
+					body.error ??
+						(wasFollowing
+							? 'Could not unfollow this supplier. Please try again.'
+							: 'Could not follow this supplier. Please try again.')
+				);
+				if (res.status === 401) window.location.href = localizeHref('/login');
+				return;
+			}
+			if (wasFollowing) {
+				following = false;
+				followerCount = Math.max(0, followerCount - 1);
+				toast.success('Supplier unfollowed.');
 			} else {
-				const res = await fetch('/api/follows', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ supplierSlug: slug })
-				});
-				if (res.ok) {
-					following = true;
-					followerCount += 1;
-				} else if (res.status === 401) {
-					window.location.href = localizeHref('/login');
-				}
+				following = true;
+				followerCount += 1;
+				toast.success('Supplier followed.');
 			}
 		} catch {
-			// silent — follow is a bonus action
+			toast.error('Network error — could not update follow status. Please try again.');
+		} finally {
+			followPending = false;
 		}
 	}
 
@@ -128,7 +141,7 @@
 
 	async function publishUpdate() {
 		const slug = data.item?.slug;
-		if (!slug || !updateBody.trim()) return;
+		if (!slug || !updateBody.trim() || updateSending) return;
 		updateSending = true;
 		updateResult = null;
 		try {
@@ -137,14 +150,19 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ supplierSlug: slug, body: updateBody.trim() })
 			});
-			const j = (await res.json().catch(() => ({}))) as { error?: string };
-			if (res.ok) {
-				updateBody = '';
-				updateResult = null;
-				await refreshUpdates();
-			} else {
+			if (!res.ok) {
+				const j = (await res.json().catch(() => ({}))) as { error?: string };
 				updateResult = j.error ?? 'Failed to publish update.';
+				toast.error(updateResult);
+				return;
 			}
+			updateBody = '';
+			updateResult = null;
+			toast.success('Update published.');
+			await refreshUpdates();
+		} catch {
+			updateResult = 'Network error. Please try again.';
+			toast.error(updateResult);
 		} finally {
 			updateSending = false;
 		}
@@ -255,8 +273,7 @@
 
 	function typeBadgeCls(type?: string | null): string {
 		if (type === 'manufacturer') return 'bg-info/10 text-info border-info/20';
-		if (type === 'wholesaler')
-			return 'bg-teal/10 text-teal border-teal/20';
+		if (type === 'wholesaler') return 'bg-teal/10 text-teal border-teal/20';
 		if (type === 'trader') return 'bg-gold/10 text-gold border-gold/20';
 		return '';
 	}
@@ -574,12 +591,26 @@
 			<Button
 				variant="outline"
 				size="sm"
-				class="h-7 gap-1 text-2xs"
+				class="min-h-11 gap-1 text-2xs sm:min-h-7"
 				onclick={toggleFollow}
-				aria-label={following ? 'Unfollow supplier' : 'Follow supplier'}
+				disabled={followPending}
+				aria-busy={followPending}
+				aria-label={followPending
+					? 'Updating follow status'
+					: following
+						? 'Unfollow supplier'
+						: 'Follow supplier'}
 			>
-				<UserPlus class="size-2.5" />
-				{following ? 'Following' : 'Follow'}{#if followerCount > 0}&nbsp;· {followerCount}{/if}
+				{#if followPending}
+					<Loader2 class="size-2.5 animate-spin" aria-hidden="true" />
+				{:else}
+					<UserPlus class="size-2.5" aria-hidden="true" />
+				{/if}
+				{followPending
+					? 'Updating...'
+					: following
+						? 'Following'
+						: 'Follow'}{#if followerCount > 0}&nbsp;· {followerCount}{/if}
 			</Button>
 			<ShareButtons title={item.name ?? 'HalalNeo supplier'} text={item.description ?? ''} />
 		</div>
@@ -615,7 +646,11 @@
 											<div class="flex min-w-0 items-center gap-1.5">
 												<CertificationSeal
 													name={cert.name}
-													status={expired ? 'expired' : cert.status === 'pending' ? 'pending' : 'certified'}
+													status={expired
+														? 'expired'
+														: cert.status === 'pending'
+															? 'pending'
+															: 'certified'}
 													scope={cert.scope || null}
 												/>
 												{#if cert.bodyId}
@@ -700,7 +735,7 @@
 										{/if}
 										{#if product.certStatus === 'certified'}
 											<span
-												class="absolute top-1 start-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-3xs font-semibold text-success"
+												class="absolute start-1 top-1 inline-flex items-center gap-0.5 rounded-full border border-success/20 bg-background/80 px-1.5 py-px text-3xs font-semibold text-success"
 											>
 												<ShieldCheck class="size-2.5"></ShieldCheck>
 												Cert
@@ -752,10 +787,16 @@
 								<p class="text-2xs text-muted-foreground">Free plan: 1 post/week</p>
 								<Button
 									size="sm"
-									class="h-7 text-2xs-plus"
+									class="min-h-11 gap-1 text-2xs-plus sm:min-h-7"
 									disabled={updateSending || !updateBody.trim()}
+									aria-busy={updateSending}
 									onclick={publishUpdate}
 								>
+									{#if updateSending}
+										<Loader2 class="size-2.5 animate-spin" aria-hidden="true" />
+									{:else}
+										<Send class="size-2.5" aria-hidden="true" />
+									{/if}
 									{updateSending ? 'Posting...' : 'Post update'}
 								</Button>
 							</div>

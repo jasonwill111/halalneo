@@ -7,7 +7,9 @@
 ## 📱 移动端优化 (Mobile < 640px)
 
 ### 1. 结构化信息层级
+
 #### Products 内容
+
 - ✅ **必须显示核心信息**
   - Product name (truncated, single line)
   - Price (small but prominent: 12-14px)
@@ -29,6 +31,7 @@
   - 点击反馈/状态清晰可见
 
 #### Suppliers 内容
+
 - ✅ **核心信息**
   - Supplier name (truncated)
   - Country flag (emoji 12-14px)
@@ -37,6 +40,7 @@
   - "Connect" or "View Profile" CTA
 
 #### Categories 内容
+
 - ✅ **核心信息**
   - Category name (12-14px)
   - Icon (16-20px size)
@@ -44,6 +48,7 @@
   - "Browse" CTA
 
 #### Market Guides 内容
+
 - ✅ **核心信息**
   - Country name
   - Flag emoji
@@ -52,6 +57,7 @@
   - "Discover" CTA
 
 #### Certifying Bodies 内容
+
 - ✅ **核心信息**
   - Name (12-14px)
   - Country flag
@@ -59,6 +65,7 @@
   - "Learn More" CTA
 
 ### 2. 布局策略 (Mobile)
+
 - 列表: `grid-cols-2` (2-column grid, responsive)
 - 卡片: `aspect-[16/10]` (smaller image ratio)
 - 标题: 单行截断 (single line + normal truncation)
@@ -66,6 +73,7 @@
 - Padding: `p-2.5` interior, `p-4` exterior
 
 ### 3. 图片优化
+
 - 移动优先级加载
 - 1x/2x @2x 高清显示
 - 懒加载 (lazy loading)
@@ -75,7 +83,9 @@
 ## 📲 平板优化 (Tablet 640px - 1024px)
 
 ### 1. 结构化信息层级
+
 #### Products 内容
+
 - ✅ **必须显示核心信息**
   - Product name (2 lines if needed)
   - Full price ± min/max
@@ -91,6 +101,7 @@
   - Related products (2-3 column grid)
 
 #### Suppliers 内容
+
 - ✅ **核心信息**
   - Supplier name
   - Country + business type
@@ -99,6 +110,7 @@
   - Half-grid for profile preview
 
 #### Categories 内容
+
 - ✅ **核心信息**
   - Category name + icon
   - Subcategories if hierarchical
@@ -106,6 +118,7 @@
   - "Browse" CTA
 
 #### Market Guides 内容
+
 - ✅ **核心信息**
   - Country + mandate status
   - Key insights list (2-3 lines)
@@ -113,6 +126,7 @@
   - "Explore" CTA
 
 #### Certifying Bodies 内容
+
 - ✅ **核心信息**
   - Name + standard
   - Country + website link
@@ -120,6 +134,7 @@
   - "Contact" CTA
 
 ### 2. 布局策略 (Tablet)
+
 - 列表: `grid-cols-3` (3-column grid)
 - 卡片: `aspect-[16/8]` (wider portrait)
 - 标题: 多行显示 (2-3 lines)
@@ -127,6 +142,7 @@
 - Padding: `p-4` interior, `p-6` exterior
 
 ### 3. 图片展示
+
 - 中等尺寸优先 (200-300px)
 - 平板专用懒加载
 - 网格布局展示 (2-3 columns)
@@ -135,7 +151,9 @@
 ## 💻 桌面优化 (Desktop ≥ 1024px)
 
 ### 1. 结构化信息层级
+
 #### Products 内容
+
 - ✅ **完整信息显示**
   - Product name (no truncation)
   - Complete pricing ± min/max
@@ -153,6 +171,7 @@
   - Related items (infer degree)
 
 #### Suppliers 内容
+
 - ✅ **完整信息**
   - Full company profile
   - Business type + capacity
@@ -163,6 +182,7 @@
   - Company timeline/milestones
 
 #### Categories 内容
+
 - ✅ **完整结构**
   - Category grid + subcategories
   - Product count by subcategory
@@ -172,6 +192,7 @@
   - Certification pathways
 
 #### Market Guides 内容
+
 - ✅ **完整指南**
   - All available insights
   - Detailed certification requirements
@@ -181,6 +202,7 @@
   - Business tips
 
 #### Certifying Bodies 内容
+
 - ✅ **完整声明**
   - Detailed capabilities
   - Recognition status
@@ -190,6 +212,7 @@
   - Contact information
 
 ### 2. 布局策略 (Desktop)
+
 - 列表: `grid-cols-4` (4-column grid for large screens)
 - 卡片: `aspect-[16/7]` or `aspect-[3/4]` (portrait or landscape)
 - 标题: 多行显示 (3+ lines)
@@ -197,6 +220,7 @@
 - Padding: `p-6` interior, `p-8` exterior
 
 ### 3. 图片展示
+
 - 高清大图优先 (400-600px)
 - 多图片预览 (grid + lightbox)
 - 3D/交互支持 (若适用)
@@ -205,22 +229,26 @@
 ## 🎯 核心原则
 
 ### 1. 信息递减 (Progressive Disclosure)
+
 - Mobile: 核心信息 + 单行摘要
 - Tablet: 详细信息 + 可折叠详情
 - Desktop: 完整信息 + 深入内容
 
 ### 2. 触摸友好 (Touch First)
+
 - 所有可交互元素 44x44px 以上
 - 间距 ≥ 8px
 - 点击反馈明确
 
 ### 3. 性能优化 (Performance First)
+
 - 渐进式图像加载
 - 响应式图片服务
 - 最小化 DOM 深度
 - 渲染优化 (GPU 加速)
 
 ### 4. SEO/GEO 优化 (Search First)
+
 - Mobile 优先的元数据
 - 首屏核心内容
 - 结构化数据完整
@@ -229,42 +257,52 @@
 ## 📊 技术实现建议
 
 ### 1. 响应式断点
+
 ```css
 /* Tailwind CSS 标准断点 */
-@screen mobile { /* < 640px */ }
-@screen tablet { /* ≥ 640px */ }
-@screen desktop { /* ≥ 1024px */ }
+@screen mobile {
+	/* < 640px */
+}
+@screen tablet {
+	/* ≥ 640px */
+}
+@screen desktop {
+	/* ≥ 1024px */
+}
 ```
 
 ### 2. 图像加载策略
+
 ```html
 <!-- Responsive images -->
-<img 
-  src="thumbnail-mobile.jpg"
-  srcSet="thumbnail-mobile.jpg 480w, medium-tablet.jpg 1024w, high-desktop.jpg 1920w"
-  sizes="100vw, (min-width: 640px): 50vw, (min-width: 1024px): 25vw"
-  alt="..."
-  loading="lazy"
-  class="object-cover"
+<img
+	src="thumbnail-mobile.jpg"
+	srcset="thumbnail-mobile.jpg 480w, medium-tablet.jpg 1024w, high-desktop.jpg 1920w"
+	sizes="100vw, (min-width: 640px): 50vw, (min-width: 1024px): 25vw"
+	alt="..."
+	loading="lazy"
+	class="object-cover"
 />
 ```
 
 ### 3. 触摸优化类名
+
 ```html
 <!-- Mobile-first touch targets -->
 <button class="touch-manipulation">
-  <!-- Content -->
+	<!-- Content -->
 </button>
 
 <!-- Active states -->
-<button class="active:scale-95 transition-transform">
-  <!-- Content -->
+<button class="transition-transform active:scale-95">
+	<!-- Content -->
 </button>
 ```
 
 ## ✅ 验证清单
 
 ### 移动端 (Mobile)
+
 - [ ] 列表 grid 2 列
 - [ ] 图片 48-64px 尺寸
 - [ ] 按钮 ≥ 44x44px
@@ -273,6 +311,7 @@
 - [ ] 触摸反馈明确
 
 ### 平板端 (Tablet)
+
 - [ ] 列表 grid 3 列
 - [ ] 图片 200-300px
 - [ ] 次要信息可见
@@ -280,6 +319,7 @@
 - [ ] 无内容挤压
 
 ### 桌面端 (Desktop)
+
 - [ ] 列表 grid 4 列
 - [ ] 图片 400-600px
 - [ ] 完整信息显示
@@ -316,26 +356,32 @@
    - Phase 3: Desktop (完整功能)
 
 2. **响应式间距设置**
+
 ```css
 /* Tailwind spacing */
 padding: 0.625rem; /* p-2.5 - mobile */
-@media (min-width: 640px) { padding: 1rem; } /* sm=p-4 */
-@media (min-width: 1024px) { padding: 1.5rem; } /* lg=p-6 */
+@media (min-width: 640px) {
+	padding: 1rem;
+} /* sm=p-4 */
+@media (min-width: 1024px) {
+	padding: 1.5rem;
+} /* lg=p-6 */
 ```
 
 3. **图片优化流程**
+
 ```javascript
 // Next.js Image optimization
 import Image from 'next/image';
 
 <Image
-  src="/product.jpg"
-  alt="Product"
-  width="600"
-  height="400"
-  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-  priority={isAboveFold}
-/>
+	src="/product.jpg"
+	alt="Product"
+	width="600"
+	height="400"
+	sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+	priority={isAboveFold}
+/>;
 ```
 
 -- End of Cross-Device Content Optimization Checklist --

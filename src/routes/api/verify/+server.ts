@@ -50,10 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
 						})
 						.from(schema.suppliers)
 						.where(
-							and(
-								eq(schema.suppliers.status, 'active'),
-								inArray(schema.suppliers.slug, sSlugs)
-							)
+							and(eq(schema.suppliers.status, 'active'), inArray(schema.suppliers.slug, sSlugs))
 						)
 						.limit(20),
 					db

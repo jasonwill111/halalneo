@@ -39,6 +39,8 @@
 		type: ProviderType;
 		country: string;
 		rating?: number | null;
+		description?: string | null;
+		whatsapp?: string | null;
 	}
 
 	const types: ProviderType[] = [
@@ -50,6 +52,8 @@
 		'consulting'
 	];
 
+	const providers = $derived((data.providers ?? []) as ProviderRow[]);
+
 	let selectedTypes = new SvelteSet<ProviderType>();
 	let selectedLocation = $state('all');
 	let selectedRating = $state('');
@@ -58,29 +62,27 @@
 	// Location options derived from fetched providers — sorted unique countries with counts, 'all' first
 	const locationOptions = $derived([
 		{ value: 'all', label: 'All Locations' },
-		...Array.from(
-			new Set((data.providers ?? []).map((p: ProviderRow) => p.country).filter((c): c is string => !!c))
-		)
+		...Array.from(new Set(providers.map((p: ProviderRow) => p.country)))
 			.sort()
 			.map((c) => ({
 				value: c,
 				label: c,
-				count: (data.providers ?? []).filter((p: ProviderRow) => p.country === c).length
+				count: providers.filter((p: ProviderRow) => p.country === c).length
 			}))
 	]);
 
 	// Real counts computed from data
-	const providerCount = $derived((data.providers ?? []).length);
+	const providerCount = $derived(providers.length);
 	const countryCount = $derived(
-		new Set((data.providers ?? []).map((p: ProviderRow) => p.country).filter(Boolean)).size
+		new Set(providers.map((p: ProviderRow) => p.country).filter(Boolean)).size
 	);
 	const typeCount = $derived(
-		new Set((data.providers ?? []).map((p: ProviderRow) => p.type).filter(Boolean)).size
+		new Set(providers.map((p: ProviderRow) => p.type).filter(Boolean)).size
 	);
 	const countryPeerCount = (country: string): number =>
-		(data.providers ?? []).filter((p: ProviderRow) => p.country === country).length;
+		providers.filter((p: ProviderRow) => p.country === country).length;
 	const typePeerCount = (type: string): number =>
-		(data.providers ?? []).filter((p: ProviderRow) => p.type === type).length;
+		providers.filter((p: ProviderRow) => p.type === type).length;
 
 	function toggleType(type: ProviderType) {
 		if (selectedTypes.has(type)) selectedTypes.delete(type);
@@ -102,7 +104,7 @@
 	);
 
 	const filtered = $derived(
-		(data.providers ?? []).filter((p: ProviderRow) => {
+		providers.filter((p: ProviderRow) => {
 			if (selectedTypes.size > 0 && !selectedTypes.has(p.type)) return false;
 			if (selectedLocation !== 'all' && p.country !== selectedLocation) return false;
 			if (selectedRating) {
@@ -132,8 +134,8 @@
 			certification: 'bg-primary/10 text-primary',
 			logistics: 'bg-success/10 text-success',
 			finance: 'bg-warn/10 text-warn',
-			payment: 'bg-teal/10 text-teal',
-			insurance: 'bg-gold/10 text-gold',
+			payment: 'bg-info/10 text-info',
+			insurance: 'bg-warn/10 text-warn',
 			consulting: 'bg-info/10 text-info'
 		};
 		return colors[type];
@@ -167,7 +169,7 @@
 
 <Breadcrumb items={[{ label: 'Service Providers', href: '/service-providers' }]} />
 
-<div class="relative mb-6 overflow-hidden rounded-xl">
+<div class="relative mb-4 overflow-hidden rounded-xl sm:mb-6">
 	<img
 		src="/api/media/sp-hero.webp"
 		alt="Halal trade services"
@@ -180,13 +182,13 @@
 	<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
 </div>
 
-<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-	<div>
-		<h1 class="text-xl font-bold tracking-tight">Service Providers</h1>
-		<p class="mt-0.5 text-sm text-muted-foreground">
+<div class="mb-4 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+	<div class="max-w-2xl space-y-1">
+		<h1 class="text-xl font-bold tracking-tight sm:text-2xl">Service Providers</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Certification, logistics, finance, and payment services for halal trade
 		</p>
-		<p class="mt-1 text-xs text-muted-foreground">
+		<p class="text-2xs text-muted-foreground">
 			{providerCount} providers across {countryCount} countries · {typeCount} service types
 		</p>
 	</div>
@@ -256,8 +258,21 @@
 	</aside>
 
 	<div class="min-w-0 flex-1">
-		<div class="relative mb-4">
-			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<div class="mb-3 flex items-center justify-between gap-3">
+			<p class="text-2xs text-muted-foreground">
+				Showing {filtered.length} of {providerCount} providers
+			</p>
+			{#if filtersActive}
+				<Button
+					variant="ghost"
+					size="sm"
+					class="h-7 px-2 text-2xs text-muted-foreground hover:text-foreground"
+					onclick={clearAll}>Clear all</Button
+				>
+			{/if}
+		</div>
+		<div class="relative mb-3">
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search providers by name..."
@@ -308,7 +323,7 @@
 			</div>
 		{/if}
 
-		<div class="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as provider (provider.slug)}
 				<article
 					class="group rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow,border-color] duration-base ease-spring hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md sm:p-4"
@@ -336,8 +351,7 @@
 						</div>
 					</div>
 					<div class="mb-3 flex flex-wrap gap-1.5 sm:mb-4">
-						<span
-							class="rounded-full {typeColor(provider.type)} px-2.5 py-1 text-2xs font-medium"
+						<span class="rounded-full {typeColor(provider.type)} px-2.5 py-1 text-2xs font-medium"
 							>{typeLabel(provider.type)}</span
 						>
 					</div>
@@ -379,6 +393,7 @@
 								href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}"
 								target="_blank"
 								rel="noopener"
+								aria-label={`Contact ${provider.name} on WhatsApp`}
 							>
 								<MessageCircle class="size-3.5" />
 							</Button>
@@ -392,12 +407,14 @@
 					{:else}
 						<Empty>
 							<EmptyHeader>
-								<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+								<BrandedEmptyMedia
+									><SearchIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+								>
 								<EmptyTitle>No service providers found</EmptyTitle>
 								<EmptyDescription>
 									{#if filtersActive}
-										No providers match the selected filters. Widen the type, location or
-										rating filters.
+										No providers match the selected filters. Widen the type, location or rating
+										filters.
 									{:else}
 										The provider directory is empty right now.
 									{/if}
@@ -405,13 +422,9 @@
 							</EmptyHeader>
 							<EmptyContent>
 								{#if filtersActive}
-									<Button variant="outline" size="sm" onclick={clearAll}
-										>Clear filters</Button
-									>
+									<Button variant="outline" size="sm" onclick={clearAll}>Clear filters</Button>
 								{:else}
-									<Button size="sm" href={localizeHref('/products')}
-										>Browse products</Button
-									>
+									<Button size="sm" href={localizeHref('/products')}>Browse products</Button>
 								{/if}
 								<Button variant="link" size="sm" href={localizeHref('/contact')}
 									>Suggest a provider</Button

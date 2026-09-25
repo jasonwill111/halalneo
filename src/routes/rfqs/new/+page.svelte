@@ -3,6 +3,7 @@
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import { Alert, AlertDescription, AlertTitle } from '#lib/components/ui/alert/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import {
@@ -24,6 +25,13 @@
 	import Loader2 from '@lucide/svelte/icons/loader-2';
 
 	let { data } = $props();
+
+	interface CategoryOption {
+		slug: string;
+		name: string;
+	}
+
+	const categories = $derived((data.categories ?? []) as CategoryOption[]);
 
 	let title = $state('');
 	let categorySlug = $state('');
@@ -113,29 +121,30 @@
 
 <Breadcrumb items={[{ label: 'Buying Requests', href: '/rfqs' }, { label: 'Post a request' }]} />
 
-<div class="mx-auto flex w-full max-w-7xl gap-6">
-	<div class="min-w-0 flex-1 space-y-4">
-		<div class="space-y-2">
-			<h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Post a buying request</h1>
-			<p class="text-sm text-muted-foreground">
+<div class="mx-auto grid w-full max-w-7xl gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+	<div class="min-w-0 space-y-4">
+		<div class="space-y-1.5">
+			<h1 class="text-xl font-bold tracking-tight sm:text-2xl">Post a buying request</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				Describe what you need — suppliers quote directly. Free plan: 1 request per week.
 			</p>
 		</div>
 
 		{#if result}
-			<div
-				class={`rounded-xl px-3 py-2 text-sm ${result.type === 'success' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}
-			>
-				{result.message}
+			<Alert variant={result.type === 'error' ? 'destructive' : 'default'}>
+				<AlertTitle
+					>{result.type === 'error' ? 'Unable to publish request' : 'Request published'}</AlertTitle
+				>
+				<AlertDescription>{result.message}</AlertDescription>
 				{#if result.needsLogin}
-					<Button href={localizeHref('/login')} variant="outline" size="sm" class="ms-2">
+					<Button href={localizeHref('/login')} variant="outline" size="sm" class="mt-2 w-fit">
 						Sign in
 					</Button>
 				{/if}
-			</div>
+			</Alert>
 		{/if}
 
-		<Card class="p-4 sm:p-5">
+		<Card class="p-3 sm:p-5">
 			<form
 				class="space-y-3"
 				bind:this={formEl}
@@ -163,8 +172,7 @@
 						<FieldLabel>Category</FieldLabel>
 						<Select type="single" bind:value={categorySlug}>
 							<SelectTrigger class="w-full text-sm">
-								{(data.categories ?? []).find((c) => c.slug === categorySlug)?.name ??
-									'Select category'}
+								{categories.find((c) => c.slug === categorySlug)?.name ?? 'Select category'}
 							</SelectTrigger>
 							<SelectContent>
 								{#each data.categories ?? [] as c (c.slug)}
@@ -200,16 +208,16 @@
 							maxlength={200}
 						/>
 					</Field>
+					<Field>
+						<FieldLabel>Your country</FieldLabel>
+						<Input
+							type="text"
+							bind:value={buyerCountry}
+							placeholder="e.g. United Arab Emirates"
+							maxlength={200}
+						/>
+					</Field>
 				</div>
-				<Field>
-					<FieldLabel>Your country</FieldLabel>
-					<Input
-						type="text"
-						bind:value={buyerCountry}
-						placeholder="e.g. United Arab Emirates"
-						maxlength={200}
-					/>
-				</Field>
 				<Field>
 					<FieldLabel>Details *</FieldLabel>
 					<FieldDescription>Specs, certifications required, packaging, timeline.</FieldDescription>
@@ -241,7 +249,7 @@
 			</form>
 		</Card>
 	</div>
-	<aside class="hidden w-72 shrink-0 space-y-4 lg:block">
+	<aside class="min-w-0 space-y-4 lg:shrink-0">
 		<Card>
 			<CardContent class="space-y-3 p-4">
 				<h2 class="text-sm font-semibold">What happens next</h2>

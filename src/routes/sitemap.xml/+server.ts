@@ -57,11 +57,14 @@ async function pageAll<T>(
 	run: (opts: { limit: number; offset: number }) => Promise<{ items: T[]; total: number }>
 ): Promise<T[]> {
 	let total = Infinity;
-	const rows = await pageThrough(async (offset) => {
-		const page = await run({ limit: SITEMAP_PAGE_SIZE, offset });
-		total = page.total;
-		return page.items;
-	}, (collected) => collected >= total);
+	const rows = await pageThrough(
+		async (offset) => {
+			const page = await run({ limit: SITEMAP_PAGE_SIZE, offset });
+			total = page.total;
+			return page.items;
+		},
+		(collected) => collected >= total
+	);
 	return rows;
 }
 
@@ -143,7 +146,12 @@ export const GET: RequestHandler = async () => {
 	// Static routes (use fixed date to avoid unnecessary crawls)
 	const staticLastmod = new Date('2026-01-01');
 	for (const route of staticRoutes) {
-		addEntry(route, staticLastmod, route === '/' ? 'daily' : 'weekly', route === '/' ? '1.0' : '0.8');
+		addEntry(
+			route,
+			staticLastmod,
+			route === '/' ? 'daily' : 'weekly',
+			route === '/' ? '1.0' : '0.8'
+		);
 	}
 
 	// Market guide country pages (static fallback when DB is unavailable)
@@ -285,11 +293,10 @@ export const GET: RequestHandler = async () => {
 			}
 
 			// Categories are capped at the 100-row list limit in the query layer.
-			const categories = await cachedQuery(
-				`${cacheKey}:categories`,
-				() => getCategories(db),
-				{ ttl: 3600, staleWhileRevalidate: 3600 }
-			);
+			const categories = await cachedQuery(`${cacheKey}:categories`, () => getCategories(db), {
+				ttl: 3600,
+				staleWhileRevalidate: 3600
+			});
 			for (const category of categories) {
 				addEntry(`/category/${category.slug}`, category.updatedAt, 'weekly', '0.7');
 			}
@@ -309,11 +316,10 @@ export const GET: RequestHandler = async () => {
 			}
 
 			// KB section index pages
-			const kbSections = await cachedQuery(
-				`${cacheKey}:kb-sections`,
-				() => getKbSections(db),
-				{ ttl: 3600, staleWhileRevalidate: 3600 }
-			);
+			const kbSections = await cachedQuery(`${cacheKey}:kb-sections`, () => getKbSections(db), {
+				ttl: 3600,
+				staleWhileRevalidate: 3600
+			});
 			for (const sec of kbSections) {
 				addEntry(`/knowledge-base/${sec.section}`, new Date('2026-01-01'), 'weekly', '0.7');
 			}

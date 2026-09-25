@@ -28,15 +28,28 @@ const bodyId = z
  */
 export const certifyingBodyCreateSchema = z.object({
 	id: bodyId.nullable().optional(),
-	name: z.string().trim().min(1, 'Name is required.').max(200, 'Name must be 200 characters or fewer.'),
-	country: z.string().trim().min(1, 'Country is required.').max(100, 'Country must be 100 characters or fewer.'),
+	name: z
+		.string()
+		.trim()
+		.min(1, 'Name is required.')
+		.max(200, 'Name must be 200 characters or fewer.'),
+	country: z
+		.string()
+		.trim()
+		.min(1, 'Country is required.')
+		.max(100, 'Country must be 100 characters or fewer.'),
 	standard: z
 		.string()
 		.trim()
 		.max(200, 'Standard must be 200 characters or fewer.')
 		.nullable()
 		.optional(),
-	website: z.string().trim().max(500, 'Website must be 500 characters or fewer.').nullable().optional(),
+	website: z
+		.string()
+		.trim()
+		.max(500, 'Website must be 500 characters or fewer.')
+		.nullable()
+		.optional(),
 	description: z
 		.string()
 		.trim()
@@ -44,14 +57,24 @@ export const certifyingBodyCreateSchema = z.object({
 		.nullable()
 		.optional(),
 	status: certifyingBodyStatusSchema.nullable().optional(),
-	metaTitle: z.string().trim().max(60, 'Meta title must be 60 characters or fewer.').nullable().optional(),
+	metaTitle: z
+		.string()
+		.trim()
+		.max(60, 'Meta title must be 60 characters or fewer.')
+		.nullable()
+		.optional(),
 	metaDescription: z
 		.string()
 		.trim()
 		.max(160, 'Meta description must be 160 characters or fewer.')
 		.nullable()
 		.optional(),
-	keywords: z.string().trim().max(500, 'Keywords must be 500 characters or fewer.').nullable().optional()
+	keywords: z
+		.string()
+		.trim()
+		.max(500, 'Keywords must be 500 characters or fewer.')
+		.nullable()
+		.optional()
 });
 
 /**

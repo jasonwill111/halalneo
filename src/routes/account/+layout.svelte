@@ -6,15 +6,17 @@
 	let { children, data }: LayoutProps = $props();
 </script>
 
-<div class="mx-auto w-full max-w-7xl px-4 pb-24 pt-3 sm:px-6 sm:pb-10 sm:pt-6">
+<div class="mx-auto w-full max-w-7xl px-3 pt-2 pb-20 sm:px-6 sm:pt-6 sm:pb-10">
 	<Breadcrumb items={[{ label: 'My Account', href: '/account' }]} />
 
 	<AccountNav variant="mobile" user={data.user} />
 
-	<div class="flex gap-3 sm:gap-4">
+	<div
+		class="grid min-w-0 grid-cols-1 items-start gap-3 sm:gap-4 lg:grid-cols-[13rem_minmax(0,1fr)]"
+	>
 		<AccountNav variant="desktop" user={data.user} />
 
-		<div class="flex-1 min-w-0">
+		<div class="w-full min-w-0">
 			{@render children()}
 		</div>
 	</div>

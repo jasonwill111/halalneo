@@ -78,7 +78,5 @@ export function normaliseAiToolCategory(value: string | null | undefined): AiToo
 }
 
 export function normaliseAiToolStatus(value: string | null | undefined): AiToolStatus {
-	return AI_TOOL_STATUSES.includes(value as AiToolStatus)
-		? (value as AiToolStatus)
-		: 'disabled';
+	return AI_TOOL_STATUSES.includes(value as AiToolStatus) ? (value as AiToolStatus) : 'disabled';
 }

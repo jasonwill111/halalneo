@@ -33,7 +33,9 @@ export type SupplierPortalProfile = {
  * function still runs for them. That is why this file never redirects and
  * always resolves to plain data.
  */
-export const load: LayoutServerLoad = async (event): Promise<{
+export const load: LayoutServerLoad = async (
+	event
+): Promise<{
 	supplierUser: SupplierPortalUser | null;
 	supplierSlug: string | null;
 	supplierProfile: SupplierPortalProfile | null;

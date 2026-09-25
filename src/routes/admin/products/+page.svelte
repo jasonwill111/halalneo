@@ -640,7 +640,7 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input
 			bind:value={search}
@@ -796,7 +796,7 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editingSlug ? 'Edit product' : 'New product'}</DialogTitle>
 			<DialogDescription>Create or update a product SKU in the marketplace.</DialogDescription>
@@ -829,7 +829,7 @@
 					e.preventDefault();
 					void save();
 				}}
-				class="flex flex-col gap-4"
+				class="flex min-w-0 flex-col gap-4"
 			>
 				<!-- ===================== BASIC INFO (always expanded) ===================== -->
 				<CollapsibleSection title="Basic Info" bind:open={basicExpanded}>
@@ -858,7 +858,7 @@
 						{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 					</Field.Field>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Supplier</Field.FieldLabel>
 							<Select
@@ -925,7 +925,7 @@
 						{/if}
 					</Field.Field>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Certification Status</Field.FieldLabel>
 							<Select bind:value={form.certStatus} type="single">
@@ -977,7 +977,7 @@
 						{#if fieldErrors.moq}<FieldError>{fieldErrors.moq}</FieldError>{/if}
 					</Field.Field>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Price Min</Field.FieldLabel>
 							<Input
@@ -1012,7 +1012,7 @@
 						</Field.Field>
 					</div>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Price Unit</Field.FieldLabel>
 							<Input
@@ -1097,13 +1097,13 @@
 									value={spec.key}
 									oninput={(e) => updateSpec(i, 'key', inputValue(e))}
 									placeholder="Key"
-									class="flex-1"
+									class="min-w-0 flex-1"
 								/>
 								<Input
 									value={spec.value}
 									oninput={(e) => updateSpec(i, 'value', inputValue(e))}
 									placeholder="Value"
-									class="flex-1"
+									class="min-w-0 flex-1"
 								/>
 								<Button
 									variant="ghost"
@@ -1136,7 +1136,7 @@
 										value={faq.question}
 										oninput={(e) => updateFaq(i, 'question', inputValue(e))}
 										placeholder="Question"
-										class="flex-1"
+										class="min-w-0 flex-1"
 									/>
 									<Button
 										variant="ghost"
@@ -1226,13 +1226,13 @@
 									value={resource.name}
 									oninput={(e) => updateResource(i, 'name', inputValue(e))}
 									placeholder="Title"
-									class="flex-1"
+									class="min-w-0 flex-1"
 								/>
 								<Input
 									value={resource.url}
 									oninput={(e) => updateResource(i, 'url', inputValue(e))}
 									placeholder="https://..."
-									class="flex-1"
+									class="min-w-0 flex-1"
 								/>
 								<Button
 									variant="ghost"

@@ -55,7 +55,11 @@
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
-	import { focusFirstInvalid, mergeServerDetails, type ServerFieldDetails } from '#lib/utils/forms.js';
+	import {
+		focusFirstInvalid,
+		mergeServerDetails,
+		type ServerFieldDetails
+	} from '#lib/utils/forms.js';
 
 	const PAGE_SIZE = 20;
 	const SECTION_OPTIONS = KB_SECTIONS.map((slug) => ({ slug, label: kbSectionLabel(slug) }));
@@ -392,7 +396,7 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search articles..." class="ps-9" />
 	</div>
@@ -451,7 +455,8 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 							<TableCell colspan={5} class="py-8">
 								{#if items.length === 0}
 									<Empty>
-										<BrandedEmptyMedia variant="icon"><FileText class="size-6" /></BrandedEmptyMedia>
+										<BrandedEmptyMedia variant="icon"><FileText class="size-6" /></BrandedEmptyMedia
+										>
 										<div class="space-y-1">
 											<p class="font-medium">No articles yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -635,7 +640,7 @@ ${form.summary.trim() || 'A comprehensive guide to help buyers and suppliers nav
 						>
 						<SelectContent>
 							{#each STATUS_OPTIONS as value (value)}
-								<SelectItem value={value}>{value}</SelectItem>
+								<SelectItem {value}>{value}</SelectItem>
 							{/each}
 						</SelectContent>
 					</Select>

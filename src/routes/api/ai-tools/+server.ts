@@ -53,7 +53,10 @@ async function queryList(
 	}
 	const where = conditions.length ? and(...conditions) : undefined;
 
-	const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(aiTools).where(where);
+	const [countResult] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(aiTools)
+		.where(where);
 
 	const rows = await db
 		.select(aiToolColumns)
@@ -85,10 +88,14 @@ export const GET: RequestHandler = async (event) => {
 			return json(data, { headers: { 'Cache-Control': 'no-store' } });
 		}
 
-		const data = await cachedQuery(url.toString(), () => queryList(db, status, category, search, limit, offset), {
-			...cacheMedium(),
-			cacheKey: queryCacheKey(url)
-		});
+		const data = await cachedQuery(
+			url.toString(),
+			() => queryList(db, status, category, search, limit, offset),
+			{
+				...cacheMedium(),
+				cacheKey: queryCacheKey(url)
+			}
+		);
 
 		return json(data);
 	} catch (error: unknown) {

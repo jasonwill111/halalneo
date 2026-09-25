@@ -1,6 +1,9 @@
 export type MandateStatus = 'mandatory' | 'phasing-in' | 'voluntary';
 
-export const MANDATE_STATUSES: Record<MandateStatus, { label: string; description: string; tone: string }> = {
+export const MANDATE_STATUSES: Record<
+	MandateStatus,
+	{ label: string; description: string; tone: string }
+> = {
 	mandatory: {
 		label: 'Mandatory',
 		description: 'Halal certification is required by law for sale in this market.',

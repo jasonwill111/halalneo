@@ -81,15 +81,15 @@
 			<TagIcon class="size-4" />
 			Quick Deals
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Clearance offers</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Clearance offers</h1>
+		<p class="max-w-2xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
 			Time-boxed deals from halal suppliers — discounted stock while it lasts.
 		</p>
 	</div>
 
 	<div class="relative max-w-xs">
 		<label for="deal-search" class="sr-only">Search deals</label>
-		<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 		<Input
 			id="deal-search"
 			type="search"
@@ -104,7 +104,9 @@
 	{:else if paged.length === 0}
 		<Empty>
 			<EmptyHeader>
-				<BrandedEmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></BrandedEmptyMedia>
+				<BrandedEmptyMedia
+					><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></BrandedEmptyMedia
+				>
 				<EmptyTitle>
 					{query.trim() ? 'No deals match your search' : 'No active deals right now'}
 				</EmptyTitle>
@@ -132,36 +134,47 @@
 			{#each paged as p (p.id)}
 				<a
 					href={localizeHref(`/promotions/${p.id}`)}
-					class="group press-scale relative flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale relative flex h-full min-w-0 flex-col rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
 					{#if p.discountPct}
 						<span
-							class="absolute top-2 end-2 rounded-full bg-destructive/90 px-2 py-0.5 text-2xs font-bold text-destructive-foreground"
+							class="absolute end-2 top-2 max-w-[45%] truncate rounded-full bg-destructive/90 px-2 py-0.5 text-2xs font-bold text-destructive-foreground"
 						>
 							-{p.discountPct}%
 						</span>
 					{/if}
-					<p class="text-2xs font-medium text-muted-foreground">
+					<p class="min-w-0 truncate pe-14 text-2xs font-medium text-muted-foreground">
 						{names[p.supplierSlug] ?? p.supplierSlug}
 					</p>
 					<h3
-						class="mt-0.5 line-clamp-2 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
+						class="mt-0.5 line-clamp-2 min-w-0 pe-14 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
 					>
 						{p.title}
 					</h3>
+					{#if p.description}
+						<p
+							class="mt-1 line-clamp-2 hidden min-w-0 text-2xs leading-snug text-muted-foreground sm:block"
+						>
+							{p.description}
+						</p>
+					{/if}
 					{#if priceText(p)}
-						<p class="mt-1 text-sm font-bold text-primary sm:text-base">{priceText(p)}</p>
+						<p
+							class="mt-1 min-w-0 truncate text-sm font-bold text-primary tabular-nums sm:text-base"
+						>
+							{priceText(p)}
+						</p>
 					{/if}
 					<div
-						class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-2xs text-muted-foreground"
+						class="mt-auto flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 pt-2 text-2xs text-muted-foreground"
 					>
 						{#if p.moq}
-							<span>MOQ {p.moq}</span>
+							<span class="min-w-0 truncate">MOQ {p.moq}</span>
 						{/if}
 						{#if daysLeft(p.validUntil)}
-							<span class="inline-flex items-center gap-1">
-								<ClockIcon class="size-3" />
-								{daysLeft(p.validUntil)}
+							<span class="inline-flex min-w-0 items-center gap-1">
+								<ClockIcon class="size-3 shrink-0" />
+								<span class="truncate">{daysLeft(p.validUntil)}</span>
 							</span>
 						{/if}
 					</div>

@@ -35,14 +35,14 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	const bodyId = body?.id ?? params.slug;
 	const relatedGuides = allGuides.filter(
 		(g) =>
-			(g.certifyingBodies ?? []).some((cb) => cb.slug === bodyId) ||
-			g.country === body?.country
+			(g.certifyingBodies ?? []).some((cb) => cb.slug === bodyId) || g.country === body?.country
 	);
 
 	return {
 		seo: {
 			// DB per-row meta wins when admins filled it; else derive.
-			title: body?.metaTitle || (body?.name ? `${body.name} — HalalNeo` : `${params.slug} — HalalNeo`),
+			title:
+				body?.metaTitle || (body?.name ? `${body.name} — HalalNeo` : `${params.slug} — HalalNeo`),
 			description:
 				body?.metaDescription ||
 				body?.description ||

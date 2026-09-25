@@ -495,7 +495,7 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		/>
 		<Input
 			bind:value={search}
@@ -651,7 +651,7 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editingSlug ? 'Edit supplier' : 'New supplier'}</DialogTitle>
 			<DialogDescription>
@@ -678,7 +678,7 @@
 					e.preventDefault();
 					void save();
 				}}
-				class="flex flex-col gap-4"
+				class="flex min-w-0 flex-col gap-4"
 			>
 				<!-- ===================== BASIC INFO (always expanded) ===================== -->
 				<CollapsibleSection title="Basic Info" bind:open={basicExpanded}>
@@ -693,7 +693,7 @@
 						{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 					</Field.Field>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Slug</Field.FieldLabel>
 							<Input
@@ -717,7 +717,7 @@
 						</Field.Field>
 					</div>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Business type</Field.FieldLabel>
 							<Select bind:value={form.businessType} type="single">
@@ -752,7 +752,7 @@
 						</Field.Field>
 					</div>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Year established</Field.FieldLabel>
 							<Input
@@ -814,7 +814,7 @@
 						{#if fieldErrors.website}<FieldError>{fieldErrors.website}</FieldError>{/if}
 					</Field.Field>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Email</Field.FieldLabel>
 							<Input
@@ -838,7 +838,7 @@
 						</Field.Field>
 					</div>
 
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>WhatsApp</Field.FieldLabel>
 							<Input
@@ -864,7 +864,7 @@
 
 				<!-- ===================== BUSINESS DETAILS (collapsed) ===================== -->
 				<CollapsibleSection title="Business Details" bind:open={businessExpanded}>
-					<div class="grid grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						<Field.Field>
 							<Field.FieldLabel>Employee count</Field.FieldLabel>
 							<Input

@@ -84,64 +84,86 @@ export const load: PageServerLoad = async () => {
 		// One D1 batch for every dashboard read (2 subrequests total incl. the
 		// messages lookup below). All group-by columns (status, cert_status)
 		// and the pages type/category filter are indexed.
-		const [pendingCountRows, applicationRows, supplierStats, productStats, categoryStats, bodyStats, kbStats, glossaryStats, blogStats, aiToolStats] =
-			(await db.batch([
-				db.select({ count: sql<number>`count(*)` }).from(suppliers).where(pendingWhere),
-				db
-					.select({
-						slug: suppliers.slug,
-						name: suppliers.name,
-						country: suppliers.country,
-						businessType: suppliers.businessType,
-						email: suppliers.email,
-						website: suppliers.website,
-						adminNotes: suppliers.adminNotes,
-						createdAt: suppliers.createdAt
-					})
-					.from(suppliers)
-					.where(pendingWhere)
-					.orderBy(desc(suppliers.createdAt))
-					.limit(10),
-				db.select({ status: suppliers.status, count: sql<number>`count(*)` }).from(suppliers).groupBy(suppliers.status),
-				db
-					.select({ status: products.certStatus, count: sql<number>`count(*)` })
-					.from(products)
-					.groupBy(products.certStatus),
-				db.select({ count: sql<number>`count(*)` }).from(categories),
-				db.select({ count: sql<number>`count(*)` }).from(certifyingBodies),
-				db
-					.select({
-						count: sql<number>`count(*)`,
-						sections: sql<number>`count(distinct ${knowledgeBase.section})`
-					})
-					.from(knowledgeBase),
-				db
-					.select({ count: sql<number>`count(*)` })
-					.from(pages)
-					.where(and(eq(pages.type, 'landing'), eq(pages.category, GLOSSARY_CATEGORY))),
-				db.select({ count: sql<number>`count(*)` }).from(pages).where(eq(pages.type, 'blog')),
-				db.select({ status: aiTools.status, count: sql<number>`count(*)` }).from(aiTools).groupBy(aiTools.status)
-			])) as [
-				CountRow[],
-				{
-					slug: string;
-					name: string;
-					country: string;
-					businessType: string;
-					email: string | null;
-					website: string | null;
-					adminNotes: string | null;
-					createdAt: Date | number;
-				}[],
-				StatusCountRow[],
-				StatusCountRow[],
-				CountRow[],
-				CountRow[],
-				KbCountRow[],
-				CountRow[],
-				CountRow[],
-				StatusCountRow[]
-			];
+		const [
+			pendingCountRows,
+			applicationRows,
+			supplierStats,
+			productStats,
+			categoryStats,
+			bodyStats,
+			kbStats,
+			glossaryStats,
+			blogStats,
+			aiToolStats
+		] = (await db.batch([
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(suppliers)
+				.where(pendingWhere),
+			db
+				.select({
+					slug: suppliers.slug,
+					name: suppliers.name,
+					country: suppliers.country,
+					businessType: suppliers.businessType,
+					email: suppliers.email,
+					website: suppliers.website,
+					adminNotes: suppliers.adminNotes,
+					createdAt: suppliers.createdAt
+				})
+				.from(suppliers)
+				.where(pendingWhere)
+				.orderBy(desc(suppliers.createdAt))
+				.limit(10),
+			db
+				.select({ status: suppliers.status, count: sql<number>`count(*)` })
+				.from(suppliers)
+				.groupBy(suppliers.status),
+			db
+				.select({ status: products.certStatus, count: sql<number>`count(*)` })
+				.from(products)
+				.groupBy(products.certStatus),
+			db.select({ count: sql<number>`count(*)` }).from(categories),
+			db.select({ count: sql<number>`count(*)` }).from(certifyingBodies),
+			db
+				.select({
+					count: sql<number>`count(*)`,
+					sections: sql<number>`count(distinct ${knowledgeBase.section})`
+				})
+				.from(knowledgeBase),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(pages)
+				.where(and(eq(pages.type, 'landing'), eq(pages.category, GLOSSARY_CATEGORY))),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(pages)
+				.where(eq(pages.type, 'blog')),
+			db
+				.select({ status: aiTools.status, count: sql<number>`count(*)` })
+				.from(aiTools)
+				.groupBy(aiTools.status)
+		])) as [
+			CountRow[],
+			{
+				slug: string;
+				name: string;
+				country: string;
+				businessType: string;
+				email: string | null;
+				website: string | null;
+				adminNotes: string | null;
+				createdAt: Date | number;
+			}[],
+			StatusCountRow[],
+			StatusCountRow[],
+			CountRow[],
+			CountRow[],
+			KbCountRow[],
+			CountRow[],
+			CountRow[],
+			StatusCountRow[]
+		];
 
 		const rows = applicationRows ?? [];
 
@@ -152,7 +174,12 @@ export const load: PageServerLoad = async () => {
 			const inqRows = await db
 				.select({ supplierSlug: inquiries.supplierSlug, message: inquiries.message })
 				.from(inquiries)
-				.where(inArray(inquiries.supplierSlug, rows.map((r) => r.slug)))
+				.where(
+					inArray(
+						inquiries.supplierSlug,
+						rows.map((r) => r.slug)
+					)
+				)
 				.orderBy(desc(inquiries.createdAt));
 			for (const inq of inqRows) {
 				if (!inq.supplierSlug || !inq.message) continue;

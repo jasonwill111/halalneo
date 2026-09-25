@@ -25,7 +25,7 @@
 			"binding": "halalneo_assets",
 			"bucket_name": "halalneo-media"
 		}
-	],
+	]
 	// Cloudflare Image Resizing is FORBIDDEN here (docs/development-rules.md
 	// §5.12 cost red line: billed per transform, no free tier). Images are
 	// compressed on the client before upload (§5.11) and served from R2 as

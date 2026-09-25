@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import {
-		KB_SECTIONS,
-		kbSectionLabel,
-		type KbAdminRow
-	} from '#lib/schemas/knowledge.js';
+	import { KB_SECTIONS, kbSectionLabel, type KbAdminRow } from '#lib/schemas/knowledge.js';
 	import { parseTagList } from '#lib/schemas/content.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -232,8 +228,7 @@
 	>
 		<TabsList>
 			<TabsTrigger value="articles"
-				>Articles <span
-					class="ms-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-2xs text-primary"
+				>Articles <span class="ms-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-2xs text-primary"
 					>{totalArticles}</span
 				></TabsTrigger
 			>
@@ -277,7 +272,7 @@
 		<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 			<div class="relative flex-1 sm:max-w-xs">
 				<Search
-					class="pointer-events-none absolute top-1/2 start-2.5 size-3.5 -translate-y-1/2 text-muted-foreground"
+					class="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
 				></Search>
 				<Input bind:value={search} placeholder="Search articles..." class="ps-8 text-2xs-plus" />
 			</div>
@@ -308,7 +303,8 @@
 							<TableCell colspan={4} class="py-8">
 								{#if articles.length === 0}
 									<Empty>
-										<BrandedEmptyMedia variant="icon"><FileText class="size-6" /></BrandedEmptyMedia>
+										<BrandedEmptyMedia variant="icon"><FileText class="size-6" /></BrandedEmptyMedia
+										>
 										<div class="space-y-1">
 											<p class="font-medium">No articles yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -426,7 +422,9 @@
 				>
 					<div class="mb-2 flex items-start justify-between">
 						<div
-							class="flex size-8 items-center justify-center rounded-lg {sectionColor(section.slug)}"
+							class="flex size-8 items-center justify-center rounded-lg {sectionColor(
+								section.slug
+							)}"
 						>
 							<BookOpen class="size-4"></BookOpen>
 						</div>
@@ -435,7 +433,9 @@
 					<p class="mb-2 text-2xs text-muted-foreground">{section.count} articles</p>
 					<div class="flex items-center gap-2">
 						<span
-							class="text-2xs font-medium {section.count > 0 ? 'text-success' : 'text-muted-foreground'}"
+							class="text-2xs font-medium {section.count > 0
+								? 'text-success'
+								: 'text-muted-foreground'}"
 						>
 							{section.count > 0 ? 'Active' : 'Empty'}
 						</span>
@@ -449,9 +449,7 @@
 <ConfirmDialog
 	open={confirmSlug !== null}
 	title="Delete article?"
-	description={confirmSlug
-		? `Delete article "${confirmTitle}"? This cannot be undone.`
-		: undefined}
+	description={confirmSlug ? `Delete article "${confirmTitle}"? This cannot be undone.` : undefined}
 	confirmLabel={deleting ? 'Deleting...' : 'Delete'}
 	onconfirm={confirmedDelete}
 />

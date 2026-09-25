@@ -2,7 +2,14 @@ export interface MarketGuide {
 	slug: string;
 	country: string;
 	flag: string;
-	region: 'Southeast Asia' | 'Middle East' | 'South Asia' | 'Europe' | 'East Asia' | 'North America' | 'Africa';
+	region:
+		| 'Southeast Asia'
+		| 'Middle East'
+		| 'South Asia'
+		| 'Europe'
+		| 'East Asia'
+		| 'North America'
+		| 'Africa';
 	muslimPopulation: string;
 	totalPopulation: string;
 	marketSizeUsd: string;
@@ -45,10 +52,11 @@ export const marketGuides: MarketGuide[] = [
 		],
 		standardBasis: 'HAS 23000 (Indonesia), aligned with OIC/SMIIC standards',
 		certificateValidity: '4 years (no changes in raw materials/process)',
-		estimatedCostUsd: 'IDR 300,000 processing fee (SME-subsidized); regular scheme varies by product',
+		estimatedCostUsd:
+			'IDR 300,000 processing fee (SME-subsidized); regular scheme varies by product',
 		processingTime: '3–6 months',
 		keyInsights: [
-			'World\'s largest Muslim population — the single biggest halal consumer market',
+			"World's largest Muslim population — the single biggest halal consumer market",
 			'Law 33/2014 (amended 2023) mandates halal certification for F&B; cosmetics and pharma phasing in next',
 			'SMEs receive government subsidies — IDR 300,000 flat processing fee',
 			'SIHALAL platform digitized the entire application and verification process',
@@ -66,7 +74,8 @@ export const marketGuides: MarketGuide[] = [
 			'Import licensing (through BPOM/other agencies) runs parallel to halal registration',
 			'Decentralized enforcement at port level can cause inconsistent clearance'
 		],
-		summary: 'The world\'s largest halal market by population and the regulatory anchor of Southeast Asia. Since October 2024, halal certification is mandatory for all food and beverage products — imports included — making Indonesia both the biggest opportunity and the most complex compliance destination.'
+		summary:
+			"The world's largest halal market by population and the regulatory anchor of Southeast Asia. Since October 2024, halal certification is mandatory for all food and beverage products — imports included — making Indonesia both the biggest opportunity and the most complex compliance destination."
 	},
 	// 2. Malaysia (existing)
 	{
@@ -79,9 +88,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$80B+ (halal industry ecosystem)',
 		mandateStatus: 'mandatory',
 		mandatorySince: 'Long-established (Trade Descriptions Act 2011)',
-		certifyingBodies: [
-			{ name: 'JAKIM', slug: 'jakim' }
-		],
+		certifyingBodies: [{ name: 'JAKIM', slug: 'jakim' }],
 		importRequirements: [
 			'JAKIM halal certificate or certificate from JAKIM-recognized foreign certification body (FHCB)',
 			'JAKIM maintains the reference list of recognized certifiers worldwide',
@@ -90,7 +97,8 @@ export const marketGuides: MarketGuide[] = [
 			'Malay/English labeling with certifier logo'
 		],
 		standardBasis: 'MS 1500 (Malaysia), referencing OIC/SMIIC and Codex halal guidelines',
-		certificateValidity: '2 years (food premises); 1 year (abattoirs); 3 years (logistics/cosmetics/pharma); 5 years for clean 5+ year holders',
+		certificateValidity:
+			'2 years (food premises); 1 year (abattoirs); 3 years (logistics/cosmetics/pharma); 5 years for clean 5+ year holders',
 		estimatedCostUsd: '$2,000–5,000+ depending on audit scope and facility',
 		processingTime: '3–6 months',
 		keyInsights: [
@@ -98,7 +106,7 @@ export const marketGuides: MarketGuide[] = [
 			'Malaysia chairs OIC/SMIIC standardization — strong influence on global halal norms',
 			'Double certification pathway: JAKIM for domestic, FHCB recognition for foreign suppliers',
 			'Halal Industry Master Plan 2030 targets Malaysia as the global halal hub',
-			'MIHAS trade show is world\'s largest halal exhibition (50,000+ visitors)'
+			"MIHAS trade show is world's largest halal exhibition (50,000+ visitors)"
 		],
 		opportunities: [
 			'Most efficient gateway market — JAKIM cert opens doors across OIC',
@@ -112,7 +120,8 @@ export const marketGuides: MarketGuide[] = [
 			'Cost of maintaining annual audits for abattoir/food premise categories',
 			'Bahasa Malaysia documentation required for certain categories'
 		],
-		summary: 'The gold-standard halal jurisdiction. A JAKIM certificate is the most widely accepted halal credential in international trade, and Malaysia\'s regulatory maturity makes it the reference market for halal standards worldwide.'
+		summary:
+			"The gold-standard halal jurisdiction. A JAKIM certificate is the most widely accepted halal credential in international trade, and Malaysia's regulatory maturity makes it the reference market for halal standards worldwide."
 	},
 	// 3. United Arab Emirates (existing)
 	{
@@ -125,9 +134,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$120B+ (halal trade hub value)',
 		mandateStatus: 'mandatory',
 		mandatorySince: '2014 (ESMA halal scheme)',
-		certifyingBodies: [
-			{ name: 'MOIAT', slug: 'moiat' }
-		],
+		certifyingBodies: [{ name: 'MOIAT', slug: 'moiat' }],
 		importRequirements: [
 			'UAE halal scheme accreditation (UAE.S 2055-1/2055-2) for meat, poultry, supplements, nutraceuticals',
 			'Certificates from ESMA-accredited bodies (JAKIM, MUI, IFANCA accepted under accreditation)',
@@ -135,7 +142,8 @@ export const marketGuides: MarketGuide[] = [
 			'Arabic labeling required on all food products',
 			'Halal National Mark available as an additional trust signal'
 		],
-		standardBasis: 'UAE.S 2055-1 (halal food requirements), UAE.S 2055-2 (management systems), GCC-wide recognition',
+		standardBasis:
+			'UAE.S 2055-1 (halal food requirements), UAE.S 2055-2 (management systems), GCC-wide recognition',
 		certificateValidity: '1 year',
 		estimatedCostUsd: '$3,000–8,000 including accreditation and audit',
 		processingTime: '3–8 weeks',
@@ -144,13 +152,13 @@ export const marketGuides: MarketGuide[] = [
 			'UAE Halal National Mark goes beyond basic certification — stronger consumer trust signal',
 			'ESMA (now MOIAT) accredits certification bodies rather than certifying directly at scale',
 			'Gateway to the wider GCC — single accreditation unlocks Saudi, Qatar, Kuwait, Bahrain, Oman trade',
-			'Gulfood (world\'s largest F&B expo) drives annual sourcing cycles'
+			"Gulfood (world's largest F&B expo) drives annual sourcing cycles"
 		],
 		opportunities: [
 			'Re-export model means one UAE entry point serves 2B+ consumers across MENA, Africa, CIS',
 			'Free zone logistics infrastructure (Jebel Ali) for halal warehousing',
 			'Fast-growing halal tourism, hospitality, and airline catering sectors',
-			'Dubai\'s Halal Cluster in DMCC dedicated to halal businesses'
+			"Dubai's Halal Cluster in DMCC dedicated to halal businesses"
 		],
 		challenges: [
 			'1-year validity means annual renewal cost and audit cycle',
@@ -158,7 +166,8 @@ export const marketGuides: MarketGuide[] = [
 			'Animal-origin ingredients in cosmetics/supplements face extra scrutiny',
 			'Arabic labeling and documentation requirements add cost'
 		],
-		summary: 'The strategic re-export hub of the global halal trade. UAE accreditation unlocks the entire GCC and serves as the distribution gateway to the Middle East, Africa, and CIS markets.'
+		summary:
+			'The strategic re-export hub of the global halal trade. UAE accreditation unlocks the entire GCC and serves as the distribution gateway to the Middle East, Africa, and CIS markets.'
 	},
 	// 4. Saudi Arabia (existing)
 	{
@@ -189,7 +198,7 @@ export const marketGuides: MarketGuide[] = [
 		keyInsights: [
 			'Largest consumer market in the GCC — imports 80%+ of its food',
 			'SFDA regulates directly — no self-certification or voluntary pathway for food',
-			'Saudi Halal Expo (Riyadh) is MENA\'s largest dedicated halal trade show',
+			"Saudi Halal Expo (Riyadh) is MENA's largest dedicated halal trade show",
 			'Vision 2030 invests in domestic halal production — import substitution accelerating',
 			'Islamic slaughter certificates for meat require government-to-government countersignature'
 		],
@@ -205,7 +214,8 @@ export const marketGuides: MarketGuide[] = [
 			'Shipment-level rejections common if documentation mismatches product',
 			'Local distributor requirement for market entry in practice'
 		],
-		summary: 'The largest and most import-dependent halal market in the Gulf. SFDA regulation is strict but well-documented — compliant suppliers find Saudi Arabia among the most rewarding halal destinations.'
+		summary:
+			'The largest and most import-dependent halal market in the Gulf. SFDA regulation is strict but well-documented — compliant suppliers find Saudi Arabia among the most rewarding halal destinations.'
 	},
 	// 5. Turkey (existing)
 	{
@@ -218,9 +228,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$60B+ (halal food consumption)',
 		mandateStatus: 'voluntary',
 		mandatorySince: null,
-		certifyingBodies: [
-			{ name: 'GIMDES', slug: 'gimdes' }
-		],
+		certifyingBodies: [{ name: 'GIMDES', slug: 'gimdes' }],
 		importRequirements: [
 			'Halal certificate from TSE or GIMDES for halal-labeled products (voluntary but commercially expected)',
 			'Standard Turkish Food Codex labeling requirements',
@@ -233,7 +241,7 @@ export const marketGuides: MarketGuide[] = [
 		processingTime: '8–16 weeks',
 		keyInsights: [
 			'Türkiye holds the OIC/SMIIC secretariat — the country writes the OIC-wide halal rulebook',
-			'World Halal Council general assembly and mutual recognition decisions made at Istanbul\'s World Halal Summit',
+			"World Halal Council general assembly and mutual recognition decisions made at Istanbul's World Halal Summit",
 			'Halal Expo Istanbul draws 50,000+ visitors and 500+ exhibitors each November',
 			'Domestic market largely halal by default — certification is about export credibility',
 			'Bridge position between European production standards and OIC market access'
@@ -250,7 +258,8 @@ export const marketGuides: MarketGuide[] = [
 			'Halal and secular market segments coexist — certification messaging must be targeted',
 			'Currency fluctuation complicates long-term contracts'
 		],
-		summary: 'The standards-setter. Türkiye chairs OIC/SMIIC and hosts the World Halal Summit — its certification decisions shape mutual recognition for the entire OIC market of 1.9 billion consumers.'
+		summary:
+			'The standards-setter. Türkiye chairs OIC/SMIIC and hosts the World Halal Summit — its certification decisions shape mutual recognition for the entire OIC market of 1.9 billion consumers.'
 	},
 	// 6. Pakistan (existing)
 	{
@@ -263,9 +272,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$70B+ (halal food market)',
 		mandateStatus: 'phasing-in',
 		mandatorySince: null,
-		certifyingBodies: [
-			{ name: 'HGSA', slug: 'hgsa' }
-		],
+		certifyingBodies: [{ name: 'HGSA', slug: 'hgsa' }],
 		importRequirements: [
 			'Halal certificate required for meat and derived products',
 			'PSQCA conformity for food imports',
@@ -277,7 +284,7 @@ export const marketGuides: MarketGuide[] = [
 		estimatedCostUsd: '$1,500–3,000',
 		processingTime: '8–12 weeks',
 		keyInsights: [
-			'World\'s second-largest Muslim population — nearly all consumption is halal by default',
+			"World's second-largest Muslim population — nearly all consumption is halal by default",
 			'Emerging formal certification infrastructure — PSQCA halal standard PS 3733 adopted 2018',
 			'Major meat exporter (beef to GCC, Vietnam) — export-side certification growth strong',
 			'Government targeting halal export growth under Trade Policy Framework',
@@ -295,7 +302,8 @@ export const marketGuides: MarketGuide[] = [
 			'Only a handful of recognized halal certifiers — bottleneck risk',
 			'Buyers often require additional third-party audits beyond local certification'
 		],
-		summary: 'A high-potential halal production base and the world\'s second-largest Muslim consumer market, where formal halal certification infrastructure is now emerging to match its enormous scale.'
+		summary:
+			"A high-potential halal production base and the world's second-largest Muslim consumer market, where formal halal certification infrastructure is now emerging to match its enormous scale."
 	},
 	// 7. United States (existing)
 	{
@@ -308,9 +316,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$20B+ (domestic halal market)',
 		mandateStatus: 'voluntary',
 		mandatorySince: null,
-		certifyingBodies: [
-			{ name: 'IFANCA', slug: 'ifanca' }
-		],
+		certifyingBodies: [{ name: 'IFANCA', slug: 'ifanca' }],
 		importRequirements: [
 			'FDA registration and Prior Notice for food imports',
 			'FSMA compliance (Food Safety Modernization Act)',
@@ -318,7 +324,8 @@ export const marketGuides: MarketGuide[] = [
 			'No government halal regulation — private certifier ecosystem',
 			'English labeling with FDA nutrition facts panel'
 		],
-		standardBasis: 'Private certifier standards (IFANCA most widely recognized); no federal halal standard',
+		standardBasis:
+			'Private certifier standards (IFANCA most widely recognized); no federal halal standard',
 		certificateValidity: '1 year (typical)',
 		estimatedCostUsd: '$4,000–10,000 (annual)',
 		processingTime: '8–16 weeks',
@@ -341,7 +348,8 @@ export const marketGuides: MarketGuide[] = [
 			'Halal fraud incidents damaged consumer trust — buyers demand reputable certifiers',
 			'Fragmented consumer market across metro areas'
 		],
-		summary: 'The most commercially mature voluntary halal market, where private certifiers govern a fast-growing $20B sector driven by mainstream retail adoption and a high-income Muslim consumer base.'
+		summary:
+			'The most commercially mature voluntary halal market, where private certifiers govern a fast-growing $20B sector driven by mainstream retail adoption and a high-income Muslim consumer base.'
 	},
 	// 8. Egypt (new)
 	{
@@ -364,7 +372,8 @@ export const marketGuides: MarketGuide[] = [
 			'Comply with local standards and post-arrival inspection',
 			'Production facilities qualify for EQS certification'
 		],
-		standardBasis: 'Egyptian Code of Standard 119/2002 (Halal Production Standards), aligned with OIC/SMIIC',
+		standardBasis:
+			'Egyptian Code of Standard 119/2002 (Halal Production Standards), aligned with OIC/SMIIC',
 		certificateValidity: '1 year',
 		estimatedCostUsd: '~$600–1,500 depending on facility size',
 		processingTime: '4–8 weeks',
@@ -386,7 +395,8 @@ export const marketGuides: MarketGuide[] = [
 			'Local representation requirement for importers',
 			'Frequent regulatory changes'
 		],
-		summary: 'A critical center with a vast Muslim population and mandatory market recognition. Egypt is increasingly dominant in North Africa/Arab market as a halal hub.'
+		summary:
+			'A critical center with a vast Muslim population and mandatory market recognition. Egypt is increasingly dominant in North Africa/Arab market as a halal hub.'
 	},
 	// 9. Bangladesh (new)
 	{
@@ -431,7 +441,8 @@ export const marketGuides: MarketGuide[] = [
 			'Multiple agencies overlapping authority',
 			'Worries about international standard consistency'
 		],
-		summary: 'An emerging market with enormous potential; Bangladesh is formalizing its halal certification system, offering first-mover opportunities for international suppliers and certifiers.'
+		summary:
+			'An emerging market with enormous potential; Bangladesh is formalizing its halal certification system, offering first-mover opportunities for international suppliers and certifiers.'
 	},
 	// 10. Iran (new)
 	{
@@ -444,9 +455,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$90B+ (halal sector)',
 		mandateStatus: 'mandatory',
 		mandatorySince: '2002 (State Organization for Standardization)',
-		certifyingBodies: [
-			{ name: 'IrISHA', slug: 'irisha' }
-		],
+		certifyingBodies: [{ name: 'IrISHA', slug: 'irisha' }],
 		importRequirements: [
 			'Mandatory halal certification for all animal-derived foods',
 			'Certificate from IrISHA',
@@ -475,7 +484,8 @@ export const marketGuides: MarketGuide[] = [
 			'Political sensitivity',
 			'Documents require notarization'
 		],
-		summary: 'A strategically located economy with strong Islamic identity in food – a complex market, but with significant growth potential if local partnerships are prioritized.'
+		summary:
+			'A strategically located economy with strong Islamic identity in food – a complex market, but with significant growth potential if local partnerships are prioritized.'
 	},
 	// 11. Nigeria (new)
 	{
@@ -503,7 +513,7 @@ export const marketGuides: MarketGuide[] = [
 		estimatedCostUsd: '$3,500–7,000',
 		processingTime: '8–12 weeks',
 		keyInsights: [
-			'Africa\'s largest economy with Muslim-majority north',
+			"Africa's largest economy with Muslim-majority north",
 			'Growing middle class demand for halal',
 			'Diverse halal consumption patterns',
 			'Halal industry developing through private sector'
@@ -520,7 +530,8 @@ export const marketGuides: MarketGuide[] = [
 			'Bureaucratic overlap',
 			'Very large informal sector'
 		],
-		summary: 'Nigeria is Africa\'s biggest market and key to the halal sector. Halal demand is growing and requires tailored approaches for each region.'
+		summary:
+			"Nigeria is Africa's biggest market and key to the halal sector. Halal demand is growing and requires tailored approaches for each region."
 	},
 	// 12. Qatar (new)
 	{
@@ -533,9 +544,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$35B+ (halal market)',
 		mandateStatus: 'mandatory',
 		mandatorySince: '2000 (formalized)',
-		certifyingBodies: [
-			{ name: 'Bureau of Domestic and Foreign Goods (BDFC)', slug: 'bdfc' }
-		],
+		certifyingBodies: [{ name: 'Bureau of Domestic and Foreign Goods (BDFC)', slug: 'bdfc' }],
 		importRequirements: [
 			'Mandatory halal certification for all consumable products',
 			'Certificates from relevant authorities',
@@ -564,7 +573,8 @@ export const marketGuides: MarketGuide[] = [
 			'Limited pool of local exemptions',
 			'High operational costs'
 		],
-		summary: 'A wealthy, fast-moving market with effective halal regulations and high-quality trade opportunities – a compact but high-return addition to GCC.'
+		summary:
+			'A wealthy, fast-moving market with effective halal regulations and high-quality trade opportunities – a compact but high-return addition to GCC.'
 	},
 	// 13. Morocco (new)
 	{
@@ -585,7 +595,7 @@ export const marketGuides: MarketGuide[] = [
 			'Mandatory Halal for meat and animal products',
 			'Certificate from local or OIC bodies',
 			'Arabic/English labeling',
-			'Quarter a year\'s notice for inspections'
+			"Quarter a year's notice for inspections"
 		],
 		standardBasis: 'On Halal Standard – aligned with OIC',
 		certificateValidity: '1 year',
@@ -609,7 +619,8 @@ export const marketGuides: MarketGuide[] = [
 			'Variable regulatory enforcement',
 			'Local representation needed'
 		],
-		summary: 'A well-positioned North African market with both EU and African trade links. Morocco offers solid regulatory structure and high-quality halal potential.'
+		summary:
+			'A well-positioned North African market with both EU and African trade links. Morocco offers solid regulatory structure and high-quality halal potential.'
 	},
 	// 14. Philippines (new)
 	{
@@ -654,7 +665,8 @@ export const marketGuides: MarketGuide[] = [
 			'Lack of uniform national standard',
 			'Need for local Filipino partners'
 		],
-		summary: 'A strategically important Southeast Asian market where halal is increasingly mainstream. Ideal for companies looking to serve both local and export regions.'
+		summary:
+			'A strategically important Southeast Asian market where halal is increasingly mainstream. Ideal for companies looking to serve both local and export regions.'
 	},
 	// 15. Ethiopia (new)
 	{
@@ -667,9 +679,7 @@ export const marketGuides: MarketGuide[] = [
 		marketSizeUsd: '$40B+ (halal food)',
 		mandateStatus: 'voluntary',
 		mandatorySince: null,
-		certifyingBodies: [
-			{ name: 'Reformer of Ethiopia', slug: 'reform' }
-		],
+		certifyingBodies: [{ name: 'Reformer of Ethiopia', slug: 'reform' }],
 		importRequirements: [
 			'Import licensing for food and animal products',
 			'Halal standards widely accepted',
@@ -698,7 +708,8 @@ export const marketGuides: MarketGuide[] = [
 			'Financial access',
 			'Political sensitivities'
 		],
-		summary: 'An emerging African market with rapid growth potential and significant Muslim consumer base. Ideal for early entry and partnership building.'
+		summary:
+			'An emerging African market with rapid growth potential and significant Muslim consumer base. Ideal for early entry and partnership building.'
 	},
 	// 16. India (new)
 	{
@@ -710,7 +721,8 @@ export const marketGuides: MarketGuide[] = [
 		totalPopulation: '~1.4 billion',
 		marketSizeUsd: '$110B+ (halal food + beauty + pharma)',
 		mandateStatus: 'phasing-in',
-		mandatorySince: 'India\'s halal market is largely industry-led; several states are moving to formalize.',
+		mandatorySince:
+			"India's halal market is largely industry-led; several states are moving to formalize.",
 		certifyingBodies: [
 			{ name: 'Halal India', slug: 'halal-india' },
 			{ name: 'ABHI', slug: 'abhi' },
@@ -727,7 +739,7 @@ export const marketGuides: MarketGuide[] = [
 		estimatedCostUsd: '$2,000–4,500',
 		processingTime: '6–10 weeks',
 		keyInsights: [
-			'World\'s 5th largest Muslim population',
+			"World's 5th largest Muslim population",
 			'Halal is culturally understood but lack standardized framework',
 			'Growing diaspora and artisanal halal sector',
 			'Export potential is high for international brands'
@@ -744,7 +756,8 @@ export const marketGuides: MarketGuide[] = [
 			'Cosmetic and pharma regulations competitive',
 			'State-level differences create complexity'
 		],
-		summary: 'India\'s halal sector is among the largest globally but operates informally; formalization is accelerating, creating exciting opportunities for international alignment.'
+		summary:
+			"India's halal sector is among the largest globally but operates informally; formalization is accelerating, creating exciting opportunities for international alignment."
 	}
 ];
 

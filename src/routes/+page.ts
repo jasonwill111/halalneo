@@ -16,7 +16,16 @@ type FeaturedProduct = ProductListItem & { features?: string | unknown[] | null 
 type FeaturedSupplier = SupplierListItem & { certifications?: string | unknown[] | null };
 
 export const load: PageLoad = async ({ fetch }) => {
-	const [productsRes, suppliersRes, categoriesRes, kbSectionsRes, kbArticlesRes, guidesRes, certifiersRes, glossaryRes] = await Promise.all([
+	const [
+		productsRes,
+		suppliersRes,
+		categoriesRes,
+		kbSectionsRes,
+		kbArticlesRes,
+		guidesRes,
+		certifiersRes,
+		glossaryRes
+	] = await Promise.all([
 		fetch('/api/products?limit=4&status=active'),
 		fetch('/api/suppliers?limit=4&status=active'),
 		fetch('/api/categories'),
@@ -33,16 +42,22 @@ export const load: PageLoad = async ({ fetch }) => {
 	const kbSections = await readItems<KbSectionCountItem>(kbSectionsRes);
 	const kbArticles = (await readItems<KbArticleListItem>(kbArticlesRes)).map((a) => ({
 		...a,
-		tags: typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : a.tags ?? []
+		tags: typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : (a.tags ?? [])
 	}));
 
 	const featuredProducts = (productsData.items ?? []).map((p) => ({
 		...p,
-		features: typeof p.features === 'string' ? (JSON.parse(p.features || '[]') as string[]) : p.features ?? [],
+		features:
+			typeof p.features === 'string'
+				? (JSON.parse(p.features || '[]') as string[])
+				: (p.features ?? [])
 	}));
 	const featuredSuppliers = (suppliersData.items ?? []).map((s) => ({
 		...s,
-		certifications: typeof s.certifications === 'string' ? (JSON.parse(s.certifications || '[]') as string[]) : s.certifications ?? [],
+		certifications:
+			typeof s.certifications === 'string'
+				? (JSON.parse(s.certifications || '[]') as string[])
+				: (s.certifications ?? [])
 	}));
 	const guidesTotal = await readTotal(guidesRes);
 	const certifiersTotal = await readTotal(certifiersRes);
@@ -51,7 +66,8 @@ export const load: PageLoad = async ({ fetch }) => {
 	return {
 		seo: {
 			title: 'Halal Trade Intelligence — Certified Suppliers, Products & Market Guides — HalalNeo',
-			description: 'Connect with halal-certified suppliers worldwide. Browse verified products, compare certification bodies, and access comprehensive market guides for halal trade compliance.'
+			description:
+				'Connect with halal-certified suppliers worldwide. Browse verified products, compare certification bodies, and access comprehensive market guides for halal trade compliance.'
 		},
 		featuredSuppliers,
 		featuredProducts,

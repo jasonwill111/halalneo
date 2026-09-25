@@ -16,7 +16,11 @@
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
-	import { focusFirstInvalid, mergeServerDetails, type ServerFieldDetails } from '#lib/utils/forms.js';
+	import {
+		focusFirstInvalid,
+		mergeServerDetails,
+		type ServerFieldDetails
+	} from '#lib/utils/forms.js';
 	import {
 		Table,
 		TableBody,
@@ -339,7 +343,8 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 		<div class="space-y-1">
 			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Blog</h1>
 			<p class="max-w-2xl text-sm text-muted-foreground">
-				Manage blog posts and articles{#if !loading && !loadError} ({items.length} total){/if}.
+				Manage blog posts and articles{#if !loading && !loadError}
+					({items.length} total){/if}.
 			</p>
 		</div>
 		<Button variant="default" size="sm" onclick={openCreate}>
@@ -349,18 +354,18 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 	</div>
 
 	<div class="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
-		<StatTile value={items.length} label="Total Posts" loading={loading} />
+		<StatTile value={items.length} label="Total Posts" {loading} />
 		<StatTile
 			value={`${items.length > 0 ? Math.round((published / items.length) * 100) : 0}%`}
 			label="Published"
-			loading={loading}
+			{loading}
 		/>
-		<StatTile value={totalViews.toLocaleString()} label="Total Views" loading={loading} />
+		<StatTile value={totalViews.toLocaleString()} label="Total Views" {loading} />
 	</div>
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search blog posts..." class="ps-9" />
 	</div>
@@ -424,7 +429,9 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 							<TableCell colspan={7} class="py-8">
 								{#if items.length === 0}
 									<Empty>
-										<BrandedEmptyMedia variant="icon"><Newspaper class="size-6" /></BrandedEmptyMedia>
+										<BrandedEmptyMedia variant="icon"
+											><Newspaper class="size-6" /></BrandedEmptyMedia
+										>
 										<div class="space-y-1">
 											<p class="font-medium">No blog posts yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -521,13 +528,13 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit blog post' : 'New blog post'}</DialogTitle>
 			<DialogDescription>Create or update a blog article.</DialogDescription>
 		</DialogHeader>
 		<!-- DialogFooter lives INSIDE the form so the submit button actually submits. -->
-		<form bind:this={formEl} onsubmit={save} class="space-y-4">
+		<form bind:this={formEl} onsubmit={save} class="min-w-0 space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Title *</Field.FieldLabel>
 				<Input
@@ -553,7 +560,7 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 				{/if}
 				{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 			</Field.Field>
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Author</Field.FieldLabel>
 					<Input
@@ -573,7 +580,7 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 						>
 						<SelectContent>
 							{#each STATUS_OPTIONS as value (value)}
-								<SelectItem value={value}>{value}</SelectItem>
+								<SelectItem {value}>{value}</SelectItem>
 							{/each}
 						</SelectContent>
 					</Select>
@@ -589,9 +596,7 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 					aria-invalid={!!fieldErrors.publishedAt}
 					onchange={() => (fieldErrors = { ...fieldErrors, publishedAt: '' })}
 				/>
-				<p class="text-xs text-muted-foreground">
-					Leave empty to keep the stored publish date.
-				</p>
+				<p class="text-xs text-muted-foreground">Leave empty to keep the stored publish date.</p>
 				{#if fieldErrors.publishedAt}
 					<FieldError>{fieldErrors.publishedAt}</FieldError>
 				{/if}
@@ -725,7 +730,9 @@ The halal industry is poised for continued growth. Stakeholders who adapt to the
 <ConfirmDialog
 	open={confirmSlug !== null}
 	title="Delete blog post?"
-	description={confirmSlug ? `Delete blog post "${confirmTitle}"? This cannot be undone.` : undefined}
+	description={confirmSlug
+		? `Delete blog post "${confirmTitle}"? This cannot be undone.`
+		: undefined}
 	confirmLabel={deleting ? 'Deleting...' : 'Delete'}
 	onconfirm={confirmedRemove}
 />

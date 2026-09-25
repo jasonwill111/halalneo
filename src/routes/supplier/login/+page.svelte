@@ -89,10 +89,12 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<main class="flex min-h-dvh items-center justify-center px-4 pb-10 pt-6">
+<main class="flex min-h-dvh items-center justify-center px-4 pt-6 pb-10">
 	<div class="mx-auto w-full max-w-md animate-fade-in">
 		<div class="mb-5">
-			<div class="bg-primary/10 text-primary mx-auto mb-2 flex size-12 items-center justify-center rounded-xl">
+			<div
+				class="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary"
+			>
 				<Building2 class="size-6"></Building2>
 			</div>
 			<h1 class="text-center text-xl font-bold tracking-tight sm:text-2xl">Supplier Portal</h1>
@@ -115,7 +117,7 @@
 						<Label class="text-2xs font-medium">Email</Label>
 						<div class="relative">
 							<Mail
-								class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+								class="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
 							></Mail>
 							<Input
 								bind:value={email}
@@ -124,7 +126,9 @@
 								placeholder="you@company.com"
 								class="h-9 ps-9 text-2xs-plus"
 								aria-invalid={fieldErrors.email ? true : undefined}
-								oninput={() => { if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' }; }}
+								oninput={() => {
+									if (fieldErrors.email) fieldErrors = { ...fieldErrors, email: '' };
+								}}
 							/>
 						</div>
 						{#if fieldErrors.email}<FieldError>{fieldErrors.email}</FieldError>{/if}
@@ -133,7 +137,7 @@
 						<Label class="text-2xs font-medium">Password</Label>
 						<div class="relative">
 							<Lock
-								class="pointer-events-none absolute top-1/2 start-3 size-3.5 -translate-y-1/2 text-muted-foreground"
+								class="pointer-events-none absolute start-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground"
 							></Lock>
 							<Input
 								bind:value={password}
@@ -142,7 +146,9 @@
 								placeholder="••••••••"
 								class="h-9 ps-9 text-2xs-plus"
 								aria-invalid={fieldErrors.password ? true : undefined}
-								oninput={() => { if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' }; }}
+								oninput={() => {
+									if (fieldErrors.password) fieldErrors = { ...fieldErrors, password: '' };
+								}}
 							/>
 						</div>
 						{#if fieldErrors.password}<FieldError>{fieldErrors.password}</FieldError>{/if}

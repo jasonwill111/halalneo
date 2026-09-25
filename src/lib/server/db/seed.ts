@@ -28,7 +28,8 @@ export const marketGuidesSeed = [
 		],
 		standardBasis: 'HAS 23000 (Indonesia), aligned with OIC/SMIIC standards',
 		certificateValidity: '4 years (no changes in raw materials/process)',
-		estimatedCostUsd: 'IDR 300,000 processing fee (SME-subsidized); regular scheme varies by product',
+		estimatedCostUsd:
+			'IDR 300,000 processing fee (SME-subsidized); regular scheme varies by product',
 		processingTime: '3\u20136 months',
 		keyInsights: [
 			"World's largest Muslim population \u2014 the single biggest halal consumer market",
@@ -49,7 +50,8 @@ export const marketGuidesSeed = [
 			'Import licensing (through BPOM/other agencies) runs parallel to halal registration',
 			'Decentralized enforcement at port level can cause inconsistent clearance'
 		],
-		summary: "The world's largest halal market by population and the regulatory anchor of Southeast Asia. Since October 2024, halal certification is mandatory for all food and beverage products \u2014 imports included \u2014 making Indonesia both the biggest opportunity and the most complex compliance destination.",
+		summary:
+			"The world's largest halal market by population and the regulatory anchor of Southeast Asia. Since October 2024, halal certification is mandatory for all food and beverage products \u2014 imports included \u2014 making Indonesia both the biggest opportunity and the most complex compliance destination.",
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -67,9 +69,7 @@ export const marketGuidesSeed = [
 		marketSizeUsd: '$80B+ (halal industry ecosystem)',
 		mandateStatus: 'mandatory',
 		mandatorySince: 'Long-established (Trade Descriptions Act 2011)',
-		certifyingBodies: [
-			{ slug: 'jakim', name: 'JAKIM' }
-		],
+		certifyingBodies: [{ slug: 'jakim', name: 'JAKIM' }],
 		importRequirements: [
 			'JAKIM halal certificate or certificate from JAKIM-recognized foreign certification body (FHCB)',
 			'JAKIM maintains the reference list of recognized certifiers worldwide',
@@ -78,12 +78,13 @@ export const marketGuidesSeed = [
 			'Malay/English labeling with certifier logo'
 		],
 		standardBasis: 'MS 1500 (Malaysia), referencing OIC/SMIIC and Codex halal guidelines',
-		certificateValidity: '2 years (food premises); 1 year (abattoirs); 3 years (logistics/cosmetics/pharma); 5 years for clean 5+ year holders',
+		certificateValidity:
+			'2 years (food premises); 1 year (abattoirs); 3 years (logistics/cosmetics/pharma); 5 years for clean 5+ year holders',
 		estimatedCostUsd: '$2,000\u20135,000+ depending on audit scope and facility',
 		processingTime: '3\u20136 months',
 		keyInsights: [
 			'JAKIM certification is the global gold standard \u2014 accepted in Middle East, ASEAN, most OIC states',
-			"Malaysia chairs OIC/SMIIC standardization \u2014 strong influence on global halal norms",
+			'Malaysia chairs OIC/SMIIC standardization \u2014 strong influence on global halal norms',
 			'Double certification pathway: JAKIM for domestic, FHCB recognition for foreign suppliers',
 			'Halal Industry Master Plan 2030 targets Malaysia as the global halal hub',
 			"MIHAS trade show is world's largest halal exhibition (50,000+ visitors)"
@@ -100,7 +101,8 @@ export const marketGuidesSeed = [
 			'Cost of maintaining annual audits for abattoir/food premise categories',
 			'Bahasa Malaysia documentation required for certain categories'
 		],
-		summary: "The gold-standard halal jurisdiction. A JAKIM certificate is the most widely accepted halal credential in international trade, and Malaysia's regulatory maturity makes it the reference market for halal standards worldwide.",
+		summary:
+			"The gold-standard halal jurisdiction. A JAKIM certificate is the most widely accepted halal credential in international trade, and Malaysia's regulatory maturity makes it the reference market for halal standards worldwide.",
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -118,9 +120,7 @@ export const marketGuidesSeed = [
 		marketSizeUsd: '$120B+ (halal trade hub value)',
 		mandateStatus: 'mandatory',
 		mandatorySince: '2014 (ESMA halal scheme)',
-		certifyingBodies: [
-			{ slug: 'esma', name: 'ESMA / MOIAT' }
-		],
+		certifyingBodies: [{ slug: 'esma', name: 'ESMA / MOIAT' }],
 		importRequirements: [
 			'UAE halal scheme accreditation (UAE.S 2055-1/2055-2) for meat, poultry, supplements, nutraceuticals',
 			'Certificates from ESMA-accredited bodies (JAKIM, MUI, IFANCA accepted under accreditation)',
@@ -128,7 +128,8 @@ export const marketGuidesSeed = [
 			'Arabic labeling required on all food products',
 			'Halal National Mark available as an additional trust signal'
 		],
-		standardBasis: 'UAE.S 2055-1 (halal food requirements), UAE.S 2055-2 (management systems), GCC-wide recognition',
+		standardBasis:
+			'UAE.S 2055-1 (halal food requirements), UAE.S 2055-2 (management systems), GCC-wide recognition',
 		certificateValidity: '1 year',
 		estimatedCostUsd: '$3,000\u20138,000 including accreditation and audit',
 		processingTime: '3\u20138 weeks',
@@ -151,7 +152,8 @@ export const marketGuidesSeed = [
 			'Animal-origin ingredients in cosmetics/supplements face extra scrutiny',
 			'Arabic labeling and documentation requirements add cost'
 		],
-		summary: "The strategic re-export hub of the global halal trade. UAE accreditation unlocks the entire GCC and serves as the distribution gateway to the Middle East, Africa, and CIS markets.",
+		summary:
+			'The strategic re-export hub of the global halal trade. UAE accreditation unlocks the entire GCC and serves as the distribution gateway to the Middle East, Africa, and CIS markets.',
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -185,7 +187,7 @@ export const marketGuidesSeed = [
 		estimatedCostUsd: '$2,800\u20136,000',
 		processingTime: '6\u201312 weeks',
 		keyInsights: [
-			"Largest consumer market in the GCC \u2014 imports 80%+ of its food",
+			'Largest consumer market in the GCC \u2014 imports 80%+ of its food',
 			'SFDA regulates directly \u2014 no self-certification or voluntary pathway for food',
 			"Saudi Halal Expo (Riyadh) is MENA's largest dedicated halal trade show",
 			'Vision 2030 invests in domestic halal production \u2014 import substitution accelerating',
@@ -203,7 +205,8 @@ export const marketGuidesSeed = [
 			'Shipment-level rejections common if documentation mismatches product',
 			'Local distributor requirement for market entry in practice'
 		],
-		summary: "The largest and most import-dependent halal market in the Gulf. SFDA regulation is strict but well-documented \u2014 compliant suppliers find Saudi Arabia among the most rewarding halal destinations.",
+		summary:
+			'The largest and most import-dependent halal market in the Gulf. SFDA regulation is strict but well-documented \u2014 compliant suppliers find Saudi Arabia among the most rewarding halal destinations.',
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -254,7 +257,8 @@ export const marketGuidesSeed = [
 			'Halal and secular market segments coexist \u2014 certification messaging must be targeted',
 			'Currency fluctuation complicates long-term contracts'
 		],
-		summary: "The standards-setter. T\u00FCrkiye chairs OIC/SMIIC and hosts the World Halal Summit \u2014 its certification decisions shape mutual recognition for the entire OIC market of 1.9 billion consumers.",
+		summary:
+			'The standards-setter. T\u00FCrkiye chairs OIC/SMIIC and hosts the World Halal Summit \u2014 its certification decisions shape mutual recognition for the entire OIC market of 1.9 billion consumers.',
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -305,7 +309,8 @@ export const marketGuidesSeed = [
 			'Only a handful of recognized halal certifiers \u2014 bottleneck risk',
 			'Buyers often require additional third-party audits beyond local certification'
 		],
-		summary: "A high-potential halal production base and the world's second-largest Muslim consumer market, where formal halal certification infrastructure is now emerging to match its enormous scale.",
+		summary:
+			"A high-potential halal production base and the world's second-largest Muslim consumer market, where formal halal certification infrastructure is now emerging to match its enormous scale.",
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -335,7 +340,8 @@ export const marketGuidesSeed = [
 			'No government halal regulation \u2014 private certifier ecosystem',
 			'English labeling with FDA nutrition facts panel'
 		],
-		standardBasis: 'Private certifier standards (IFANCA most widely recognized); no federal halal standard',
+		standardBasis:
+			'Private certifier standards (IFANCA most widely recognized); no federal halal standard',
 		certificateValidity: '1 year (typical)',
 		estimatedCostUsd: '$4,000\u201310,000 (annual)',
 		processingTime: '8\u201316 weeks',
@@ -358,7 +364,8 @@ export const marketGuidesSeed = [
 			'Halal fraud incidents damaged consumer trust \u2014 buyers demand reputable certifiers',
 			'Fragmented consumer market across metro areas'
 		],
-		summary: "The most commercially mature voluntary halal market, where private certifiers govern a fast-growing $20B sector driven by mainstream retail adoption and a high-income Muslim consumer base.",
+		summary:
+			'The most commercially mature voluntary halal market, where private certifiers govern a fast-growing $20B sector driven by mainstream retail adoption and a high-income Muslim consumer base.',
 		metaTitle: '',
 		metaDescription: '',
 		keywords: '',
@@ -381,8 +388,16 @@ export const tradeShowsSeed = [
 		venue: 'Malaysia International Trade and Exhibition Centre (MITEC)',
 		website: 'https://mihas.my',
 		scale: 'mega',
-		description: "World's largest halal trade fair. Hosted by Malaysia's MITI and organised by MATRADE with JAKIM and HDC. Covers 14 halal industry clusters including food, pharma, Islamic finance, modest fashion, technology, and logistics.",
-		focus: ['Food & Beverage', 'Pharmaceuticals', 'Islamic Finance', 'Modest Fashion', 'Technology', 'Logistics'],
+		description:
+			"World's largest halal trade fair. Hosted by Malaysia's MITI and organised by MATRADE with JAKIM and HDC. Covers 14 halal industry clusters including food, pharma, Islamic finance, modest fashion, technology, and logistics.",
+		focus: [
+			'Food & Beverage',
+			'Pharmaceuticals',
+			'Islamic Finance',
+			'Modest Fashion',
+			'Technology',
+			'Logistics'
+		],
 		exhibitors: 1200,
 		visitors: 50000,
 		metaTitle: '',
@@ -403,7 +418,8 @@ export const tradeShowsSeed = [
 		venue: 'Dubai World Trade Centre',
 		website: 'https://gulfood.com',
 		scale: 'mega',
-		description: "World's largest food and beverage exhibition. Major halal sourcing hub connecting buyers from Middle East, Africa, and South Asia with global suppliers.",
+		description:
+			"World's largest food and beverage exhibition. Major halal sourcing hub connecting buyers from Middle East, Africa, and South Asia with global suppliers.",
 		focus: ['Food & Beverage', 'Halal Products', 'Dairy', 'Meat', 'Confectionery'],
 		exhibitors: 5000,
 		visitors: 100000,
@@ -425,7 +441,8 @@ export const tradeShowsSeed = [
 		venue: 'Istanbul Expo Center (\u0130FM)',
 		website: 'https://ifm.com.tr',
 		scale: 'mega',
-		description: 'Most politically significant halal industry event. Co-located with World Halal Summit and World Halal Council general assembly. T\u00FCrkiye holds OIC/SMIIC secretariat. Covers mutual recognition agreements between certification bodies globally.',
+		description:
+			'Most politically significant halal industry event. Co-located with World Halal Summit and World Halal Council general assembly. T\u00FCrkiye holds OIC/SMIIC secretariat. Covers mutual recognition agreements between certification bodies globally.',
 		focus: ['Certification', 'Standards', 'OIC Trade', 'Food', 'Cosmetics', 'Pharmaceuticals'],
 		exhibitors: 500,
 		visitors: 50000,
@@ -447,7 +464,8 @@ export const tradeShowsSeed = [
 		venue: 'Riyadh International Convention & Exhibition Center (RICEC)',
 		website: 'https://saudihalalexp.com',
 		scale: 'large',
-		description: "MENA region's largest dedicated halal industry exhibition. Covers food, pharmaceuticals, cosmetics, modest fashion, tourism, and Islamic finance.",
+		description:
+			"MENA region's largest dedicated halal industry exhibition. Covers food, pharmaceuticals, cosmetics, modest fashion, tourism, and Islamic finance.",
 		focus: ['Food', 'Pharmaceuticals', 'Cosmetics', 'Modest Fashion', 'Islamic Finance'],
 		exhibitors: null,
 		visitors: null,
@@ -469,7 +487,8 @@ export const tradeShowsSeed = [
 		venue: 'Metro Toronto Convention Centre',
 		website: 'https://halalexpo.ca',
 		scale: 'large',
-		description: "North America's core halal B2B platform. Attracts exhibitors from Malaysia, Turkey, UAE, Pakistan alongside North American producers targeting 1.4 million Muslim-majority households.",
+		description:
+			"North America's core halal B2B platform. Attracts exhibitors from Malaysia, Turkey, UAE, Pakistan alongside North American producers targeting 1.4 million Muslim-majority households.",
 		focus: ['Food & Beverage', 'B2B Matching', 'North American Market'],
 		exhibitors: null,
 		visitors: null,
@@ -491,7 +510,8 @@ export const tradeShowsSeed = [
 		venue: 'Indonesia Convention Exhibition (ICE BSD City)',
 		website: 'https://jakartahalalexp.com',
 		scale: 'large',
-		description: "Indonesia's flagship halal trade event. World's largest Muslim population market. Covers fashion, halal products, tourism, lifestyle, and Islamic finance.",
+		description:
+			"Indonesia's flagship halal trade event. World's largest Muslim population market. Covers fashion, halal products, tourism, lifestyle, and Islamic finance.",
 		focus: ['Fashion', 'Halal Products', 'Tourism', 'Lifestyle', 'Islamic Finance'],
 		exhibitors: null,
 		visitors: null,
@@ -513,7 +533,8 @@ export const tradeShowsSeed = [
 		venue: 'Dubai World Trade Centre',
 		website: 'https://mihasdubai.com',
 		scale: 'large',
-		description: 'International edition of MIHAS. Showcases 200+ Malaysian halal suppliers to GCC and Middle Eastern buyers.',
+		description:
+			'International edition of MIHAS. Showcases 200+ Malaysian halal suppliers to GCC and Middle Eastern buyers.',
 		focus: ['Malaysian Products', 'GCC Market', 'B2B Matching'],
 		exhibitors: null,
 		visitors: null,
@@ -535,7 +556,8 @@ export const tradeShowsSeed = [
 		venue: 'Doha Exhibition and Convention Center (DECC)',
 		website: 'https://qatarhalalexp.com',
 		scale: 'medium',
-		description: "Qatar's dedicated halal trade platform. Growing market driven by FIFA 2022 legacy infrastructure and Vision 2030.",
+		description:
+			"Qatar's dedicated halal trade platform. Growing market driven by FIFA 2022 legacy infrastructure and Vision 2030.",
 		focus: ['Food', 'Hospitality', 'Islamic Finance'],
 		exhibitors: null,
 		visitors: null,
@@ -557,7 +579,8 @@ export const tradeShowsSeed = [
 		venue: 'Tokyo Big Sight',
 		website: 'https://halaljapan.jp',
 		scale: 'medium',
-		description: "Japan's halal trade event connecting halal exporters with Japanese importers and retailers. Growing demand for halal products in Japan's tourism and retail sectors.",
+		description:
+			"Japan's halal trade event connecting halal exporters with Japanese importers and retailers. Growing demand for halal products in Japan's tourism and retail sectors.",
 		focus: ['Food', 'Tourism', 'Japanese Market'],
 		exhibitors: null,
 		visitors: null,
@@ -579,7 +602,8 @@ export const tradeShowsSeed = [
 		venue: 'Eko Hotel & Suites',
 		website: 'https://halalexponigeria.com',
 		scale: 'regional',
-		description: "West Africa's halal trade platform. Nigeria has Africa's largest Muslim population and growing halal demand.",
+		description:
+			"West Africa's halal trade platform. Nigeria has Africa's largest Muslim population and growing halal demand.",
 		focus: ['Food', 'Agriculture', 'West African Market'],
 		exhibitors: null,
 		visitors: null,
@@ -601,7 +625,8 @@ export const tradeShowsSeed = [
 		venue: 'Istanbul Expo Center',
 		website: 'https://worldhalalsummit.org',
 		scale: 'large',
-		description: 'Global summit on halal standards, certification, and policy. World Halal Council general assembly determines mutual recognition agreements between certification bodies.',
+		description:
+			'Global summit on halal standards, certification, and policy. World Halal Council general assembly determines mutual recognition agreements between certification bodies.',
 		focus: ['Certification', 'Standards', 'Policy', 'Mutual Recognition'],
 		exhibitors: null,
 		visitors: null,
@@ -623,7 +648,8 @@ export const tradeShowsSeed = [
 		venue: 'MITEC',
 		website: 'https://ghas.my',
 		scale: 'large',
-		description: 'Co-located with MIHAS. Global summit on halal industry trends, standards, and market access.',
+		description:
+			'Co-located with MIHAS. Global summit on halal industry trends, standards, and market access.',
 		focus: ['Industry Trends', 'Standards', 'Market Access'],
 		exhibitors: null,
 		visitors: null,
@@ -645,7 +671,8 @@ export const tradeShowsSeed = [
 		venue: 'Koelnmesse',
 		website: 'https://anuga.com',
 		scale: 'mega',
-		description: "World's largest food and beverage trade fair with dedicated Halal Market section. 7,000+ exhibitors from 200+ countries.",
+		description:
+			"World's largest food and beverage trade fair with dedicated Halal Market section. 7,000+ exhibitors from 200+ countries.",
 		focus: ['Food & Beverage', 'European Market', 'Global Sourcing'],
 		exhibitors: 7000,
 		visitors: 150000,
@@ -667,7 +694,8 @@ export const tradeShowsSeed = [
 		venue: 'World Trade Center Manila',
 		website: 'https://philippinehalalexp.com',
 		scale: 'regional',
-		description: "Philippines' halal trade platform. Growing Southeast Asian halal market with strong Muslim-majority southern regions.",
+		description:
+			"Philippines' halal trade platform. Growing Southeast Asian halal market with strong Muslim-majority southern regions.",
 		focus: ['Food', 'Halal Certification', 'ASEAN Market'],
 		exhibitors: null,
 		visitors: null,
@@ -689,7 +717,8 @@ export const tradeShowsSeed = [
 		venue: 'Saigon Exhibition & Convention Center (SECC)',
 		website: 'https://vietnamhalalexp.com',
 		scale: 'regional',
-		description: "Vietnam's halal trade event. Emerging halal manufacturing hub targeting ASEAN and OIC markets.",
+		description:
+			"Vietnam's halal trade event. Emerging halal manufacturing hub targeting ASEAN and OIC markets.",
 		focus: ['Manufacturing', 'ASEAN Market', 'Export'],
 		exhibitors: null,
 		visitors: null,
@@ -711,7 +740,8 @@ export const tradeShowsSeed = [
 		venue: 'Paris-Nord Villepinte',
 		website: 'https://francehalalexp.com',
 		scale: 'medium',
-		description: "Europe's largest halal consumer market event. France has 5+ million Muslim consumers.",
+		description:
+			"Europe's largest halal consumer market event. France has 5+ million Muslim consumers.",
 		focus: ['Consumer Products', 'European Market', 'Food & Beverage'],
 		exhibitors: null,
 		visitors: null,
@@ -733,7 +763,8 @@ export const tradeShowsSeed = [
 		venue: 'Pragati Maidan',
 		website: 'https://indiahalalexp.com',
 		scale: 'large',
-		description: "India's halal trade platform. World's third-largest Muslim population market with growing halal industry.",
+		description:
+			"India's halal trade platform. World's third-largest Muslim population market with growing halal industry.",
 		focus: ['Food', 'Cosmetics', 'Pharmaceuticals', 'Indian Market'],
 		exhibitors: null,
 		visitors: null,
@@ -755,7 +786,8 @@ export const tradeShowsSeed = [
 		venue: 'MITEC',
 		website: 'https://halfest.my',
 		scale: 'medium',
-		description: "Malaysia's consumer halal festival. B2C focused with food tasting, product launches, and consumer engagement.",
+		description:
+			"Malaysia's consumer halal festival. B2C focused with food tasting, product launches, and consumer engagement.",
 		focus: ['Consumer Products', 'Food', 'Lifestyle'],
 		exhibitors: null,
 		visitors: null,
@@ -777,7 +809,8 @@ export const tradeShowsSeed = [
 		venue: 'Abu Dhabi National Exhibition Centre',
 		website: 'https://adife.ae',
 		scale: 'large',
-		description: "Abu Dhabi's international food exhibition. Major sourcing event for Middle Eastern and North African food markets.",
+		description:
+			"Abu Dhabi's international food exhibition. Major sourcing event for Middle Eastern and North African food markets.",
 		focus: ['Food & Beverage', 'Middle East Market', 'Halal Sourcing'],
 		exhibitors: null,
 		visitors: null,
@@ -799,7 +832,8 @@ export const tradeShowsSeed = [
 		venue: 'Messe Frankfurt',
 		website: 'https://halalexpo-deutschland.de',
 		scale: 'medium',
-		description: "Central Europe's halal trade platform. Growing audience of Central European buyers with no prior dedicated halal event.",
+		description:
+			"Central Europe's halal trade platform. Growing audience of Central European buyers with no prior dedicated halal event.",
 		focus: ['European Market', 'Food', 'B2B Matching'],
 		exhibitors: null,
 		visitors: null,

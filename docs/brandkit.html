@@ -511,13 +511,21 @@
 				<p class="eyebrow">01 · Symbol</p>
 				<h2 class="sec-title">The Mark — rub el hizb octagram</h2>
 				<p class="sec-lead">
-					Two interlocked squares on a 64&nbsp;px grid: one axis-aligned, one rotated 45°.
-					Single geometry source: <code>src/lib/components/site/mark.svelte</code>. Recolor via
+					Two interlocked squares on a 64&nbsp;px grid: one axis-aligned, one rotated 45°. Single
+					geometry source: <code>src/lib/components/site/mark.svelte</code>. Recolor via
 					<code>currentColor</code> — never redraw.
 				</p>
-				<div class="grid g3">
+				<div class="g3 grid">
 					<div class="panel">
-						<svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="var(--foreground)" stroke-width="4" stroke-linejoin="round">
+						<svg
+							viewBox="0 0 64 64"
+							width="56"
+							height="56"
+							fill="none"
+							stroke="var(--foreground)"
+							stroke-width="4"
+							stroke-linejoin="round"
+						>
 							<path d="M15 15L49 15L49 49L15 49Z" />
 							<path d="M32 7.96L56.04 32L32 56.04L7.96 32Z" />
 						</svg>
@@ -526,7 +534,9 @@
 					</div>
 					<div class="panel">
 						<svg viewBox="0 0 64 64" width="56" height="56" fill="var(--primary)">
-							<path d="M32 7.96 L 39.04 15 L 49 15 L 49 24.96 L 56.04 32 L 49 39.04 L 49 49 L 39.04 49 L 32 56.04 L 24.96 49 L 15 49 L 15 39.04 L 7.96 32 L 15 24.96 L 15 15 L 24.96 15 Z" />
+							<path
+								d="M32 7.96 L 39.04 15 L 49 15 L 49 24.96 L 56.04 32 L 49 39.04 L 49 49 L 39.04 49 L 32 56.04 L 24.96 49 L 15 49 L 15 39.04 L 7.96 32 L 15 24.96 L 15 15 L 24.96 15 Z"
+							/>
 						</svg>
 						<h3>solid</h3>
 						<p class="meta">Seals, favicons, filled states. fill = currentColor.</p>
@@ -541,9 +551,10 @@
 					</div>
 				</div>
 				<p class="meta" style="margin-block-start: 14px">
-					Whitelist for pattern texture: hero containers, footer, sidebar brand strip, login/register,
-					404. ❗ Cultural red lines (§8 plan): crescent and other religious symbols are banned as UI
-					decoration; certification seals must never imitate JAKIM / MUI / HFA official marks.
+					Whitelist for pattern texture: hero containers, footer, sidebar brand strip,
+					login/register, 404. ❗ Cultural red lines (§8 plan): crescent and other religious symbols
+					are banned as UI decoration; certification seals must never imitate JAKIM / MUI / HFA
+					official marks.
 				</p>
 			</section>
 
@@ -552,11 +563,11 @@
 				<p class="eyebrow">02 · Color</p>
 				<h2 class="sec-title">One accent, warm/ink neutrals, five semantic roles</h2>
 				<p class="sec-lead">
-					Values below are the live <code>layout.css</code> declarations — light block and dark block
-					side by side. Tailwind native palettes and hex hard-coding are banned; every surface reads
-					through these tokens.
+					Values below are the live <code>layout.css</code> declarations — light block and dark
+					block side by side. Tailwind native palettes and hex hard-coding are banned; every surface
+					reads through these tokens.
 				</p>
-				<div class="grid g2" style="margin-block-end: 24px">
+				<div class="g2 grid" style="margin-block-end: 24px">
 					<div class="panel">
 						<h3>Light canvas</h3>
 						<p class="meta">Warm Cream page · Off-White card · Light ink text</p>
@@ -649,11 +660,22 @@
 					</div>
 					<div class="sw">
 						<div style="background: oklch(0.17 0.012 265); position: relative">
-							<span style="position: absolute; inset-block-end: 8px; inset-inline-start: 10px; color: oklch(0.985 0.004 88); font-size: 10px">on-dark text</span>
+							<span
+								style="
+									position: absolute;
+									inset-block-end: 8px;
+									inset-inline-start: 10px;
+									color: oklch(0.985 0.004 88);
+									font-size: 10px;
+								"
+								>on-dark text</span
+							>
 						</div>
 						<div class="sw-body">
 							<p class="sw-name">scrim + on-dark</p>
-							<p class="sw-val">scrim 0.17 0.012 265 (theme-fixed)<br />on-dark L 0.985 / D 0.915</p>
+							<p class="sw-val">
+								scrim 0.17 0.012 265 (theme-fixed)<br />on-dark L 0.985 / D 0.915
+							</p>
 						</div>
 					</div>
 				</div>
@@ -662,8 +684,24 @@
 					<div class="badge badge-ok">success 0.5/0.72 · 160/152 — certified</div>
 					<div class="badge badge-info">info 0.52/0.72 · 255 — tools &amp; links</div>
 					<div class="badge badge-warn">warn 0.52/0.75 · 75/80 — pending</div>
-					<div class="badge" style="color: var(--teal); border-color: color-mix(in oklab, var(--teal) 35%, transparent)">teal — services/consultants</div>
-					<div class="badge" style="color: var(--gold); border-color: color-mix(in oklab, var(--gold) 35%, transparent)">gold — editorial (chips only, never surfaces)</div>
+					<div
+						class="badge"
+						style="
+							color: var(--teal);
+							border-color: color-mix(in oklab, var(--teal) 35%, transparent);
+						"
+					>
+						teal — services/consultants
+					</div>
+					<div
+						class="badge"
+						style="
+							color: var(--gold);
+							border-color: color-mix(in oklab, var(--gold) 35%, transparent);
+						"
+					>
+						gold — editorial (chips only, never surfaces)
+					</div>
 				</div>
 			</section>
 
@@ -676,7 +714,7 @@
 					Space Grotesk 400–700 variable). Almarai gives Arabic the same voice as Latin — one pair,
 					both scripts, RTL-ready.
 				</p>
-				<div class="grid g2">
+				<div class="g2 grid">
 					<div class="panel">
 						<p class="meta">Display — Space Grotesk 600 / clamp(2.25→3.75rem) / -0.02em / 1.1</p>
 						<p class="spec-display">Verify before you trade.</p>
@@ -687,15 +725,43 @@
 						<h3 style="font-family: var(--font-heading)">Hierarchy</h3>
 						<table>
 							<thead>
-								<tr><th>Role</th><th>Size</th><th>Weight</th></tr>
+								<tr>
+									<th>Role</th>
+									<th>Size</th>
+									<th>Weight</th>
+								</tr>
 							</thead>
 							<tbody>
-								<tr><td>Display</td><td class="num">36–60px</td><td class="num">600</td></tr>
-								<tr><td>Headline h1/h2</td><td class="num">30px</td><td class="num">600</td></tr>
-								<tr><td>Title</td><td class="num">18px</td><td class="num">600</td></tr>
-								<tr><td>Body</td><td class="num">16px / 1.6</td><td class="num">400</td></tr>
-								<tr><td>Label</td><td class="num">12px</td><td class="num">500</td></tr>
-								<tr><td>Micro (2xs)</td><td class="num">10px / 1.35</td><td class="num">500</td></tr>
+								<tr>
+									<td>Display</td>
+									<td class="num">36–60px</td>
+									<td class="num">600</td>
+								</tr>
+								<tr>
+									<td>Headline h1/h2</td>
+									<td class="num">30px</td>
+									<td class="num">600</td>
+								</tr>
+								<tr>
+									<td>Title</td>
+									<td class="num">18px</td>
+									<td class="num">600</td>
+								</tr>
+								<tr>
+									<td>Body</td>
+									<td class="num">16px / 1.6</td>
+									<td class="num">400</td>
+								</tr>
+								<tr>
+									<td>Label</td>
+									<td class="num">12px</td>
+									<td class="num">500</td>
+								</tr>
+								<tr>
+									<td>Micro (2xs)</td>
+									<td class="num">10px / 1.35</td>
+									<td class="num">500</td>
+								</tr>
 							</tbody>
 						</table>
 						<p class="meta" style="margin-block-start: 12px">
@@ -711,7 +777,7 @@
 			<section id="shape">
 				<p class="eyebrow">04 · Shape &amp; depth</p>
 				<h2 class="sec-title">Radii tighten inward; shadows are warm-tinted</h2>
-				<div class="grid g3">
+				<div class="g3 grid">
 					<div class="panel">
 						<h3>Radius</h3>
 						<div style="display: flex; gap: 10px; margin-block: 10px">
@@ -730,8 +796,10 @@
 							<div class="sbox" style="inline-size: 64px; box-shadow: var(--shadow-lg)"></div>
 							<div class="sbox" style="inline-size: 64px; box-shadow: var(--shadow-xl)"></div>
 						</div>
-						<p class="meta">sm divider · md hover-lift · lg sheet · xl palette. All
-							<code>oklch(0.35 0.05 60 / α)</code> — warm, never pure black.</p>
+						<p class="meta">
+							sm divider · md hover-lift · lg sheet · xl palette. All
+							<code>oklch(0.35 0.05 60 / α)</code> — warm, never pure black.
+						</p>
 					</div>
 					<div class="panel">
 						<h3>Motion</h3>
@@ -750,29 +818,63 @@
 			<section id="components">
 				<p class="eyebrow">05 · Components</p>
 				<h2 class="sec-title">shadcn-svelte on brand tokens</h2>
-				<div class="grid g2">
+				<div class="g2 grid">
 					<div class="panel">
 						<h3>Controls (h-8 · md radius · press 0.97)</h3>
-						<div style="display: flex; gap: 10px; align-items: center; margin-block: 12px; flex-wrap: wrap">
+						<div
+							style="
+								display: flex;
+								gap: 10px;
+								align-items: center;
+								margin-block: 12px;
+								flex-wrap: wrap;
+							"
+						>
 							<button class="btn btn-primary">Get certified</button>
 							<button class="btn btn-outline">Browse products</button>
 							<input class="inp" placeholder="Search suppliers…" />
 						</div>
-						<p class="meta">Primary fills one action per view; peers stay outline. Focus ring 2px <code>--ring</code>.</p>
+						<p class="meta">
+							Primary fills one action per view; peers stay outline. Focus ring 2px
+							<code>--ring</code>.
+						</p>
 					</div>
 					<div class="panel">
 						<h3>Certification seal</h3>
 						<div style="display: flex; gap: 16px; align-items: center; margin-block: 12px">
 							<svg viewBox="0 0 64 64" width="56" height="56">
-								<circle cx="32" cy="32" r="29" fill="none" stroke="var(--success)" stroke-width="2.5" />
+								<circle
+									cx="32"
+									cy="32"
+									r="29"
+									fill="none"
+									stroke="var(--success)"
+									stroke-width="2.5"
+								/>
 								<g transform="translate(14 14) scale(0.5625)">
-									<path d="M32 7.96 L 39.04 15 L 49 15 L 49 24.96 L 56.04 32 L 49 39.04 L 49 49 L 39.04 49 L 32 56.04 L 24.96 49 L 15 49 L 15 39.04 L 7.96 32 L 15 24.96 L 15 15 L 24.96 15 Z" fill="var(--success)" opacity="0.18" />
+									<path
+										d="M32 7.96 L 39.04 15 L 49 15 L 49 24.96 L 56.04 32 L 49 39.04 L 49 49 L 39.04 49 L 32 56.04 L 24.96 49 L 15 49 L 15 39.04 L 7.96 32 L 15 24.96 L 15 15 L 24.96 15 Z"
+										fill="var(--success)"
+										opacity="0.18"
+									/>
 								</g>
-								<text x="32" y="36.5" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="700" fill="var(--success)">J</text>
+								<text
+									x="32"
+									y="36.5"
+									text-anchor="middle"
+									font-family="Space Grotesk, sans-serif"
+									font-size="13"
+									font-weight="700"
+									fill="var(--success)"
+								>
+									J
+								</text>
 							</svg>
 							<div>
-								<p class="meta">Ring + status color + body abbreviation. State colors only from
-									success / warn / destructive. Never imitates official authority marks.</p>
+								<p class="meta">
+									Ring + status color + body abbreviation. State colors only from success / warn /
+									destructive. Never imitates official authority marks.
+								</p>
 							</div>
 						</div>
 					</div>
@@ -788,26 +890,70 @@
 					<code>static/brand/</code> (never R2). Re-run <code>pnpm brand</code> and re-sync
 					<code>app.html</code> theme-color after any token change.
 				</p>
-				<div class="grid g2">
+				<div class="g2 grid">
 					<div class="panel">
 						<h3>Icons</h3>
 						<div class="icon-row" style="margin-block: 12px">
-							<figure><img src="../static/brand/icon-512.png" width="72" height="72" alt="HalalNeo 512px icon" /><figcaption class="meta">icon-512</figcaption></figure>
-							<figure><img src="../static/brand/icon-192.png" width="48" height="48" alt="HalalNeo 192px icon" /><figcaption class="meta">icon-192</figcaption></figure>
-							<figure><img src="../static/brand/apple-touch-icon.png" width="48" height="48" alt="Apple touch icon" /><figcaption class="meta">apple-touch</figcaption></figure>
-							<figure><img src="../static/brand/favicon-32.png" width="32" height="32" alt="Favicon 32px" /><figcaption class="meta">favicon-32</figcaption></figure>
+							<figure>
+								<img
+									src="../static/brand/icon-512.png"
+									width="72"
+									height="72"
+									alt="HalalNeo 512px icon"
+								/>
+								<figcaption class="meta">icon-512</figcaption>
+							</figure>
+							<figure>
+								<img
+									src="../static/brand/icon-192.png"
+									width="48"
+									height="48"
+									alt="HalalNeo 192px icon"
+								/>
+								<figcaption class="meta">icon-192</figcaption>
+							</figure>
+							<figure>
+								<img
+									src="../static/brand/apple-touch-icon.png"
+									width="48"
+									height="48"
+									alt="Apple touch icon"
+								/>
+								<figcaption class="meta">apple-touch</figcaption>
+							</figure>
+							<figure>
+								<img
+									src="../static/brand/favicon-32.png"
+									width="32"
+									height="32"
+									alt="Favicon 32px"
+								/>
+								<figcaption class="meta">favicon-32</figcaption>
+							</figure>
 						</div>
 						<p class="meta">favicon.svg / icon-192.svg / icon-512.svg also ship as vector.</p>
 					</div>
 					<div class="panel">
 						<h3>Social card</h3>
-						<img class="app-img" style="margin-block: 12px" src="../static/brand/og-default.png" alt="HalalNeo 1200×630 social share card: octagram, girih texture, Space Grotesk wordmark on Certified Green" />
+						<img
+							class="app-img"
+							style="margin-block: 12px"
+							src="../static/brand/og-default.png"
+							alt="HalalNeo 1200×630 social share card: octagram, girih texture, Space Grotesk wordmark on Certified Green"
+						/>
 						<p class="meta">og-default.png — 1200×630, primary green, girih texture, wordmark.</p>
 					</div>
 				</div>
 				<div class="panel on-dark-demo pattern-girih" style="margin-block-start: 14px">
 					<p class="eyebrow">Halal trade intelligence</p>
-					<h3 style="font-family: var(--font-heading); font-size: 22px; font-weight: 600; color: var(--on-dark)">
+					<h3
+						style="
+							font-family: var(--font-heading);
+							font-size: 22px;
+							font-weight: 600;
+							color: var(--on-dark);
+						"
+					>
 						Every claim needs proof.
 					</h3>
 					<p style="max-width: 52ch; opacity: 0.85">
@@ -820,16 +966,29 @@
 
 		<footer>
 			<div class="wrap">
-				<p style="font-weight: 600; color: var(--foreground)">Sources of truth — this page is a render, not the system</p>
+				<p style="font-weight: 600; color: var(--foreground)">
+					Sources of truth — this page is a render, not the system
+				</p>
 				<ul>
-					<li>Tokens (live values): <code>src/routes/layout.css</code> <code>:root</code> / <code>.dark</code></li>
+					<li>
+						Tokens (live values): <code>src/routes/layout.css</code> <code>:root</code> /
+						<code>.dark</code>
+					</li>
 					<li>Rules + rationale: <code>DESIGN.md</code> (frontmatter must equal layout.css)</li>
 					<li>Mark geometry: <code>src/lib/components/site/mark.svelte</code></li>
-					<li>Assets: <code>pnpm brand</code> → <code>scripts/gen-brand-assets.mjs</code> → <code>static/brand/</code></li>
-					<li>Cultural red lines + RTL discipline: <code>docs/design-upgrade-plan.md</code> §8, §9 / AGENTS.md §2.7</li>
+					<li>
+						Assets: <code>pnpm brand</code> → <code>scripts/gen-brand-assets.mjs</code> →
+						<code>static/brand/</code>
+					</li>
+					<li>
+						Cultural red lines + RTL discipline: <code>docs/design-upgrade-plan.md</code> §8, §9 /
+						AGENTS.md §2.7
+					</li>
 				</ul>
-				<p>Last synced: 2026-09-20 · app version deployed 56319329 (B6). Update this file whenever tokens,
-					mark, or assets change — same commit as the change.</p>
+				<p>
+					Last synced: 2026-09-20 · app version deployed 56319329 (B6). Update this file whenever
+					tokens, mark, or assets change — same commit as the change.
+				</p>
 			</div>
 		</footer>
 

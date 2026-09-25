@@ -84,13 +84,13 @@
 
 <section class="space-y-4 sm:space-y-6">
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-		<div class="max-w-2xl space-y-2">
-			<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-				<FileTextIcon class="size-4" />
+		<div class="max-w-2xl space-y-1.5">
+			<div class="flex items-center gap-2 text-2xs font-medium text-muted-foreground">
+				<FileTextIcon class="size-3.5" />
 				Buying Requests
 			</div>
-			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Live sourcing needs</h1>
-			<p class="text-xs text-muted-foreground sm:text-sm">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Live sourcing needs</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				{filtered.length} open buying requests from halal buyers — quote directly, no middlemen. Posting
 				is free (1 request/week).
 			</p>
@@ -103,7 +103,7 @@
 
 	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<div class="relative flex-1 sm:max-w-xs">
-			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search requests..."
@@ -118,12 +118,20 @@
 		/>
 	</div>
 
+	{#if (data.rfqs ?? []).length > 0}
+		<p class="text-2xs text-muted-foreground">
+			Showing {filtered.length} of {(data.rfqs ?? []).length} buying requests
+		</p>
+	{/if}
+
 	{#if data.loadError && paged.length === 0}
 		<ErrorRetry failure={data.loadError} subject="buying requests" />
 	{:else if paged.length === 0}
 		<Empty>
 			<EmptyHeader>
-				<BrandedEmptyMedia><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></BrandedEmptyMedia>
+				<BrandedEmptyMedia
+					><PackageIcon class="size-6 text-muted-foreground"></PackageIcon></BrandedEmptyMedia
+				>
 				<EmptyTitle>
 					{query.trim() || activeCategory !== 'all'
 						? 'No buying requests match these filters'

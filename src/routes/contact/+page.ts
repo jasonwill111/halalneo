@@ -9,7 +9,12 @@ export const load: PageLoad = () => {
 			description:
 				'Get in touch with HalalNeo for partnerships, listing inquiries, certification support, or general questions.',
 			ogImage: 'https://halalneo.com/brand/og-default.png',
-			keywords: ['contact HalalNeo', 'partnership inquiries', 'halal certification support', 'B2B contact']
+			keywords: [
+				'contact HalalNeo',
+				'partnership inquiries',
+				'halal certification support',
+				'B2B contact'
+			]
 		}
 	};
 };

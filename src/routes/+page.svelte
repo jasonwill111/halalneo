@@ -20,7 +20,6 @@
 	import Pause from '@lucide/svelte/icons/pause';
 	import SectionHead from '#lib/components/site/section-head.svelte';
 	import { onMount } from 'svelte';
-	import SeoMeta from '#lib/components/seo-meta.svelte';
 	let { data } = $props();
 
 	const categoryColors = TILE_COLORS;
@@ -85,15 +84,6 @@
 	});
 </script>
 
-<SeoMeta
-	title="HalalNeo - Halal Trade Intelligence Platform for Global Halal Markets"
-	description="Research certification bodies, verify suppliers, and navigate global halal markets. JAKIM, MUI, GSO guides, market entry reports, and supplier verification."
-	ogTitle="HalalNeo - Halal Trade Intelligence"
-	ogDescription="Comprehensive halal certification guides, supplier verification, and market entry intelligence."
-	keywords="halal, halal certification, halal suppliers, JAKIM, MUI, GSO, halal trade, halal market, halal intelligence, halal verification"
-	canonical="/"
-/>
-
 <svelte:head>
 	<link rel="preload" as="image" href={slides[0].image} fetchpriority="high" />
 	{@html `\u003cscript type="application/ld+json">${JSON.stringify({
@@ -130,9 +120,9 @@
 </svelte:head>
 
 <!-- HERO -->
-<section class="flex flex-col items-center py-2 text-center sm:py-4">
+<section class="flex min-w-0 flex-col items-center py-2 text-center sm:py-4">
 	<span
-		class="animate-enter glass-sm relative mb-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-2xs font-medium text-secondary-foreground"
+		class="animate-enter glass-sm relative mb-2 inline-flex max-w-full items-center gap-1.5 rounded-full px-2 py-0.5 text-center text-2xs leading-tight font-medium text-secondary-foreground"
 	>
 		<ShieldCheck class="size-2.5 text-primary"></ShieldCheck>
 		Halal B2B marketplace & trade intelligence
@@ -167,16 +157,16 @@
 						class="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/30"
 					></div>
 					<div class="absolute inset-0 flex items-center">
-						<div class="max-w-xl px-4 pb-6 sm:px-10 sm:pb-0">
+						<div class="max-w-xl min-w-0 px-4 pb-6 sm:px-10 sm:pb-0">
 							{#if i === 0}
 								<h1
-									class="text-base leading-tight font-bold tracking-tight whitespace-pre-line sm:text-2xl sm:text-4xl lg:text-5xl"
+									class="text-lg leading-tight font-bold tracking-tight whitespace-pre-line sm:text-4xl lg:text-5xl"
 								>
 									{slide.title}
 								</h1>
 							{:else}
 								<p
-									class="text-base leading-tight font-bold tracking-tight whitespace-pre-line sm:text-2xl sm:text-4xl lg:text-5xl"
+									class="text-lg leading-tight font-bold tracking-tight whitespace-pre-line sm:text-4xl lg:text-5xl"
 									aria-hidden="true"
 								>
 									{slide.title}
@@ -185,15 +175,17 @@
 							<p class="mt-1.5 max-w-md text-2xs-plus text-muted-foreground sm:mt-2 sm:text-sm">
 								{slide.subtitle}
 							</p>
-							<div class="mt-2.5 flex flex-col gap-1.5 sm:mt-3 sm:flex-row sm:gap-2">
-								<Button href={localizeHref('/knowledge-base')} size="sm" class="sm:size-lg"
-									>Explore Knowledge Base</Button
+							<div class="mt-2.5 flex min-w-0 flex-col gap-1.5 sm:mt-3 sm:flex-row sm:gap-2">
+								<Button
+									href={localizeHref('/knowledge-base')}
+									size="sm"
+									class="sm:size-lg w-full sm:w-auto">Explore Knowledge Base</Button
 								>
 								<Button
 									href={localizeHref('/categories')}
 									variant="outline"
 									size="sm"
-									class="sm:size-lg">Browse Categories</Button
+									class="sm:size-lg w-full sm:w-auto">Browse Categories</Button
 								>
 							</div>
 						</div>
@@ -220,18 +212,19 @@
 				{/each}
 			</div>
 			<!-- Autoplay pause control (WCAG 2.2.2: moving content > 5s needs a pause) -->
-			<button
-				type="button"
+			<Button
+				variant="ghost"
+				size="icon"
 				onclick={togglePause}
 				aria-label={paused ? 'Resume carousel' : 'Pause carousel'}
-				class="glass-sm absolute end-2 bottom-2 z-20 flex size-11 items-center justify-center rounded-md text-foreground/80 transition-colors hover:text-foreground sm:bottom-3"
+				class="glass-sm absolute end-2 bottom-2 z-20 size-11 bg-transparent! text-foreground/80 hover:bg-transparent! hover:text-foreground sm:bottom-3"
 			>
 				{#if paused}
 					<Play class="size-4" />
 				{:else}
 					<Pause class="size-4" />
 				{/if}
-			</button>
+			</Button>
 		</div>
 	</div>
 	<p
@@ -245,7 +238,7 @@
 	</p>
 </section>
 <!-- STATS -->
-<section class="flex gap-1 sm:gap-2 lg:grid lg:grid-cols-4">
+<section class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
 	<StatTile value={data.stats.kbSections} label="KB sections" tone="info" />
 	<StatTile value={data.stats.glossaryTerms} label="Glossary" tone="warn" />
 	<StatTile value={`${data.stats.certifierCount}+`} label="Certifiers" tone="success" />
@@ -262,16 +255,18 @@
 		linkLabel="View all"
 	/>
 	<div
-		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
+		class="snap-scroll-mandatory -mx-4 flex snap-x scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:px-0 lg:grid-cols-3"
 	>
 		{#each [{ href: '/tools/ingredient-checker', icon: FlaskConical, tone: 'text-info', name: 'Ingredient Checker', desc: 'Analyze ingredients for halal compliance.' }, { href: '/tools/certification-cost', icon: Calculator, tone: 'text-warn', name: 'Certification Cost', desc: 'Estimate costs across 7 certifiers.' }, { href: '/tools/landed-cost', icon: Banknote, tone: 'text-success', name: 'Landed Cost', desc: 'True per-unit cost, duty to door.' }, { href: '/tools/rfq-builder', icon: FileText, tone: 'text-teal', name: 'RFQ Builder', desc: 'RFQs suppliers actually answer.' }, { href: '/export-docs', icon: FileText, tone: 'text-info', name: 'Export Docs', desc: 'Templates for suppliers & importers.' }, { href: '/verify', icon: Search, tone: 'text-success', name: 'Verify Certificate', desc: 'Check certificate authenticity.' }] as tool (tool.href)}
 			<a
 				href={localizeHref(tool.href)}
-				class="group press-scale flex w-[200px] shrink-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
+				class="group press-scale flex w-[200px] min-w-0 shrink-0 snap-start items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-4"
 			>
 				<tool.icon class="size-4 shrink-0 {tool.tone} sm:size-6" />
 				<div class="min-w-0">
-					<h3 class="text-xs font-medium transition-colors group-hover:text-primary sm:text-sm">
+					<h3
+						class="truncate text-xs font-medium transition-colors group-hover:text-primary sm:text-sm"
+					>
 						{tool.name}
 					</h3>
 					<p class="truncate text-2xs text-muted-foreground sm:text-xs">
@@ -290,10 +285,10 @@
 		{#each data.categories.slice(0, 6) as category, i (category.slug)}
 			<a
 				href={localizeHref(`/category/${category.slug}`)}
-				class="group press-scale flex items-center gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+				class="group press-scale flex min-w-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:gap-3 sm:rounded-xl sm:p-4"
 			>
 				<div
-					class="flex size-10 shrink-0 items-center justify-center rounded-lg {categoryColors[
+					class="flex size-9 shrink-0 items-center justify-center rounded-lg sm:size-10 {categoryColors[
 						i % categoryColors.length
 					]}"
 				>
@@ -313,42 +308,45 @@
 <!-- MARKETPLACE -->
 <section
 	{@attach reveal}
-	class="rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
+	class="min-w-0 rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
 >
 	<div class="text-center">
 		<Badge variant="secondary" class="mb-2 sm:mb-3">Launching 2026</Badge>
-		<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">
-			Verified Supplier Marketplace
-		</h2>
+		<h2 class="text-base font-semibold tracking-tight sm:text-xl">Verified Supplier Marketplace</h2>
 		<p class="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
 			Every supplier listing backed by real halal certification data — certifying body, standard,
 			scope and expiry shown up front. No unverifiable claims.
 		</p>
 	</div>
-	<div class="mt-4 grid grid-cols-3 gap-3 sm:mx-auto sm:mt-6 sm:max-w-lg">
-		<div class="rounded-xl bg-muted/50 p-3 text-center">
+	<div class="mt-3 grid min-w-0 grid-cols-3 gap-2 sm:mx-auto sm:mt-4 sm:max-w-lg sm:gap-3">
+		<div class="min-w-0 rounded-xl bg-muted/50 p-2.5 text-center sm:p-3">
 			<p class="text-base font-bold text-info tabular-nums sm:text-lg">
 				{data.stats.verifiedSuppliers}
 			</p>
 			<p class="text-2xs text-muted-foreground sm:text-xs">Verified suppliers</p>
 		</div>
-		<div class="rounded-xl bg-muted/50 p-3 text-center">
+		<div class="min-w-0 rounded-xl bg-muted/50 p-2.5 text-center sm:p-3">
 			<p class="text-base font-bold text-warn tabular-nums sm:text-lg">
 				{data.stats.certifierCount}
 			</p>
 			<p class="text-2xs text-muted-foreground sm:text-xs">Certifying bodies</p>
 		</div>
-		<div class="rounded-xl bg-muted/50 p-3 text-center">
+		<div class="min-w-0 rounded-xl bg-muted/50 p-2.5 text-center sm:p-3">
 			<p class="text-base font-bold text-success tabular-nums sm:text-lg">
 				{data.stats.guideCount}
 			</p>
 			<p class="text-2xs text-muted-foreground sm:text-xs">Market guides</p>
 		</div>
 	</div>
-	<div class="mt-4 flex flex-col items-center justify-center gap-2 sm:mt-6 sm:flex-row sm:gap-3">
-		<Button href={localizeHref('/register')} size="sm" class="sm:size-lg">Join the waitlist</Button>
-		<Button href={localizeHref('/suppliers')} variant="outline" size="sm" class="sm:size-lg"
-			>Browse suppliers</Button
+	<div class="mt-3 flex flex-col items-center justify-center gap-2 sm:mt-4 sm:flex-row sm:gap-3">
+		<Button href={localizeHref('/register')} size="sm" class="sm:size-lg w-full sm:w-auto"
+			>Join the waitlist</Button
+		>
+		<Button
+			href={localizeHref('/suppliers')}
+			variant="outline"
+			size="sm"
+			class="sm:size-lg w-full sm:w-auto">Browse suppliers</Button
 		>
 	</div>
 </section>
@@ -362,14 +360,16 @@
 		linkLabel="View all"
 	/>
 	<div
-		class="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:px-0 lg:grid-cols-3"
+		class="snap-scroll-mandatory -mx-4 flex snap-x scrollbar-none gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:px-0 lg:grid-cols-3"
 	>
 		{#each data.kbArticles.slice(0, 6) as article (article.slug)}
 			<a
 				href={localizeHref(`/knowledge-base/${article.section}/${article.slug}`)}
-				class="group press-scale w-[220px] shrink-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
+				class="group press-scale w-[220px] min-w-0 shrink-0 snap-start rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:rounded-xl sm:p-3"
 			>
-				<Badge variant="secondary" class="mb-1 text-2xs">{article.section}</Badge>
+				<Badge variant="secondary" class="mb-1 max-w-full truncate text-2xs"
+					>{article.section}</Badge
+				>
 				<h3
 					class="line-clamp-2 text-xs leading-snug font-medium transition-colors group-hover:text-primary sm:text-sm"
 				>
@@ -396,7 +396,7 @@
 		{#each [{ href: '/market-guides', label: 'Market guides', desc: 'Country-by-country entry requirements', icon: Globe, tone: 'info' }, { href: '/trade-shows', label: 'Trade shows', desc: 'Global halal exhibitions & events', icon: Calendar, tone: 'warn' }, { href: '/service-providers', label: 'Service providers', desc: 'Certification consultants & labs', icon: Briefcase, tone: 'teal' }, { href: '/blog', label: 'Blog', desc: 'Industry insights & announcements', icon: Newspaper, tone: 'gold' }] as item (item.href)}
 			<a
 				href={localizeHref(item.href)}
-				class="group press-scale flex items-center gap-2.5 rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
+				class="group press-scale flex min-w-0 items-center gap-2.5 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:rounded-xl sm:p-4"
 			>
 				<div
 					class={`flex size-9 shrink-0 items-center justify-center rounded-lg ${item.tone === 'info' ? 'bg-info/10 text-info' : item.tone === 'warn' ? 'bg-warn/10 text-warn' : item.tone === 'teal' ? 'bg-teal/10 text-teal' : 'bg-gold/10 text-gold'}`}
@@ -409,7 +409,9 @@
 					>
 						{item.label}
 					</h3>
-					<p class="mt-0.5 line-clamp-2 text-2xs leading-snug text-muted-foreground sm:text-xs">
+					<p
+						class="mt-0.5 line-clamp-1 text-2xs leading-snug text-muted-foreground sm:line-clamp-2 sm:text-xs"
+					>
 						{item.desc}
 					</p>
 				</div>
@@ -421,31 +423,31 @@
 <!-- CTA -->
 <section
 	{@attach reveal}
-	class="rounded-xl border border-primary/15 bg-primary/[0.04] p-3 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
+	class="min-w-0 rounded-xl border border-primary/15 bg-primary/[0.04] p-3 text-center ring-1 ring-foreground/10 sm:rounded-xl sm:p-5"
 >
-	<h2 class="text-base font-semibold tracking-tight sm:text-2xl lg:text-3xl">
+	<h2 class="text-base font-semibold tracking-tight sm:text-xl">
 		Navigate halal trade with confidence
 	</h2>
 	<p class="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
 		Access comprehensive certification guides, market reports, and trade intelligence — built for
 		B2B buyers and suppliers.
 	</p>
-	<div class="mt-4 flex flex-col items-center justify-center gap-2 sm:mt-6 sm:flex-row sm:gap-3">
-		<Button href={localizeHref('/knowledge-base')} size="sm" class="sm:size-lg"
+	<div class="mt-3 flex flex-col items-center justify-center gap-2 sm:mt-4 sm:flex-row sm:gap-3">
+		<Button href={localizeHref('/knowledge-base')} size="sm" class="sm:size-lg w-full sm:w-auto"
 			>Start reading</Button
 		>
 		<Button
 			href={localizeHref('/tools/ingredient-checker')}
 			variant="outline"
 			size="sm"
-			class="sm:size-lg">Try the Ingredient Checker</Button
+			class="sm:size-lg w-full sm:w-auto">Try the Ingredient Checker</Button
 		>
 	</div>
 </section>
 
 <!-- TRUST / METHODOLOGY -->
-<section {@attach reveal} class="grid gap-3 sm:gap-4 lg:grid-cols-5 lg:gap-6">
-	<div class="space-y-2 lg:col-span-2 lg:pt-1">
+<section {@attach reveal} class="grid min-w-0 gap-2 sm:gap-3 lg:grid-cols-5">
+	<div class="flex min-w-0 flex-col gap-1.5 lg:col-span-2 lg:pt-1">
 		<h2 class="text-sm font-semibold text-foreground">How we verify</h2>
 		<p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
 			All certification data on HalalNeo is sourced from publicly available registers of accredited
@@ -453,8 +455,8 @@
 			scope details against the original body's published records.
 		</p>
 	</div>
-	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:col-span-3">
-		<div class="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+	<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:col-span-3">
+		<div class="min-w-0 rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 sm:p-3">
 			<p class="text-xs font-medium">JAKIM · MUI · ESMA</p>
 			<p class="mt-0.5 text-2xs text-muted-foreground">
 				{data.stats.certifierCount} certifying body databases

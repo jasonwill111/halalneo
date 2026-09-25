@@ -367,7 +367,7 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<div class="relative w-full max-w-sm">
 			<Search
-				class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
 			<Input bind:value={search} placeholder="Search providers..." class="ps-9" />
 		</div>
@@ -420,7 +420,9 @@
 									{/if}
 								</BrandedEmptyMedia>
 								<div class="space-y-1">
-									<p class="font-medium">{offline ? 'Connection failed' : 'Could not load providers'}</p>
+									<p class="font-medium">
+										{offline ? 'Connection failed' : 'Could not load providers'}
+									</p>
 									<p class="text-sm text-muted-foreground">{loadError}</p>
 								</div>
 								<EmptyContent>
@@ -436,7 +438,9 @@
 					<TableRow>
 						<TableCell colspan={6} class="py-8">
 							<Empty>
-								<BrandedEmptyMedia><ShieldCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+								<BrandedEmptyMedia
+									><ShieldCheck class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+								>
 								<div class="space-y-1">
 									<p class="font-medium">
 										{search.trim() ? 'No matching providers' : 'No providers found'}
@@ -508,19 +512,20 @@
 
 	{#if !loading && !loadError && total > items.length}
 		<p class="text-xs text-muted-foreground">
-			Showing {items.length} of {total} {statusFilter} providers (API caps at 100).
+			Showing {items.length} of {total}
+			{statusFilter} providers (API caps at 100).
 		</p>
 	{/if}
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit provider' : 'New provider'}</DialogTitle>
 			<DialogDescription>Create or update a service provider profile.</DialogDescription>
 		</DialogHeader>
 
-		<form id="provider-form" bind:this={formEl} onsubmit={save} class="flex flex-col gap-4">
+		<form id="provider-form" bind:this={formEl} onsubmit={save} class="flex min-w-0 flex-col gap-4">
 			<Field.Field>
 				<Field.FieldLabel>Name *</Field.FieldLabel>
 				<Input
@@ -537,7 +542,7 @@
 				{/if}
 			</Field.Field>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Slug</Field.FieldLabel>
 					<Input
@@ -570,7 +575,7 @@
 				</Field.Field>
 			</div>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Type</Field.FieldLabel>
 					<Select bind:value={form.type} type="single">
@@ -650,7 +655,7 @@
 					{/if}
 				</Field.Field>
 
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Email</Field.FieldLabel>
 						<Input
@@ -673,7 +678,7 @@
 					</Field.Field>
 				</div>
 
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>WhatsApp</Field.FieldLabel>
 						<Input bind:value={form.whatsapp} placeholder="+60 12 345 6789" disabled={saving} />
@@ -734,7 +739,9 @@
 		{/if}
 
 		<DialogFooter>
-			<Button variant="outline" disabled={saving} onclick={() => (dialogOpen = false)}>Cancel</Button>
+			<Button variant="outline" disabled={saving} onclick={() => (dialogOpen = false)}
+				>Cancel</Button
+			>
 			<Button variant="default" type="submit" form="provider-form" disabled={saving}>
 				{saving ? 'Saving…' : editing ? 'Save changes' : 'Create provider'}
 			</Button>
@@ -745,9 +752,7 @@
 <ConfirmDialog
 	open={confirmSlug !== null}
 	title="Delete provider?"
-	description={confirmSlug
-		? `Delete provider ${confirmName}? This cannot be undone.`
-		: undefined}
+	description={confirmSlug ? `Delete provider ${confirmName}? This cannot be undone.` : undefined}
 	confirmLabel={deleting ? 'Deleting…' : 'Delete'}
 	onconfirm={confirmedRemove}
 />

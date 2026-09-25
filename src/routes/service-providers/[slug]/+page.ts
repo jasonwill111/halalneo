@@ -16,7 +16,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			return {
 				seo: {
 					// DB per-row meta wins when admins filled it; else derive.
-					title: data.metaTitle || (data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`),
+					title:
+						data.metaTitle || (data.name ? `${data.name} — HalalNeo` : `${params.slug} — HalalNeo`),
 					description:
 						data.metaDescription ||
 						data.description ||

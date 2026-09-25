@@ -37,9 +37,13 @@ export const load: PageLoad = async ({ fetch }) => {
 		seo: {
 			title: 'Halal Market Guides — Country-by-Country Certifiers, Requirements & Costs',
 			description:
-				'Comprehensive halal market guides for the world\'s major halal markets — certification bodies, import requirements, costs, and opportunities.',
+				"Comprehensive halal market guides for the world's major halal markets — certification bodies, import requirements, costs, and opportunities.",
 			ogImage: 'https://halalneo.com/brand/og-default.png',
-			keywords: ['halal market guide', 'halal certification by country', 'halal import requirements']
+			keywords: [
+				'halal market guide',
+				'halal certification by country',
+				'halal import requirements'
+			]
 		},
 		itemList,
 		loadError: firstFailure(failures)

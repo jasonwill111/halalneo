@@ -23,7 +23,6 @@
 	} from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
-	import SeoMeta from '#lib/components/seo-meta.svelte';
 
 	let { data } = $props();
 
@@ -152,16 +151,6 @@
 	];
 </script>
 
-<!-- SEO Meta Tags -->
-<SeoMeta
-	title="Halal Products Database - Global Certified Suppliers & Halal Trade Intelligence"
-	description="Search verified halal products from certified suppliers worldwide. Filter by category, check certification scope and pricing. Trusted by global importers."
-	ogTitle="HalalNeo - Verified Halal Products Database"
-	ogDescription="Browse 1000+ halal-certified products from JAKIM, MUI, GSO and other certifying bodies. Verified suppliers, real-time pricing, global delivery."
-	keywords="halal products, halal food, halal suppliers, halal certification, halal database, certified suppliers, imported halal food, halal trade, halal certification verification"
-	canonical="/products"
-/>
-
 <Breadcrumb items={[{ label: 'Products', href: '/products' }]} />
 
 <svelte:head>
@@ -191,18 +180,18 @@
 </svelte:head>
 
 <section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal product catalogue</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+	<div class="max-w-2xl space-y-1">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Halal product catalogue</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			{allProducts.length} halal-certified products from verified suppliers — filter by category, check
 			certification scope and pricing at a glance.
 		</p>
 	</div>
 
 	<!-- Product Categories -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div>
-			<h2 class="text-base font-semibold sm:text-lg">Product categories</h2>
+			<h2 class="text-sm font-semibold sm:text-base">Product categories</h2>
 			<p class="text-xs text-muted-foreground">Halal-certified products across these categories.</p>
 		</div>
 		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
@@ -251,10 +240,10 @@
 	</div>
 
 	<!-- Product grid -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<div>
-				<h2 class="text-base font-semibold sm:text-lg">
+				<h2 class="text-sm font-semibold sm:text-base">
 					{activeCategory === 'all'
 						? 'All products'
 						: (productCategories.find((c) => c.slug === activeCategory)?.name ?? 'Products')}
@@ -279,7 +268,7 @@
 		</div>
 		<div class="relative w-full sm:max-w-xs">
 			<label for="product-search" class="sr-only">Search products by name</label>
-			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				id="product-search"
 				bind:value={query}
@@ -294,7 +283,9 @@
 		{:else if paged.length === 0}
 			<Empty>
 				<EmptyHeader>
-					<BrandedEmptyMedia><Package class="size-6 text-muted-foreground"></Package></BrandedEmptyMedia>
+					<BrandedEmptyMedia
+						><Package class="size-6 text-muted-foreground"></Package></BrandedEmptyMedia
+					>
 					<EmptyTitle
 						>{query.trim()
 							? `No products match "${query.trim()}"`
@@ -354,7 +345,7 @@
 							{/if}
 							{#if cert}
 								<span
-									class="absolute top-1.5 start-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-2xs font-semibold {cert.cls}"
+									class="absolute start-1.5 top-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-2xs font-semibold {cert.cls}"
 								>
 									<cert.icon class="size-2.5"></cert.icon>
 									{cert.text}
@@ -363,7 +354,7 @@
 						</div>
 						<div class="flex flex-1 flex-col gap-1 p-2.5 sm:p-3">
 							<h3
-								class="line-clamp-2 text-xs leading-snug font-medium transition-colors group-hover:text-primary sm:text-sm"
+								class="truncate text-xs leading-snug font-medium transition-colors group-hover:text-primary sm:text-sm"
 							>
 								{p.name}
 							</h3>
@@ -387,9 +378,9 @@
 	</div>
 
 	<!-- Target Markets -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div>
-			<h2 class="text-base font-semibold sm:text-lg">Target markets</h2>
+			<h2 class="text-sm font-semibold sm:text-base">Target markets</h2>
 			<p class="text-xs text-muted-foreground">
 				Products available for import across these regions.
 			</p>

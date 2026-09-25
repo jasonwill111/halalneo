@@ -4,7 +4,7 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { FieldError } from '#lib/components/ui/field/index.js';
+	import { Field, FieldError, FieldLabel } from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
 	import {
 		Empty,
@@ -237,71 +237,93 @@
 			<ShieldCheckIcon class="size-4"></ShieldCheckIcon>
 			Certificate Verification
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Verify halal certification</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Verify halal certification</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Search by certificate number, brand name, product name, or certifying body. Results
 			cross-reference suppliers and products on HalalNeo.
 		</p>
 	</div>
 
-	<form onsubmit={handleSearch} class="space-y-1.5" bind:this={formEl}>
-		<div class="flex gap-2">
-			<div class="relative flex-1">
-				<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
-				<Input
-					type="search"
-					placeholder="Search certificates, brands, products..."
-					class="ps-9"
-					bind:value={query}
-					maxlength={100}
-					aria-label="Search by certificate number, brand, product or certifying body"
-					aria-invalid={errors.q ? true : undefined}
-					aria-describedby={errors.q ? 'search-error' : undefined}
-					oninput={() => {
-						if (errors.q) errors = { ...errors, q: '' };
-					}}
-				/>
-			</div>
-			<Button type="submit" disabled={pending} aria-busy={pending}>
-				{#if pending}
-					<Loader2 class="size-3.5 animate-spin" />
-					Searching...
-				{:else}
-					Verify
-				{/if}
-			</Button>
-		</div>
-		{#if errors.q}
-			<FieldError id="search-error">{errors.q}</FieldError>
-		{/if}
+	<form onsubmit={handleSearch} bind:this={formEl}>
+		<Card class="min-w-0">
+			<CardContent class="p-4 sm:p-5">
+				<Field>
+					<FieldLabel for="verification-search" class="sr-only">
+						Search by certificate number, brand, product or certifying body
+					</FieldLabel>
+					<div class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-2">
+						<div class="relative min-w-0">
+							<SearchIcon
+								class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+							/>
+							<Input
+								id="verification-search"
+								type="search"
+								placeholder="Search certificates, brands, products..."
+								class="min-h-11 ps-9 sm:min-h-8"
+								bind:value={query}
+								maxlength={100}
+								aria-invalid={errors.q ? true : undefined}
+								aria-describedby={errors.q ? 'search-error' : undefined}
+								oninput={() => {
+									if (errors.q) errors = { ...errors, q: '' };
+								}}
+							/>
+						</div>
+						<Button
+							class="min-h-11 sm:min-h-8"
+							type="submit"
+							disabled={pending}
+							aria-busy={pending}
+						>
+							{#if pending}
+								<Loader2 class="size-3.5 animate-spin" />
+								Searching...
+							{:else}
+								Verify
+							{/if}
+						</Button>
+					</div>
+					{#if errors.q}
+						<FieldError id="search-error">{errors.q}</FieldError>
+					{/if}
+				</Field>
+			</CardContent>
+		</Card>
 	</form>
 
-	<div class="space-y-3">
-		<h2 class="text-sm font-medium text-muted-foreground">Supported certifiers</h2>
-		<div class="flex flex-wrap gap-2">
-			{#each certifiers as c (c.id ?? c.name)}
-				<Button
-					variant="outline"
-					size="sm"
-					class={`h-7 border-transparent px-2.5 text-xs font-medium hover:opacity-80 ${c.color}`}
-					onclick={() => {
-						query = c.name;
-						errors = {};
-					}}
-				>
-					{c.name}
-					<span class="ms-1 opacity-60">{c.country}</span>
-				</Button>
-			{/each}
-		</div>
-	</div>
+	<Card size="sm" class="min-w-0">
+		<CardContent class="space-y-3 p-4">
+			<CardTitle class="text-sm font-medium text-muted-foreground">Supported certifiers</CardTitle>
+			<div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+				{#each certifiers as c (c.id ?? c.name)}
+					<Button
+						variant="outline"
+						size="sm"
+						class={`h-11 min-w-0 border-transparent px-2.5 text-xs font-medium hover:opacity-80 sm:h-7 ${c.color}`}
+						onclick={() => {
+							query = c.name;
+							errors = {};
+						}}
+					>
+						<span class="truncate">{c.name}</span>
+						<span class="ms-1 shrink-0 opacity-60">{c.country}</span>
+					</Button>
+				{/each}
+			</div>
+		</CardContent>
+	</Card>
 
 	{#if searched}
 		{#if pending}
-			<div class="grid grid-cols-2 gap-3" aria-label="Searching certificates" aria-busy="true">
+			<div
+				class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3"
+				aria-label="Searching certificates"
+				aria-busy="true"
+			>
 				{#each Array(4) as _, i (i)}
-					<Card class="bg-card">
-						<CardContent class="space-y-2 p-4">
+					<Card class="min-w-0 bg-card">
+						<CardContent class="space-y-2 p-3 sm:p-4">
 							<div class="flex items-start justify-between gap-2">
 								<div class="flex-1 space-y-1.5">
 									<Skeleton class="h-4 w-3/4" />
@@ -329,9 +351,11 @@
 				onretry={() => runSearch()}
 			/>
 		{:else if results.length === 0}
-			<Empty>
+			<Empty class="border bg-card py-6 sm:py-8">
 				<EmptyHeader>
-					<BrandedEmptyMedia><XCircleIcon class="size-6 text-muted-foreground"></XCircleIcon></BrandedEmptyMedia>
+					<BrandedEmptyMedia
+						><XCircleIcon class="size-6 text-muted-foreground"></XCircleIcon></BrandedEmptyMedia
+					>
 					<EmptyTitle>No certificates found</EmptyTitle>
 					<EmptyDescription>
 						Nothing matched “{query.trim()}”. Try a different certificate number, brand or product
@@ -339,31 +363,48 @@
 					</EmptyDescription>
 				</EmptyHeader>
 				<EmptyContent>
-					<Button variant="outline" size="sm" onclick={resetSearch}>Clear search</Button>
-					<Button variant="link" size="sm" href={localizeHref('/certifying-bodies')}
-						>Browse certifying bodies</Button
+					<Button variant="outline" size="sm" class="min-h-11 sm:min-h-7" onclick={resetSearch}>
+						Clear search
+					</Button>
+					<Button
+						variant="link"
+						size="sm"
+						class="min-h-11 sm:min-h-7"
+						href={localizeHref('/certifying-bodies')}
 					>
+						Browse certifying bodies
+					</Button>
 				</EmptyContent>
 			</Empty>
 		{:else}
 			<div class="space-y-2">
-				<div class="flex items-center justify-between">
+				<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 					<p class="text-sm text-muted-foreground">
 						{results.length} result{results.length !== 1 ? 's' : ''} found
 					</p>
-					<div class="flex items-center gap-2">
-						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={() => copyResults()}>
+					<div class="grid grid-cols-2 gap-2 sm:flex">
+						<Button
+							variant="outline"
+							size="sm"
+							class="h-11 min-w-0 text-xs sm:h-7"
+							onclick={() => copyResults()}
+						>
 							Copy results<CopyIcon class="ms-1 size-3" />
 						</Button>
-						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={exportResults}>
+						<Button
+							variant="outline"
+							size="sm"
+							class="h-11 min-w-0 text-xs sm:h-7"
+							onclick={exportResults}
+						>
 							Export<FileDownIcon class="ms-1 size-3" />
 						</Button>
 					</div>
 				</div>
-				<div class="grid grid-cols-2 gap-3">
+				<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3">
 					{#each results as r (r.type + ':' + r.slug)}
-						<Card class="bg-card transition-shadow hover:shadow-md">
-							<CardContent class="space-y-2 p-4">
+						<Card class="min-w-0 bg-card transition-shadow hover:shadow-md">
+							<CardContent class="min-w-0 space-y-2 p-3 sm:p-4">
 								<div class="flex items-start justify-between gap-2">
 									<div class="min-w-0 flex-1 space-y-1">
 										<div class="flex min-w-0 items-center gap-1.5">
@@ -407,7 +448,7 @@
 									<Button
 										variant="outline"
 										type="button"
-										class="shrink-0 rounded p-1 text-muted-foreground hover:text-foreground"
+										class="size-11 shrink-0 rounded p-1 text-muted-foreground hover:text-foreground sm:size-7"
 										onclick={() => copyName(r.name)}
 										aria-label={`Copy ${r.name}`}
 									>
@@ -445,7 +486,7 @@
 										)}
 										variant="outline"
 										size="sm"
-										class="ms-auto h-7 text-xs"
+										class="ms-auto h-11 text-xs sm:h-7"
 									>
 										View
 										<ExternalLinkIcon class="size-3" />

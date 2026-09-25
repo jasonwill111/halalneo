@@ -35,7 +35,11 @@ for (const line of sql.split('\n')) {
 if (cur.trim()) statements.push(cur.trim());
 
 for (const stmt of statements) {
-	const first = stmt.split('\n').map((l) => l.trim()).find(Boolean) ?? '';
+	const first =
+		stmt
+			.split('\n')
+			.map((l) => l.trim())
+			.find(Boolean) ?? '';
 	const isInsert = /^INSERT/i.test(first);
 	const isTrigger = /^CREATE\s+TRIGGER/i.test(first);
 	const isTable = /^CREATE\s+VIRTUAL/i.test(first);
@@ -59,11 +63,16 @@ for (const stmt of statements) {
 const rows = db
 	.prepare(`SELECT type, name FROM sqlite_master WHERE name LIKE '%fts%' ORDER BY name`)
 	.all()
-	.map((r) => `${r.type === 'table' ? 'T' : r.type === 'trigger' ? 'V' : '?' } ${r.name}`);
+	.map((r) => `${r.type === 'table' ? 'T' : r.type === 'trigger' ? 'V' : '?'} ${r.name}`);
 console.log('\nFTS objects now in local DB:\n' + rows.join('\n'));
 
 // Backfill sanity: row counts in each new FTS table
-for (const t of ['knowledge_base_fts', 'pages_fts', 'certifying_bodies_fts', 'service_providers_fts']) {
+for (const t of [
+	'knowledge_base_fts',
+	'pages_fts',
+	'certifying_bodies_fts',
+	'service_providers_fts'
+]) {
 	try {
 		const c = db.prepare(`SELECT count(*) n FROM ${t}`).get().n;
 		console.log(`${t}: ${c} rows`);

@@ -10,7 +10,11 @@ import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
 
 const storySchema = z.object({
-	slug: z.string().min(3).max(200).regex(/^[a-z0-9-]+$/, 'slug must be lowercase letters, numbers, hyphens'),
+	slug: z
+		.string()
+		.min(3)
+		.max(200)
+		.regex(/^[a-z0-9-]+$/, 'slug must be lowercase letters, numbers, hyphens'),
 	title: z.string().min(5).max(200),
 	excerpt: z.string().max(500).optional().nullable(),
 	body: z.string().min(20, 'Story body must be at least 20 characters').max(20000),
@@ -38,44 +42,47 @@ export const GET: RequestHandler = async (event) => {
 		}
 
 		const runQuery = async () => {
-				const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
-				const offset = Number(url.searchParams.get('offset')) || 0;
-				const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
+			const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
+			const offset = Number(url.searchParams.get('offset')) || 0;
+			const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
 
-				const conditions: SQL[] = [];
-				if (statusFilter) conditions.push(eq(successStories.status, statusFilter));
-				if (supplierSlug) conditions.push(eq(successStories.supplierSlug, supplierSlug));
-				const where = conditions.length > 1 ? and(...conditions) : (conditions[0] ?? undefined);
+			const conditions: SQL[] = [];
+			if (statusFilter) conditions.push(eq(successStories.status, statusFilter));
+			if (supplierSlug) conditions.push(eq(successStories.supplierSlug, supplierSlug));
+			const where = conditions.length > 1 ? and(...conditions) : (conditions[0] ?? undefined);
 
-				const [countResult] = await db
-					.select({ count: sql<number>`count(*)` })
-					.from(successStories)
-					.where(where);
-				const rows = await db
-					.select({
-						slug: successStories.slug,
-						title: successStories.title,
-						excerpt: successStories.excerpt,
-						supplierSlug: successStories.supplierSlug,
-						buyerCountry: successStories.buyerCountry,
-						dealValue: successStories.dealValue,
-						image: successStories.image,
-						createdAt: successStories.createdAt
-					})
-					.from(successStories)
-					.where(where)
-					.orderBy(desc(successStories.createdAt))
-					.limit(limit)
-					.offset(offset);
-				return { items: rows, total: countResult?.count ?? 0 };
-			};
+			const [countResult] = await db
+				.select({ count: sql<number>`count(*)` })
+				.from(successStories)
+				.where(where);
+			const rows = await db
+				.select({
+					slug: successStories.slug,
+					title: successStories.title,
+					excerpt: successStories.excerpt,
+					supplierSlug: successStories.supplierSlug,
+					buyerCountry: successStories.buyerCountry,
+					dealValue: successStories.dealValue,
+					image: successStories.image,
+					createdAt: successStories.createdAt
+				})
+				.from(successStories)
+				.where(where)
+				.orderBy(desc(successStories.createdAt))
+				.limit(limit)
+				.offset(offset);
+			return { items: rows, total: countResult?.count ?? 0 };
+		};
 
-			const data =
-				statusFilter === null
-					? await runQuery()
-					: await cachedQuery(url.toString(), runQuery, { ...cacheMedium(), cacheKey: queryCacheKey(url) });
+		const data =
+			statusFilter === null
+				? await runQuery()
+				: await cachedQuery(url.toString(), runQuery, {
+						...cacheMedium(),
+						cacheKey: queryCacheKey(url)
+					});
 
-			return json(data);
+		return json(data);
 	} catch (e: unknown) {
 		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
@@ -93,14 +100,19 @@ export const POST: RequestHandler = async (event) => {
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	// Admin gate: caller must be in the admin allowlist (same rule as dashboard).
-	const adminEmails = (getBindings().ADMIN_EMAILS ?? '').split(',').map((s: string) => s.trim().toLowerCase());
+	const adminEmails = (getBindings().ADMIN_EMAILS ?? '')
+		.split(',')
+		.map((s: string) => s.trim().toLowerCase());
 	const email = String(session.user.email ?? '').toLowerCase();
 	if (!adminEmails.includes(email)) return json({ error: 'Forbidden' }, { status: 403 });
 
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
 	const parsed = storySchema.safeParse(body ?? {});
 	if (!parsed.success) {
-		return json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
 	try {

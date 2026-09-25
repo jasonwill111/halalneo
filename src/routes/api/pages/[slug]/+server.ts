@@ -38,10 +38,7 @@ export const GET: RequestHandler = async (event) => {
 		if (!cached) return json({ error: 'Page not found' }, { status: 404 });
 		return json(cached);
 	} catch (error: unknown) {
-		return json(
-			{ error: error instanceof Error ? error.message : 'Failed' },
-			{ status: 500 }
-		);
+		return json({ error: error instanceof Error ? error.message : 'Failed' }, { status: 500 });
 	}
 };
 

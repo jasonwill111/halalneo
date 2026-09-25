@@ -12,20 +12,27 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="pattern-girih relative flex-1 flex items-center justify-center px-4 py-16">
-	<div class="relative text-center max-w-md">
-		<Mark variant="pattern" class="mx-auto mb-[-4rem] size-40 text-foreground" />
-		<p class="text-8xl font-heading font-bold text-primary/20 select-none leading-none">{status}</p>
-		<h1 class="mt-4 text-lg sm:text-2xl font-heading font-semibold tracking-tight">
+<div
+	class="pattern-girih relative flex flex-1 items-center justify-center px-4 py-8 sm:px-6 sm:py-12"
+>
+	<div class="relative w-full max-w-md text-center">
+		<Mark
+			variant="pattern"
+			class="mx-auto mb-[-2.5rem] size-28 text-foreground sm:mb-[-3rem] sm:size-36"
+		/>
+		<p class="font-heading text-6xl leading-none font-bold text-primary/20 select-none sm:text-8xl">
+			{status}
+		</p>
+		<h1
+			class="mt-3 font-heading text-xl font-semibold tracking-tight text-pretty sm:mt-4 sm:text-2xl"
+		>
 			{status === 404 ? 'Page not found' : 'Something went wrong'}
 		</h1>
-		<p class="mt-2 text-sm text-muted-foreground leading-relaxed">
+		<p class="mx-auto mt-2 max-w-[42ch] text-sm leading-relaxed text-pretty text-muted-foreground">
 			{status === 404
 				? "The page you're looking for doesn't exist or has been moved."
 				: 'An unexpected error occurred. Please try again.'}
 		</p>
-		<Button href={localizeHref('/')} class="mt-6">
-			Back to Home
-		</Button>
+		<Button href={localizeHref('/')} class="mt-5 w-full sm:mt-6 sm:w-auto">Back to Home</Button>
 	</div>
 </div>

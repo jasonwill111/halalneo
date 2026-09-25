@@ -31,10 +31,8 @@ export const GET: RequestHandler = async (event) => {
 	// parseQuery clamps limit to <=100 and defaults offset to 0 (§5.9).
 	const { limit, offset, search } = parseQuery(url);
 	const where = search
-		? (and(
-				glossaryFilter,
-				or(like(pages.title, `%${search}%`), like(pages.body, `%${search}%`))
-			) ?? undefined)
+		? (and(glossaryFilter, or(like(pages.title, `%${search}%`), like(pages.body, `%${search}%`))) ??
+			undefined)
 		: (glossaryFilter ?? undefined);
 
 	// status=all → admin overview, i.e. rows of every status (allowlisted session
@@ -44,8 +42,17 @@ export const GET: RequestHandler = async (event) => {
 		if (denied) return denied;
 		try {
 			const [[countRow], rows] = await Promise.all([
-				db.select({ count: sql<number>`count(*)` }).from(pages).where(where),
-				db.select(GLOSSARY_COLUMNS).from(pages).where(where).orderBy(asc(pages.title)).limit(limit).offset(offset)
+				db
+					.select({ count: sql<number>`count(*)` })
+					.from(pages)
+					.where(where),
+				db
+					.select(GLOSSARY_COLUMNS)
+					.from(pages)
+					.where(where)
+					.orderBy(asc(pages.title))
+					.limit(limit)
+					.offset(offset)
 			]);
 			return json(
 				{ items: rows, total: countRow?.count ?? 0, limit, offset },

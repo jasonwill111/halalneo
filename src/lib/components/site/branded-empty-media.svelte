@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import EmptyMedia, {
-		type EmptyMediaVariant
-	} from '#lib/components/ui/empty/empty-media.svelte';
+	import EmptyMedia, { type EmptyMediaVariant } from '#lib/components/ui/empty/empty-media.svelte';
 	import Mark from './mark.svelte';
 	import { cn } from '#lib/utils.js';
 

@@ -119,26 +119,28 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			};
 			const allProducts = await readItems<ProductRelatedItem>(relatedRes);
 			const categories = await readItems<CategoryRecord>(categoriesRes);
-		// Resolve the supplier name for the product page's supplier card.
-		let supplierName: string | null = null;
-		if (parsed.supplierSlug) {
-			const supplierRes = await fetch(`/api/suppliers/${parsed.supplierSlug}`);
-			if (supplierRes.ok) {
-				const s = (await supplierRes.json()) as { name?: string };
-				supplierName = s.name ?? null;
+			// Resolve the supplier name for the product page's supplier card.
+			let supplierName: string | null = null;
+			if (parsed.supplierSlug) {
+				const supplierRes = await fetch(`/api/suppliers/${parsed.supplierSlug}`);
+				if (supplierRes.ok) {
+					const s = (await supplierRes.json()) as { name?: string };
+					supplierName = s.name ?? null;
+				}
 			}
-		}
 			const relatedProducts = allProducts
 				.filter((p) => p.slug !== params.slug && p.categorySlug === parsed.categorySlug)
 				.slice(0, 3);
 			return {
 				seo: {
 					// DB per-row meta wins when admins filled it; else derive.
-					title: parsed.metaTitle || (parsed.name ? `${parsed.name} — HalalNeo` : `${params.slug} — HalalNeo`),
-				description:
-					parsed.metaDescription ||
-					parsed.shortDescription ||
-					`Product details for ${parsed.name || params.slug} on HalalNeo — halal-certified products with verified certification scope.`,
+					title:
+						parsed.metaTitle ||
+						(parsed.name ? `${parsed.name} — HalalNeo` : `${params.slug} — HalalNeo`),
+					description:
+						parsed.metaDescription ||
+						parsed.shortDescription ||
+						`Product details for ${parsed.name || params.slug} on HalalNeo — halal-certified products with verified certification scope.`,
 					ogImage: parsed.image || 'https://halalneo.com/brand/og-default.png',
 					keywords: [parsed.name, 'halal product', parsed.category, 'certified product'].filter(
 						Boolean

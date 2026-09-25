@@ -23,7 +23,10 @@ function toRfc822(date: unknown): string {
 
 function excerptOf(post: { excerpt?: string | null; body?: string | null }): string {
 	if (post.excerpt) return post.excerpt;
-	const text = (post.body ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+	const text = (post.body ?? '')
+		.replace(/<[^>]*>/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
 	return text.length > 300 ? text.slice(0, 300).trimEnd() + '…' : text;
 }
 

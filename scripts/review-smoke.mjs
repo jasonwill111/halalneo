@@ -7,7 +7,9 @@ import { execSync } from 'node:child_process';
 const BASE = process.env.SMOKE_BASE || 'https://halalneo.com';
 const OUT = 'D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke';
 fs.mkdirSync(OUT, { recursive: true });
-const pw = fs.readFileSync(process.env.USERPROFILE + '/.halalneo-admin/admin-pw.txt', 'utf8').trim();
+const pw = fs
+	.readFileSync(process.env.USERPROFILE + '/.halalneo-admin/admin-pw.txt', 'utf8')
+	.trim();
 
 const results = [];
 const check = (name, ok, detail = '') => {
@@ -18,7 +20,11 @@ const check = (name, ok, detail = '') => {
 function d1(sql) {
 	return execSync(
 		`wrangler d1 execute halalneo-db --remote --command "${sql.replace(/"/g, '\\"')}" --json`,
-		{ cwd: 'D:\\Dev Projects\\halalneo', env: { ...process.env, NO_PROXY: '*', HTTP_PROXY: '', HTTPS_PROXY: '' }, encoding: 'utf8' }
+		{
+			cwd: 'D:\\Dev Projects\\halalneo',
+			env: { ...process.env, NO_PROXY: '*', HTTP_PROXY: '', HTTPS_PROXY: '' },
+			encoding: 'utf8'
+		}
 	);
 }
 
@@ -38,9 +44,15 @@ async function submitApp(company) {
 	await page.goto(`${BASE}/supplier/onboarding`, { waitUntil: 'networkidle' });
 	await page.getByPlaceholder('e.g. Nusantara Foods Sdn Bhd').fill(company);
 	await page.getByPlaceholder('Country').fill('Singapore');
-	await page.locator('button').filter({ hasText: /Select/ }).first().click();
+	await page
+		.locator('button')
+		.filter({ hasText: /Select/ })
+		.first()
+		.click();
 	await page.getByRole('option', { name: 'Trader' }).click();
-	await page.getByPlaceholder('you@company.com').fill(`qa-${company.toLowerCase().replace(/[^a-z0-9]+/g, '-')}@example.com`);
+	await page
+		.getByPlaceholder('you@company.com')
+		.fill(`qa-${company.toLowerCase().replace(/[^a-z0-9]+/g, '-')}@example.com`);
 	await page.getByRole('button', { name: 'Continue' }).click();
 	await page.getByRole('button', { name: 'Continue' }).click();
 	await page.getByRole('button', { name: 'Submit Application' }).click();
@@ -78,27 +90,51 @@ if (!isA) {
 // try rejecting without feedback -> validation error
 await page.getByRole('button', { name: 'Reject' }).click();
 await page.waitForTimeout(400);
-check('reject requires feedback', ((await page.textContent('[role="dialog"]')) ?? '').includes('Please include a reason'), 'inline error');
-await page.locator('[role="dialog"] textarea').fill('Certification details incomplete. Please resubmit with a valid MUIS certificate number.');
+check(
+	'reject requires feedback',
+	((await page.textContent('[role="dialog"]')) ?? '').includes('Please include a reason'),
+	'inline error'
+);
+await page
+	.locator('[role="dialog"] textarea')
+	.fill('Certification details incomplete. Please resubmit with a valid MUIS certificate number.');
 await page.getByRole('button', { name: 'Reject' }).click();
 await page.waitForTimeout(1500);
-check('rejected row removed from list', !((await page.textContent('body')) ?? '').includes(NAME_A), 'row gone');
+check(
+	'rejected row removed from list',
+	!((await page.textContent('body')) ?? '').includes(NAME_A),
+	'row gone'
+);
 
 // 4. Approve app B
 const liB = page.locator('li', { hasText: NAME_B }).first();
 await liB.getByRole('button', { name: 'Review' }).click();
 await page.waitForTimeout(500);
-check('application text shown in dialog', ((await page.textContent('[role="dialog"]')) ?? '').includes('Country: Singapore'), 'details panel');
+check(
+	'application text shown in dialog',
+	((await page.textContent('[role="dialog"]')) ?? '').includes('Country: Singapore'),
+	'details panel'
+);
 await page.getByRole('button', { name: 'Approve' }).click();
 await page.waitForTimeout(1500);
-check('approved row removed from list', !((await page.textContent('body')) ?? '').includes(NAME_B), 'row gone');
+check(
+	'approved row removed from list',
+	!((await page.textContent('body')) ?? '').includes(NAME_B),
+	'row gone'
+);
 await page.screenshot({ path: `${OUT}/admin-review-flow.png`, fullPage: true });
 
 // 5. Verify D1 state
-const verify = JSON.parse(d1("SELECT slug, status, admin_notes FROM suppliers WHERE slug LIKE 'qa-review-%'"))[0].results;
+const verify = JSON.parse(
+	d1("SELECT slug, status, admin_notes FROM suppliers WHERE slug LIKE 'qa-review-%'")
+)[0].results;
 const rowA = verify.find((r) => r.slug === SLUG_A);
 const rowB = verify.find((r) => r.slug === SLUG_B);
-check('D1: A rejected + note persisted', rowA?.status === 'rejected' && (rowA?.admin_notes ?? '').includes('MUIS certificate'), JSON.stringify(rowA));
+check(
+	'D1: A rejected + note persisted',
+	rowA?.status === 'rejected' && (rowA?.admin_notes ?? '').includes('MUIS certificate'),
+	JSON.stringify(rowA)
+);
 check('D1: B active', rowB?.status === 'active', JSON.stringify(rowB));
 
 // 6. Approved supplier is publicly visible; rejected is not.
@@ -126,7 +162,11 @@ const anon = await browser.newContext();
 const anonPage = await anon.newPage();
 const detailA = await anonPage.request.get(`${BASE}/suppliers/${SLUG_A}`);
 const detailText = await detailA.text();
-check('rejected detail page not public', !detailText.includes(NAME_A), 'no content leak (anonymous)');
+check(
+	'rejected detail page not public',
+	!detailText.includes(NAME_A),
+	'no content leak (anonymous)'
+);
 const approvedDetail = await anonPage.request.get(`${BASE}/suppliers/${SLUG_B}`);
 check('approved detail page public', (await approvedDetail.text()).includes(NAME_B), 'B renders');
 await anon.close();
@@ -137,7 +177,9 @@ check('public page renders', pageSrc.ok(), `status ${pageSrc.status()}`);
 await browser.close();
 
 // 7. Cleanup QA rows (inquiries first — FK references suppliers.slug)
-d1("DELETE FROM inquiries WHERE supplier_slug LIKE 'qa-review-%' OR supplier_slug LIKE 'qa-guard-%'");
+d1(
+	"DELETE FROM inquiries WHERE supplier_slug LIKE 'qa-review-%' OR supplier_slug LIKE 'qa-guard-%'"
+);
 d1("DELETE FROM suppliers WHERE slug LIKE 'qa-review-%' OR slug LIKE 'qa-guard-%'");
 console.log('cleanup done');
 

@@ -43,11 +43,7 @@ export const GET: RequestHandler = async (event) => {
 			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
 		}
 
-		const cached = await cachedQuery(
-			url.toString(),
-			async () => row ?? null,
-			{ ...cacheLong() }
-		);
+		const cached = await cachedQuery(url.toString(), async () => row ?? null, { ...cacheLong() });
 
 		if (!cached) return json({ error: 'Not found' }, { status: 404 });
 		return json(cached);

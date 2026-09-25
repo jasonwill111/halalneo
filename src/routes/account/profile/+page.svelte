@@ -4,7 +4,8 @@
 	import { authClient } from '#lib/auth-client.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
-	import { Label, FieldError } from '#lib/components/ui/field/index.js';
+	import { Field, Label, FieldError } from '#lib/components/ui/field/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { z } from 'zod';
 	import { toast } from 'svelte-sonner';
@@ -107,38 +108,45 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div class="space-y-4">
-	<!-- Account card -->
-	<div class="mb-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10">
-		<div class="flex items-center gap-3">
+<div class="min-w-0 space-y-3">
+	<div class="min-w-0 space-y-1">
+		<h1 class="text-xl sm:text-2xl">Profile</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
+			Keep your HalalNeo profile details current so suppliers can identify you.
+		</p>
+	</div>
+
+	<div class="min-w-0 rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+		<div class="flex min-w-0 items-center gap-3">
 			<div
 				class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-sm font-bold text-primary"
 			>
 				{initials}
 			</div>
-			<div class="min-w-0">
-				<div class="flex items-center gap-1.5">
-					<h2 class="truncate text-xs font-bold text-foreground">{user.name || user.email}</h2>
-					<Badge variant="secondary" class="px-1.5 py-0.5 text-2xs">
+			<div class="min-w-0 flex-1">
+				<div class="flex min-w-0 flex-wrap items-center gap-1.5">
+					<h2 class="min-w-0 truncate text-xs font-bold text-foreground">
+						{user.name || user.email}
+					</h2>
+					<Badge variant="secondary" class="shrink-0 px-1.5 py-0.5 text-2xs">
 						<span class="size-1 rounded-full bg-success"></span>
 						Active
 					</Badge>
 				</div>
-				<p class="truncate text-2xs text-muted-foreground">{user.email}</p>
+				<p class="min-w-0 truncate text-2xs text-muted-foreground">{user.email}</p>
 			</div>
 		</div>
 	</div>
 
-	<!-- Profile settings form -->
-	<div class="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+	<div class="min-w-0 overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
 		<div class="border-b border-border px-3 py-2">
-			<h3 class="text-2xs-plus font-bold text-foreground">Profile Settings</h3>
-			<p class="mt-0.5 text-2xs text-muted-foreground">
+			<h2 class="text-sm font-semibold text-foreground">Profile settings</h2>
+			<p class="mt-0.5 text-xs text-muted-foreground">
 				Manage the name shown on your HalalNeo account.
 			</p>
 		</div>
 		<form
-			class="space-y-2 p-3"
+			class="min-w-0 space-y-2 p-3"
 			bind:this={formEl}
 			onsubmit={(e) => {
 				e.preventDefault();
@@ -146,11 +154,13 @@
 			}}
 		>
 			{#if saved && Object.keys(fieldErrors).length === 0}
-				<p class="rounded-xl bg-success/10 px-3 py-2 text-xs text-success">Profile updated.</p>
+				<Alert class="border-success/20 bg-success/10 text-success">
+					<AlertDescription class="text-xs text-success">Profile updated.</AlertDescription>
+				</Alert>
 			{/if}
-			<div class="grid grid-cols-2 gap-2 sm:grid-cols-2">
-				<div class="space-y-0.5">
-					<Label class="text-2xs" for="profile-first-name">First Name</Label>
+			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+				<Field class="min-w-0 gap-1.5" data-invalid={fieldErrors.firstName ? 'true' : undefined}>
+					<Label class="text-xs" for="profile-first-name">First name</Label>
 					<Input
 						id="profile-first-name"
 						type="text"
@@ -163,9 +173,9 @@
 						}}
 					/>
 					{#if fieldErrors.firstName}<FieldError>{fieldErrors.firstName}</FieldError>{/if}
-				</div>
-				<div class="space-y-0.5">
-					<Label class="text-2xs" for="profile-last-name">Last Name</Label>
+				</Field>
+				<Field class="min-w-0 gap-1.5" data-invalid={fieldErrors.lastName ? 'true' : undefined}>
+					<Label class="text-xs" for="profile-last-name">Last name</Label>
 					<Input
 						id="profile-last-name"
 						type="text"
@@ -178,10 +188,10 @@
 						}}
 					/>
 					{#if fieldErrors.lastName}<FieldError>{fieldErrors.lastName}</FieldError>{/if}
-				</div>
+				</Field>
 			</div>
-			<div class="space-y-0.5">
-				<Label class="text-2xs" for="profile-email">Email</Label>
+			<Field class="min-w-0 gap-1.5">
+				<Label class="text-xs" for="profile-email">Email</Label>
 				<Input
 					id="profile-email"
 					type="email"
@@ -193,20 +203,14 @@
 				<p class="text-2xs text-muted-foreground">
 					Your sign-in email can’t be changed here — contact HalalNeo support to move an account.
 				</p>
-			</div>
-			<div class="flex items-center gap-1.5 pt-0.5">
-				<Button
-					type="submit"
-					size="sm"
-					class="h-7 text-2xs"
-					disabled={saving}
-					aria-busy={saving}
-				>
+			</Field>
+			<div class="flex min-w-0 flex-wrap items-center gap-1.5 pt-0.5">
+				<Button type="submit" size="sm" class="h-7 text-2xs" disabled={saving} aria-busy={saving}>
 					{#if saving}
 						<Loader2 class="size-3 animate-spin" />
 						Saving...
 					{:else}
-						Save Changes
+						Save changes
 					{/if}
 				</Button>
 				<Button

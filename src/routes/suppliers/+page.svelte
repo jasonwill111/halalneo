@@ -20,7 +20,6 @@
 	} from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
-	import SeoMeta from '#lib/components/seo-meta.svelte';
 
 	let { data } = $props();
 
@@ -102,16 +101,6 @@
 	];
 </script>
 
-<!-- SEO Meta Tags -->
-<SeoMeta
-	title="Halal Suppliers Database - Verified Halal Manufacturers & Importers Worldwide"
-	description="Find certified halal suppliers, manufacturers, and importers globally. Verified by JAKIM, MUI, GSO. Connect with trusted halal businesses."
-	ogTitle="HalalNeo - Global Halal Suppliers Directory"
-	ogDescription="Search 500+ verified halal suppliers. Filter by business type, location, and certification. Direct connection for global halal trade."
-	keywords="halal suppliers, halal manufacturers, halal importers, halal distributors, certified halal suppliers, halal food suppliers, halal certification bodies, halal business directory, halal trade suppliers, halal exporters"
-	canonical="/suppliers"
-/>
-
 <Breadcrumb items={[{ label: 'Suppliers', href: '/suppliers' }]} />
 
 <svelte:head>
@@ -150,17 +139,17 @@
 </svelte:head>
 
 <section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal supplier directory</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+	<div class="max-w-2xl space-y-1">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Halal supplier directory</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			{allSuppliers.length} verified halal suppliers — filter by business type, region, and certification.
 		</p>
 	</div>
 
 	<!-- Business Categories -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div>
-			<h2 class="text-base font-semibold sm:text-lg">Business types</h2>
+			<h2 class="text-sm font-semibold sm:text-base">Business types</h2>
 			<p class="text-xs text-muted-foreground">
 				Filter suppliers by their primary halal business activity.
 			</p>
@@ -173,10 +162,10 @@
 	</div>
 
 	<!-- Suppliers grid -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<div>
-				<h2 class="text-base font-semibold sm:text-lg">
+				<h2 class="text-sm font-semibold sm:text-base">
 					{activeType === 'all' ? 'All suppliers' : `Suppliers (${activeType})`}
 				</h2>
 				<p class="text-xs text-muted-foreground">
@@ -198,7 +187,7 @@
 			{/if}
 		</div>
 		<div class="relative w-full sm:max-w-xs">
-			<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+			<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				bind:value={query}
 				type="search"
@@ -212,7 +201,9 @@
 		{:else if paged.length === 0}
 			<Empty>
 				<EmptyHeader>
-					<BrandedEmptyMedia><Package class="size-6 text-muted-foreground"></Package></BrandedEmptyMedia>
+					<BrandedEmptyMedia
+						><Package class="size-6 text-muted-foreground"></Package></BrandedEmptyMedia
+					>
 					<EmptyTitle
 						>{query.trim() || activeType !== 'all'
 							? 'No suppliers match these filters'
@@ -265,9 +256,9 @@
 							{/if}
 						</div>
 						<div class="flex flex-1 flex-col gap-1 p-2.5 sm:p-3">
-							<h3 class="line-clamp-1 text-xs leading-tight font-medium sm:text-sm">{s.name}</h3>
+							<h3 class="truncate text-xs leading-tight font-medium sm:text-sm">{s.name}</h3>
 							{#if s.country}
-								<p class="text-2xs text-muted-foreground">{s.country}</p>
+								<p class="hidden text-2xs text-muted-foreground sm:block">{s.country}</p>
 							{/if}
 							<div class="mt-auto flex items-center justify-between gap-1 pt-1">
 								<Badge variant="outline" class="text-3xs">{s.businessType}</Badge>
@@ -286,9 +277,9 @@
 	</div>
 
 	<!-- Target Markets -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div>
-			<h2 class="text-base font-semibold sm:text-lg">Markets served</h2>
+			<h2 class="text-sm font-semibold sm:text-base">Markets served</h2>
 			<p class="text-xs text-muted-foreground">
 				Suppliers shipping halal products across these regions.
 			</p>
@@ -302,7 +293,7 @@
 						</div>
 						<h3 class="truncate text-xs font-semibold sm:text-sm">{market.region}</h3>
 					</div>
-					<p class="mt-1.5 line-clamp-2 text-2xs text-muted-foreground sm:text-xs">
+					<p class="mt-1.5 line-clamp-2 hidden text-2xs text-muted-foreground sm:block sm:text-xs">
 						{market.countries}
 					</p>
 				</Card>

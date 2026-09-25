@@ -3,6 +3,7 @@
 	import { Card, CardContent, CardTitle } from '#lib/components/ui/card/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import { Field, FieldLabel } from '#lib/components/ui/field/index.js';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
@@ -62,54 +63,68 @@
 			<Calculator class="size-4" />
 			Landed Cost Calculator
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">True cost per unit, landed</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">True cost per unit, landed</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Supplier quotes are FOB. Add freight, duty, VAT, clearance — and the halal certification share
 			most buyers forget — to see what a unit really costs at your warehouse.
 		</p>
 	</div>
 
-	<div class="grid gap-4 lg:grid-cols-2">
-		<Card class="p-4 sm:p-5">
+	<div class="grid min-w-0 gap-4 lg:grid-cols-2">
+		<Card class="min-w-0 p-4 sm:p-5">
 			<CardContent class="space-y-3 p-0">
 				<CardTitle class="text-sm sm:text-base">Shipment inputs</CardTitle>
-				<div class="grid grid-cols-2 gap-3">
+				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 					<Field>
 						<FieldLabel>Goods value (USD)</FieldLabel>
-						<Input type="number" min="0" bind:value={goodsValue} />
+						<Input class="min-h-11 sm:min-h-8" type="number" min="0" bind:value={goodsValue} />
 					</Field>
 					<Field>
 						<FieldLabel>Quantity (units)</FieldLabel>
-						<Input type="number" min="1" bind:value={quantity} />
+						<Input class="min-h-11 sm:min-h-8" type="number" min="1" bind:value={quantity} />
 					</Field>
 					<Field>
 						<FieldLabel>Freight (USD)</FieldLabel>
-						<Input type="number" min="0" bind:value={freight} />
+						<Input class="min-h-11 sm:min-h-8" type="number" min="0" bind:value={freight} />
 					</Field>
 					<Field>
 						<FieldLabel>Insurance (USD)</FieldLabel>
-						<Input type="number" min="0" bind:value={insurance} />
+						<Input class="min-h-11 sm:min-h-8" type="number" min="0" bind:value={insurance} />
 					</Field>
 					<Field>
 						<FieldLabel>Import duty (%)</FieldLabel>
-						<Input type="number" min="0" max="100" step="0.5" bind:value={dutyRate} />
+						<Input
+							class="min-h-11 sm:min-h-8"
+							type="number"
+							min="0"
+							max="100"
+							step="0.5"
+							bind:value={dutyRate}
+						/>
 					</Field>
 					<Field>
 						<FieldLabel>VAT / GST (%)</FieldLabel>
-						<Input type="number" min="0" max="100" step="0.5" bind:value={vatRate} />
+						<Input
+							class="min-h-11 sm:min-h-8"
+							type="number"
+							min="0"
+							max="100"
+							step="0.5"
+							bind:value={vatRate}
+						/>
 					</Field>
 					<Field>
 						<FieldLabel>Clearance & handling (USD)</FieldLabel>
-						<Input type="number" min="0" bind:value={clearance} />
+						<Input class="min-h-11 sm:min-h-8" type="number" min="0" bind:value={clearance} />
 					</Field>
 					<Field>
 						<FieldLabel>Annual cert. cost (USD)</FieldLabel>
-						<Input type="number" min="0" bind:value={annualCertCost} />
+						<Input class="min-h-11 sm:min-h-8" type="number" min="0" bind:value={annualCertCost} />
 					</Field>
 				</div>
 				<Field>
 					<FieldLabel>Shipments per year (amortises certification)</FieldLabel>
-					<Input type="number" min="1" bind:value={shipmentsPerYear} />
+					<Input class="min-h-11 sm:min-h-8" type="number" min="1" bind:value={shipmentsPerYear} />
 				</Field>
 				<p class="text-2xs-plus leading-relaxed text-muted-foreground">
 					Duty and VAT rates vary by HS code and destination — confirm with your broker. VAT here
@@ -118,19 +133,23 @@
 			</CardContent>
 		</Card>
 
-		<div class="space-y-4 lg:sticky lg:top-24 lg:h-fit">
-			<div class="grid grid-cols-2 gap-2">
-				<StatTile value={fmt(total)} label="Total landed cost" tone="primary" />
-				<StatTile value={fmt(perUnit)} label="Cost per unit" tone="success" />
+		<div class="min-w-0 space-y-4 lg:sticky lg:top-24 lg:h-fit">
+			<div class="grid min-w-0 grid-cols-2 gap-2">
+				<div class="min-w-0">
+					<StatTile value={fmt(total)} label="Total landed cost" tone="primary" />
+				</div>
+				<div class="min-w-0">
+					<StatTile value={fmt(perUnit)} label="Cost per unit" tone="success" />
+				</div>
 			</div>
 			<Card class="p-4 sm:p-5">
 				<CardContent class="space-y-2.5 p-0">
 					<CardTitle class="text-sm sm:text-base">Cost breakdown</CardTitle>
 					{#each breakdown as b (b.label)}
 						<div>
-							<div class="mb-1 flex items-center justify-between text-xs">
-								<span class="text-muted-foreground">{b.label}</span>
-								<span class="font-semibold">{fmt(b.value)}</span>
+							<div class="mb-1 flex min-w-0 items-center justify-between gap-2 text-xs">
+								<span class="min-w-0 break-words text-muted-foreground">{b.label}</span>
+								<span class="shrink-0 font-semibold tabular-nums">{fmt(b.value)}</span>
 							</div>
 							<div class="h-1.5 overflow-hidden rounded-full bg-muted">
 								<div
@@ -156,6 +175,7 @@
 						)}
 						variant="outline"
 						size="sm"
+						class="min-h-11 sm:min-h-7"
 					>
 						GSO 9 labelling checklist
 						<ArrowRight class="size-3.5 rtl:rotate-180" />
@@ -165,11 +185,11 @@
 		</div>
 	</div>
 
-	<div class="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground">
-		<AlertTriangle class="mx-auto mb-2 size-6 opacity-40" />
-		<p class="text-2xs-plus leading-relaxed">
+	<Alert class="border-dashed bg-muted/20 p-4 text-center">
+		<AlertTriangle class="mx-auto size-6 opacity-50" />
+		<AlertDescription class="mx-auto max-w-2xl text-xs leading-relaxed sm:text-sm">
 			Estimates only — duty depends on HS classification and trade agreements, VAT rules differ by
 			market. Confirm with your customs broker before contracting.
-		</p>
-	</div>
+		</AlertDescription>
+	</Alert>
 </section>

@@ -13,7 +13,13 @@
 		TableHeader,
 		TableRow
 	} from '#lib/components/ui/table/index.js';
-	import { Empty } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyContent,
+		EmptyDescription,
+		EmptyHeader,
+		EmptyTitle
+	} from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import Search from '@lucide/svelte/icons/search';
@@ -72,8 +78,8 @@
 <div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="space-y-1">
-			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Users</h1>
-			<p class="max-w-2xl text-sm text-muted-foreground">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Users</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				Accounts stored by Better Auth — buyer sign-ups and admin logins share this table. Seller
 				profiles and their team memberships are managed under Suppliers.
 			</p>
@@ -84,7 +90,7 @@
 	<div class="flex items-center gap-2">
 		<div class="relative max-w-sm flex-1">
 			<Search
-				class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+				class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 			></Search>
 			<Input
 				bind:value={search}
@@ -107,29 +113,41 @@
 	{/if}
 
 	{#if filtered.length === 0}
-		<Empty>
-			<BrandedEmptyMedia><Users class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
-			<div class="space-y-1">
-				<p class="font-medium">
+		<Empty class="border">
+			<EmptyHeader>
+				<BrandedEmptyMedia variant="icon">
+					<Users />
+				</BrandedEmptyMedia>
+				<EmptyTitle>
 					{data.users.length === 0 ? 'No accounts yet' : 'No users found'}
-				</p>
-				<p class="text-sm text-muted-foreground">
+				</EmptyTitle>
+				<EmptyDescription>
 					{data.users.length === 0
 						? 'Accounts appear here as soon as someone signs up on the site.'
-						: 'Try a different search term.'}
-				</p>
-			</div>
+						: 'Try a different name, email or company.'}
+				</EmptyDescription>
+			</EmptyHeader>
+			<EmptyContent>
+				{#if search.trim()}
+					<Button variant="outline" size="sm" onclick={() => (search = '')}>Clear search</Button>
+				{:else}
+					<Button variant="outline" size="sm" onclick={refresh}>
+						<RefreshCw class="size-4"></RefreshCw>
+						Refresh users
+					</Button>
+				{/if}
+			</EmptyContent>
 		</Empty>
 	{:else}
-		<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
-			<Table>
+		<div class="min-w-0 overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+			<Table class="min-w-[56rem]">
 				<TableHeader>
 					<TableRow class="hover:bg-transparent">
-						<TableHead>Name</TableHead>
-						<TableHead>Email</TableHead>
-						<TableHead>Email status</TableHead>
-						<TableHead>Company</TableHead>
-						<TableHead>Joined</TableHead>
+						<TableHead class="whitespace-nowrap">Name</TableHead>
+						<TableHead class="whitespace-nowrap">Email</TableHead>
+						<TableHead class="whitespace-nowrap">Email status</TableHead>
+						<TableHead class="whitespace-nowrap">Company</TableHead>
+						<TableHead class="whitespace-nowrap">Joined</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -143,16 +161,16 @@
 									{/if}
 								</div>
 							</TableCell>
-							<TableCell class="text-muted-foreground">{account.email}</TableCell>
+							<TableCell class="whitespace-nowrap text-muted-foreground">{account.email}</TableCell>
 							<TableCell>
 								{#if account.emailVerified}
-									<Badge variant="secondary" class="px-1.5 py-0.5 text-2xs bg-success/10 text-success"
-										>Verified</Badge
-									>
-								{:else}
 									<Badge
 										variant="secondary"
-										class="px-1.5 py-0.5 text-2xs text-muted-foreground">Unverified</Badge
+										class="bg-success/10 px-1.5 py-0.5 text-2xs text-success">Verified</Badge
+									>
+								{:else}
+									<Badge variant="secondary" class="px-1.5 py-0.5 text-2xs text-muted-foreground"
+										>Unverified</Badge
 									>
 								{/if}
 							</TableCell>

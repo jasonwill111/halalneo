@@ -97,21 +97,26 @@
 	{@html `\u003cscript type="application/ld+json">${definedTermSet}\u003c/script>`}
 </svelte:head>
 
-<section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+<section class="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
+	<div class="flex flex-col gap-2">
+		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:text-sm">
 			<BookText class="size-4"></BookText>
 			Glossary
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Halal trade glossary</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="max-w-3xl text-xl font-semibold tracking-tight sm:text-2xl">Halal trade glossary</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			{sorted.length} terms covering certification, sourcing, logistics and market entry.
 		</p>
 	</div>
 
-	<div class="relative">
-		<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
-		<Input type="search" placeholder="Search glossary terms..." class="ps-9" bind:value={search} />
+	<div class="relative min-w-0">
+		<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+		<Input
+			type="search"
+			placeholder="Search glossary terms..."
+			class="w-full ps-9 text-xs sm:text-sm"
+			bind:value={search}
+		/>
 	</div>
 
 	{#if !isSearching}
@@ -119,6 +124,7 @@
 			options={pillOptions}
 			bind:value={activeLetter}
 			ariaLabel="Filter glossary by letter"
+			class="flex-nowrap overflow-x-auto pb-1 sm:flex-wrap sm:overflow-x-visible sm:pb-0"
 		/>
 	{/if}
 
@@ -126,16 +132,18 @@
 		<ErrorRetry failure={data.loadError} subject="glossary terms" />
 	{/if}
 
-	<div class="space-y-4 sm:space-y-6">
+	<div class="flex flex-col gap-4 sm:gap-6">
 		{#each paginatedLetters as letter (letter)}
-			<div class="space-y-3">
-				<h2 id="term-{letter}" class="scroll-mt-24 text-base font-semibold">{letter}</h2>
-				<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+			<div class="flex flex-col gap-2 sm:gap-3">
+				<h2 id="term-{letter}" class="scroll-mt-24 text-sm font-semibold sm:text-base">{letter}</h2>
+				<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 					{#each grouped[letter] as term (term.term)}
-						<Card class="p-3 sm:p-4">
-							<CardContent class="space-y-1 pt-4">
-								<CardTitle class="text-sm sm:text-base">{term.term}</CardTitle>
-								<p class="text-sm text-muted-foreground">{term.definition}</p>
+						<Card class="min-w-0 p-3 sm:p-4">
+							<CardContent class="flex flex-col gap-1">
+								<CardTitle class="line-clamp-2 text-sm sm:text-base">{term.term}</CardTitle>
+								<p class="line-clamp-3 text-xs text-muted-foreground sm:line-clamp-none sm:text-sm">
+									{term.definition}
+								</p>
 							</CardContent>
 						</Card>
 					{/each}
@@ -145,7 +153,9 @@
 			{#if !data.loadError}
 				<Empty>
 					<EmptyHeader>
-						<BrandedEmptyMedia><BookText class="size-6 text-muted-foreground"></BookText></BrandedEmptyMedia>
+						<BrandedEmptyMedia
+							><BookText class="size-6 text-muted-foreground"></BookText></BrandedEmptyMedia
+						>
 						<EmptyTitle>No glossary terms found</EmptyTitle>
 						<EmptyDescription>Try adjusting your search.</EmptyDescription>
 					</EmptyHeader>

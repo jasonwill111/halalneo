@@ -10,3 +10,5 @@ bun.lockb
 /drizzle/
 /src/lib/paraglide/
 /worker-configuration.d.ts
+/project.inlang/cache/
+/scripts/archive/

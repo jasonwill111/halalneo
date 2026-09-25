@@ -29,10 +29,7 @@ function httpFailure(status: number): LoadFailure {
 	return {
 		kind: 'server',
 		status,
-		message:
-			status >= 500
-				? SERVER_MESSAGE
-				: `The catalogue service replied with status ${status}.`
+		message: status >= 500 ? SERVER_MESSAGE : `The catalogue service replied with status ${status}.`
 	};
 }
 

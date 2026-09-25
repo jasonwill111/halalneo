@@ -2,7 +2,13 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
-import { pageViews, products, promotions, buyingRequests, supplierMembers } from '#lib/server/db/schema.js';
+import {
+	pageViews,
+	products,
+	promotions,
+	buyingRequests,
+	supplierMembers
+} from '#lib/server/db/schema.js';
 import { eq, and, gte, desc, sql } from 'drizzle-orm';
 import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
@@ -25,7 +31,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	try {
 		const now = new Date();
-		await db.insert(pageViews).values({ kind: parsed.data.kind, slug: parsed.data.slug, createdAt: now });
+		await db
+			.insert(pageViews)
+			.values({ kind: parsed.data.kind, slug: parsed.data.slug, createdAt: now });
 
 		// Keep the denormalized `views` counters in step (list pages read them).
 		if (parsed.data.kind === 'product') {
@@ -69,7 +77,9 @@ export const GET: RequestHandler = async (event) => {
 		const members = await db
 			.select({ userId: supplierMembers.userId })
 			.from(supplierMembers)
-			.where(and(eq(supplierMembers.userId, userId), eq(supplierMembers.supplierSlug, supplierSlug)))
+			.where(
+				and(eq(supplierMembers.userId, userId), eq(supplierMembers.supplierSlug, supplierSlug))
+			)
 			.limit(1);
 		if (members.length === 0) return json({ error: 'Forbidden' }, { status: 403 });
 
@@ -83,7 +93,11 @@ export const GET: RequestHandler = async (event) => {
 			.select({ n: sql<number>`count(*)` })
 			.from(pageViews)
 			.where(
-				and(eq(pageViews.kind, 'supplier'), eq(pageViews.slug, supplierSlug), gte(pageViews.createdAt, since))
+				and(
+					eq(pageViews.kind, 'supplier'),
+					eq(pageViews.slug, supplierSlug),
+					gte(pageViews.createdAt, since)
+				)
 			);
 
 		const daily = await db
@@ -93,7 +107,11 @@ export const GET: RequestHandler = async (event) => {
 			})
 			.from(pageViews)
 			.where(
-				and(eq(pageViews.kind, 'supplier'), eq(pageViews.slug, supplierSlug), gte(pageViews.createdAt, since))
+				and(
+					eq(pageViews.kind, 'supplier'),
+					eq(pageViews.slug, supplierSlug),
+					gte(pageViews.createdAt, since)
+				)
 			)
 			.groupBy(sql`date(${pageViews.createdAt} / 1000, 'unixepoch')`)
 			.orderBy(sql`date(${pageViews.createdAt} / 1000, 'unixepoch')`);

@@ -32,9 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const metric = typeof it?.metric === 'string' ? it.metric : '';
 		const value = Number(it?.value);
 		const page =
-			typeof it?.page === 'string' && it.page.startsWith('/')
-				? it.page.slice(0, 200)
-				: '/';
+			typeof it?.page === 'string' && it.page.startsWith('/') ? it.page.slice(0, 200) : '/';
 		if (!METRICS.has(metric) || !Number.isFinite(value) || value < 0) continue;
 		// Sanity caps: LCP/INP in ms (1h absurd), CLS unitless (100 absurd)
 		if ((metric === 'CLS' && value > 100) || (metric !== 'CLS' && value > 3600000)) continue;

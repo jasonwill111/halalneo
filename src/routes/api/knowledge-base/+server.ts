@@ -38,11 +38,15 @@ const KB_ADMIN_COLUMNS = {
  * query below is bounded by LIMIT (<=100). */
 async function queryKbAdminList(db: Db, limit: number, offset: number, search: string | undefined) {
 	const where = search
-		? (or(like(knowledgeBase.title, `%${search}%`), like(knowledgeBase.summary, `%${search}%`)) ?? undefined)
+		? (or(like(knowledgeBase.title, `%${search}%`), like(knowledgeBase.summary, `%${search}%`)) ??
+			undefined)
 		: undefined;
 
 	const [[countResult], rows] = await Promise.all([
-		db.select({ count: sql<number>`count(*)` }).from(knowledgeBase).where(where),
+		db
+			.select({ count: sql<number>`count(*)` })
+			.from(knowledgeBase)
+			.where(where),
 		db
 			.select(KB_ADMIN_COLUMNS)
 			.from(knowledgeBase)
@@ -158,7 +162,10 @@ export const POST: RequestHandler = async (event) => {
 		const message = e instanceof Error ? e.message : '';
 		if (message.includes('UNIQUE constraint')) {
 			return json(
-				{ error: 'Validation failed', details: { slug: ['An article with this slug already exists'] } },
+				{
+					error: 'Validation failed',
+					details: { slug: ['An article with this slug already exists'] }
+				},
 				{ status: 400 }
 			);
 		}

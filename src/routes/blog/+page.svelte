@@ -76,19 +76,19 @@
 </svelte:head>
 
 <section class="space-y-4 sm:space-y-6">
-	<div class="max-w-2xl space-y-2">
-		<div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+	<div class="max-w-2xl space-y-1">
+		<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:text-sm">
 			<Newspaper class="size-4"></Newspaper>
 			Blog
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">News & insights</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">News & insights</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Updates on halal certification, sourcing and market intelligence.
 		</p>
 	</div>
 
 	<div class="relative">
-		<SearchIcon class="absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground" />
+		<SearchIcon class="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 		<Input type="search" placeholder="Search articles..." class="ps-9" bind:value={search} />
 	</div>
 
@@ -102,11 +102,13 @@
 
 	{#if published.length === 0}
 		<Empty>
-			<BrandedEmptyMedia><Newspaper class="size-6 text-muted-foreground"></Newspaper></BrandedEmptyMedia>
+			<BrandedEmptyMedia
+				><Newspaper class="size-6 text-muted-foreground"></Newspaper></BrandedEmptyMedia
+			>
 			<EmptyTitle>No published posts yet.</EmptyTitle>
 		</Empty>
 	{:else}
-		<div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 			{#each paged as post, idx (post.slug)}
 				<Card class="overflow-hidden">
 					<article>
@@ -122,7 +124,7 @@
 									height="400"
 								/>
 							</div>
-							<CardContent class="space-y-2 pt-3 sm:space-y-3 sm:pt-4">
+							<CardContent class="space-y-1 pt-2.5 sm:space-y-2 sm:pt-4">
 								<div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 									{#if post.category}
 										<Badge variant="outline" class="text-2xs">{post.category}</Badge>
@@ -140,13 +142,13 @@
 									{/if}
 								</div>
 								<CardTitle
-									class="line-clamp-2 text-sm leading-snug group-hover:text-primary sm:text-lg"
+									class="truncate text-xs leading-snug group-hover:text-primary sm:text-sm"
 								>
 									{post.title}
 								</CardTitle>
 								{#if post.excerpt && post.excerpt.trim()}
 									<p
-										class="line-clamp-2 hidden text-sm text-muted-foreground sm:block"
+										class="line-clamp-2 hidden text-xs text-muted-foreground sm:block sm:text-sm"
 										title={post.excerpt}
 									>
 										{post.excerpt}

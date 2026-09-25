@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import {
 		Card,
 		CardContent,
@@ -7,6 +8,7 @@
 		CardTitle
 	} from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import {
@@ -18,6 +20,7 @@
 		DialogTitle
 	} from '#lib/components/ui/dialog/index.js';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import Users from '@lucide/svelte/icons/users';
 	import Package from '@lucide/svelte/icons/package';
 	import FolderTree from '@lucide/svelte/icons/folder-tree';
@@ -29,7 +32,7 @@
 	import X from '@lucide/svelte/icons/x';
 	import Globe from '@lucide/svelte/icons/globe';
 
-	let { data } = $props();
+	let { data }: PageProps = $props();
 
 	const stats = $derived(data.stats);
 	const activeSuppliers = $derived(stats.suppliers.active);
@@ -120,10 +123,26 @@
 	}
 </script>
 
+{#snippet usersIcon()}
+	<Users class="size-4" />
+{/snippet}
+
+{#snippet packageIcon()}
+	<Package class="size-4" />
+{/snippet}
+
+{#snippet categoriesIcon()}
+	<FolderTree class="size-4" />
+{/snippet}
+
+{#snippet bodiesIcon()}
+	<BadgeCheck class="size-4" />
+{/snippet}
+
 <div class="space-y-4 sm:space-y-8">
 	<div class="space-y-1">
-		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Dashboard</h1>
-		<p class="max-w-2xl text-sm text-muted-foreground">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Dashboard</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			Operational overview of the HalalNeo demo dataset.
 		</p>
 	</div>
@@ -203,35 +222,21 @@
 		</Card>
 	{/if}
 
-	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-		<Card>
-			<CardHeader class="gap-2">
-				<Users class="size-5 text-primary"></Users>
-				<CardTitle class="text-2xl">{stats.suppliers.total}</CardTitle>
-				<CardDescription>Suppliers (sellers)</CardDescription>
-			</CardHeader>
-		</Card>
-		<Card>
-			<CardHeader class="gap-2">
-				<Package class="size-5 text-primary"></Package>
-				<CardTitle class="text-2xl">{stats.products.total}</CardTitle>
-				<CardDescription>Products (SKUs)</CardDescription>
-			</CardHeader>
-		</Card>
-		<Card>
-			<CardHeader class="gap-2">
-				<FolderTree class="size-5 text-primary"></FolderTree>
-				<CardTitle class="text-2xl">{stats.categories}</CardTitle>
-				<CardDescription>Categories</CardDescription>
-			</CardHeader>
-		</Card>
-		<Card>
-			<CardHeader class="gap-2">
-				<BadgeCheck class="size-5 text-primary"></BadgeCheck>
-				<CardTitle class="text-2xl">{stats.certifyingBodies}</CardTitle>
-				<CardDescription>Certifying bodies</CardDescription>
-			</CardHeader>
-		</Card>
+	<div class="grid grid-cols-2 gap-2 sm:gap-3">
+		<StatTile
+			value={stats.suppliers.total}
+			label="Suppliers"
+			hint={`${activeSuppliers} active · ${pendingSuppliers} pending`}
+			icon={usersIcon}
+		/>
+		<StatTile
+			value={stats.products.total}
+			label="Products"
+			hint="Marketplace SKUs"
+			icon={packageIcon}
+		/>
+		<StatTile value={stats.categories} label="Categories" icon={categoriesIcon} />
+		<StatTile value={stats.certifyingBodies} label="Certifying bodies" icon={bodiesIcon} />
 	</div>
 
 	<div class="grid gap-4 lg:grid-cols-2">
@@ -361,7 +366,9 @@
 				</div>
 
 				{#if reviewError}
-					<p class="text-xs text-destructive">{reviewError}</p>
+					<Alert variant="destructive">
+						<AlertDescription>{reviewError}</AlertDescription>
+					</Alert>
 				{/if}
 			</div>
 		{/if}

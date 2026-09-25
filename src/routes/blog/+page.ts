@@ -22,14 +22,15 @@ export const load: PageLoad = async ({ fetch }) => {
 	const postsParsed = posts.map((p) => ({
 		...p,
 		date: toIsoDate(p.publishedAt),
-		tags: typeof p.tags === 'string' ? (JSON.parse(p.tags || '[]') as string[]) : (p.tags ?? []),
+		tags: typeof p.tags === 'string' ? (JSON.parse(p.tags || '[]') as string[]) : (p.tags ?? [])
 	}));
 
 	const itemList = {
 		'@context': 'https://schema.org',
 		'@type': 'ItemList',
 		name: 'Halal Trade Blog',
-		description: 'Industry insights, market reports, and updates on halal trade, certification, and sourcing.',
+		description:
+			'Industry insights, market reports, and updates on halal trade, certification, and sourcing.',
 		itemListElement: postsParsed.slice(0, 20).map((p, i) => ({
 			'@type': 'ListItem',
 			position: i + 1,

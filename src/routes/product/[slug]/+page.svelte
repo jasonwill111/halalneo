@@ -363,7 +363,7 @@
 </svelte:head>
 
 {#if item}
-	<div class="mx-auto max-w-6xl space-y-4 sm:space-y-6">
+	<div class="mx-auto w-full max-w-6xl space-y-4 px-4 sm:space-y-6 sm:px-6">
 		<Breadcrumb
 			items={[{ label: 'Products', href: '/products' }, { label: item.name ?? 'Product' }]}
 		/>
@@ -419,7 +419,7 @@
 			</div>
 
 			<!-- Product Info -->
-			<div class="space-y-4 lg:col-span-3">
+			<div class="min-w-0 space-y-4 lg:col-span-3">
 				<div>
 					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{item.name}</h1>
 					{#if item.shortDescription}
@@ -549,11 +549,11 @@
 		</Tabs>
 
 		<!-- Tab Content -->
-		<div class="flex flex-col gap-4 lg:grid lg:grid-cols-3 lg:gap-6">
-			<div class="space-y-4 lg:col-span-2">
+		<div class="grid gap-4 lg:grid-cols-3 lg:gap-6">
+			<div class="min-w-0 space-y-4 lg:col-span-2">
 				{#if activeTab === 'description'}
 					<h2 class="text-base font-semibold">Product Description</h2>
-					<div class="content-body content-body-sm overflow-hidden">
+					<div class="content-body content-body-sm max-w-[65ch] overflow-hidden">
 						{#if item.description}
 							{@html sanitizeHtml(item.description)}
 						{:else}
@@ -690,7 +690,7 @@
 			</div>
 
 			<!-- Quick Info sidebar -->
-			<div class="space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
+			<div class="min-w-0 space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
 				<Card class="p-3 sm:p-4">
 					<h3 class="mb-3 text-sm font-semibold">Quick Info</h3>
 					<dl class="space-y-2 text-sm">

@@ -44,7 +44,11 @@ export const PUT: RequestHandler = async (event) => {
 	if (!body) return json({ error: 'Request body is required' }, { status: 400 });
 
 	try {
-		const [existing] = await db.select().from(buyingRequests).where(eq(buyingRequests.id, params.id)).limit(1);
+		const [existing] = await db
+			.select()
+			.from(buyingRequests)
+			.where(eq(buyingRequests.id, params.id))
+			.limit(1);
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
 
 		const updates: Record<string, unknown> = {};
@@ -80,7 +84,11 @@ export const DELETE: RequestHandler = async (event) => {
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
-		const [existing] = await db.select().from(buyingRequests).where(eq(buyingRequests.id, params.id)).limit(1);
+		const [existing] = await db
+			.select()
+			.from(buyingRequests)
+			.where(eq(buyingRequests.id, params.id))
+			.limit(1);
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
 
 		await db.delete(buyingRequests).where(eq(buyingRequests.id, params.id));

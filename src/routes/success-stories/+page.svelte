@@ -38,8 +38,8 @@
 			<TrophyIcon class="size-4" />
 			Success Stories
 		</div>
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Deals closed on HalalNeo</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Deals closed on HalalNeo</h1>
+		<p class="max-w-2xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
 			Real buyers who sourced certified suppliers, real suppliers who won export orders.
 		</p>
 	</div>
@@ -49,7 +49,9 @@
 	{:else if paged.length === 0}
 		<Empty>
 			<EmptyHeader>
-				<BrandedEmptyMedia><TrophyIcon class="size-6 text-muted-foreground"></TrophyIcon></BrandedEmptyMedia>
+				<BrandedEmptyMedia
+					><TrophyIcon class="size-6 text-muted-foreground"></TrophyIcon></BrandedEmptyMedia
+				>
 				<EmptyTitle>First success stories are on the way</EmptyTitle>
 				<EmptyDescription
 					>Closed a deal through HalalNeo? Tell us — we feature real trades.</EmptyDescription
@@ -65,32 +67,35 @@
 			{#each paged as s (s.slug)}
 				<a
 					href={localizeHref(`/success-stories/${s.slug}`)}
-					class="group press-scale flex h-full flex-col rounded-xl bg-card p-3 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
+					class="group press-scale flex h-full min-w-0 flex-col rounded-xl bg-card p-2.5 ring-1 ring-foreground/10 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md sm:p-4"
 				>
-					<div class="flex flex-wrap items-center gap-1.5">
+					<div class="flex min-w-0 flex-wrap items-center gap-1.5">
 						{#if s.dealValue}
-							<Badge class="bg-success/15 text-2xs text-success">{s.dealValue}</Badge>
+							<Badge class="max-w-full truncate bg-success/15 text-2xs text-success"
+								>{s.dealValue}</Badge
+							>
 						{/if}
 						{#if s.buyerCountry}
-							<span class="inline-flex items-center gap-1 text-2xs text-muted-foreground">
-								<MapPinIcon class="size-3" />
-								{s.buyerCountry}
+							<span class="inline-flex min-w-0 items-center gap-1 text-2xs text-muted-foreground">
+								<MapPinIcon class="size-3 shrink-0" />
+								<span class="truncate">{s.buyerCountry}</span>
 							</span>
 						{/if}
 					</div>
 					<h3
-						class="mt-1.5 line-clamp-2 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
+						class="mt-1.5 line-clamp-2 min-w-0 text-xs leading-snug font-semibold transition-colors group-hover:text-primary sm:text-sm"
 					>
 						{s.title}
 					</h3>
 					{#if s.excerpt}
 						<p
-							class="mt-1 line-clamp-2 hidden text-2xs-plus leading-snug text-muted-foreground sm:block"
+							class="mt-1 line-clamp-2 hidden min-w-0 text-2xs-plus leading-snug text-muted-foreground sm:block"
 						>
 							{s.excerpt}
 						</p>
 					{/if}
-					<span class="mt-auto pt-2 text-2xs font-semibold text-primary">Read story →</span>
+					<span class="mt-auto truncate pt-2 text-2xs font-semibold text-primary">Read story →</span
+					>
 				</a>
 			{/each}
 		</div>

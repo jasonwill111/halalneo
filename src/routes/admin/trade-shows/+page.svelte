@@ -444,15 +444,15 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search shows..." class="ps-9" />
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
-		<StatTile value={shows.length} label="Total Shows" loading={loading} />
-		<StatTile value={activeCount} label="Active" loading={loading} />
-		<StatTile value={megaCount} label="Mega Shows" loading={loading} />
+		<StatTile value={shows.length} label="Total Shows" {loading} />
+		<StatTile value={activeCount} label="Active" {loading} />
+		<StatTile value={megaCount} label="Mega Shows" {loading} />
 	</div>
 
 	{#if loadFailure}
@@ -492,7 +492,9 @@
 							<TableCell colspan={6} class="py-8">
 								<Empty>
 									<EmptyHeader>
-										<BrandedEmptyMedia variant="icon"><CalendarDays class="size-6" /></BrandedEmptyMedia>
+										<BrandedEmptyMedia variant="icon"
+											><CalendarDays class="size-6" /></BrandedEmptyMedia
+										>
 										<EmptyTitle>
 											{search.trim() ? 'No matching shows' : 'No trade shows yet'}
 										</EmptyTitle>
@@ -580,12 +582,12 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit show' : 'New show'}</DialogTitle>
 			<DialogDescription>Register or update a halal trade show.</DialogDescription>
 		</DialogHeader>
-		<form bind:this={formEl} onsubmit={save} class="flex flex-col gap-4">
+		<form bind:this={formEl} onsubmit={save} class="flex min-w-0 flex-col gap-4">
 			<Field.Field>
 				<Field.FieldLabel>Name *</Field.FieldLabel>
 				<Input
@@ -594,12 +596,14 @@
 					maxlength={200}
 					disabled={saving}
 					aria-invalid={!!fieldErrors.name}
-					oninput={() => { if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' }; }}
+					oninput={() => {
+						if (fieldErrors.name) fieldErrors = { ...fieldErrors, name: '' };
+					}}
 				/>
 				{#if fieldErrors.name}<FieldError>{fieldErrors.name}</FieldError>{/if}
 			</Field.Field>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>ID</Field.FieldLabel>
 					<Input
@@ -608,7 +612,9 @@
 						maxlength={160}
 						disabled={!!editing || saving}
 						aria-invalid={!!fieldErrors.id}
-						oninput={() => { if (fieldErrors.id) fieldErrors = { ...fieldErrors, id: '' }; }}
+						oninput={() => {
+							if (fieldErrors.id) fieldErrors = { ...fieldErrors, id: '' };
+						}}
 					/>
 					{#if fieldErrors.id}<FieldError>{fieldErrors.id}</FieldError>{/if}
 					{#if !editing}
@@ -633,18 +639,28 @@
 				</Field.Field>
 			</div>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>City</Field.FieldLabel>
-					<Input bind:value={form.city} placeholder="Kuala Lumpur" maxlength={120} disabled={saving} />
+					<Input
+						bind:value={form.city}
+						placeholder="Kuala Lumpur"
+						maxlength={120}
+						disabled={saving}
+					/>
 				</Field.Field>
 				<Field.Field>
 					<Field.FieldLabel>Country</Field.FieldLabel>
-					<Input bind:value={form.country} placeholder="Malaysia" maxlength={120} disabled={saving} />
+					<Input
+						bind:value={form.country}
+						placeholder="Malaysia"
+						maxlength={120}
+						disabled={saving}
+					/>
 				</Field.Field>
 			</div>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Region</Field.FieldLabel>
 					<Select bind:value={form.region} type="single">
@@ -677,7 +693,7 @@
 				</Field.Field>
 			</div>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Start Date *</Field.FieldLabel>
 					<Input
@@ -685,7 +701,9 @@
 						type="date"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.startDate}
-						oninput={() => { if (fieldErrors.startDate) fieldErrors = { ...fieldErrors, startDate: '' }; }}
+						oninput={() => {
+							if (fieldErrors.startDate) fieldErrors = { ...fieldErrors, startDate: '' };
+						}}
 					/>
 					{#if fieldErrors.startDate}<FieldError>{fieldErrors.startDate}</FieldError>{/if}
 				</Field.Field>
@@ -696,7 +714,9 @@
 						type="date"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.endDate}
-						oninput={() => { if (fieldErrors.endDate) fieldErrors = { ...fieldErrors, endDate: '' }; }}
+						oninput={() => {
+							if (fieldErrors.endDate) fieldErrors = { ...fieldErrors, endDate: '' };
+						}}
 					/>
 					{#if fieldErrors.endDate}<FieldError>{fieldErrors.endDate}</FieldError>{/if}
 				</Field.Field>
@@ -711,7 +731,9 @@
 					placeholder="Show description..."
 					disabled={saving}
 					aria-invalid={!!fieldErrors.description}
-					oninput={() => { if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' }; }}
+					oninput={() => {
+						if (fieldErrors.description) fieldErrors = { ...fieldErrors, description: '' };
+					}}
 				/>
 				{#if fieldErrors.description}<FieldError>{fieldErrors.description}</FieldError>{/if}
 			</Field.Field>
@@ -743,11 +765,13 @@
 						placeholder="Food & Beverage, Pharmaceuticals, ..."
 						disabled={saving}
 						aria-invalid={!!fieldErrors.focus}
-						oninput={() => { if (fieldErrors.focus) fieldErrors = { ...fieldErrors, focus: '' }; }}
+						oninput={() => {
+							if (fieldErrors.focus) fieldErrors = { ...fieldErrors, focus: '' };
+						}}
 					/>
 					{#if fieldErrors.focus}<FieldError>{fieldErrors.focus}</FieldError>{/if}
 				</Field.Field>
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Exhibitors</Field.FieldLabel>
 						<Input
@@ -757,7 +781,9 @@
 							placeholder="1200"
 							disabled={saving}
 							aria-invalid={!!fieldErrors.exhibitors}
-							oninput={() => { if (fieldErrors.exhibitors) fieldErrors = { ...fieldErrors, exhibitors: '' }; }}
+							oninput={() => {
+								if (fieldErrors.exhibitors) fieldErrors = { ...fieldErrors, exhibitors: '' };
+							}}
 						/>
 						{#if fieldErrors.exhibitors}<FieldError>{fieldErrors.exhibitors}</FieldError>{/if}
 					</Field.Field>
@@ -770,7 +796,9 @@
 							placeholder="50000"
 							disabled={saving}
 							aria-invalid={!!fieldErrors.visitors}
-							oninput={() => { if (fieldErrors.visitors) fieldErrors = { ...fieldErrors, visitors: '' }; }}
+							oninput={() => {
+								if (fieldErrors.visitors) fieldErrors = { ...fieldErrors, visitors: '' };
+							}}
 						/>
 						{#if fieldErrors.visitors}<FieldError>{fieldErrors.visitors}</FieldError>{/if}
 					</Field.Field>
@@ -787,7 +815,9 @@
 						placeholder="SEO page title (max 60 chars)"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaTitle}
-						oninput={() => { if (fieldErrors.metaTitle) fieldErrors = { ...fieldErrors, metaTitle: '' }; }}
+						oninput={() => {
+							if (fieldErrors.metaTitle) fieldErrors = { ...fieldErrors, metaTitle: '' };
+						}}
 					/>
 					{#if fieldErrors.metaTitle}<FieldError>{fieldErrors.metaTitle}</FieldError>{/if}
 				</Field.Field>
@@ -801,7 +831,8 @@
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaDescription}
 						oninput={() => {
-							if (fieldErrors.metaDescription) fieldErrors = { ...fieldErrors, metaDescription: '' };
+							if (fieldErrors.metaDescription)
+								fieldErrors = { ...fieldErrors, metaDescription: '' };
 						}}
 					/>
 					{#if fieldErrors.metaDescription}
@@ -816,7 +847,9 @@
 						maxlength={500}
 						disabled={saving}
 						aria-invalid={!!fieldErrors.keywords}
-						oninput={() => { if (fieldErrors.keywords) fieldErrors = { ...fieldErrors, keywords: '' }; }}
+						oninput={() => {
+							if (fieldErrors.keywords) fieldErrors = { ...fieldErrors, keywords: '' };
+						}}
 					/>
 					{#if fieldErrors.keywords}<FieldError>{fieldErrors.keywords}</FieldError>{/if}
 				</Field.Field>
@@ -843,9 +876,7 @@
 <ConfirmDialog
 	open={confirmId !== null}
 	title="Delete trade show?"
-	description={confirmId
-		? `Delete trade show ${confirmName}? This cannot be undone.`
-		: undefined}
+	description={confirmId ? `Delete trade show ${confirmName}? This cannot be undone.` : undefined}
 	confirmLabel={deleting ? 'Deleting…' : 'Delete'}
 	onconfirm={confirmedRemove}
 />

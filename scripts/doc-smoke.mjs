@@ -47,11 +47,21 @@ check('onboarding container <= 3xl', !ob.includes('max-w-4xl'), 'ok');
 
 // 6. Visual screenshots (desktop + mobile) for eyeball verification
 const desk = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-for (const [p, name] of [['/', 'home'], ['/products', 'products'], ['/pricing', 'pricing']]) {
+for (const [p, name] of [
+	['/', 'home'],
+	['/products', 'products'],
+	['/pricing', 'pricing']
+]) {
 	await desk.goto(`${BASE}${p}`, { waitUntil: 'networkidle' });
-	await desk.screenshot({ path: `D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke\\doc-${name}-desktop.png`, fullPage: false });
+	await desk.screenshot({
+		path: `D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke\\doc-${name}-desktop.png`,
+		fullPage: false
+	});
 	await page.goto(`${BASE}${p}`, { waitUntil: 'networkidle' });
-	await page.screenshot({ path: `D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke\\doc-${name}-mobile.png`, fullPage: false });
+	await page.screenshot({
+		path: `D:\\Dev Projects\\halalneo\\.scratch\\ui-smoke\\doc-${name}-mobile.png`,
+		fullPage: false
+	});
 }
 check('screenshots captured', true, '6 files');
 

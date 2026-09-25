@@ -101,7 +101,12 @@ export const load: PageServerLoad = async (event): Promise<AdminUsersData> => {
 			})
 			.from(supplierMembers)
 			.innerJoin(suppliers, eq(suppliers.slug, supplierMembers.supplierSlug))
-			.where(inArray(supplierMembers.userId, rows.map((row) => row.id)))
+			.where(
+				inArray(
+					supplierMembers.userId,
+					rows.map((row) => row.id)
+				)
+			)
 			.limit(ROW_LIMIT);
 		for (const member of memberRows ?? []) {
 			if (!memberships.has(member.userId)) memberships.set(member.userId, member);

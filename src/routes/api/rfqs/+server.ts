@@ -83,7 +83,8 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async (event) => {
 	const { request } = event;
 	const session = await getSession(event);
-	if (!session?.user) return json({ error: 'Please sign in to post a buying request.' }, { status: 401 });
+	if (!session?.user)
+		return json({ error: 'Please sign in to post a buying request.' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
@@ -92,15 +93,27 @@ export const POST: RequestHandler = async (event) => {
 	if (!body) return json({ error: 'Request body is required' }, { status: 400 });
 	const parsed = rfqSchema.safeParse(body);
 	if (!parsed.success) {
-		return json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
 	const userId = session.user.id;
 	const quotaKey = userId ?? session.user.email ?? '';
-	const quota = await checkWeeklyQuota(db, buyingRequests, buyingRequests.buyerId, quotaKey, 'buyingRequest', resolvePlan(userId));
+	const quota = await checkWeeklyQuota(
+		db,
+		buyingRequests,
+		buyingRequests.buyerId,
+		quotaKey,
+		'buyingRequest',
+		resolvePlan(userId)
+	);
 	if (!quota.allowed) {
 		return json(
-			{ error: `Weekly posting limit reached (${quota.limit}/week on the free plan). Your quota resets soon — upgrade for more.` },
+			{
+				error: `Weekly posting limit reached (${quota.limit}/week on the free plan). Your quota resets soon — upgrade for more.`
+			},
 			{ status: 429 }
 		);
 	}

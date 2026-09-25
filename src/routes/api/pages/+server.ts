@@ -55,7 +55,10 @@ async function queryList(db: Db, filters: ListFilters, limit: number, offset: nu
 	if (filters.status !== 'all') conditions.push(eq(pages.status, filters.status));
 	const where = conditions.length ? and(...conditions) : undefined;
 
-	const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(pages).where(where);
+	const [countResult] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(pages)
+		.where(where);
 
 	const rows = await db
 		.select(pageListColumns)
@@ -99,10 +102,7 @@ export const GET: RequestHandler = async (event) => {
 
 		return json(data);
 	} catch (error: unknown) {
-		return json(
-			{ error: error instanceof Error ? error.message : 'Failed' },
-			{ status: 500 }
-		);
+		return json({ error: error instanceof Error ? error.message : 'Failed' }, { status: 500 });
 	}
 };
 

@@ -30,9 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	// Early return on a bad filter, before touching D1 or the cache (§5.10).
-	const statusResult = categoryStatusSchema.safeParse(
-		url.searchParams.get('status') ?? 'active'
-	);
+	const statusResult = categoryStatusSchema.safeParse(url.searchParams.get('status') ?? 'active');
 	if (!statusResult.success) {
 		return json({ error: "status must be 'active' or 'inactive'" }, { status: 400 });
 	}

@@ -20,7 +20,6 @@
 	import BanknoteIcon from '@lucide/svelte/icons/banknote';
 	import ScaleIcon from '@lucide/svelte/icons/scale';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
-	import SeoMeta from '#lib/components/seo-meta.svelte';
 
 	let { data } = $props();
 
@@ -86,16 +85,6 @@
 	]);
 </script>
 
-<!-- SEO Meta Tags -->
-<SeoMeta
-	title="Halal Market Entry Guides - Global Regulatory Frameworks & Import Requirements"
-	description="Comprehensive halal market entry guides for 20+ countries. Regulatory frameworks, import requirements, certification standards, and business insights for global halal trade."
-	ogTitle="HalalNeo - Global Halal Market Entry Intelligence"
-	ogDescription="Enter halal markets with confidence. Detailed guides for ASEAN, GCC, EU, US, and more. Regulatory requirements, certification, and business insights updated 2026."
-	keywords="halal market entry, halal import requirements, halal regulations, halal certification countries, halal market guide, halal trade barriers, halal business entry, halal market research, halal regulatory framework, halal market analysis"
-	canonical="/market-guides"
-/>
-
 <Breadcrumb items={[{ label: 'Market Guides', href: '/market-guides' }]} />
 
 <svelte:head>
@@ -139,17 +128,17 @@
 	})}\u003c/script>`}
 </svelte:head>
 
-<section class="space-y-4 py-8 sm:space-y-6">
-	<div class="max-w-3xl space-y-2 text-center sm:text-start">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Market entry intelligence</h1>
-		<p class="text-xs text-muted-foreground sm:text-sm">
+<section class="space-y-4 py-4 sm:space-y-6 sm:py-6">
+	<div class="max-w-2xl space-y-1 sm:text-start">
+		<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Market entry intelligence</h1>
+		<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 			{guideStats.countries} country-level guides for navigating halal regulatory frameworks, import requirements,
 			and market opportunities.
 		</p>
 	</div>
 
 	<!-- Stats Cards -->
-	<div class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
+	<div class="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
 		{#each stats as stat (stat.title)}
 			<Card class="p-2.5 sm:p-4">
 				<div class="space-y-0.5 sm:space-y-1">
@@ -168,7 +157,7 @@
 	</div>
 
 	<!-- Filter Pills -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		<div class="flex flex-wrap gap-2">
 			{#each regionOptions as region (region.value)}
 				<Button
@@ -187,13 +176,15 @@
 	</div>
 
 	<!-- Guides Grid -->
-	<div class="space-y-4">
+	<div class="space-y-2 sm:space-y-3">
 		{#if data.loadError}
 			<ErrorRetry failure={data.loadError} subject="market guides" />
 		{:else if paged.length === 0}
 			<Empty>
 				<EmptyHeader>
-					<BrandedEmptyMedia><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></BrandedEmptyMedia>
+					<BrandedEmptyMedia
+						><GlobeIcon class="size-6 text-muted-foreground"></GlobeIcon></BrandedEmptyMedia
+					>
 					<EmptyTitle>No market guides available yet</EmptyTitle>
 					<EmptyDescription
 						>New country guides are added as market research completes.</EmptyDescription
@@ -209,7 +200,7 @@
 				</EmptyContent>
 			</Empty>
 		{:else}
-			<div class="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+			<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 				{#each paged as guide (guide.country)}
 					<a
 						href={localizeHref(`/market-guides/${guide.slug}`)}
@@ -234,13 +225,13 @@
 							<div
 								class="absolute inset-0 bg-gradient-to-t from-scrim/80 via-scrim/40 to-transparent"
 							></div>
-							<div class="absolute end-2 bottom-2 start-2 sm:end-3 sm:bottom-3 sm:start-3">
-								<h3 class="truncate text-sm font-semibold text-on-dark sm:text-base lg:text-lg">
+							<div class="absolute start-2 end-2 bottom-2 sm:start-3 sm:end-3 sm:bottom-3">
+								<h3 class="truncate text-xs font-semibold text-on-dark sm:text-sm">
 									{guide.country}
 								</h3>
 								<p class="truncate text-2xs-plus text-on-dark/80 sm:text-xs">{guide.region}</p>
 							</div>
-							<div class="absolute top-2 end-2 hidden sm:top-3 sm:end-3 sm:block">
+							<div class="absolute end-2 top-2 hidden sm:end-3 sm:top-3 sm:block">
 								<Badge>{guide.region}</Badge>
 							</div>
 						</div>

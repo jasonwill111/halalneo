@@ -5,10 +5,7 @@
 // rendered via `ui/field` `FieldError`, then call `focusFirstInvalid` so
 // keyboard/screen-reader users land on the first problem field.
 
-export type ServerFieldDetails =
-	| Record<string, string[] | string | undefined>
-	| undefined
-	| null;
+export type ServerFieldDetails = Record<string, string[] | string | undefined> | undefined | null;
 
 /** First message for one field from server `details`, or `''`. */
 export function serverFieldMessage(details: ServerFieldDetails, field: string): string {

@@ -38,7 +38,13 @@ function slugify(value: string): string {
 }
 
 /** Static seed entries are curated public content — implicitly active. */
-function fallbackList(offset: number, limit: number, search?: string, country?: string, scale?: string) {
+function fallbackList(
+	offset: number,
+	limit: number,
+	search?: string,
+	country?: string,
+	scale?: string
+) {
 	let filtered = [...staticTradeShows];
 	if (search) {
 		filtered = filtered.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
@@ -65,7 +71,10 @@ async function queryList(
 	if (scale) conditions.push(eq(tradeShows.scale, scale));
 	const where = conditions.length ? and(...conditions) : undefined;
 
-	const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(tradeShows).where(where);
+	const [countResult] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(tradeShows)
+		.where(where);
 
 	const rows = await db
 		.select(tradeShowColumns)

@@ -18,9 +18,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 			return {
 				seo: {
 					title: data.title ? `${data.title} — HalalNeo` : `${params.slug} — HalalNeo`,
-				description:
-					data.metaDescription ||
-					`HalalNeo — ${params.slug}. Halal trade intelligence, certification guides, and market entry resources.`,
+					description:
+						data.metaDescription ||
+						`HalalNeo — ${params.slug}. Halal trade intelligence, certification guides, and market entry resources.`,
 					ogImage: data.featuredImage || 'https://halalneo.com/brand/og-default.png',
 					keywords: data.keywords || []
 				},

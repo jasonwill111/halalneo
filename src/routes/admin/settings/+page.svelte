@@ -13,14 +13,21 @@
 		CardTitle
 	} from '#lib/components/ui/card/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
-	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import { Alert, AlertDescription } from '#lib/components/ui/alert/index.js';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
-	import WifiOff from '@lucide/svelte/icons/wifi-off';
 	import SettingsIcon from '@lucide/svelte/icons/settings';
 	import { toast } from 'svelte-sonner';
-	import { focusFirstInvalid, mergeServerDetails, type ServerFieldDetails } from '#lib/utils/forms.js';
+	import {
+		focusFirstInvalid,
+		mergeServerDetails,
+		type ServerFieldDetails
+	} from '#lib/utils/forms.js';
+	import {
+		describeFetchFailure,
+		describeThrownFailure,
+		type LoadFailure
+	} from '#lib/utils/load-error.js';
 	import {
 		DEFAULT_SITE_SETTINGS,
 		siteSettingsSchema,
@@ -36,29 +43,24 @@
 	let formError = $state('');
 	let formEl = $state<HTMLFormElement | undefined>(undefined);
 	let loading = $state(true);
-	let loadError = $state('');
-	/** Network failures and server errors must look different (§3.1). */
-	let offline = $state(false);
+	let loadFailure = $state<LoadFailure | null>(null);
 	let busy = $state(false);
 	let saved = $state(false);
 
 	/** Site settings are read/written through D1 (`site_settings`) via the API. */
 	async function loadSettings() {
 		loading = true;
-		loadError = '';
-		offline = false;
+		loadFailure = null;
 		try {
 			const res = await fetch('/api/settings');
 			if (!res.ok) {
-				const body = (await res.json().catch(() => ({}))) as { error?: string };
-				loadError = body.error || `Could not load settings (HTTP ${res.status}).`;
+				loadFailure = describeFetchFailure(res);
 				return;
 			}
 			const data = (await res.json().catch(() => null)) as SettingsPayload | null;
 			form = { ...DEFAULT_SITE_SETTINGS, ...(data?.settings ?? {}) };
-		} catch {
-			offline = true;
-			loadError = 'Network error — the server could not be reached.';
+		} catch (error: unknown) {
+			loadFailure = describeThrownFailure(error);
 		} finally {
 			loading = false;
 		}
@@ -143,43 +145,21 @@
 			{/each}
 		</div>
 	</div>
-{:else if loadError}
+{:else if loadFailure}
 	<div class="space-y-4 sm:space-y-6">
 		<div class="space-y-1">
-			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Settings</h1>
-			<p class="max-w-2xl text-sm text-muted-foreground">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Settings</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				Site-wide configuration used across the public pages.
 			</p>
 		</div>
-		<Card>
-			<CardContent class="py-8">
-				<Empty>
-					<BrandedEmptyMedia>
-						{#if offline}
-							<WifiOff class="size-6 text-muted-foreground" />
-						{:else}
-							<TriangleAlert class="size-6 text-destructive" />
-						{/if}
-					</BrandedEmptyMedia>
-					<div class="space-y-1">
-						<p class="font-medium">{offline ? 'Connection failed' : 'Could not load settings'}</p>
-						<p class="text-sm text-muted-foreground">{loadError}</p>
-					</div>
-					<EmptyContent>
-						<Button variant="outline" size="sm" onclick={() => loadSettings()}>
-							<RefreshCw class="size-4"></RefreshCw>
-							Try again
-						</Button>
-					</EmptyContent>
-				</Empty>
-			</CardContent>
-		</Card>
+		<ErrorRetry failure={loadFailure} subject="settings" onretry={loadSettings} />
 	</div>
 {:else}
 	<form bind:this={formEl} onsubmit={save} class="space-y-4 sm:space-y-6">
 		<div class="space-y-1">
-			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Settings</h1>
-			<p class="max-w-2xl text-sm text-muted-foreground">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Settings</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				Site-wide configuration used across the public pages.
 			</p>
 		</div>
@@ -198,7 +178,10 @@
 							placeholder="HalalNeo"
 							disabled={busy}
 							aria-invalid={!!fieldErrors.siteName}
-							oninput={() => { fieldErrors.siteName = ''; formError = ''; }}
+							oninput={() => {
+								fieldErrors.siteName = '';
+								formError = '';
+							}}
 						/>
 						{#if fieldErrors.siteName}<FieldError>{fieldErrors.siteName}</FieldError>{/if}
 					</Field.Field>
@@ -209,7 +192,10 @@
 							placeholder="Halal trade intelligence for buyers and suppliers"
 							disabled={busy}
 							aria-invalid={!!fieldErrors.tagline}
-							oninput={() => { fieldErrors.tagline = ''; formError = ''; }}
+							oninput={() => {
+								fieldErrors.tagline = '';
+								formError = '';
+							}}
 						/>
 						{#if fieldErrors.tagline}<FieldError>{fieldErrors.tagline}</FieldError>{/if}
 					</Field.Field>
@@ -219,7 +205,8 @@
 			<Card>
 				<CardHeader>
 					<CardTitle>Contact</CardTitle>
-					<CardDescription>Email addresses surfaced on the contact page and footer.</CardDescription>
+					<CardDescription>Email addresses surfaced on the contact page and footer.</CardDescription
+					>
 				</CardHeader>
 				<CardContent class="space-y-4">
 					<Field.Field>
@@ -230,7 +217,10 @@
 							placeholder="support@halalneo.com"
 							disabled={busy}
 							aria-invalid={!!fieldErrors.supportEmail}
-							oninput={() => { fieldErrors.supportEmail = ''; formError = ''; }}
+							oninput={() => {
+								fieldErrors.supportEmail = '';
+								formError = '';
+							}}
 						/>
 						{#if fieldErrors.supportEmail}<FieldError>{fieldErrors.supportEmail}</FieldError>{/if}
 					</Field.Field>
@@ -242,7 +232,10 @@
 							placeholder="hello@halalneo.com"
 							disabled={busy}
 							aria-invalid={!!fieldErrors.contactEmail}
-							oninput={() => { fieldErrors.contactEmail = ''; formError = ''; }}
+							oninput={() => {
+								fieldErrors.contactEmail = '';
+								formError = '';
+							}}
 						/>
 						{#if fieldErrors.contactEmail}<FieldError>{fieldErrors.contactEmail}</FieldError>{/if}
 					</Field.Field>
@@ -271,7 +264,8 @@
 							}}
 						/>
 					</div>
-					{#if fieldErrors.enableDemoNotice}<FieldError>{fieldErrors.enableDemoNotice}</FieldError>{/if}
+					{#if fieldErrors.enableDemoNotice}<FieldError>{fieldErrors.enableDemoNotice}</FieldError
+						>{/if}
 					<div class="flex items-center justify-between gap-3">
 						<div>
 							<p class="text-sm font-medium">Maintenance mode</p>
@@ -288,16 +282,18 @@
 							}}
 						/>
 					</div>
-					{#if fieldErrors.enableMaintenanceMode}<FieldError>{fieldErrors.enableMaintenanceMode}</FieldError>{/if}
+					{#if fieldErrors.enableMaintenanceMode}<FieldError
+							>{fieldErrors.enableMaintenanceMode}</FieldError
+						>{/if}
 				</CardContent>
 			</Card>
 		</div>
 
 		{#if formError}
-			<p class="flex items-center gap-2 text-sm text-destructive">
-				<TriangleAlert class="size-4"></TriangleAlert>
-				{formError}
-			</p>
+			<Alert variant="destructive">
+				<TriangleAlert />
+				<AlertDescription>{formError}</AlertDescription>
+			</Alert>
 		{/if}
 
 		<div class="flex items-center gap-3">

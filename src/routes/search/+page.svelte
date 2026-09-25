@@ -333,8 +333,8 @@
 	<!-- Title + description render once via root layout from loader `seo`. -->
 </svelte:head>
 
-<div class="-mx-4 border-b border-border bg-card/50 px-4 sm:-mx-6 sm:px-6">
-	<div class="mx-auto flex h-12 w-full max-w-7xl items-center gap-2">
+<div class="-mx-4 overflow-x-clip border-b border-border bg-card/50 px-4 sm:-mx-6 sm:px-6">
+	<div class="mx-auto flex h-12 w-full max-w-7xl min-w-0 items-center gap-2">
 		<SearchIcon class="size-4 shrink-0 text-muted-foreground" />
 		<Input
 			value={query}
@@ -344,28 +344,30 @@
 			}}
 			type="text"
 			placeholder="Search products, suppliers, articles..."
-			class="h-8 flex-1 border-transparent bg-transparent text-sm shadow-none focus-visible:border-transparent focus-visible:ring-0"
+			class="h-8 min-w-0 flex-1 border-transparent bg-transparent text-xs shadow-none focus-visible:border-transparent focus-visible:ring-0 sm:text-sm"
 		/>
-		<Button size="sm" class="h-8 text-xs">Search</Button>
+		<Button size="sm" class="h-8 shrink-0 text-xs">Search</Button>
 	</div>
 </div>
 
-<div class="mx-auto max-w-7xl">
-	<div class="mb-3 flex flex-col gap-1.5 pt-4 sm:flex-row sm:items-center sm:justify-between">
-		<div class="flex items-center gap-1 text-2xs text-muted-foreground">
+<div class="mx-auto w-full max-w-7xl min-w-0">
+	<div class="mb-3 flex flex-col gap-2 pt-4 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+		<div class="flex min-w-0 items-center gap-1 text-2xs text-muted-foreground">
 			<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
-			<ChevronRight class="size-3 rtl:rotate-180" />
-			<h1 class="sr-only">Search — HalalNeo</h1>
-			<span class="font-medium text-foreground">Search results</span>
+			<ChevronRight class="size-3 shrink-0 rtl:rotate-180" />
+			<h1 class="truncate text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+				Search — HalalNeo
+			</h1>
+			<span class="hidden font-medium text-foreground">Search results</span>
 		</div>
-		<p class="text-xs text-muted-foreground">
+		<p class="text-xs break-words text-muted-foreground sm:text-end sm:text-sm">
 			Showing <span class="font-medium text-foreground">{resultCount}</span>
 			results{#if query.trim()}
 				for "<span class="font-medium text-foreground">{query.trim()}</span>"{/if}
 		</p>
 	</div>
 
-	<div class="flex gap-3 sm:gap-4 lg:gap-5">
+	<div class="flex min-w-0 gap-3 sm:gap-4 lg:gap-5">
 		{#snippet filterPanel()}
 			<div>
 				<h3 class="mb-1.5 text-xs font-semibold">Categories</h3>
@@ -459,7 +461,7 @@
 		</Sheet>
 
 		<div class="min-w-0 flex-1">
-			<div class="mb-3 flex items-center justify-between gap-2">
+			<div class="mb-3 flex min-h-8 items-center justify-between gap-2">
 				<Button
 					variant="outline"
 					size="sm"
@@ -472,7 +474,7 @@
 				<div class="flex items-center gap-2">
 					<span class="hidden text-2xs text-muted-foreground sm:inline">Sort by:</span>
 					<Select type="single" bind:value={sortBy}>
-						<SelectTrigger class="h-7 w-[140px] text-2xs">Relevance</SelectTrigger>
+						<SelectTrigger class="h-8 w-[140px] max-w-[45vw] text-2xs">Relevance</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="relevance">Relevance</SelectItem>
 							<SelectItem value="price-asc">Price: Low to High</SelectItem>
@@ -487,7 +489,9 @@
 			{#if query.trim() === ''}
 				<Empty>
 					<EmptyHeader>
-						<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia>
+						<BrandedEmptyMedia
+							><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia
+						>
 						<EmptyTitle>Start typing to search</EmptyTitle>
 						<EmptyDescription
 							>Search across {(data.glossary ?? []).length} glossary terms, plus live supplier, product
@@ -504,7 +508,9 @@
 			{:else if resultCount === 0}
 				<Empty>
 					<EmptyHeader>
-						<BrandedEmptyMedia><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia>
+						<BrandedEmptyMedia
+							><SearchIcon class="size-6 text-muted-foreground"></SearchIcon></BrandedEmptyMedia
+						>
 						<EmptyTitle>No results</EmptyTitle>
 						<EmptyDescription>
 							Nothing matched “{query.trim()}”{#if filtersActive}
@@ -527,21 +533,21 @@
 					</EmptyContent>
 				</Empty>
 			{:else}
-				<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
+				<div class="grid min-w-0 grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
 					{#each paginatedResults as result (result.kind + ':' + (result.kind === 'term' ? result.term : result.slug))}
 						{#if result.kind === 'sku'}
 							<a
 								href={localizeHref(`/product/${result.slug}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
+								class="block min-w-0 rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
-								<div class="relative mb-2 aspect-square rounded-md bg-muted">
+								<div class="relative mb-2 aspect-square min-w-0 rounded-md bg-muted">
 									<span
-										class="absolute top-1.5 start-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-2xs font-medium text-secondary-foreground"
+										class="absolute start-1.5 top-1.5 inline-flex items-center rounded-full bg-secondary px-1.5 py-0.5 text-2xs font-medium text-secondary-foreground"
 										>JAKIM</span
 									>
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.name}</h3>
-								<p class="mt-0.5 text-2xs text-muted-foreground">
+								<p class="mt-0.5 line-clamp-2 hidden text-2xs text-muted-foreground sm:block">
 									{result.description ?? 'Halal product'}
 								</p>
 								<div class="mt-1 flex items-center gap-1">
@@ -556,7 +562,7 @@
 						{:else if result.kind === 'supplier'}
 							<a
 								href={localizeHref(`/supplier/${result.slug}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
+								class="block min-w-0 rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div
 									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
@@ -573,7 +579,7 @@
 						{:else if result.kind === 'article'}
 							<a
 								href={localizeHref(`/knowledge-base/${result.section}/${result.slug}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
+								class="block min-w-0 rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div
 									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
@@ -581,7 +587,7 @@
 									<FileText class="size-8 text-muted-foreground/40" />
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.title}</h3>
-								<p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">
+								<p class="mt-0.5 line-clamp-2 hidden text-2xs text-muted-foreground sm:block">
 									{result.summary}
 								</p>
 								<span
@@ -592,7 +598,7 @@
 						{:else}
 							<a
 								href={localizeHref(`/glossary#term-${result.term[0].toUpperCase()}`)}
-								class="block rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
+								class="block min-w-0 rounded-xl border border-border bg-card p-2.5 transition-[transform,box-shadow] duration-base ease-spring hover:-translate-y-0.5 hover:shadow-md"
 							>
 								<div
 									class="relative mb-2 flex aspect-square items-center justify-center rounded-md bg-muted"
@@ -600,7 +606,7 @@
 									<BookText class="size-8 text-muted-foreground/40" />
 								</div>
 								<h3 class="line-clamp-2 text-xs leading-snug font-medium">{result.term}</h3>
-								<p class="mt-0.5 line-clamp-2 text-2xs text-muted-foreground">
+								<p class="mt-0.5 line-clamp-2 hidden text-2xs text-muted-foreground sm:block">
 									{result.definition}
 								</p>
 								<span

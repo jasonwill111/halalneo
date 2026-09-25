@@ -56,7 +56,10 @@ export const GET: RequestHandler = async (event) => {
 				? (or(like(pages.title, `%${search}%`), like(pages.excerpt, `%${search}%`)) ?? undefined)
 				: undefined;
 			const [[countResult], rows] = await Promise.all([
-				db.select({ count: sql<number>`count(*)` }).from(pages).where(and(blogFilter, where)),
+				db
+					.select({ count: sql<number>`count(*)` })
+					.from(pages)
+					.where(and(blogFilter, where)),
 				db
 					.select(BLOG_ADMIN_COLUMNS)
 					.from(pages)
@@ -154,7 +157,9 @@ export const POST: RequestHandler = async (event) => {
 				metaDescription: parsed.data.metaDescription ?? null,
 				keywords: parsed.data.keywords ?? null,
 				status: parsed.data.status ?? 'draft',
-				publishedAt: parsed.data.publishedAt ? new Date(`${parsed.data.publishedAt}T00:00:00.000Z`) : null,
+				publishedAt: parsed.data.publishedAt
+					? new Date(`${parsed.data.publishedAt}T00:00:00.000Z`)
+					: null,
 				createdAt: now,
 				updatedAt: now
 			})
@@ -166,7 +171,10 @@ export const POST: RequestHandler = async (event) => {
 		const message = e instanceof Error ? e.message : '';
 		if (message.includes('UNIQUE constraint')) {
 			return json(
-				{ error: 'Validation failed', details: { slug: ['A page or post with this slug already exists'] } },
+				{
+					error: 'Validation failed',
+					details: { slug: ['A page or post with this slug already exists'] }
+				},
 				{ status: 400 }
 			);
 		}

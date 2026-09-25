@@ -53,7 +53,7 @@
 </svelte:head>
 
 {#if story}
-	<div class="mx-auto max-w-6xl py-8">
+	<div class="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
 		<Breadcrumb
 			items={[
 				{ label: 'Success Stories', href: '/success-stories' },
@@ -61,8 +61,8 @@
 			]}
 		/>
 
-		<div class="grid gap-6 lg:grid-cols-[1fr_320px]">
-			<main class="space-y-4 sm:space-y-6">
+		<div class="grid items-start gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+			<main class="min-w-0 space-y-4 sm:space-y-6">
 				<header class="space-y-3">
 					<div class="flex flex-wrap items-center gap-1.5">
 						<Badge class="bg-success/15 text-2xs text-success">
@@ -79,7 +79,7 @@
 							</span>
 						{/if}
 					</div>
-					<h1 class="text-2xl font-bold tracking-tight sm:text-3xl">{story.title}</h1>
+					<h1 class="text-xl font-bold tracking-tight sm:text-2xl">{story.title}</h1>
 					{#if story.excerpt}
 						<p class="text-sm leading-relaxed text-muted-foreground sm:text-base">
 							{story.excerpt}
@@ -97,7 +97,7 @@
 					/>
 				{/if}
 
-				<div class="content-body content-body-sm">
+				<div class="content-body content-body-sm max-w-[65ch] overflow-hidden">
 					{@html sanitizeHtml(story.body ?? '')}
 				</div>
 
@@ -134,8 +134,8 @@
 				/>
 			</main>
 
-			<aside class="hidden shrink-0 lg:block">
-				<div class="sticky top-24 z-10 space-y-4">
+			<aside class="min-w-0 lg:shrink-0">
+				<div class="space-y-4 lg:sticky lg:top-20 lg:z-10 lg:self-start">
 					{#if story.supplierSlug}
 						<Card class="bg-card">
 							<CardContent class="space-y-4 p-5">

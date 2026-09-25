@@ -48,7 +48,10 @@ interface RelatedArticle {
 // estimate is enough for the "N min read" badge.
 function computeReadTime(text: string | undefined | null): string {
 	if (!text) return '1 min read';
-	const words = text.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+	const words = text
+		.replace(/<[^>]*>/g, ' ')
+		.split(/\s+/)
+		.filter(Boolean).length;
 	return `${Math.max(1, Math.round(words / 200))} min read`;
 }
 
@@ -79,9 +82,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					const tagSet = new Set(tagsParsed.map((t) => t.toLowerCase()));
 					const scoreOf = (a: KbListRow) => {
 						const aTags = (
-							typeof a.tags === 'string'
-								? (JSON.parse(a.tags || '[]') as string[])
-								: (a.tags ?? [])
+							typeof a.tags === 'string' ? (JSON.parse(a.tags || '[]') as string[]) : (a.tags ?? [])
 						) as string[];
 						return aTags.filter((t) => tagSet.has(t.toLowerCase())).length;
 					};
@@ -112,7 +113,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				readTime: computeReadTime(data.body ?? data.content),
 				seo: {
 					// DB per-row meta wins when admins filled it; else derive.
-					title: data.metaTitle || (data.title ? `${data.title} — HalalNeo` : `${params.article} — HalalNeo`),
+					title:
+						data.metaTitle ||
+						(data.title ? `${data.title} — HalalNeo` : `${params.article} — HalalNeo`),
 					description:
 						data.metaDescription ||
 						data.summary ||

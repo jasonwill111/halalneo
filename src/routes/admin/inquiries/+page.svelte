@@ -27,15 +27,25 @@
 	} from '#lib/components/ui/select/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty, EmptyContent } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyContent,
+		EmptyDescription,
+		EmptyHeader,
+		EmptyTitle
+	} from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
+	import ErrorRetry from '#lib/components/site/error-retry.svelte';
 	import Search from '@lucide/svelte/icons/search';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
-	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
-	import WifiOff from '@lucide/svelte/icons/wifi-off';
 	import MessageCircle from '@lucide/svelte/icons/message-circle';
 	import StatTile from '#lib/components/site/stat-tile.svelte';
 	import { toast } from 'svelte-sonner';
+	import {
+		describeFetchFailure,
+		describeThrownFailure,
+		type LoadFailure
+	} from '#lib/utils/load-error.js';
 	import {
 		INQUIRY_STATUSES,
 		type InquiryDto,
@@ -47,9 +57,7 @@
 	let items = $state<InquiryDto[]>([]);
 	let total = $state(0);
 	let loading = $state(true);
-	let loadError = $state('');
-	/** Network failures and server errors must look different (§3.1). */
-	let offline = $state(false);
+	let loadFailure = $state<LoadFailure | null>(null);
 
 	let dialogOpen = $state(false);
 	let selectedId = $state<string | null>(null);
@@ -82,13 +90,11 @@
 
 	async function loadItems() {
 		loading = true;
-		loadError = '';
-		offline = false;
+		loadFailure = null;
 		try {
 			const res = await fetch('/api/inquiries?limit=100');
 			if (!res.ok) {
-				const body = (await res.json().catch(() => ({}))) as { error?: string };
-				loadError = body.error || `Could not load inquiries (HTTP ${res.status}).`;
+				loadFailure = describeFetchFailure(res);
 				items = [];
 				total = 0;
 				return;
@@ -96,9 +102,8 @@
 			const data = (await res.json().catch(() => null)) as InquiryListResponse | null;
 			items = data?.items ?? [];
 			total = data?.total ?? items.length;
-		} catch {
-			offline = true;
-			loadError = 'Network error — the server could not be reached.';
+		} catch (error: unknown) {
+			loadFailure = describeThrownFailure(error);
 			items = [];
 			total = 0;
 		} finally {
@@ -149,8 +154,8 @@
 <div class="space-y-4 sm:space-y-6">
 	<div class="flex flex-wrap items-end justify-between gap-4">
 		<div class="flex flex-col gap-1">
-			<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Inquiries</h1>
-			<p class="max-w-2xl text-sm text-muted-foreground">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Inquiries</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
 				Manage buyer inquiries and support requests.
 			</p>
 		</div>
@@ -158,31 +163,31 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search inquiries..." class="ps-9" />
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
-		<StatTile value={total} label="Total Inquiries" />
-		<StatTile value={activeCount} label="Active" />
-		<StatTile value={flaggedCount} label="Flagged" tone="warn" />
+		<StatTile value={total} label="Total Inquiries" {loading} />
+		<StatTile value={activeCount} label="Active" {loading} />
+		<StatTile value={flaggedCount} label="Flagged" tone="warn" {loading} />
 	</div>
 
-	<div class="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
-		<Table>
-			<TableHeader>
-				<TableRow class="hover:bg-transparent">
-					<TableHead>ID</TableHead>
-					<TableHead>Buyer</TableHead>
-					<TableHead>Supplier</TableHead>
-					<TableHead>Subject</TableHead>
-					<TableHead>Status</TableHead>
-					<TableHead class="text-end">Actions</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{#if loading}
+	{#if loading}
+		<div class="min-w-0 overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+			<Table class="min-w-[58rem]">
+				<TableHeader>
+					<TableRow class="hover:bg-transparent">
+						<TableHead class="whitespace-nowrap">ID</TableHead>
+						<TableHead class="whitespace-nowrap">Buyer</TableHead>
+						<TableHead class="whitespace-nowrap">Supplier</TableHead>
+						<TableHead class="whitespace-nowrap">Subject</TableHead>
+						<TableHead class="whitespace-nowrap">Status</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
 					{#each [0, 1, 2] as row (row)}
 						<TableRow>
 							<TableCell><Skeleton class="h-4 w-16" /></TableCell>
@@ -193,57 +198,59 @@
 							<TableCell class="text-end"><Skeleton class="ms-auto h-7 w-14" /></TableCell>
 						</TableRow>
 					{/each}
-				{:else if loadError}
-					<TableRow>
-						<TableCell colspan={6} class="py-8">
-							<Empty>
-								<BrandedEmptyMedia>
-									{#if offline}
-										<WifiOff class="size-6 text-muted-foreground" />
-									{:else}
-										<TriangleAlert class="size-6 text-destructive" />
-									{/if}
-								</BrandedEmptyMedia>
-								<div class="space-y-1">
-									<p class="font-medium">
-										{offline ? 'Connection failed' : 'Could not load inquiries'}
-									</p>
-									<p class="text-sm text-muted-foreground">{loadError}</p>
-								</div>
-								<EmptyContent>
-									<Button variant="outline" size="sm" onclick={() => loadItems()}>
-										<RefreshCw class="size-4"></RefreshCw>
-										Try again
-									</Button>
-								</EmptyContent>
-							</Empty>
-						</TableCell>
-					</TableRow>
-				{:else if filtered.length === 0}
-					<TableRow>
-						<TableCell colspan={6} class="py-8">
-							<Empty>
-								<BrandedEmptyMedia><MessageCircle class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
-								<div class="space-y-1">
-									<p class="font-medium">
-										{search.trim() ? 'No matching inquiries' : 'No inquiries yet'}
-									</p>
-									<p class="text-sm text-muted-foreground">
-										{search.trim()
-											? `Nothing matches “${search.trim()}” in the loaded inquiries.`
-											: 'No buyer messages to display.'}
-									</p>
-								</div>
-							</Empty>
-						</TableCell>
-					</TableRow>
+				</TableBody>
+			</Table>
+		</div>
+	{:else if loadFailure}
+		<ErrorRetry failure={loadFailure} subject="inquiries" onretry={loadItems} />
+	{:else if filtered.length === 0}
+		<Empty class="border">
+			<EmptyHeader>
+				<BrandedEmptyMedia variant="icon">
+					<MessageCircle />
+				</BrandedEmptyMedia>
+				<EmptyTitle>
+					{search.trim() ? 'No matching inquiries' : 'No inquiries yet'}
+				</EmptyTitle>
+				<EmptyDescription>
+					{search.trim()
+						? `Nothing matches “${search.trim()}” in the loaded inquiries.`
+						: 'Buyer messages and support requests will appear here.'}
+				</EmptyDescription>
+			</EmptyHeader>
+			<EmptyContent>
+				{#if search.trim()}
+					<Button variant="outline" size="sm" onclick={() => (search = '')}>Clear search</Button>
 				{:else}
+					<Button variant="outline" size="sm" onclick={loadItems}>
+						<RefreshCw class="size-4"></RefreshCw>
+						Refresh inquiries
+					</Button>
+				{/if}
+			</EmptyContent>
+		</Empty>
+	{:else}
+		<div class="min-w-0 overflow-x-auto rounded-xl ring-1 ring-foreground/10">
+			<Table class="min-w-[58rem]">
+				<TableHeader>
+					<TableRow class="hover:bg-transparent">
+						<TableHead class="whitespace-nowrap">ID</TableHead>
+						<TableHead class="whitespace-nowrap">Buyer</TableHead>
+						<TableHead class="whitespace-nowrap">Supplier</TableHead>
+						<TableHead class="whitespace-nowrap">Subject</TableHead>
+						<TableHead class="whitespace-nowrap">Status</TableHead>
+						<TableHead class="text-end">Actions</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
 					{#each filtered as inq (inq.id)}
 						<TableRow>
-							<TableCell class="font-medium">{inq.id.slice(0, 8) || '—'}</TableCell>
-							<TableCell>{inq.buyerSlug}</TableCell>
-							<TableCell>{inq.supplierSlug ?? '—'}</TableCell>
-							<TableCell>{inq.subject}</TableCell>
+							<TableCell class="font-medium whitespace-nowrap"
+								>{inq.id.slice(0, 8) || '—'}</TableCell
+							>
+							<TableCell class="whitespace-nowrap">{inq.buyerSlug}</TableCell>
+							<TableCell class="whitespace-nowrap">{inq.supplierSlug ?? '—'}</TableCell>
+							<TableCell class="max-w-xs truncate">{inq.subject}</TableCell>
 							<TableCell>
 								<Badge
 									variant="secondary"
@@ -263,12 +270,12 @@
 							</TableCell>
 						</TableRow>
 					{/each}
-				{/if}
-			</TableBody>
-		</Table>
-	</div>
+				</TableBody>
+			</Table>
+		</div>
+	{/if}
 
-	{#if !loading && !loadError && total > items.length}
+	{#if !loading && !loadFailure && total > items.length}
 		<p class="text-xs text-muted-foreground">
 			Showing {items.length} of {total} inquiries (API caps at 100).
 		</p>

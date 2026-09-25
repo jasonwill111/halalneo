@@ -36,19 +36,26 @@ const fields = {
 	region: text(60).optional(),
 	venue: text(300).optional(),
 	website: text(500).optional(),
-	scale: z.enum(TRADE_SHOW_SCALES, {
-		error: 'Choose mega, large, medium or regional.'
-	}).optional(),
+	scale: z
+		.enum(TRADE_SHOW_SCALES, {
+			error: 'Choose mega, large, medium or regional.'
+		})
+		.optional(),
 	description: text(4000).optional(),
-	focus: z.array(z.string().trim().min(1, 'Focus items cannot be empty.').max(200)).max(30).optional(),
+	focus: z
+		.array(z.string().trim().min(1, 'Focus items cannot be empty.').max(200))
+		.max(30)
+		.optional(),
 	exhibitors: z.coerce.number().int().min(0).max(10_000_000).optional().nullable(),
 	visitors: z.coerce.number().int().min(0).max(100_000_000).optional().nullable(),
 	metaTitle: text(200).optional(),
 	metaDescription: text(500).optional(),
 	keywords: text(500).optional(),
-	status: z.enum(TRADE_SHOW_STATUSES, {
-		error: 'Status must be active, inactive or draft.'
-	}).optional()
+	status: z
+		.enum(TRADE_SHOW_STATUSES, {
+			error: 'Status must be active, inactive or draft.'
+		})
+		.optional()
 };
 
 export const tradeShowCreateSchema = z
@@ -115,7 +122,5 @@ export function normaliseTradeShowStatus(value: string | null | undefined): Trad
 
 /** Rows written before the scale cleanup can hold free text — clamp for the select. */
 export function normaliseTradeShowScale(value: string | null | undefined): TradeShowScale {
-	return TRADE_SHOW_SCALES.includes(value as TradeShowScale)
-		? (value as TradeShowScale)
-		: 'medium';
+	return TRADE_SHOW_SCALES.includes(value as TradeShowScale) ? (value as TradeShowScale) : 'medium';
 }

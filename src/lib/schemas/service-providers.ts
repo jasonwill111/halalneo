@@ -45,7 +45,11 @@ const optionalText = (max: number, label: string) =>
 /** Full-record payload for POST /api/service-providers. */
 export const serviceProviderCreateSchema = z.object({
 	slug,
-	name: z.string().trim().min(1, 'Name is required.').max(200, 'Name must be 200 characters or fewer.'),
+	name: z
+		.string()
+		.trim()
+		.min(1, 'Name is required.')
+		.max(200, 'Name must be 200 characters or fewer.'),
 	type: serviceProviderTypeSchema,
 	country: z
 		.string()

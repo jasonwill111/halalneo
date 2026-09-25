@@ -35,7 +35,11 @@
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import ConfirmDialog from '#lib/components/site/confirm-dialog.svelte';
 	import { toast } from 'svelte-sonner';
-	import { focusFirstInvalid, mergeServerDetails, type ServerFieldDetails } from '#lib/utils/forms.js';
+	import {
+		focusFirstInvalid,
+		mergeServerDetails,
+		type ServerFieldDetails
+	} from '#lib/utils/forms.js';
 
 	const PAGE_SIZE = 20;
 
@@ -65,8 +69,7 @@
 		if (!search.trim()) return list;
 		const q = search.toLowerCase();
 		return list.filter(
-			(t) =>
-				t.term.toLowerCase().includes(q) || (t.definition ?? '').toLowerCase().includes(q)
+			(t) => t.term.toLowerCase().includes(q) || (t.definition ?? '').toLowerCase().includes(q)
 		);
 	});
 
@@ -226,7 +229,7 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-3 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search terms..." class="ps-9" />
 	</div>
@@ -281,7 +284,9 @@
 							<TableCell colspan={3} class="py-8">
 								{#if items.length === 0}
 									<Empty>
-										<BrandedEmptyMedia variant="icon"><BookOpenText class="size-6" /></BrandedEmptyMedia>
+										<BrandedEmptyMedia variant="icon"
+											><BookOpenText class="size-6" /></BrandedEmptyMedia
+										>
 										<div class="space-y-1">
 											<p class="font-medium">No terms yet</p>
 											<p class="text-sm text-muted-foreground">
@@ -360,11 +365,7 @@
 			<DialogTitle>{editing ? 'Edit term' : 'New term'}</DialogTitle>
 			<DialogDescription>Add or update a glossary entry.</DialogDescription>
 		</DialogHeader>
-		<form
-			bind:this={formEl}
-			onsubmit={save}
-			class="space-y-4"
-		>
+		<form bind:this={formEl} onsubmit={save} class="space-y-4">
 			<Field.Field>
 				<Field.FieldLabel>Term</Field.FieldLabel>
 				<Input
@@ -396,8 +397,11 @@
 				<p class="text-sm text-destructive">{formError}</p>
 			{/if}
 			<DialogFooter>
-				<Button variant="outline" type="button" disabled={saving} onclick={() => (dialogOpen = false)}
-					>Cancel</Button
+				<Button
+					variant="outline"
+					type="button"
+					disabled={saving}
+					onclick={() => (dialogOpen = false)}>Cancel</Button
 				>
 				<Button variant="default" type="submit" disabled={saving}>
 					{saving ? 'Saving...' : editing ? 'Save changes' : 'Create term'}

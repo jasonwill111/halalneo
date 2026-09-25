@@ -19,8 +19,8 @@
 			info: 'text-info',
 			warn: 'text-warn',
 			success: 'text-success',
-			'teal': 'text-teal',
-			'gold': 'text-gold',
+			teal: 'text-teal',
+			gold: 'text-gold',
 			primary: 'text-primary'
 		}[tone]
 	);

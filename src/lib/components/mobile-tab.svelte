@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { afterNavigate } from '$app/navigation';
 	import { localizeHref, deLocalizeUrl } from '#lib/paraglide/runtime.js';
 	import { cn } from '#lib/utils.js';
 	import { Button } from '#lib/components/ui/button/index.js';
@@ -22,15 +23,24 @@
 
 	const exploreGroups = navGroups.filter((g) => g.label !== 'Company');
 
+	type PanelPosition = {
+		inlineInset: number;
+		blockInset: number;
+		translateInline: '-50%' | '0%' | '50%';
+	};
+
 	let showExplore = $state(false);
 	let showMenu = $state(false);
 	let exploreBtnEl = $state<HTMLElement | null>(null);
 	let menuBtnEl = $state<HTMLElement | null>(null);
-	let explorePos = $state({ left: 0, top: 0 });
-	let menuPos = $state({ right: 0, top: 0 });
+	let explorePos = $state<PanelPosition>({
+		inlineInset: 0,
+		blockInset: 0,
+		translateInline: '-50%'
+	});
+	let menuPos = $state<PanelPosition>({ inlineInset: 0, blockInset: 0, translateInline: '0%' });
 	let indicatorX = $state(0);
 	let indicatorWidth = $state(0);
-	let tabRefs = $state<Record<string, HTMLElement | null>>({});
 
 	const menuItems = [
 		{ label: 'About', href: '/about', icon: InfoIcon },
@@ -48,24 +58,20 @@
 		return path === href || path.startsWith(href + '/');
 	}
 
-	function calcPos(btn: HTMLElement) {
+	function getPanelPosition(btn: HTMLElement, alignment: 'center' | 'end'): PanelPosition {
 		const rect = btn.getBoundingClientRect();
-		return {
-			left: rect.left + rect.width / 2,
-			right: window.innerWidth - rect.right,
-			top: rect.top - 8
-		};
-	}
-
-	function updateIndicator(key: string) {
-		// explore/menu are <Button> refs, not part of tabRefs
-		const el = key === 'explore' ? exploreBtnEl : key === 'menu' ? menuBtnEl : tabRefs[key];
-		if (el && el.parentElement) {
-			const rect = el.getBoundingClientRect();
-			const parentRect = el.parentElement.getBoundingClientRect();
-			indicatorX = rect.left - parentRect.left;
-			indicatorWidth = rect.width;
-		}
+		const isRtl = getComputedStyle(btn).direction === 'rtl';
+		const inlineInset =
+			alignment === 'center'
+				? isRtl
+					? window.innerWidth - rect.right
+					: rect.left
+				: isRtl
+					? rect.left
+					: window.innerWidth - rect.right;
+		const translateInline: PanelPosition['translateInline'] =
+			alignment === 'center' ? (isRtl ? '50%' : '-50%') : '0%';
+		return { inlineInset, blockInset: rect.top - 8, translateInline };
 	}
 
 	function toggleExplore() {
@@ -73,10 +79,10 @@
 			showExplore = false;
 		} else {
 			showMenu = false;
-			if (exploreBtnEl) explorePos = calcPos(exploreBtnEl);
+			if (exploreBtnEl) explorePos = getPanelPosition(exploreBtnEl, 'center');
 			showExplore = true;
-			updateIndicator('explore');
 		}
+		syncPill();
 	}
 
 	function toggleMenu() {
@@ -84,18 +90,17 @@
 			showMenu = false;
 		} else {
 			showExplore = false;
-			if (menuBtnEl) {
-				const pos = calcPos(menuBtnEl);
-				menuPos = { right: pos.right, top: pos.top };
-			}
+			if (menuBtnEl) menuPos = getPanelPosition(menuBtnEl, 'end');
 			showMenu = true;
-			updateIndicator('menu');
 		}
+		syncPill();
 	}
 
-	function closeAll() {
+	function closeAll(): void {
+		const hadOpenPanel = showExplore || showMenu;
 		showExplore = false;
 		showMenu = false;
+		if (hadOpenPanel) syncPill();
 	}
 
 	// Materialize transition — scale + opacity together (Apple §12: "Materialize, don't just fade")
@@ -107,15 +112,21 @@
 		};
 	};
 
-	function handleClickOutside(e: MouseEvent) {
-		const target = e.target as HTMLElement;
-		if (!target.closest('[data-popover]') && !target.closest('[data-popover-panel]')) {
+	function handleClickOutside(event: MouseEvent): void {
+		const target = event.target;
+		if (
+			!(target instanceof Element) ||
+			(!target.closest('[data-popover]') && !target.closest('[data-popover-panel]'))
+		) {
 			closeAll();
 		}
 	}
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') closeAll();
+	function handleKeydown(event: KeyboardEvent): void {
+		if (event.key !== 'Escape' || (!showExplore && !showMenu)) return;
+		const focusTarget = showExplore ? exploreBtnEl : menuBtnEl;
+		closeAll();
+		focusTarget?.focus();
 	}
 
 	// Resolve which tab the pill should sit under for the current state.
@@ -169,46 +180,36 @@
 		}
 	}
 
-	$effect(() => {
-		// Subscribe to all inputs so the pill re-anchors on route change
-		// and whenever a popover opens/closes.
-		void deLocalizeUrl(page.url.href).pathname;
-		void showExplore;
-		void showMenu;
-		syncPill();
-	});
+	afterNavigate(() => syncPill());
 </script>
 
 <svelte:document onclickcapture={handleClickOutside} onkeydown={handleKeydown} />
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-
 <!-- Backdrop -->
 {#if showExplore || showMenu}
 	<div
-		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs md:hidden"
+		class="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-xs lg:hidden"
 		in:fade={{ duration: 200, easing: cubicOut }}
 		out:fade={{ duration: 150, easing: cubicOut }}
-		onclick={closeAll}
 	></div>
 {/if}
 
 <!-- Explore Popover -->
 {#if showExplore}
 	<div
-		class="glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-xl p-2 md:hidden"
+		id="mobile-explore-panel"
+		class="panel explore-panel glass-strong fixed z-50 max-h-[60vh] w-60 overflow-y-auto rounded-xl p-2 lg:hidden"
 		in:materialize
 		out:materialize
-		style="left: {explorePos.left}px; top: {explorePos.top}px; transform: translate(-50%, -100%) scale(0.92);"
+		style:--panel-inline-start={`${explorePos.inlineInset}px`}
+		style:--panel-block-start={`${explorePos.blockInset}px`}
+		style:--panel-translate-x={explorePos.translateInline}
 		data-popover-panel
 	>
 		<div class="space-y-2">
 			{#each exploreGroups as group (group.label)}
 				<div>
-					<p
-						class="px-2 pb-1 text-2xs font-semibold tracking-wide text-muted-foreground uppercase"
-					>
+					<p class="px-2 pb-1 text-2xs font-semibold tracking-wide text-muted-foreground uppercase">
 						{group.label}
 					</p>
 					<div class="space-y-0.5">
@@ -237,10 +238,12 @@
 <!-- Menu Popover -->
 {#if showMenu}
 	<div
-		class="glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl p-2 md:hidden"
+		id="mobile-menu-panel"
+		class="panel menu-panel glass-strong fixed z-50 max-h-[55vh] w-80 overflow-y-auto rounded-xl p-2 lg:hidden"
 		in:materialize
 		out:materialize
-		style="right: {menuPos.right}px; top: {menuPos.top}px; transform: translateY(-100%) scale(0.92);"
+		style:--panel-inline-end={`${menuPos.inlineInset}px`}
+		style:--panel-block-start={`${menuPos.blockInset}px`}
 		data-popover-panel
 	>
 		<div class="grid grid-cols-3 gap-1.5">
@@ -264,10 +267,7 @@
 {/if}
 
 <!-- Bottom Tab Bar with Apple-style sliding indicator -->
-<nav
-	class="fixed bottom-1.5 left-1/2 z-50 -translate-x-1/2 md:hidden"
-	aria-label="Mobile navigation"
->
+<nav class="mobile-nav fixed bottom-1.5 z-50 lg:hidden" aria-label="Mobile navigation">
 	<div
 		data-tab-bar
 		class="relative flex items-center justify-evenly rounded-xl border border-foreground/20 bg-background/70 px-2 py-1 shadow-lg backdrop-blur-xl dark:border-foreground/10"
@@ -284,7 +284,6 @@
 			data-tab="home"
 			href={localizeHref('/')}
 			onclick={closeAll}
-			bind:this={tabRefs['/']}
 			aria-current={isActive('/') ? 'page' : undefined}
 			class={cn(
 				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
@@ -300,7 +299,6 @@
 			data-tab="categories"
 			href={localizeHref('/categories')}
 			onclick={closeAll}
-			bind:this={tabRefs['/categories']}
 			aria-current={isActive('/categories') ? 'page' : undefined}
 			class={cn(
 				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
@@ -316,7 +314,6 @@
 			data-tab="products"
 			href={localizeHref('/products')}
 			onclick={closeAll}
-			bind:this={tabRefs['/products']}
 			aria-current={isActive('/products') ? 'page' : undefined}
 			class={cn(
 				'relative z-10 flex flex-col items-center gap-px rounded-lg px-2 py-0.5 text-2xs font-medium transition-colors duration-base',
@@ -336,6 +333,7 @@
 				e.stopPropagation();
 				toggleExplore();
 			}}
+			aria-controls="mobile-explore-panel"
 			aria-expanded={showExplore}
 			aria-haspopup="true"
 			class={cn(
@@ -357,6 +355,7 @@
 				e.stopPropagation();
 				toggleMenu();
 			}}
+			aria-controls="mobile-menu-panel"
 			aria-expanded={showMenu}
 			aria-haspopup="true"
 			class={cn(
@@ -370,3 +369,24 @@
 		</Button>
 	</div>
 </nav>
+
+<style>
+	.panel {
+		inset-block-start: var(--panel-block-start);
+	}
+
+	.explore-panel {
+		inset-inline-start: var(--panel-inline-start);
+		transform: translateX(var(--panel-translate-x)) translateY(-100%) scale(0.92);
+	}
+
+	.menu-panel {
+		inset-inline-end: var(--panel-inline-end);
+		transform: translateY(-100%) scale(0.92);
+	}
+
+	.mobile-nav {
+		inset-inline-start: 50%;
+		transform: translateX(-50%);
+	}
+</style>

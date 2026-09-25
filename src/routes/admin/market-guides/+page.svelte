@@ -283,9 +283,7 @@
 	}
 
 	/** Certifying bodies are edited as JSON text; validated with the shared item schema. */
-	function parseCertifyingBodies(
-		raw: string
-	): { value: CertifyingBodyRef[] } | { error: string } {
+	function parseCertifyingBodies(raw: string): { value: CertifyingBodyRef[] } | { error: string } {
 		const text = raw.trim();
 		if (!text || text === '[]') return { value: [] };
 		let data: unknown;
@@ -509,15 +507,15 @@
 
 	<div class="relative max-w-sm">
 		<Search
-			class="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
 		<Input bind:value={search} placeholder="Search guides..." class="ps-9" />
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
-		<StatTile value={guides.length} label="Total Guides" loading={loading} />
-		<StatTile value={activeCount} label="Active" loading={loading} />
-		<StatTile value={mandatoryCount} label="Mandatory Markets" loading={loading} />
+		<StatTile value={guides.length} label="Total Guides" {loading} />
+		<StatTile value={activeCount} label="Active" {loading} />
+		<StatTile value={mandatoryCount} label="Mandatory Markets" {loading} />
 	</div>
 
 	{#if loadFailure}
@@ -643,14 +641,14 @@
 </div>
 
 <Dialog bind:open={dialogOpen}>
-	<DialogContent class="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+	<DialogContent class="max-h-[85dvh] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-lg">
 		<DialogHeader>
 			<DialogTitle>{editing ? 'Edit market guide' : 'New market guide'}</DialogTitle>
 			<DialogDescription>Create or update a country market guide.</DialogDescription>
 		</DialogHeader>
 
-		<form class="flex flex-col gap-4" bind:this={formEl} onsubmit={save}>
-			<div class="grid grid-cols-2 gap-4">
+		<form class="flex min-w-0 flex-col gap-4" bind:this={formEl} onsubmit={save}>
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Country *</Field.FieldLabel>
 					<Input
@@ -659,7 +657,9 @@
 						maxlength={120}
 						disabled={saving}
 						aria-invalid={!!fieldErrors.country}
-						oninput={() => { fieldErrors = { ...fieldErrors, country: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, country: '' };
+						}}
 					/>
 					{#if fieldErrors.country}<FieldError>{fieldErrors.country}</FieldError>{/if}
 				</Field.Field>
@@ -671,7 +671,9 @@
 						maxlength={200}
 						disabled={!!editing || saving}
 						aria-invalid={!!fieldErrors.slug}
-						oninput={() => { fieldErrors = { ...fieldErrors, slug: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, slug: '' };
+						}}
 					/>
 					{#if fieldErrors.slug}<FieldError>{fieldErrors.slug}</FieldError>{/if}
 					{#if !editing}
@@ -682,7 +684,7 @@
 				</Field.Field>
 			</div>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Flag (emoji)</Field.FieldLabel>
 					<Input bind:value={form.flag} placeholder="🇮🇩" maxlength={16} disabled={saving} />
@@ -705,7 +707,7 @@
 				</Field.Field>
 			</div>
 
-			<div class="grid grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Mandate Status</Field.FieldLabel>
 					<Select bind:value={form.mandateStatus} type="single">
@@ -747,14 +749,16 @@
 					placeholder="Brief market overview..."
 					disabled={saving}
 					aria-invalid={!!fieldErrors.summary}
-					oninput={() => { fieldErrors = { ...fieldErrors, summary: '' }; }}
+					oninput={() => {
+						fieldErrors = { ...fieldErrors, summary: '' };
+					}}
 				/>
 				{#if fieldErrors.summary}<FieldError>{fieldErrors.summary}</FieldError>{/if}
 			</Field.Field>
 
 			<!-- ===================== MARKET DATA (collapsed) ===================== -->
 			<CollapsibleSection title="Market Data" bind:open={marketExpanded}>
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Muslim Population</Field.FieldLabel>
 						<Input
@@ -774,7 +778,7 @@
 						/>
 					</Field.Field>
 				</div>
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Market Size (USD)</Field.FieldLabel>
 						<Input
@@ -794,7 +798,7 @@
 						/>
 					</Field.Field>
 				</div>
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Estimated Cost (USD)</Field.FieldLabel>
 						<Input
@@ -814,7 +818,7 @@
 						/>
 					</Field.Field>
 				</div>
-				<div class="grid grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<Field.Field>
 						<Field.FieldLabel>Certificate Validity</Field.FieldLabel>
 						<Input
@@ -842,7 +846,9 @@
 						placeholder={'[{"slug":"bpjph","name":"BPJPH"}]'}
 						disabled={saving}
 						aria-invalid={!!fieldErrors.certifyingBodiesJson}
-						oninput={() => { fieldErrors = { ...fieldErrors, certifyingBodiesJson: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, certifyingBodiesJson: '' };
+						}}
 					/>
 					{#if fieldErrors.certifyingBodiesJson}
 						<FieldError>{fieldErrors.certifyingBodiesJson}</FieldError>
@@ -860,7 +866,9 @@
 						placeholder="Halal certificate, Labeling in local language, ..."
 						disabled={saving}
 						aria-invalid={!!fieldErrors.importRequirements}
-						oninput={() => { fieldErrors = { ...fieldErrors, importRequirements: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, importRequirements: '' };
+						}}
 					/>
 					{#if fieldErrors.importRequirements}
 						<FieldError>{fieldErrors.importRequirements}</FieldError>
@@ -878,7 +886,9 @@
 						placeholder="Largest Muslim population, ..."
 						disabled={saving}
 						aria-invalid={!!fieldErrors.keyInsights}
-						oninput={() => { fieldErrors = { ...fieldErrors, keyInsights: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, keyInsights: '' };
+						}}
 					/>
 					{#if fieldErrors.keyInsights}<FieldError>{fieldErrors.keyInsights}</FieldError>{/if}
 				</Field.Field>
@@ -890,7 +900,9 @@
 						placeholder="Growing middle class, ..."
 						disabled={saving}
 						aria-invalid={!!fieldErrors.opportunities}
-						oninput={() => { fieldErrors = { ...fieldErrors, opportunities: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, opportunities: '' };
+						}}
 					/>
 					{#if fieldErrors.opportunities}<FieldError>{fieldErrors.opportunities}</FieldError>{/if}
 				</Field.Field>
@@ -902,7 +914,9 @@
 						placeholder="Complex regulations, ..."
 						disabled={saving}
 						aria-invalid={!!fieldErrors.challenges}
-						oninput={() => { fieldErrors = { ...fieldErrors, challenges: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, challenges: '' };
+						}}
 					/>
 					{#if fieldErrors.challenges}<FieldError>{fieldErrors.challenges}</FieldError>{/if}
 				</Field.Field>
@@ -918,7 +932,9 @@
 						placeholder="SEO page title (max 60 chars)"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaTitle}
-						oninput={() => { fieldErrors = { ...fieldErrors, metaTitle: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, metaTitle: '' };
+						}}
 					/>
 					{#if fieldErrors.metaTitle}<FieldError>{fieldErrors.metaTitle}</FieldError>{/if}
 				</Field.Field>
@@ -931,7 +947,9 @@
 						placeholder="SEO description (max 160 chars)"
 						disabled={saving}
 						aria-invalid={!!fieldErrors.metaDescription}
-						oninput={() => { fieldErrors = { ...fieldErrors, metaDescription: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, metaDescription: '' };
+						}}
 					/>
 					{#if fieldErrors.metaDescription}
 						<FieldError>{fieldErrors.metaDescription}</FieldError>
@@ -945,7 +963,9 @@
 						maxlength={500}
 						disabled={saving}
 						aria-invalid={!!fieldErrors.keywords}
-						oninput={() => { fieldErrors = { ...fieldErrors, keywords: '' }; }}
+						oninput={() => {
+							fieldErrors = { ...fieldErrors, keywords: '' };
+						}}
 					/>
 					{#if fieldErrors.keywords}<FieldError>{fieldErrors.keywords}</FieldError>{/if}
 				</Field.Field>

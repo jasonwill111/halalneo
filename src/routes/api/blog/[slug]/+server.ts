@@ -35,11 +35,7 @@ export const GET: RequestHandler = async (event) => {
 			return json(row, { headers: { 'Cache-Control': 'private, no-store' } });
 		}
 
-		const cached = await cachedQuery(
-			url.toString(),
-			async () => row ?? null,
-			{ ...cacheLong() }
-		);
+		const cached = await cachedQuery(url.toString(), async () => row ?? null, { ...cacheLong() });
 
 		if (!cached) return json({ error: 'Not found' }, { status: 404 });
 		return json(cached);
@@ -73,7 +69,8 @@ export const PUT: RequestHandler = async (event) => {
 	if (parsed.data.excerpt !== undefined) updates.excerpt = parsed.data.excerpt || null;
 	if (parsed.data.body !== undefined) updates.body = parsed.data.body;
 	if (parsed.data.author !== undefined) updates.author = parsed.data.author || null;
-	if (parsed.data.featuredImage !== undefined) updates.featuredImage = parsed.data.featuredImage || null;
+	if (parsed.data.featuredImage !== undefined)
+		updates.featuredImage = parsed.data.featuredImage || null;
 	if (parsed.data.tags !== undefined) updates.tags = JSON.stringify(parsed.data.tags);
 	if (parsed.data.status !== undefined) updates.status = parsed.data.status;
 	if (parsed.data.publishedAt !== undefined) {

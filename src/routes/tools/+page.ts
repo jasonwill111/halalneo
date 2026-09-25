@@ -6,22 +6,26 @@ export const load: PageLoad = async () => {
 	const tools = [
 		{
 			name: 'Ingredient Checker',
-			description: 'Paste any ingredient list and get an AI halal, haram or mashbooh verdict per ingredient.',
+			description:
+				'Paste any ingredient list and get an AI halal, haram or mashbooh verdict per ingredient.',
 			url: '/tools/ingredient-checker'
 		},
 		{
 			name: 'Certification Cost Estimator',
-			description: 'Estimate halal certification cost and timeline by certifier, category and company size.',
+			description:
+				'Estimate halal certification cost and timeline by certifier, category and company size.',
 			url: '/tools/certification-cost'
 		},
 		{
 			name: 'Landed Cost Calculator',
-			description: 'CIF, duty, VAT, clearance and amortised certification cost — true per-unit cost per shipment.',
+			description:
+				'CIF, duty, VAT, clearance and amortised certification cost — true per-unit cost per shipment.',
 			url: '/tools/landed-cost'
 		},
 		{
 			name: 'RFQ Builder',
-			description: 'Assemble a halal-ready request for quotation with cert, label and document requirements.',
+			description:
+				'Assemble a halal-ready request for quotation with cert, label and document requirements.',
 			url: '/tools/rfq-builder'
 		},
 		{

@@ -35,16 +35,19 @@
 	] as const;
 
 	interface CertifierRow {
+		id: string;
 		name: string;
 		country: string;
 		standard?: string | null;
+		website?: string | null;
 	}
 
+	const certifiers = $derived((data.certifiers ?? []) as CertifierRow[]);
 	let query = $state('');
 	let selectedRegion = $state('');
 
 	const filtered = $derived(
-		(data.certifiers ?? []).filter((b: CertifierRow) => {
+		certifiers.filter((b: CertifierRow) => {
 			const q = query.trim().toLowerCase();
 			const matchesQuery =
 				!q ||
@@ -78,16 +81,16 @@
 <Breadcrumb items={[{ label: 'Certifying Bodies', href: '/certifying-bodies' }]} />
 
 <section class="space-y-4 sm:space-y-6">
-	<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-		<div class="max-w-2xl space-y-2">
-			<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Certifying bodies</h1>
-			<p class="text-xs text-muted-foreground sm:text-sm">
-				{(data.certifiers ?? []).length} recognized halal certification authorities across
-				{new Set((data.certifiers ?? []).map((b) => b.country)).size} countries.
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+		<div class="max-w-2xl space-y-1.5">
+			<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Certifying bodies</h1>
+			<p class="max-w-2xl text-xs text-muted-foreground sm:text-sm">
+				{certifiers.length} recognized halal certification authorities across
+				{new Set(certifiers.map((b) => b.country)).size} countries.
 			</p>
 		</div>
-		<div class="w-full sm:w-72">
-			<Input bind:value={query} type="search" placeholder="Filter bodies" />
+		<div class="w-full sm:w-64">
+			<Input bind:value={query} type="search" placeholder="Filter bodies" class="text-xs" />
 		</div>
 	</div>
 
@@ -96,6 +99,12 @@
 		bind:value={selectedRegion}
 		ariaLabel="Filter certifying bodies by region"
 	/>
+
+	{#if certifiers.length > 0}
+		<p class="text-2xs text-muted-foreground">
+			Showing {filtered.length} of {certifiers.length} certifying bodies
+		</p>
+	{/if}
 
 	<div class="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
 		{#each paged as body, i (body.id)}
@@ -148,7 +157,9 @@
 				{:else}
 					<Empty>
 						<EmptyHeader>
-							<BrandedEmptyMedia><GlobeIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+							<BrandedEmptyMedia
+								><GlobeIcon class="size-6 text-muted-foreground" /></BrandedEmptyMedia
+							>
 							<EmptyTitle>No certifying bodies found</EmptyTitle>
 							<EmptyDescription>
 								{#if query.trim() || selectedRegion}

@@ -60,7 +60,8 @@ export const POST: RequestHandler = async (event) => {
 	const { request } = event;
 	const session = await getSession(event);
 	const userId = session?.user.id;
-	if (!userId) return json({ error: 'Please sign in as a supplier to post updates.' }, { status: 401 });
+	if (!userId)
+		return json({ error: 'Please sign in as a supplier to post updates.' }, { status: 401 });
 
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
@@ -68,22 +69,39 @@ export const POST: RequestHandler = async (event) => {
 	const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
 	const parsed = updateSchema.safeParse(body ?? {});
 	if (!parsed.success) {
-		return json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
 	const members = await db
 		.select({ userId: supplierMembers.userId })
 		.from(supplierMembers)
-		.where(and(eq(supplierMembers.userId, userId), eq(supplierMembers.supplierSlug, parsed.data.supplierSlug)))
+		.where(
+			and(
+				eq(supplierMembers.userId, userId),
+				eq(supplierMembers.supplierSlug, parsed.data.supplierSlug)
+			)
+		)
 		.limit(1);
 	if (members.length === 0) {
 		return json({ error: 'Only team members of this supplier can post updates.' }, { status: 403 });
 	}
 
-	const quota = await checkWeeklyQuota(db, supplierUpdates, supplierUpdates.supplierSlug, parsed.data.supplierSlug, 'supplierUpdate', resolvePlan(userId));
+	const quota = await checkWeeklyQuota(
+		db,
+		supplierUpdates,
+		supplierUpdates.supplierSlug,
+		parsed.data.supplierSlug,
+		'supplierUpdate',
+		resolvePlan(userId)
+	);
 	if (!quota.allowed) {
 		return json(
-			{ error: `Weekly update limit reached (${quota.limit}/week on the free plan). Upgrade for more.` },
+			{
+				error: `Weekly update limit reached (${quota.limit}/week on the free plan). Upgrade for more.`
+			},
 			{ status: 429 }
 		);
 	}

@@ -88,7 +88,12 @@ export const GET: RequestHandler = async (event) => {
 		const conditions: SQL[] = [];
 		if (status) conditions.push(eq(suppliers.status, status as 'active' | 'pending' | 'suspended'));
 
-		const where = conditions.length > 1 ? and(...conditions) : conditions.length === 1 ? conditions[0] : undefined;
+		const where =
+			conditions.length > 1
+				? and(...conditions)
+				: conditions.length === 1
+					? conditions[0]
+					: undefined;
 
 		const [countResult] = await db
 			.select({ count: sql<number>`count(*)` })
@@ -118,7 +123,8 @@ export const GET: RequestHandler = async (event) => {
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-	const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+	const ip =
+		request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
 	if (!checkRateLimit(ip)) {
 		return json({ error: 'Too many applications. Please try again in a minute.' }, { status: 429 });
 	}
@@ -131,7 +137,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const parsed = applicationSchema.safeParse(body);
 	if (!parsed.success) {
-		return json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors }, { status: 400 });
+		return json(
+			{ error: 'Validation failed', details: parsed.error.flatten().fieldErrors },
+			{ status: 400 }
+		);
 	}
 
 	const data = parsed.data;
@@ -147,7 +156,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		let attempt = 0;
 		while (attempt < 10) {
-			const [existing] = await db.select({ slug: suppliers.slug }).from(suppliers).where(eq(suppliers.slug, finalSlug)).limit(1);
+			const [existing] = await db
+				.select({ slug: suppliers.slug })
+				.from(suppliers)
+				.where(eq(suppliers.slug, finalSlug))
+				.limit(1);
 			if (!existing) break;
 			attempt++;
 			finalSlug = `${baseSlug}-${attempt + 1}`;
@@ -170,7 +183,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			.returning();
 
 		await db.insert(inquiries).values({
-			buyerSlug: data.contactEmail.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60),
+			buyerSlug: data.contactEmail
+				.trim()
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.slice(0, 60),
 			supplierSlug: finalSlug,
 			subject: `[Supplier Application] ${data.company.trim()}`,
 			message: [
@@ -194,13 +211,17 @@ export const POST: RequestHandler = async ({ request }) => {
 			{
 				ok: true,
 				slug: row.slug,
-				message: 'Application received. Our team will review your details and respond within 1-3 business days.'
+				message:
+					'Application received. Our team will review your details and respond within 1-3 business days.'
 			},
 			{ status: 201 }
 		);
 	} catch (e: unknown) {
 		if (e instanceof Error && e.message.includes('UNIQUE constraint')) {
-			return json({ error: 'A supplier with this name already exists. Please contact us directly.' }, { status: 409 });
+			return json(
+				{ error: 'A supplier with this name already exists. Please contact us directly.' },
+				{ status: 409 }
+			);
 		}
 		return json({ error: e instanceof Error ? e.message : 'Internal error' }, { status: 500 });
 	}

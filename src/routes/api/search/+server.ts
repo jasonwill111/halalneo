@@ -20,12 +20,12 @@ export const GET: RequestHandler = async ({ url }) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
-		const term = `%${q}%`;
-		// Indexed FTS lookups (products/suppliers) instead of LIKE scans.
-		// FTS misses (short/stopword-only queries) fall back to LIKE.
-		const match = ftsQuery(q);
+	const term = `%${q}%`;
+	// Indexed FTS lookups (products/suppliers) instead of LIKE scans.
+	// FTS misses (short/stopword-only queries) fall back to LIKE.
+	const match = ftsQuery(q);
 
-		try {
+	try {
 		const data = await cachedQuery(
 			url.toString(),
 			async () => {
@@ -35,8 +35,8 @@ export const GET: RequestHandler = async ({ url }) => {
 							ftsSlugs(db, 'suppliers', match, 15)
 						])
 					: [[], []];
-			// KB + glossary: LIKE only — knowledge_base_fts/pages_fts do not
-		// exist in production D1, and these tables are small (<500 rows).
+				// KB + glossary: LIKE only — knowledge_base_fts/pages_fts do not
+				// exist in production D1, and these tables are small (<500 rows).
 
 				const [productRows, supplierRows, articleRows, termRows] = await Promise.all([
 					db
@@ -99,10 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
 						.where(
 							and(
 								eq(schema.knowledgeBase.status, 'published'),
-								or(
-									like(schema.knowledgeBase.title, term),
-									like(schema.knowledgeBase.summary, term)
-								)
+								or(like(schema.knowledgeBase.title, term), like(schema.knowledgeBase.summary, term))
 							)
 						)
 						.limit(15),

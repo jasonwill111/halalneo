@@ -11,6 +11,14 @@
 	import Star from '@lucide/svelte/icons/star';
 	import Globe from '@lucide/svelte/icons/globe';
 	import Breadcrumb from '#lib/components/site/breadcrumb.svelte';
+	import {
+		Empty,
+		EmptyHeader,
+		EmptyTitle,
+		EmptyDescription,
+		EmptyContent
+	} from '#lib/components/ui/empty/index.js';
+	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 
 	let { data } = $props();
 
@@ -122,7 +130,7 @@
 
 		<!-- Gradient hero with initials tile (schema has no cover image column) -->
 		<div
-			class="flex h-24 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-muted sm:h-32"
+			class="flex h-20 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-muted sm:h-28"
 		>
 			<div
 				class="flex size-12 items-center justify-center rounded-2xl border-4 border-background bg-primary/10 text-lg font-bold text-primary shadow-sm sm:size-14"
@@ -156,19 +164,18 @@
 			{/if}
 		</div>
 
-		<!-- Action buttons -->
-		<div class="flex gap-1">
+		<div class="grid grid-cols-2 gap-1 sm:flex sm:flex-wrap">
 			{#if provider.whatsapp}
 				<Button
 					href="https://wa.me/{provider.whatsapp.replace(/[^0-9]/g, '')}"
 					variant="outline"
 					size="sm"
-					class="h-7 flex-1 gap-1 text-2xs"
+					class="h-8 min-w-0 flex-1 gap-1 px-2 text-2xs sm:h-7"
 					target="_blank"
 					rel="noopener"
 				>
-					<MessageCircle class="size-2.5" />
-					WhatsApp
+					<MessageCircle class="size-2.5 shrink-0" />
+					<span class="truncate">WhatsApp</span>
 				</Button>
 			{/if}
 			{#if provider.line}
@@ -176,11 +183,11 @@
 					href="https://line.me/ti/p/{provider.line}"
 					variant="outline"
 					size="sm"
-					class="h-7 flex-1 gap-1 text-2xs"
+					class="h-8 min-w-0 flex-1 gap-1 px-2 text-2xs sm:h-7"
 					target="_blank"
 					rel="noopener"
 				>
-					Line
+					<span class="truncate">Line</span>
 				</Button>
 			{/if}
 			{#if provider.email}
@@ -188,10 +195,10 @@
 					href="mailto:{provider.email}"
 					variant="outline"
 					size="sm"
-					class="h-7 flex-1 gap-1 text-2xs"
+					class="h-8 min-w-0 flex-1 gap-1 px-2 text-2xs sm:h-7"
 				>
-					<Mail class="size-2.5" />
-					Email
+					<Mail class="size-2.5 shrink-0" />
+					<span class="truncate">Email</span>
 				</Button>
 			{/if}
 			{#if provider.phone}
@@ -199,10 +206,10 @@
 					href="tel:{provider.phone}"
 					variant="outline"
 					size="sm"
-					class="h-7 flex-1 gap-1 text-2xs"
+					class="h-8 min-w-0 flex-1 gap-1 px-2 text-2xs sm:h-7"
 				>
-					<Phone class="size-2.5" />
-					Phone
+					<Phone class="size-2.5 shrink-0" />
+					<span class="truncate">Phone</span>
 				</Button>
 			{/if}
 			{#if provider.website}
@@ -210,12 +217,12 @@
 					href={provider.website}
 					variant="outline"
 					size="sm"
-					class="h-7 flex-1 gap-1 text-2xs"
+					class="h-8 min-w-0 flex-1 gap-1 px-2 text-2xs sm:h-7"
 					target="_blank"
 					rel="noopener"
 				>
-					<Globe class="size-2.5" />
-					Website
+					<Globe class="size-2.5 shrink-0" />
+					<span class="truncate">Website</span>
 				</Button>
 			{/if}
 		</div>
@@ -228,7 +235,7 @@
 			<StatTile value={yearEst} label="Est." tone="success" />
 		</div>
 
-		<div class="grid gap-3 sm:gap-4 lg:grid-cols-[1fr_320px]">
+		<div class="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
 			<div class="min-w-0 space-y-4 sm:space-y-6">
 				<!-- About -->
 				<section>
@@ -286,28 +293,29 @@
 								href={provider.website}
 								target="_blank"
 								rel="noopener"
-								class="flex items-center gap-2 text-xs font-medium text-primary hover:underline"
+								class="flex min-w-0 items-center gap-2 text-xs font-medium text-primary hover:underline"
 							>
 								<Globe class="size-3.5 shrink-0 text-muted-foreground" />
-								<span class="truncate">{provider.website.replace(/^https?:\/\//, '')}</span>
+								<span class="min-w-0 break-all">{provider.website.replace(/^https?:\/\//, '')}</span
+								>
 							</a>
 						{/if}
 						{#if provider.email}
 							<a
 								href="mailto:{provider.email}"
-								class="flex items-center gap-2 text-xs font-medium hover:text-primary"
+								class="flex min-w-0 items-center gap-2 text-xs font-medium hover:text-primary"
 							>
 								<Mail class="size-3.5 shrink-0 text-muted-foreground" />
-								<span class="truncate">{provider.email}</span>
+								<span class="min-w-0 break-all">{provider.email}</span>
 							</a>
 						{/if}
 						{#if provider.phone}
 							<a
 								href="tel:{provider.phone}"
-								class="flex items-center gap-2 text-xs font-medium hover:text-primary"
+								class="flex min-w-0 items-center gap-2 text-xs font-medium hover:text-primary"
 							>
 								<Phone class="size-3.5 shrink-0 text-muted-foreground" />
-								{provider.phone}
+								<span class="min-w-0 break-all">{provider.phone}</span>
 							</a>
 						{/if}
 						{#if provider.whatsapp}
@@ -349,12 +357,16 @@
 			</aside>
 		</div>
 	{:else}
-		<div class="flex min-h-[50vh] items-center justify-center">
-			<div class="space-y-4 text-center">
-				<p class="text-sm text-muted-foreground">Provider profile coming soon.</p>
-				<Button href={localizeHref('/service-providers')} variant="outline">Browse Providers</Button
+		<Empty class="min-h-[50vh] border border-dashed">
+			<EmptyHeader>
+				<BrandedEmptyMedia><Globe class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
+				<EmptyTitle>Service provider not found</EmptyTitle>
+				<EmptyDescription>This provider profile is not available right now.</EmptyDescription>
+			</EmptyHeader>
+			<EmptyContent>
+				<Button href={localizeHref('/service-providers')} size="sm">Browse service providers</Button
 				>
-			</div>
-		</div>
+			</EmptyContent>
+		</Empty>
 	{/if}
 </div>

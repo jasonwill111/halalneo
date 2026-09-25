@@ -81,7 +81,10 @@ export const PUT: RequestHandler = async (event) => {
 	}
 	if (parsed.data.parentSlug && parsed.data.parentSlug === params.slug) {
 		return json(
-			{ error: 'Validation failed', details: { parentSlug: ['A category cannot be its own parent.'] } },
+			{
+				error: 'Validation failed',
+				details: { parentSlug: ['A category cannot be its own parent.'] }
+			},
 			{ status: 400 }
 		);
 	}

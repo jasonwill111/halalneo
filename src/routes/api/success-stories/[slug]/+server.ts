@@ -16,7 +16,11 @@ export const GET: RequestHandler = async (event) => {
 		const row = await cachedQuery(
 			url.toString(),
 			async () => {
-				const [r] = await db.select().from(successStories).where(eq(successStories.slug, params.slug)).limit(1);
+				const [r] = await db
+					.select()
+					.from(successStories)
+					.where(eq(successStories.slug, params.slug))
+					.limit(1);
 				return r ?? null;
 			},
 			{ ...cacheLong() }

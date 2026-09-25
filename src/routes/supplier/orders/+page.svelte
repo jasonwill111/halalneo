@@ -3,17 +3,33 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
+	import { Alert } from '#lib/components/ui/alert/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
-	import { Empty } from '#lib/components/ui/empty/index.js';
+	import {
+		Empty,
+		EmptyContent,
+		EmptyDescription,
+		EmptyHeader,
+		EmptyTitle
+	} from '#lib/components/ui/empty/index.js';
 	import BrandedEmptyMedia from '#lib/components/site/branded-empty-media.svelte';
 	import FilterPills from '#lib/components/site/filter-pills.svelte';
 	import Paginator from '#lib/components/site/paginator.svelte';
 	import ErrorRetry from '#lib/components/site/error-retry.svelte';
-	import { describeFetchFailure, describeThrownFailure, type LoadFailure } from '#lib/utils/load-error.js';
-	import { INQUIRY_STATUSES, type InquiryDto, type InquiryListResponse } from '#lib/schemas/inquiries.js';
+	import {
+		describeFetchFailure,
+		describeThrownFailure,
+		type LoadFailure
+	} from '#lib/utils/load-error.js';
+	import {
+		INQUIRY_STATUSES,
+		type InquiryDto,
+		type InquiryListResponse
+	} from '#lib/schemas/inquiries.js';
 	import Inbox from '@lucide/svelte/icons/inbox';
 	import ShieldQuestion from '@lucide/svelte/icons/shield-question';
+	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 
 	let { data }: PageProps = $props();
 
@@ -45,9 +61,7 @@
 	let requestId = 0;
 
 	const totalPages = $derived(Math.max(1, Math.ceil(total / PAGE_SIZE)));
-	const activeStatus = $derived(
-		STATUS_OPTIONS.find((o) => o.value === status)?.value ?? ''
-	);
+	const activeStatus = $derived(STATUS_OPTIONS.find((o) => o.value === status)?.value ?? '');
 
 	function humanizeSlug(slug: string | null | undefined, fallback: string): string {
 		if (!slug) return fallback;
@@ -113,11 +127,9 @@
 </svelte:head>
 
 <div class="space-y-1">
-	<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Inquiries</h1>
-	<p class="text-sm text-muted-foreground">
-		{loading
-			? 'Loading your inquiries…'
-			: `${total} message${total === 1 ? '' : 's'} from buyers`}
+	<h1 class="text-xl font-semibold tracking-tight sm:text-2xl">Inquiries</h1>
+	<p class="text-xs text-muted-foreground sm:text-sm">
+		{loading ? 'Loading your inquiries…' : `${total} message${total === 1 ? '' : 's'} from buyers`}
 	</p>
 </div>
 
@@ -128,8 +140,8 @@
 			<div class="space-y-1">
 				<p class="font-medium">No supplier account linked</p>
 				<p class="text-sm text-muted-foreground">
-					Buyer inquiries are delivered to the supplier account they were sent to. Apply for
-					access and an administrator will link this account to your company.
+					Buyer inquiries are delivered to the supplier account they were sent to. Apply for access
+					and an administrator will link this account to your company.
 				</p>
 			</div>
 			<Button class="mt-2" size="sm" href={localizeHref('/supplier/onboarding')}>
@@ -160,25 +172,42 @@
 				{/each}
 			</div>
 		{:else if loadFailure}
-			<p class="rounded-xl bg-card px-4 py-12 text-center text-sm text-muted-foreground ring-1 ring-foreground/10">
-				Inquiries unavailable — use “Try again” above.
-			</p>
+			<Alert variant="destructive" class="border-destructive/20 bg-destructive/5">
+				<TriangleAlert class="size-4" />
+				<div>
+					<p class="text-xs font-medium">Inquiries unavailable</p>
+					<p class="text-2xs text-muted-foreground">
+						Use “Try again” above to reload your messages.
+					</p>
+				</div>
+			</Alert>
 		{:else if items.length === 0}
-			<div class="rounded-xl bg-card px-4 py-12 text-center ring-1 ring-foreground/10">
+			<div class="rounded-xl bg-card ring-1 ring-foreground/10">
 				<Empty>
 					<BrandedEmptyMedia><Inbox class="size-6 text-muted-foreground" /></BrandedEmptyMedia>
-					<div class="space-y-1">
-						<p class="font-medium">No inquiries{activeStatus ? ` marked ${activeStatus}` : ''}</p>
-						<p class="max-w-sm text-sm text-muted-foreground">
+					<EmptyHeader>
+						<EmptyTitle>No inquiries{activeStatus ? ` marked ${activeStatus}` : ''}</EmptyTitle>
+						<EmptyDescription>
 							Messages buyers send from your public profile or product pages land here.
-						</p>
-					</div>
+						</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						{#if activeStatus}
+							<Button size="sm" variant="outline" onclick={() => (status = '')}
+								>View all inquiries</Button
+							>
+						{:else}
+							<Button size="sm" variant="outline" href={localizeHref(`/supplier/${supplierSlug}`)}>
+								View company profile
+							</Button>
+						{/if}
+					</EmptyContent>
 				</Empty>
 			</div>
 		{:else}
 			{#each items as inquiry (inquiry.id)}
-				<article class="rounded-xl bg-card px-4 py-3 ring-1 ring-foreground/10">
-					<div class="flex flex-wrap items-start justify-between gap-2">
+				<article class="min-w-0 rounded-xl bg-card px-3 py-3 ring-1 ring-foreground/10 sm:px-4">
+					<div class="flex min-w-0 flex-wrap items-start justify-between gap-2">
 						<div class="min-w-0">
 							<h2 class="truncate text-sm font-semibold" title={inquiry.subject}>
 								{inquiry.subject}
@@ -190,7 +219,8 @@
 						</div>
 						<Badge
 							variant="secondary"
-							class="shrink-0 capitalize {STATUS_BADGE[inquiry.status] ?? 'bg-muted text-muted-foreground'}"
+							class="shrink-0 capitalize {STATUS_BADGE[inquiry.status] ??
+								'bg-muted text-muted-foreground'}"
 						>
 							{inquiry.status}
 						</Badge>
