@@ -167,7 +167,12 @@
 				Manage help articles and documentation across {KB_SECTIONS.length} sections.
 			</p>
 		</div>
-		<Button variant="default" size="sm" class="gap-1.5" onclick={() => goto('/admin/knowledge')}>
+		<Button
+			variant="default"
+			size="sm"
+			class="gap-1.5"
+			onclick={() => goto('/admin/content/knowledge/editor')}
+		>
 			<Plus class="size-4"></Plus>
 			Add Article
 		</Button>
@@ -316,7 +321,7 @@
 												variant="default"
 												size="sm"
 												class="gap-1.5"
-												onclick={() => goto('/admin/knowledge')}
+												onclick={() => goto('/admin/content/knowledge/editor')}
 											>
 												<Plus class="size-4" />
 												Add Article
@@ -379,7 +384,9 @@
 											aria-label="Edit"
 											class="size-8"
 											onclick={() =>
-												goto(`/admin/knowledge?edit=${encodeURIComponent(article.slug)}`)}
+												goto(
+													`/admin/content/knowledge/editor?edit=${encodeURIComponent(article.slug)}`
+												)}
 										>
 											<Pencil class="size-3.5"></Pencil>
 										</Button>

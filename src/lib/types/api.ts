@@ -94,7 +94,6 @@ export interface SuccessStoryItem {
 	dealValue: string | null;
 	image: string | null;
 	status?: string | null;
-	/** No `published_at` column exists on `success_stories`; JSON-LD reads it defensively. */
 	publishedAt?: string | null;
 	createdAt?: string | null;
 	updatedAt?: string | null;

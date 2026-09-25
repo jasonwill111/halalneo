@@ -6,6 +6,7 @@ import { promotions } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { invalidateCache, cachedQuery, cacheMedium } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
+import { isAdminEmail, isSupplierMember } from '#lib/server/auth-guard.js';
 
 export const GET: RequestHandler = async (event) => {
 	const { params, url } = event;
@@ -50,6 +51,16 @@ export const PUT: RequestHandler = async (event) => {
 			.where(eq(promotions.id, params.id))
 			.limit(1);
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
+		const admin = isAdminEmail(session.user.email);
+		if (!admin && !(await isSupplierMember(db, session.user.id, existing.supplierSlug))) {
+			return json({ error: 'Forbidden' }, { status: 403 });
+		}
+		if (!admin && body.supplierSlug !== undefined) {
+			return json(
+				{ error: 'Only admins can move a promotion to another supplier.' },
+				{ status: 403 }
+			);
+		}
 
 		const updates: Record<string, unknown> = {};
 		if (body.status !== undefined) updates.status = body.status;
@@ -93,6 +104,12 @@ export const DELETE: RequestHandler = async (event) => {
 			.where(eq(promotions.id, params.id))
 			.limit(1);
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
+		if (
+			!isAdminEmail(session.user.email) &&
+			!(await isSupplierMember(db, session.user.id, existing.supplierSlug))
+		) {
+			return json({ error: 'Forbidden' }, { status: 403 });
+		}
 
 		await db.delete(promotions).where(eq(promotions.id, params.id));
 		await invalidateCache('/api/promotions', `/api/promotions/${params.id}`);

@@ -3,8 +3,9 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { favorites, products } from '#lib/server/db/schema.js';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { invalidateCache } from '#lib/server/cache.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
 import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
 
@@ -23,6 +24,7 @@ export const GET: RequestHandler = async (event) => {
 	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
+	const { limit, offset } = parseQuery(url);
 	const productSlug = url.searchParams.get('productSlug') || undefined;
 	try {
 		if (productSlug) {
@@ -33,6 +35,10 @@ export const GET: RequestHandler = async (event) => {
 				.limit(1);
 			return json({ favorite: rows.length > 0 });
 		}
+		const [countResult] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(favorites)
+			.where(eq(favorites.userId, userId));
 		const rows = await db
 			.select({
 				productSlug: favorites.productSlug,
@@ -48,8 +54,9 @@ export const GET: RequestHandler = async (event) => {
 			.innerJoin(products, eq(favorites.productSlug, products.slug))
 			.where(and(eq(favorites.userId, userId), eq(products.status, 'active')))
 			.orderBy(desc(favorites.createdAt))
-			.limit(200);
-		return json({ items: rows });
+			.limit(limit)
+			.offset(offset);
+		return json({ items: rows, total: countResult?.count ?? 0, limit, offset });
 	} catch (e: unknown) {
 		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}

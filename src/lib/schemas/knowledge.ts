@@ -1,9 +1,10 @@
 // Shared Zod schema for Knowledge Base articles (D1 table `knowledge_base`).
 // Project Rules §6.4 / §3.4 — the same schema is used by
-// `src/routes/admin/knowledge/+page.svelte` (client) and
+// `src/routes/admin/content/knowledge/editor/+page.svelte` (client) and
 // `src/routes/api/knowledge-base/**` (server), so validation can never drift.
 import { z } from 'zod';
 import { markdownField, metaField, slugField, tagsField } from './content.js';
+import { contentBlocksSchema } from './blocks.js';
 
 /**
  * KB sections — MUST stay in sync with the Drizzle enum in
@@ -64,6 +65,7 @@ export const knowledgeArticleCreateSchema = z.object({
 		.max(200, 'Title must be 200 characters or fewer.'),
 	summary: metaField(500, 'Summary'),
 	body: markdownField(40, 'Body'),
+	contentBlocks: contentBlocksSchema.default([]),
 	tags: tagsField(20),
 	author: metaField(120, 'Author'),
 	status: kbStatusSchema.optional(),
@@ -95,4 +97,5 @@ export interface KbAdminRow {
 	status: string | null;
 	views: number | null;
 	updatedAt: Date | string | null;
+	publishedAt?: Date | string | null;
 }

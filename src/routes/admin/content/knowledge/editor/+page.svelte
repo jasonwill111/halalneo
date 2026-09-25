@@ -237,14 +237,14 @@
 		}
 	}
 
-	/** Deep link from /admin/knowledge-base ("edit this article"). */
+	/** Deep link from /admin/content/knowledge ("edit this article"). */
 	const editParam = $derived(page.url.searchParams.get('edit'));
 	$effect(() => {
 		if (!editParam || loading || loadError || dialogOpen) return;
 		const row = items.find((i) => i.slug === editParam);
 		if (row) void openEdit(row);
 		else toast.error('That article is not in the loaded set (newest 100).');
-		void goto('/admin/knowledge', { replace: true, reset: false });
+		void goto('/admin/content/knowledge/editor', { replace: true, reset: false });
 	});
 
 	/** Payload builder — trimmed values only; Zod owns the rest (§6.4). */

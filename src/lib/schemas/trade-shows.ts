@@ -6,6 +6,7 @@
 // write set bounded.
 
 import { z } from 'zod';
+import { contentBlocksSchema } from './blocks.js';
 
 export const TRADE_SHOW_STATUSES = ['active', 'inactive', 'draft'] as const;
 export type TradeShowStatus = (typeof TRADE_SHOW_STATUSES)[number];
@@ -42,6 +43,7 @@ const fields = {
 		})
 		.optional(),
 	description: text(4000).optional(),
+	contentBlocks: contentBlocksSchema.default([]),
 	focus: z
 		.array(z.string().trim().min(1, 'Focus items cannot be empty.').max(200))
 		.max(30)
@@ -96,6 +98,7 @@ export interface TradeShowDto {
 	website: string | null;
 	scale: string | null;
 	description: string | null;
+	contentBlocks: z.infer<typeof contentBlocksSchema>;
 	focus: string[] | null;
 	exhibitors: number | null;
 	visitors: number | null;
@@ -103,6 +106,7 @@ export interface TradeShowDto {
 	metaDescription: string | null;
 	keywords: string | null;
 	status: string;
+	publishedAt?: string | null;
 	createdAt?: string | null;
 	updatedAt?: string | null;
 }

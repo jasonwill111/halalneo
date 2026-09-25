@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { createRawSnippet } from 'svelte';
 	import { localizeHref } from '#lib/paraglide/runtime.js';
+	import BlockRenderer from '#lib/components/content/block-renderer.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Card, CardContent } from '#lib/components/ui/card/index.js';
@@ -9,7 +11,6 @@
 	import { sanitizeHtml } from '#lib/sanitize.js';
 	import { getSection } from '#lib/data/kb-sections.js';
 	import { marked } from 'marked';
-	import { onMount } from 'svelte';
 	import User from '@lucide/svelte/icons/user';
 	import Eye from '@lucide/svelte/icons/eye';
 
@@ -70,6 +71,10 @@
 		return sanitizeHtml(html);
 	});
 
+	const legacyBody = createRawSnippet(() => ({
+		render: () => renderedBody
+	}));
+
 	const tocItems = $derived.by(() => {
 		const matches = renderedBody.match(/<h2[^>]*id="([^"]*)"[^>]*>([^<]+)<\/h2>/g) ?? [];
 		return matches
@@ -81,12 +86,9 @@
 			.filter((t: { id: string; text: string }) => t.id && t.text);
 	});
 
-	let articleEl: HTMLElement | undefined = $state();
-
-	onMount(() => {
-		if (!articleEl) return;
-		const headings = articleEl.querySelectorAll('h2[id]');
-		if (headings.length === 0) return;
+	function observeArticle(element: HTMLElement): (() => void) | undefined {
+		const headings = element.querySelectorAll('h2[id]');
+		if (headings.length === 0) return undefined;
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
@@ -95,9 +97,9 @@
 			},
 			{ rootMargin: '-20% 0px -70% 0px' }
 		);
-		headings.forEach((h) => observer.observe(h));
+		headings.forEach((heading) => observer.observe(heading));
 		return () => observer.disconnect();
-	});
+	}
 
 	const baseUrl = 'https://halalneo.com';
 	const ogImage = $derived(seo.ogImage ?? `${baseUrl}/brand/og-default.png`);
@@ -134,13 +136,18 @@
 				}
 			: null
 	);
+
+	const articleSchemaSnippet = createRawSnippet(() => ({
+		render: () =>
+			`\u003cscript type="application/ld+json">${JSON.stringify(articleSchema)}\u003c/script>`
+	}));
 </script>
 
 <svelte:head>
 	<!-- Title + description render once via root layout from loader `seo`
 	     (which prefers metaTitle/metaDescription). -->
 	{#if articleSchema}
-		{@html `\u003cscript type="application/ld+json">${JSON.stringify(articleSchema)}\u003c/script>`}
+		{@render articleSchemaSnippet()}
 	{/if}
 </svelte:head>
 
@@ -158,7 +165,7 @@
 		/>
 
 		<div class="grid items-start gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-			<main class="min-w-0 space-y-4 sm:space-y-6" bind:this={articleEl}>
+			<main class="min-w-0 space-y-4 sm:space-y-6" {@attach observeArticle}>
 				<header class="space-y-4">
 					<div class="flex flex-wrap items-center gap-2">
 						<Badge variant="secondary">{sectionName}</Badge>
@@ -178,9 +185,13 @@
 					<p class="text-sm text-muted-foreground">{data.item.summary}</p>
 				</header>
 
-				<div class="content-body max-w-[65ch] overflow-hidden">
-					{@html renderedBody}
-				</div>
+				{#if data.item?.contentBlocks?.length}
+					<BlockRenderer blocks={data.item.contentBlocks} />
+				{:else}
+					<div class="content-body max-w-[65ch] overflow-hidden">
+						{@render legacyBody()}
+					</div>
+				{/if}
 
 				<div class="flex flex-wrap gap-2 border-t border-border pt-6">
 					{#each data.item.tags ?? [] as tag (tag)}

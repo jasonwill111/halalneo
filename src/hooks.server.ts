@@ -542,7 +542,10 @@ const PUBLIC_ROUTES = [
 	'/trade-shows',
 	'/market-guides',
 	'/login',
-	'/register'
+	'/register',
+	'/supplier/login',
+	'/supplier/register',
+	'/supplier/onboarding'
 ];
 
 function isPublicPath(pathname: string): boolean {

@@ -6,6 +6,7 @@
 // TEXT columns (drizzle returns them as strings).
 
 import { z } from 'zod';
+import { contentBlocksSchema } from './blocks.js';
 
 export const PAGE_TYPES = ['landing', 'blog'] as const;
 export type PageType = (typeof PAGE_TYPES)[number];
@@ -35,6 +36,7 @@ export const pageCreateSchema = z.object({
 	type: z.enum(PAGE_TYPES, { error: 'Type must be landing or blog.' }),
 	excerpt: text(500).optional(),
 	body: text(200_000).optional(),
+	contentBlocks: contentBlocksSchema.default([]),
 	author: text(160).optional(),
 	category: text(120).optional(),
 	featuredImage: text(500).optional(),
@@ -57,6 +59,7 @@ export interface PageDto {
 	type: string;
 	excerpt: string | null;
 	body: string | null;
+	contentBlocks: z.infer<typeof contentBlocksSchema>;
 	author: string | null;
 	category: string | null;
 	featuredImage: string | null;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { z } from 'zod';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -233,7 +233,7 @@
 		}
 	}
 
-	$effect(() => {
+	onMount(() => {
 		void loadList();
 	});
 
@@ -250,11 +250,6 @@
 
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
 	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
-
-	$effect(() => {
-		void search;
-		page = 1;
-	});
 
 	const activeCount = $derived(guides.filter((g) => g.status === 'active').length);
 	const mandatoryCount = $derived(
@@ -280,6 +275,13 @@
 			.split(',')
 			.map((s) => s.trim())
 			.filter(Boolean);
+	}
+
+	function setFormElement(node: HTMLFormElement): () => void {
+		formEl = node;
+		return () => {
+			formEl = undefined;
+		};
 	}
 
 	/** Certifying bodies are edited as JSON text; validated with the shared item schema. */
@@ -373,6 +375,7 @@
 			mandateStatus: form.mandateStatus,
 			mandatorySince: fieldValue(form.mandatorySince),
 			certifyingBodies: bodies,
+			contentBlocks: [],
 			importRequirements: parseCommaList(form.importRequirements),
 			standardBasis: fieldValue(form.standardBasis),
 			certificateValidity: fieldValue(form.certificateValidity),
@@ -509,7 +512,15 @@
 		<Search
 			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search guides..." class="ps-9" />
+		<Input
+			value={search}
+			placeholder="Search guides..."
+			class="ps-9"
+			oninput={(event) => {
+				search = event.currentTarget.value;
+				page = 1;
+			}}
+		/>
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -567,8 +578,13 @@
 									</EmptyHeader>
 									<EmptyContent>
 										{#if search.trim()}
-											<Button variant="outline" size="sm" onclick={() => (search = '')}
-												>Clear search</Button
+											<Button
+												variant="outline"
+												size="sm"
+												onclick={() => {
+													search = '';
+													page = 1;
+												}}>Clear search</Button
 											>
 										{:else}
 											<Button variant="default" size="sm" onclick={openCreate}>
@@ -647,7 +663,7 @@
 			<DialogDescription>Create or update a country market guide.</DialogDescription>
 		</DialogHeader>
 
-		<form class="flex min-w-0 flex-col gap-4" bind:this={formEl} onsubmit={save}>
+		<form class="flex min-w-0 flex-col gap-4" {@attach setFormElement} onsubmit={save}>
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<Field.Field>
 					<Field.FieldLabel>Country *</Field.FieldLabel>

@@ -9,6 +9,7 @@
 // here: only MARKET_GUIDE_STATUSES may ever reach the database.
 
 import { z } from 'zod';
+import { contentBlocksSchema } from './blocks.js';
 
 export const MARKET_GUIDE_STATUSES = ['active', 'inactive', 'draft'] as const;
 export type MarketGuideStatus = (typeof MARKET_GUIDE_STATUSES)[number];
@@ -57,6 +58,7 @@ export const marketGuideCreateSchema = z.object({
 	opportunities: list(30).optional(),
 	challenges: list(30).optional(),
 	summary: text(4000).optional(),
+	contentBlocks: contentBlocksSchema.default([]),
 	metaTitle: text(200).optional(),
 	metaDescription: text(500).optional(),
 	keywords: text(500).optional(),
@@ -94,10 +96,12 @@ export interface MarketGuideDto {
 	opportunities: string[] | null;
 	challenges: string[] | null;
 	summary: string | null;
+	contentBlocks: z.infer<typeof contentBlocksSchema>;
 	metaTitle: string | null;
 	metaDescription: string | null;
 	keywords: string | null;
 	status: string;
+	publishedAt?: string | null;
 	createdAt?: string | null;
 	updatedAt?: string | null;
 }

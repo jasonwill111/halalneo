@@ -51,6 +51,7 @@
 	const PORTAL_PREFIXES = [
 		'/admin',
 		'/supplier/dashboard',
+		'/supplier/account',
 		'/supplier/products',
 		'/supplier/orders',
 		'/supplier/manage',

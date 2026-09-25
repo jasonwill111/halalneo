@@ -70,7 +70,7 @@
 		{ label: 'Trade Shows', href: '/admin/trade-shows', icon: CalendarDays },
 		{ label: 'Inquiries', href: '/admin/inquiries', icon: Mail },
 		{ label: 'Pages', href: '/admin/pages', icon: BookOpen },
-		{ label: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
+		{ label: 'Knowledge Base', href: '/admin/content/knowledge', icon: BookOpen },
 		{ label: 'Glossary', href: '/admin/glossary', icon: Languages },
 		{ label: 'Blog', href: '/admin/blog', icon: Newspaper },
 		{ label: 'Stories', href: '/admin/stories', icon: Trophy },

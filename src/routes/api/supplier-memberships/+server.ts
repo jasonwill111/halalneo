@@ -3,8 +3,9 @@ import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { supplierMembers } from '#lib/server/db/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { getSession } from '#lib/server/auth.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
 
 // ==================== GET: my supplier memberships (login) ====================
 // Used by dashboards/publish UIs to scope actions to the caller's suppliers.
@@ -16,12 +17,19 @@ export const GET: RequestHandler = async (event) => {
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
+	const { limit, offset } = parseQuery(event.url);
 	try {
+		const [countResult] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(supplierMembers)
+			.where(eq(supplierMembers.userId, userId));
 		const rows = await db
 			.select({ supplierSlug: supplierMembers.supplierSlug, role: supplierMembers.role })
 			.from(supplierMembers)
-			.where(eq(supplierMembers.userId, userId));
-		return json({ items: rows });
+			.where(eq(supplierMembers.userId, userId))
+			.limit(limit)
+			.offset(offset);
+		return json({ items: rows, total: countResult?.count ?? 0, limit, offset });
 	} catch (e: unknown) {
 		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}

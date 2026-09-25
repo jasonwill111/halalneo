@@ -37,7 +37,7 @@
 	let { variant, user = null, profile = null, onNavigate }: Props = $props();
 
 	const nav = [
-		{ label: 'Dashboard', href: '/supplier/dashboard', icon: LayoutDashboard },
+		{ label: 'Dashboard', href: '/supplier/account', icon: LayoutDashboard },
 		{ label: 'My Products', href: '/supplier/products', icon: Boxes },
 		{ label: 'Inquiries', href: '/supplier/orders', icon: ClipboardList },
 		{ label: 'Account', href: '/supplier/profile', icon: UserRound },

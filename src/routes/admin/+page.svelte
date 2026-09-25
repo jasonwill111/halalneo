@@ -272,7 +272,7 @@
 				<CardDescription>{stats.kbSections} sections · {stats.kbArticles} articles</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<Button href={localizeHref('/admin/knowledge')} variant="outline" size="sm"
+				<Button href={localizeHref('/admin/content/knowledge')} variant="outline" size="sm"
 					>Manage articles</Button
 				>
 			</CardContent>

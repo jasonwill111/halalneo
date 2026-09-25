@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { localizeHref } from '#lib/paraglide/runtime.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { Label, FieldError } from '#lib/components/ui/field/index.js';
@@ -68,6 +69,13 @@
 	let website = $state('');
 	let fieldErrors = $state<Record<string, string>>({});
 	let formEl = $state<HTMLDivElement | undefined>(undefined);
+
+	function captureFormElement(node: HTMLDivElement): () => void {
+		formEl = node;
+		return () => {
+			if (formEl === node) formEl = undefined;
+		};
+	}
 
 	const canContinue = $derived(
 		step === 1
@@ -243,9 +251,22 @@
 	<div class="mb-4 text-center">
 		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Become a HalalNeo supplier</h1>
 		<p class="mx-auto mt-1 max-w-xl text-sm text-muted-foreground">
-			List certified products, get verified, and reach international buyers. One application,
-			ongoing opportunities.
+			Learn how HalalNeo helps halal suppliers reach international buyers. This introduction page is
+			for understanding the opportunity; use Supplier registration to create your portal account and
+			request Admin approval.
 		</p>
+		<div
+			class="mx-auto mt-3 flex max-w-xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-2xs"
+		>
+			<a
+				href={localizeHref('/supplier/register')}
+				class="font-semibold text-primary hover:underline">Register a supplier account</a
+			>
+			<span class="text-muted-foreground">·</span>
+			<a href={localizeHref('/supplier/login')} class="text-primary hover:underline"
+				>Supplier sign in</a
+			>
+		</div>
 		<p
 			class="mx-auto mt-2 inline-flex items-center gap-1.5 rounded-full border border-info/30 bg-info/10 px-2.5 py-0.5 text-2xs font-medium text-info"
 		>
@@ -301,7 +322,7 @@
 				{/each}
 			</div>
 
-			<div bind:this={formEl}>
+			<div {@attach captureFormElement}>
 				{#if step === 1}
 					<div class="space-y-2">
 						<div class="space-y-0.5">

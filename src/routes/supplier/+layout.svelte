@@ -75,8 +75,8 @@
 					</div>
 					<p class="text-xs text-muted-foreground">
 						Not a supplier yet?
-						<a href={localizeHref('/supplier/onboarding')} class="text-primary hover:underline"
-							>Apply to become a supplier</a
+						<a href={localizeHref('/supplier/register')} class="text-primary hover:underline"
+							>Register supplier account</a
 						>
 					</p>
 				</div>

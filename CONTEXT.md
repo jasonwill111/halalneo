@@ -4,17 +4,17 @@ HalalNeo is a halal trade intelligence platform connecting international buyers 
 
 ## Language
 
-**User**: An account on the platform, identified by email and password.
-_Avoid_: account, customer, member
+**User**: The Better Auth identity used for authentication and session management. It is not a Buyer or Supplier business record.
+_Avoid_: buyer, supplier, account
 
-**Buyer**: A User whose role is `buyer` — a company or individual sourcing halal products.
-_Avoid_: purchaser, customer, client
+**Buyer**: The business account for a person or company sourcing halal products. Buyer registration is `/register`; the Buyer workspace is `/account`.
+_Avoid_: purchaser, customer, client, seller
 
-**Seller**: A User whose role is `seller` — operates a Supplier profile on the platform.
-_Avoid_: vendor, supplier user
+**Supplier**: The seller-side business entity on the platform. Supplier registration is `/supplier/register`; after Admin approval, Supplier login is `/supplier/login` and the Supplier workspace is `/supplier/account`. Public detail pages live at `/supplier/[slug]`; one owner User manages exactly one Supplier.
+_Avoid_: vendor, supplier user, merchant account
 
-**Supplier**: A seller-side business entity on the platform. Public detail pages live at `/supplier/[slug]` (singular); `/supplier/onboarding`, `/supplier/login`, `/supplier/dashboard` etc. are portal routes that take precedence over the dynamic detail slug — company slugs matching these are rejected at application time.
-_Avoid_: merchant, store, company, seller entity
+**Seller**: The role represented by an approved Supplier business record; it is not a separate authentication identity.
+_Avoid_: supplier user, vendor account
 
 **businessType**: A Supplier's mutually-exclusive business classification. Values: `manufacturer`, `wholesaler`, `trader`.
 _Avoid_: supplier type, category, business category
@@ -37,16 +37,16 @@ _Avoid_: halal authority, certification agency
 **Service provider**: A company offering logistics, finance, testing, consulting, or other services to halal trade participants.
 _Avoid_: vendor, partner
 
-**Knowledge base**: The public content site covering halal trade topics (certification, trade process, logistics, packaging, market guides, glossary).
-_Avoid_: blog, docs, wiki
+**Knowledge base**: The public Resource Hub for halal trade knowledge, with Knowledge Articles, Market Guides, Trade Shows, Blog, and Glossary presented as peer resources.
+_Avoid_: parent content type, docs site, wiki
 
-**Article**: A unit of knowledge-base content, stored as Markdown in the repo and organised under a section.
+**Article**: A Knowledge Article stored in D1 as structured fields plus validated, versioned JSON Blocks and organised under a Section. Legacy Markdown/HTML is migration input only.
 _Avoid_: post, entry, page
 
-**Section**: A top-level column of the knowledge base (e.g. Halal Certification, Trade & Sourcing, Country / Market Guides).
+**Section**: A top-level taxonomy column for Knowledge Articles (e.g. Halal Certification, Trade & Sourcing, Country / Market Guides).
 _Avoid_: category, channel, hub
 
-**Glossary**: The knowledge base's terminology component.
+**Glossary**: The public terminology resource, independent from Knowledge Articles and represented by structured term records.
 _Avoid_: dictionary, terms
 
 **Landing page**: A marketing page stored in the `pages` table (type: 'landing'). Used for promotional/CTA pages.

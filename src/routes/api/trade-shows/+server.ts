@@ -160,6 +160,7 @@ export const POST: RequestHandler = async (event) => {
 		website: parsed.data.website ?? '',
 		scale: parsed.data.scale ?? 'medium',
 		description: parsed.data.description ?? '',
+		contentBlocks: parsed.data.contentBlocks,
 		focus: parsed.data.focus ?? [],
 		exhibitors: parsed.data.exhibitors ?? null,
 		visitors: parsed.data.visitors ?? null,
@@ -167,6 +168,7 @@ export const POST: RequestHandler = async (event) => {
 		metaDescription: parsed.data.metaDescription ?? '',
 		keywords: parsed.data.keywords ?? '',
 		status: parsed.data.status ?? 'active',
+		publishedAt: parsed.data.status === 'active' ? now : null,
 		createdAt: now,
 		updatedAt: now
 	};

@@ -3,7 +3,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 import { getBindings } from '#lib/server/bindings.js';
 import { getDb } from '#lib/server/db/index.js';
-import { supplierMembers } from '#lib/server/db/schema.js';
+import { supplierMembers, suppliers } from '#lib/server/db/schema.js';
 import { getSession } from '#lib/server/auth.js';
 
 /**
@@ -38,18 +38,25 @@ export async function requireAdmin(event: RequestEvent): Promise<Response | null
 
 export type DbClient = NonNullable<ReturnType<typeof getDb>>;
 
-/** True when userId owns (membership row) the given supplier profile. */
+/** True when userId owns an active supplier or has a legacy membership row. */
 export async function isSupplierMember(
 	db: DbClient,
 	userId: string,
 	supplierSlug: string
 ): Promise<boolean> {
-	const [row] = await db
+	const [ownedSupplier] = await db
+		.select({ status: suppliers.status })
+		.from(suppliers)
+		.where(and(eq(suppliers.ownerUserId, userId), eq(suppliers.slug, supplierSlug)))
+		.limit(1);
+	if (ownedSupplier) return ownedSupplier.status === 'active';
+
+	const [legacyMember] = await db
 		.select({ userId: supplierMembers.userId })
 		.from(supplierMembers)
 		.where(and(eq(supplierMembers.userId, userId), eq(supplierMembers.supplierSlug, supplierSlug)))
 		.limit(1);
-	return Boolean(row);
+	return Boolean(legacyMember);
 }
 
 /**

@@ -2,10 +2,11 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
-import { supplierMembers, supplierUpdates } from '#lib/server/db/schema.js';
+import { supplierUpdates } from '#lib/server/db/schema.js';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
+import { isSupplierMember } from '#lib/server/auth-guard.js';
 import { checkWeeklyQuota, resolvePlan } from '#lib/server/quotas.js';
 import { z } from 'zod';
 
@@ -44,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					.orderBy(desc(supplierUpdates.createdAt))
 					.limit(limit)
 					.offset(offset);
-				return { items: rows, total: countResult?.count ?? 0 };
+				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},
 			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
 		);
@@ -75,18 +76,8 @@ export const POST: RequestHandler = async (event) => {
 		);
 	}
 
-	const members = await db
-		.select({ userId: supplierMembers.userId })
-		.from(supplierMembers)
-		.where(
-			and(
-				eq(supplierMembers.userId, userId),
-				eq(supplierMembers.supplierSlug, parsed.data.supplierSlug)
-			)
-		)
-		.limit(1);
-	if (members.length === 0) {
-		return json({ error: 'Only team members of this supplier can post updates.' }, { status: 403 });
+	if (!(await isSupplierMember(db, userId, parsed.data.supplierSlug))) {
+		return json({ error: 'Only approved supplier owners can post updates.' }, { status: 403 });
 	}
 
 	const quota = await checkWeeklyQuota(

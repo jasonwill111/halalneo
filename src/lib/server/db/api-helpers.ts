@@ -14,7 +14,7 @@ export function getDbFromPlatform(_platform: unknown) {
 
 export function parseQuery(url: URL) {
 	const limit = Math.min(Number(url.searchParams.get('limit')) || 20, 100);
-	const offset = Number(url.searchParams.get('offset')) || 0;
+	const offset = Math.max(Number(url.searchParams.get('offset')) || 0, 0);
 	const search = url.searchParams.get('search') || undefined;
 	return { limit, offset, search };
 }

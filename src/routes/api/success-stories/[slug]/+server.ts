@@ -4,32 +4,26 @@ import { getDb } from '#lib/server/db/index.js';
 import { getBindings } from '#lib/server/bindings.js';
 import { successStories } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { cachedQuery, cacheLong, invalidateCache } from '#lib/server/cache.js';
+import { invalidateCache } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
+import { requireAdmin } from '#lib/server/auth-guard.js';
 
 export const GET: RequestHandler = async (event) => {
-	const { params, url } = event;
+	const { params } = event;
 	const db = getDb(getBindings().DB);
 	if (!db) return json({ error: 'Database unavailable' }, { status: 503 });
 
 	try {
-		const row = await cachedQuery(
-			url.toString(),
-			async () => {
-				const [r] = await db
-					.select()
-					.from(successStories)
-					.where(eq(successStories.slug, params.slug))
-					.limit(1);
-				return r ?? null;
-			},
-			{ ...cacheLong() }
-		);
+		const [row] = await db
+			.select()
+			.from(successStories)
+			.where(eq(successStories.slug, params.slug))
+			.limit(1);
 
 		if (!row) return json({ error: 'Not found' }, { status: 404 });
 		if (row.status !== 'published') {
-			const session = await getSession(event);
-			if (!session) return json({ error: 'Not found' }, { status: 404 });
+			const denied = await requireAdmin(event);
+			if (denied) return json({ error: 'Not found' }, { status: 404 });
 		}
 		return json(row);
 	} catch (e: unknown) {

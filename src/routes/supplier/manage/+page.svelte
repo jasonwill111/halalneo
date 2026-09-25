@@ -273,7 +273,7 @@
 	<nav class="flex items-center gap-1.5 text-2xs text-muted-foreground">
 		<a href={localizeHref('/')} class="transition-colors hover:text-foreground">Home</a>
 		<span>/</span>
-		<a href={localizeHref('/supplier/dashboard')} class="transition-colors hover:text-foreground"
+		<a href={localizeHref('/supplier/account')} class="transition-colors hover:text-foreground"
 			>Supplier</a
 		>
 		<span>/</span>

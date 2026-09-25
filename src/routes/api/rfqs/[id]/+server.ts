@@ -6,6 +6,7 @@ import { buyingRequests } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { invalidateCache, cachedQuery, cacheMedium } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
+import { isAdminEmail } from '#lib/server/auth-guard.js';
 
 export const GET: RequestHandler = async (event) => {
 	const { params, url } = event;
@@ -50,6 +51,9 @@ export const PUT: RequestHandler = async (event) => {
 			.where(eq(buyingRequests.id, params.id))
 			.limit(1);
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
+		if (!isAdminEmail(session.user.email) && existing.buyerId !== session.user.id) {
+			return json({ error: 'Forbidden' }, { status: 403 });
+		}
 
 		const updates: Record<string, unknown> = {};
 		if (body.status !== undefined) updates.status = body.status;
@@ -90,6 +94,9 @@ export const DELETE: RequestHandler = async (event) => {
 			.where(eq(buyingRequests.id, params.id))
 			.limit(1);
 		if (!existing) return json({ error: 'Not found' }, { status: 404 });
+		if (!isAdminEmail(session.user.email) && existing.buyerId !== session.user.id) {
+			return json({ error: 'Forbidden' }, { status: 403 });
+		}
 
 		await db.delete(buyingRequests).where(eq(buyingRequests.id, params.id));
 		await invalidateCache('/api/rfqs', `/api/rfqs/${params.id}`);

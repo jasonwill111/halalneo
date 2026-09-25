@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
@@ -194,7 +194,7 @@
 		}
 	}
 
-	$effect(() => {
+	onMount(() => {
 		void loadList();
 	});
 
@@ -212,11 +212,6 @@
 
 	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
 	const paged = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
-
-	$effect(() => {
-		void search;
-		page = 1;
-	});
 
 	const activeCount = $derived(shows.filter((s) => s.status === 'active').length);
 	const megaCount = $derived(shows.filter((s) => s.scale === 'mega').length);
@@ -246,6 +241,13 @@
 			.split(',')
 			.map((s) => s.trim())
 			.filter(Boolean);
+	}
+
+	function setFormElement(node: HTMLFormElement): () => void {
+		formEl = node;
+		return () => {
+			formEl = undefined;
+		};
 	}
 
 	/** Integer columns are nullable: blank must send `null`, never `0`. */
@@ -312,6 +314,7 @@
 			venue: fieldValue(form.venue),
 			website: fieldValue(form.website),
 			scale: form.scale,
+			contentBlocks: [],
 			description: fieldValue(form.description),
 			focus: parseCommaList(form.focus),
 			exhibitors: optionalCount(form.exhibitors),
@@ -446,7 +449,15 @@
 		<Search
 			class="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
 		></Search>
-		<Input bind:value={search} placeholder="Search shows..." class="ps-9" />
+		<Input
+			value={search}
+			placeholder="Search shows..."
+			class="ps-9"
+			oninput={(event) => {
+				search = event.currentTarget.value;
+				page = 1;
+			}}
+		/>
 	</div>
 
 	<div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -506,8 +517,13 @@
 									</EmptyHeader>
 									<EmptyContent>
 										{#if search.trim()}
-											<Button variant="outline" size="sm" onclick={() => (search = '')}
-												>Clear search</Button
+											<Button
+												variant="outline"
+												size="sm"
+												onclick={() => {
+													search = '';
+													page = 1;
+												}}>Clear search</Button
 											>
 										{:else}
 											<Button variant="default" size="sm" onclick={openCreate}>
@@ -587,7 +603,7 @@
 			<DialogTitle>{editing ? 'Edit show' : 'New show'}</DialogTitle>
 			<DialogDescription>Register or update a halal trade show.</DialogDescription>
 		</DialogHeader>
-		<form bind:this={formEl} onsubmit={save} class="flex min-w-0 flex-col gap-4">
+		<form {@attach setFormElement} onsubmit={save} class="flex min-w-0 flex-col gap-4">
 			<Field.Field>
 				<Field.FieldLabel>Name *</Field.FieldLabel>
 				<Input

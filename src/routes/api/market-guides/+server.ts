@@ -152,10 +152,12 @@ export const POST: RequestHandler = async (event) => {
 		opportunities: parsed.data.opportunities ?? [],
 		challenges: parsed.data.challenges ?? [],
 		summary: parsed.data.summary ?? '',
+		contentBlocks: parsed.data.contentBlocks,
 		metaTitle: parsed.data.metaTitle ?? '',
 		metaDescription: parsed.data.metaDescription ?? '',
 		keywords: parsed.data.keywords ?? '',
 		status: parsed.data.status ?? 'active',
+		publishedAt: parsed.data.status === 'active' ? now : null,
 		createdAt: now,
 		updatedAt: now
 	};

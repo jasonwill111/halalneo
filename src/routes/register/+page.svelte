@@ -28,6 +28,14 @@
 	let fieldErrors = $state<Record<string, string>>({});
 	let formEl = $state<HTMLFormElement | undefined>(undefined);
 	let busy = $state(false);
+	let accountCreated = $state(false);
+
+	function captureFormElement(node: HTMLFormElement): () => void {
+		formEl = node;
+		return () => {
+			if (formEl === node) formEl = undefined;
+		};
+	}
 
 	const registerSchema = z.object({
 		firstName: z.string().trim().min(1, 'First name is required.'),
@@ -38,6 +46,59 @@
 			error: 'Please agree to the Terms of Service and Privacy Policy.'
 		})
 	});
+
+	async function signInAndCreateBuyerProfile(): Promise<boolean> {
+		const { error: signInError } = await authClient.signIn.email({
+			email: email.trim(),
+			password
+		});
+		if (signInError) {
+			const details = readAuthErrorDetails(signInError);
+			if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
+			error = 'Your account was created, but we could not sign you in. Try again below.';
+			return false;
+		}
+		try {
+			const response = await fetch('/api/buyers', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({})
+			});
+			if (!response.ok) {
+				const data: unknown = await response.json().catch(() => ({}));
+				const message =
+					data && typeof data === 'object' && 'error' in data && typeof data.error === 'string'
+						? data.error
+						: 'The Buyer profile could not be created.';
+				await authClient.signOut();
+				error = `Your account was created, but ${message.toLowerCase()} Please retry — your details are still here.`;
+				return false;
+			}
+		} catch {
+			await authClient.signOut();
+			error =
+				'Your account was created, but the Buyer profile could not be reached. Please retry — your details are still here.';
+			return false;
+		}
+		return true;
+	}
+
+	async function retryBuyerSetup(): Promise<void> {
+		if (busy) return;
+		busy = true;
+		error = '';
+		try {
+			if (!(await signInAndCreateBuyerProfile())) {
+				toast.error(error);
+				return;
+			}
+			toast.success('Buyer account ready. Welcome to HalalNeo.');
+			await invalidateAll();
+			await goto(safeNextPath(page.url.searchParams.get('next'), localizeHref('/account')));
+		} finally {
+			busy = false;
+		}
+	}
 
 	async function submit() {
 		if (busy) return;
@@ -61,40 +122,30 @@
 		const normalizedEmail = email.trim();
 		busy = true;
 		try {
-			const { error: signUpError } = await authClient.signUp.email({
-				email: normalizedEmail,
-				password,
-				name: `${firstName.trim()} ${lastName.trim()}`.trim()
-			});
-			if (signUpError) {
-				// better-auth reports "user already exists" as a 4xx with the email in
-				// the message; `readAuthErrorDetails` lands it on the email field.
-				const details = readAuthErrorDetails(signUpError, 'email');
-				if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
-				error = signUpError.message ?? 'We could not create your account. Please try again.';
-				toast.error(error);
-				focusFirstInvalid(formEl);
-				return;
+			if (!accountCreated) {
+				const { error: signUpError } = await authClient.signUp.email({
+					email: normalizedEmail,
+					password,
+					name: `${firstName.trim()} ${lastName.trim()}`.trim()
+				});
+				if (signUpError) {
+					const details = readAuthErrorDetails(signUpError, 'email');
+					if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
+					error = signUpError.message ?? 'We could not create your account. Please try again.';
+					toast.error(error);
+					focusFirstInvalid(formEl);
+					return;
+				}
+				accountCreated = true;
 			}
-			// Sign up only *may* return a session (email verification, plugins), so
-			// exchange the credentials explicitly to guarantee a cookie is set.
-			const { error: signInError } = await authClient.signIn.email({
-				email: normalizedEmail,
-				password
-			});
-			if (signInError) {
-				const details = readAuthErrorDetails(signInError);
-				if (details) fieldErrors = mergeServerDetails(fieldErrors, details);
-				error = 'Account created, but we could not sign you in. Please sign in manually.';
+			if (!(await signInAndCreateBuyerProfile())) {
 				toast.warning(error);
-				await goto(localizeHref('/login'));
 				return;
 			}
-			toast.success('Account created. Welcome to HalalNeo.');
-			await invalidateAll(); // refresh session-derived layout data
+			toast.success('Buyer account ready. Welcome to HalalNeo.');
+			await invalidateAll();
 			await goto(safeNextPath(page.url.searchParams.get('next'), localizeHref('/account')));
 		} catch {
-			// Network / unexpected failure: one form-level error, input preserved.
 			error = 'We could not create your account. Please try again.';
 			toast.error(error);
 		} finally {
@@ -118,10 +169,10 @@
 				<Mark class="size-6 sm:size-7" />
 			</div>
 			<h1 class="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-				Create your account
+				Buyer registration
 			</h1>
 			<p class="mt-1 text-xs text-muted-foreground sm:text-sm">
-				Join the global halal trade network
+				Create a Buyer account to source halal products from the global trade network
 			</p>
 		</div>
 
@@ -153,16 +204,16 @@
 					<p class="text-2xs text-muted-foreground">
 						Want to sell products?
 						<a
-							href={localizeHref('/supplier/onboarding')}
+							href={localizeHref('/supplier/register')}
 							class="inline-flex min-h-11 items-center font-semibold text-primary hover:underline"
 						>
-							Apply as a Supplier
+							Start Supplier registration
 						</a>
 					</p>
 				</div>
 
 				<form
-					bind:this={formEl}
+					{@attach captureFormElement}
 					class="grid gap-3"
 					aria-busy={busy}
 					onsubmit={(e) => {
@@ -293,6 +344,17 @@
 						<Alert variant="destructive">
 							<AlertDescription class="text-xs sm:text-sm">{error}</AlertDescription>
 						</Alert>
+					{/if}
+					{#if accountCreated && error && !busy}
+						<Button
+							type="button"
+							variant="outline"
+							class="h-10 w-full"
+							disabled={busy}
+							onclick={() => void retryBuyerSetup()}
+						>
+							Retry Buyer setup
+						</Button>
 					{/if}
 
 					<Button type="submit" class="h-11 w-full" disabled={busy} aria-busy={busy}>

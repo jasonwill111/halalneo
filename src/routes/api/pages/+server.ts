@@ -139,6 +139,7 @@ export const POST: RequestHandler = async (event) => {
 		type: parsed.data.type,
 		excerpt: parsed.data.excerpt || null,
 		body: parsed.data.body || null,
+		contentBlocks: parsed.data.contentBlocks,
 		author: parsed.data.author || null,
 		category: parsed.data.category || null,
 		featuredImage: parsed.data.featuredImage || null,

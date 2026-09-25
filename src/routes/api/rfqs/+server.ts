@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					.orderBy(desc(buyingRequests.createdAt))
 					.limit(limit)
 					.offset(offset);
-				return { items: rows, total: countResult?.count ?? 0 };
+				return { items: rows, total: countResult?.count ?? 0, limit, offset };
 			},
 			{ ...cacheMedium(), cacheKey: queryCacheKey(url) }
 		);

@@ -1,4 +1,5 @@
 import { integer, sqliteTable, text, real, index, primaryKey } from 'drizzle-orm/sqlite-core';
+import type { ContentBlock } from '#lib/schemas/blocks.js';
 
 // ==================== Media ====================
 export const media = sqliteTable('media', {
@@ -37,9 +38,24 @@ export const categories = sqliteTable('categories', {
 		.notNull()
 });
 
+// ==================== Buyers ====================
+export const buyers = sqliteTable('buyers', {
+	userId: text('user_id').primaryKey(),
+	companyName: text('company_name'),
+	phone: text('phone'),
+	country: text('country'),
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.$defaultFn(() => new Date())
+		.notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' })
+		.$defaultFn(() => new Date())
+		.notNull()
+});
+
 // ==================== Suppliers ====================
 export const suppliers = sqliteTable('suppliers', {
 	slug: text('slug').primaryKey(),
+	ownerUserId: text('owner_user_id').unique(),
 	name: text('name').notNull(),
 	country: text('country').notNull(),
 	businessType: text('business_type', { enum: ['manufacturer', 'wholesaler', 'trader'] }).notNull(),
@@ -150,10 +166,12 @@ export const knowledgeBase = sqliteTable('knowledge_base', {
 	}).notNull(),
 	title: text('title').notNull(),
 	summary: text('summary'),
-	body: text('body'), // Rich text / Markdown
+	body: text('body'), // Legacy rich text / Markdown
+	contentBlocks: text('content_blocks', { mode: 'json' }).$type<ContentBlock[]>().default([]),
 	tags: text('tags'), // JSON array
 	author: text('author'),
 	status: text('status', { enum: ['published', 'draft', 'archived'] }).default('draft'),
+	publishedAt: integer('published_at', { mode: 'timestamp' }),
 	views: integer('views').default(0),
 	metaTitle: text('meta_title'),
 	metaDescription: text('meta_description'),
@@ -172,7 +190,8 @@ export const pages = sqliteTable('pages', {
 	title: text('title').notNull(),
 	type: text('type', { enum: ['landing', 'blog'] }).notNull(),
 	excerpt: text('excerpt'),
-	body: text('body'), // Rich text / HTML
+	body: text('body'), // Legacy rich text / HTML
+	contentBlocks: text('content_blocks', { mode: 'json' }).$type<ContentBlock[]>().default([]),
 	author: text('author'),
 	category: text('category'),
 	featuredImage: text('featured_image'),
@@ -275,11 +294,13 @@ export const marketGuides = sqliteTable('market_guides', {
 	opportunities: text('opportunities', { mode: 'json' }).default([]).$type<string[]>(),
 	challenges: text('challenges', { mode: 'json' }).default([]).$type<string[]>(),
 	summary: text('summary').default(''),
+	contentBlocks: text('content_blocks', { mode: 'json' }).$type<ContentBlock[]>().default([]),
 	// SEO fields
 	metaTitle: text('meta_title').default(''),
 	metaDescription: text('meta_description').default(''),
 	keywords: text('keywords').default(''),
 	status: text('status').default('active'),
+	publishedAt: integer('published_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
@@ -297,6 +318,7 @@ export const tradeShows = sqliteTable('trade_shows', {
 	website: text('website').default(''),
 	scale: text('scale').default(''),
 	description: text('description').default(''),
+	contentBlocks: text('content_blocks', { mode: 'json' }).$type<ContentBlock[]>().default([]),
 	focus: text('focus', { mode: 'json' }).default([]).$type<string[]>(),
 	exhibitors: integer('exhibitors'),
 	visitors: integer('visitors'),
@@ -305,6 +327,7 @@ export const tradeShows = sqliteTable('trade_shows', {
 	metaDescription: text('meta_description').default(''),
 	keywords: text('keywords').default(''),
 	status: text('status').default('active'),
+	publishedAt: integer('published_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
@@ -373,19 +396,33 @@ export const promotions = sqliteTable('promotions', {
 // ==================== Supplier Members (user <-> supplier link) ====================
 // Gates supplier-side publishing (promotions, updates). Created when a
 // supplier is activated with a matching registered user email, or by admin.
-export const supplierMembers = sqliteTable('supplier_members', {
-	userId: text('user_id').notNull(),
-	supplierSlug: text('supplier_slug').notNull(),
-	role: text('role').default('owner'),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
-});
+export const supplierMembers = sqliteTable(
+	'supplier_members',
+	{
+		userId: text('user_id').notNull(),
+		supplierSlug: text('supplier_slug').notNull(),
+		role: text('role').default('owner'),
+		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.userId, table.supplierSlug] }),
+		index('idx_members_user').on(table.userId)
+	]
+);
 
 // ==================== Follows (buyers follow suppliers) ====================
-export const follows = sqliteTable('follows', {
-	userId: text('user_id').notNull(),
-	supplierSlug: text('supplier_slug').notNull(),
-	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
-});
+export const follows = sqliteTable(
+	'follows',
+	{
+		userId: text('user_id').notNull(),
+		supplierSlug: text('supplier_slug').notNull(),
+		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.userId, table.supplierSlug] }),
+		index('idx_follows_user').on(table.userId)
+	]
+);
 
 // ==================== Favorites (buyers save products) ====================
 // DDL: drizzle/2026-09-favorites.sql. PK is (user_id, product_slug);
@@ -413,6 +450,7 @@ export const supplierUpdates = sqliteTable('supplier_updates', {
 	body: text('body').notNull(),
 	image: text('image'),
 	status: text('status').default('active'),
+	publishedAt: integer('published_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
@@ -436,16 +474,21 @@ export const successStories = sqliteTable('success_stories', {
 	title: text('title').notNull(),
 	excerpt: text('excerpt').default(''),
 	body: text('body').default(''),
+	contentBlocks: text('content_blocks', { mode: 'json' }).$type<ContentBlock[]>().default([]),
 	supplierSlug: text('supplier_slug'),
 	buyerCountry: text('buyer_country').default(''),
 	dealValue: text('deal_value').default(''),
 	image: text('image'),
 	status: text('status').default('draft'),
+	publishedAt: integer('published_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
 });
 
 // ==================== Indexes ====================
+// Buyers
+export const buyersUserIdx = index('idx_buyers_user').on(buyers.userId);
+
 // Products
 export const productsCategoryIdx = index('idx_products_category').on(products.categorySlug);
 export const productsSupplierIdx = index('idx_products_supplier').on(products.supplierSlug);
@@ -499,8 +542,6 @@ export const promoStatusIdx = index('idx_promo_status').on(promotions.status);
 export const promoSupplierIdx = index('idx_promo_supplier').on(promotions.supplierSlug);
 
 // Supplier Members / Follows / Updates
-export const membersUserIdx = index('idx_members_user').on(supplierMembers.userId);
-export const followsUserIdx = index('idx_follows_user').on(follows.userId);
 export const updatesSupplierIdx = index('idx_updates_supplier').on(supplierUpdates.supplierSlug);
 
 // Page Views

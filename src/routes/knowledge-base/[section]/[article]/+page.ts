@@ -2,6 +2,7 @@ import type { EntryGenerator, PageLoad } from './$types';
 import { readJson } from '#lib/utils/api-response.js';
 import type { ApiList } from '#lib/types/api.js';
 import { getSection } from '#lib/data/kb-sections.js';
+import type { ContentBlock } from '#lib/schemas/blocks.js';
 
 export const entries: EntryGenerator = () => [];
 
@@ -15,6 +16,7 @@ interface KbArticle {
 	summary?: string | null;
 	tags?: string[] | string | null;
 	body?: string | null;
+	contentBlocks?: ContentBlock[];
 	/** Legacy key some early payloads used instead of `body`. */
 	content?: string | null;
 	author?: string | null;

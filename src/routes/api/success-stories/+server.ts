@@ -8,6 +8,8 @@ import type { SQL } from 'drizzle-orm';
 import { cachedQuery, cacheMedium, invalidateCache, queryCacheKey } from '#lib/server/cache.js';
 import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
+import { contentBlocksSchema } from '#lib/schemas/blocks.js';
+import { requireAdmin } from '#lib/server/auth-guard.js';
 
 const storySchema = z.object({
 	slug: z
@@ -18,10 +20,12 @@ const storySchema = z.object({
 	title: z.string().min(5).max(200),
 	excerpt: z.string().max(500).optional().nullable(),
 	body: z.string().min(20, 'Story body must be at least 20 characters').max(20000),
+	contentBlocks: contentBlocksSchema.default([]),
 	supplierSlug: z.string().max(200).optional().nullable(),
 	buyerCountry: z.string().max(200).optional().nullable(),
 	dealValue: z.string().max(200).optional().nullable(),
-	image: z.string().max(500).optional().nullable()
+	image: z.string().max(500).optional().nullable(),
+	publishedAt: z.coerce.date().optional().nullable()
 });
 
 // ==================== GET: published stories (public) ====================
@@ -36,8 +40,8 @@ export const GET: RequestHandler = async (event) => {
 		// edge cache is anonymous-shared); otherwise default published.
 		let statusFilter: string | null = requestedStatus || 'published';
 		if (requestedStatus === 'all') {
-			const session = await getSession(event);
-			if (!session) return json({ error: 'Unauthorized' }, { status: 401 });
+			const denied = await requireAdmin(event);
+			if (denied) return denied;
 			statusFilter = null;
 		}
 
@@ -64,6 +68,7 @@ export const GET: RequestHandler = async (event) => {
 					buyerCountry: successStories.buyerCountry,
 					dealValue: successStories.dealValue,
 					image: successStories.image,
+					publishedAt: successStories.publishedAt,
 					createdAt: successStories.createdAt
 				})
 				.from(successStories)
@@ -71,7 +76,7 @@ export const GET: RequestHandler = async (event) => {
 				.orderBy(desc(successStories.createdAt))
 				.limit(limit)
 				.offset(offset);
-			return { items: rows, total: countResult?.count ?? 0 };
+			return { items: rows, total: countResult?.count ?? 0, limit, offset };
 		};
 
 		const data =
@@ -124,11 +129,13 @@ export const POST: RequestHandler = async (event) => {
 				title: parsed.data.title.trim(),
 				excerpt: parsed.data.excerpt || null,
 				body: parsed.data.body,
+				contentBlocks: parsed.data.contentBlocks,
 				supplierSlug: parsed.data.supplierSlug || null,
 				buyerCountry: parsed.data.buyerCountry || null,
 				dealValue: parsed.data.dealValue || null,
 				image: parsed.data.image || null,
 				status: 'published',
+				publishedAt: parsed.data.publishedAt ?? now,
 				createdAt: now,
 				updatedAt: now
 			})

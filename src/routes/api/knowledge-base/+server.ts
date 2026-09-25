@@ -18,7 +18,7 @@ type Db = ReturnType<typeof getDb>;
 
 /**
  * Admin (`status=all`) column projection — adds tags/author/updatedAt for the
- * /admin/knowledge CRUD table. Public listings keep the narrower 6-column
+ * /admin/content/knowledge/editor CRUD table. Public listings keep the narrower 6-column
  * projection in `getKbListItems` (§5.9: no SELECT *).
  */
 const KB_ADMIN_COLUMNS = {
@@ -145,9 +145,11 @@ export const POST: RequestHandler = async (event) => {
 				title: parsed.data.title,
 				summary: parsed.data.summary ?? null,
 				body: parsed.data.body,
+				contentBlocks: parsed.data.contentBlocks,
 				tags: JSON.stringify(parsed.data.tags ?? []),
 				author: parsed.data.author ?? null,
 				status: parsed.data.status ?? 'draft',
+				publishedAt: parsed.data.status === 'published' ? now : null,
 				metaTitle: parsed.data.metaTitle ?? null,
 				metaDescription: parsed.data.metaDescription ?? null,
 				keywords: parsed.data.keywords ?? null,

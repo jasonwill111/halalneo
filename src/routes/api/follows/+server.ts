@@ -5,6 +5,7 @@ import { getBindings } from '#lib/server/bindings.js';
 import { follows, suppliers } from '#lib/server/db/schema.js';
 import { eq, and, sql } from 'drizzle-orm';
 import { invalidateCache } from '#lib/server/cache.js';
+import { parseQuery } from '#lib/server/db/api-helpers.js';
 import { getSession } from '#lib/server/auth.js';
 import { z } from 'zod';
 
@@ -37,6 +38,7 @@ export const GET: RequestHandler = async (event) => {
 	const userId = session?.user.id;
 	if (!userId) return json({ error: 'Unauthorized' }, { status: 401 });
 
+	const { limit, offset } = parseQuery(url);
 	const supplierSlug = url.searchParams.get('supplierSlug') || undefined;
 	try {
 		if (supplierSlug) {
@@ -47,6 +49,10 @@ export const GET: RequestHandler = async (event) => {
 				.limit(1);
 			return json({ following: rows.length > 0 });
 		}
+		const [countResult] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(follows)
+			.where(eq(follows.userId, userId));
 		const rows = await db
 			.select({
 				supplierSlug: follows.supplierSlug,
@@ -57,8 +63,10 @@ export const GET: RequestHandler = async (event) => {
 			})
 			.from(follows)
 			.leftJoin(suppliers, eq(follows.supplierSlug, suppliers.slug))
-			.where(eq(follows.userId, userId));
-		return json({ items: rows });
+			.where(eq(follows.userId, userId))
+			.limit(limit)
+			.offset(offset);
+		return json({ items: rows, total: countResult?.count ?? 0, limit, offset });
 	} catch (e: unknown) {
 		return json({ error: e instanceof Error ? e.message : 'Failed' }, { status: 500 });
 	}
