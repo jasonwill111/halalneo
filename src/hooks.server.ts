@@ -523,6 +523,15 @@ const PUBLIC_PATHS = [
 	'/api/inquiries'
 ];
 
+const SUPPLIER_PORTAL_ROUTES = [
+	'/supplier/account',
+	'/supplier/dashboard',
+	'/supplier/products',
+	'/supplier/orders',
+	'/supplier/manage',
+	'/supplier/profile'
+];
+
 const PUBLIC_ROUTES = [
 	'/',
 	'/products',
@@ -600,6 +609,16 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 				headers: { Location: '/admin/login' }
 			});
 		}
+	}
+
+	const isSupplierPortal = SUPPLIER_PORTAL_ROUTES.some(
+		(route) => pathname === route || pathname.startsWith(route + '/')
+	);
+	if (isSupplierPortal && !session) {
+		return new Response(null, {
+			status: 302,
+			headers: { Location: '/supplier/login' }
+		});
 	}
 
 	return svelteKitHandler({ event, resolve, auth, building });
